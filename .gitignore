@@ -1,0 +1,10 @@
+﻿# Originales pesados (fotos y vídeos): no se suben
+FOTOS Y VIDEOS HALLOWEEN DRYICEPACK/
+*.MOV
+*.mov
+*.zip
+
+# Herramientas
+node_modules/
+.tmp/
+auditorias/**/*.json
