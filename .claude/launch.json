@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wordpress-prueba",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["herramientas/servidor-prueba.mjs"],
+      "port": 9400
+    }
+  ]
+}

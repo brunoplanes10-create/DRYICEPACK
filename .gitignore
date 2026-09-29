@@ -8,3 +8,6 @@ FOTOS Y VIDEOS HALLOWEEN DRYICEPACK/
 node_modules/
 .tmp/
 auditorias/**/*.json
+
+# Informes completos de Lighthouse (se regeneran; en Git solo va el resumen)
+auditorias/**/*.html
