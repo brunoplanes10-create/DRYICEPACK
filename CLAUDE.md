@@ -18,9 +18,10 @@ Antes de cada tarea, di qué especialistas intervienen y aplica sus estándares 
   - Producto WooCommerce variable `hielo-seco` (ID 261). Atributos `pa_peso` (3, 10, 15, 20 kg) y `pa_formato` (3mm, 16mm).
   - Precios (iguales en 3 y 16 mm, + IVA): 3 kg 29,80 € · 10 kg 53,30 € · 15 kg 68,40 € · 20 kg 98,60 €. Caja EPS de 40 mm/lado incluida.
   - Máximo 250 kg por pedido.
+  - **Envío (tarifa del 31/08/2026, igual en toda la península, sin IVA):** hasta 2 kg 8,53 € · hasta 5 kg 10,32 € · hasta 10 kg 13,19 € · cada kg de más 1,12 €. Se calcula sobre el peso facturable: hielo + 1 kg por caja, redondeado al alza.
 - **Logística:** MRW, España peninsular. Pedido antes de las **12:00** → entrega el siguiente día laborable por la mañana. Sin entregas en domingo ni lunes.
   - **Sábado:** según zona, suplemento de **9,70 € + IVA (11,74 € IVA incluido)**.
-  - **Recogida en almacén:** Camí Ca La Madrona 19 D, 08304 Mataró. Para Maresme, Vallès y área de Barcelona. El checkout solo la permite en Cataluña o avisa si el cliente está lejos. L–V, franja acordada al confirmar el pedido.
+  - **Recogida en almacén:** Camí Ca La Madrona 19 D, 08304 Mataró. Gratis, L–V 9:00–18:00 avisando antes. En el checkout aparece debajo del envío y avisa si el código postal no es de Cataluña. **Recogida = solo pago en efectivo** al recoger (método "contra reembolso" renombrado); el efectivo no se ofrece en pedidos con envío. Es el pedido de mayor margen.
   - Suministro programado semanal, quincenal o mensual con mejor precio.
 - **Contacto:** 936 73 76 41 · info@dryicepack.es · L–V 9:00–18:00.
 - **Hosting:** Arsys. Cloudflare delante.
@@ -42,9 +43,10 @@ Se abandonan **Divi y el tema hijo**. La web pasa a dos piezas propias, instalab
 | Tema `dryicepack` | `tema/dryicepack/` | Diseño, cabecera, pie, plantillas `page-{slug}.php` de cada página, estilos de la tienda |
 | Plugin `dryicepack-tienda` | `plugin/dryicepack-tienda/` | Checkout simplificado, envío por peso, límite 250 kg, corte 12:00, festivos por CCAA, suplemento de sábado, recogida, flujo de factura |
 
-- Los plugins que se mantienen son Rank Math, WooCommerce, WooPayments, Order Delivery Date, Contact Form 7, WP Rocket y Complianz.
+- Los plugins que se mantienen son WooCommerce, WooPayments, Order Delivery Date, Advanced Shipment Tracking, Contact Form 7 + Flamingo, Rank Math, Site Kit, WP Rocket, Imagify y WP Mail SMTP. Al cambiar de tema sobran Divi, Checkout Field Editor y Flying Pages; WP File Manager se borra en cuanto deje de hacer falta (riesgo de seguridad).
 - **No desinstalar Divi ni el tema hijo** hasta que el tema y el plugin estén probados. El `functions.php` del tema hijo contiene la lógica de la tienda y el contenido de las páginas está en shortcodes de Divi.
-- La copia del tema hijo en `Desktop\MEJORAR DRYICEPACK\` está **desactualizada** (no tiene la recogida nueva). Antes de migrar la lógica al plugin, descargar la versión de producción desde Arsys.
+- La copia del tema hijo en `Desktop\MEJORAR DRYICEPACK\` está **desactualizada**. La versión de producción (functions.php del 01/09/2026, 133 KB) está en `referencia/produccion-2026-09-01/` (fuera de Git): es la fuente de verdad para migrar la lógica al plugin.
+- Plugins instalados (29/09/2026): WooCommerce, WooPayments, Order Delivery Date Lite, Checkout Field Editor (ThemeHigh), Flexible Shipping, Advanced Shipment Tracking, Contact Form 7 + Flamingo, Rank Math, Site Kit, WP Rocket, Flying Pages, Imagify, WP Mail SMTP, WP File Manager. **No hay plugin de cookies.**
 - **Transición Halloween:** la landing se publica ya dentro del tema hijo actual como plantilla independiente, sin Divi (`landing-halloween/`). Después pasa tal cual al tema nuevo.
 - El cambio de tema se hace cuando esté probado. Si no está listo antes del 20/10, se deja para el 2/11.
 
@@ -67,7 +69,7 @@ Se abandonan **Divi y el tema hijo**. La web pasa a dos piezas propias, instalab
   6. El vídeo del hero no tiene `poster`.
   7. Open Sans no carga porque falta `assets/fonts/` en el tema hijo.
   8. Apple Pay y Google Pay salen arriba del checkout: el script del tema hijo busca clases antiguas de WooPayments.
-  9. El suplemento de sábado estaba en 8,00 € + IVA en el código; el correcto es 9,70 € + IVA.
+  9. Sin aviso de cookies aunque Site Kit carga Google Analytics.
   10. Faltan páginas: transporte, eventos, bloques, landings por ciudad.
 
 ---
