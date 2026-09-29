@@ -11,3 +11,6 @@ auditorias/**/*.json
 
 # Informes completos de Lighthouse (se regeneran; en Git solo va el resumen)
 auditorias/**/*.html
+
+# Copias del tema hijo de producción (pueden contener claves): no se suben
+referencia/
