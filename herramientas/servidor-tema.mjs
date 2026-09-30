@@ -12,6 +12,7 @@ const paginas = [
 ];
 
 const php = `<?php
+register_shutdown_function(function() { $e = error_get_last(); if ($e && in_array($e['type'], array(E_ERROR, E_PARSE, E_COMPILE_ERROR, E_CORE_ERROR, E_USER_ERROR), true) && is_dir('/salida')) file_put_contents('/salida/config.txt', 'FATAL: ' . print_r($e, true)); });
 require '/wordpress/wp-load.php';
 update_option( 'permalink_structure', '/%postname%/' );
 update_option( 'blogname', 'DryIcePack (prueba)' );
@@ -30,6 +31,8 @@ if ( class_exists( 'WooCommerce' ) ) {
   update_option( 'woocommerce_tax_display_shop', 'excl' );
   update_option( 'woocommerce_tax_display_cart', 'incl' );
   update_option( 'woocommerce_onboarding_profile', array( 'skipped' => true ) );
+  update_option( 'woocommerce_coming_soon', 'no' );
+  update_option( 'woocommerce_store_pages_only', 'no' );
   global $wpdb;
   if ( ! $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}woocommerce_tax_rates" ) ) {
     WC_Tax::_insert_tax_rate( array( 'tax_rate_country' => 'ES', 'tax_rate' => '21.0000', 'tax_rate_name' => 'IVA', 'tax_rate_priority' => 1, 'tax_rate_compound' => 0, 'tax_rate_shipping' => 1, 'tax_rate_order' => 0, 'tax_rate_class' => '' ) );
@@ -76,18 +79,35 @@ if ( class_exists( 'WooCommerce' ) ) {
     $z->add_shipping_method( 'flat_rate' ); $z->add_shipping_method( 'local_pickup' );
   }
   update_option( 'woocommerce_cod_settings', array( 'enabled' => 'yes', 'title' => 'Contra reembolso' ) );
+  // Pago de prueba con envío (en producción es WooPayments)
+  update_option( 'woocommerce_cheque_settings', array( 'enabled' => 'yes', 'title' => 'Tarjeta (prueba)' ) );
+  update_option( 'woocommerce_allowed_countries', 'specific' );
+  update_option( 'woocommerce_specific_allowed_countries', array( 'ES' ) );
+  update_option( 'woocommerce_ship_to_countries', '' );
 }
 flush_rewrite_rules();
 echo 'ok';
 `;
 writeFileSync('.tmp/tema-configurar.php', php);
 
+// Activa el plugin propio y deja cualquier error en .tmp/pg/activacion.txt (el paso activatePlugin no enseña el motivo).
+const activar = `<?php
+require '/wordpress/wp-load.php';
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
+$salida = '/salida/activacion.txt';
+register_shutdown_function(function() use ($salida) { $e = error_get_last(); if ($e && in_array($e['type'], array(E_ERROR, E_PARSE, E_COMPILE_ERROR, E_CORE_ERROR), true)) file_put_contents($salida, 'FATAL: ' . print_r($e, true), FILE_APPEND); });
+try { $r = activate_plugin('dryicepack-tienda/dryicepack-tienda.php'); file_put_contents($salida, is_wp_error($r) ? 'WP_Error: ' . $r->get_error_message() : 'activado', FILE_APPEND); }
+catch (Throwable $e) { file_put_contents($salida, get_class($e) . ': ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine(), FILE_APPEND); }
+`;
+
 const blueprint = {
   landingPage: '/',
   preferredVersions: { php: '8.2', wp: 'latest' },
   steps: [
+    { step: 'defineWpConfigConsts', consts: { WP_DEBUG: true, WP_DEBUG_LOG: '/salida/debug.log', WP_DEBUG_DISPLAY: false } },
     { step: 'installPlugin', pluginData: { resource: 'wordpress.org/plugins', slug: 'woocommerce' }, options: { activate: true } },
     { step: 'activateTheme', themeFolderName: 'dryicepack' },
+    ...(existsSync('plugin/dryicepack-tienda') ? [{ step: 'runPHP', code: activar }] : []),
     { step: 'runPHP', code: php },
   ],
 };
@@ -96,7 +116,7 @@ writeFileSync('.tmp/blueprint-tema.json', JSON.stringify(blueprint, null, 2));
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 const args = ['--yes', '@wp-playground/cli@latest', 'server', '--port=9500',
   '--mount=./tema/dryicepack:/wordpress/wp-content/themes/dryicepack',
-  '--blueprint=./.tmp/blueprint-tema.json'];
+  '--blueprint=./.tmp/blueprint-tema.json', '--mount=./.tmp/pg:/salida'];
 if (existsSync('plugin/dryicepack-tienda')) args.push('--mount=./plugin/dryicepack-tienda:/wordpress/wp-content/plugins/dryicepack-tienda');
 const hijo = spawn(npx, args, { stdio: 'inherit', shell: process.platform === 'win32' });
 hijo.on('exit', (c) => process.exit(c ?? 0));

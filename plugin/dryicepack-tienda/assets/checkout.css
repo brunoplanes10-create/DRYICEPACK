@@ -1,0 +1,42 @@
+/* Checkout Dryicepack: piezas propias del plugin. El tema pone la piel completa; aquí lo mínimo para que funcione y se entienda. */
+.dip-oculto, .dip-trampa { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.dip-fiscal[hidden] { display: none !important; }
+
+.dip-paso__titulo { display: flex; align-items: center; gap: .6em; margin: 0 0 1rem; font-size: 1.25rem; }
+.dip-paso__n { display: inline-grid; place-items: center; width: 1.8em; height: 1.8em; border-radius: 50%; border: 1px solid currentColor; font-size: .8em; font-variant-numeric: tabular-nums; }
+.dip-leyenda { font-weight: 600; margin: 0 0 .6rem; padding: 0; }
+.dip-metodos, .dip-fechas { border: 0; margin: 0 0 1.4rem; padding: 0; min-width: 0; }
+
+.dip-metodo { display: grid; grid-template-columns: auto 1fr auto; gap: .9rem; align-items: center; padding: .95rem 1rem; margin: 0 0 .6rem; border: 1px solid var(--c-linea-fuerte, #C8D3DD); border-radius: 12px; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.dip-metodo input { position: absolute; opacity: 0; pointer-events: none; }
+.dip-metodo:has(input:checked) { border-color: var(--c-marino, #1F3C55); background: var(--c-escarcha, #EEF3F7); box-shadow: inset 0 0 0 1px var(--c-marino, #1F3C55); }
+.dip-metodo:has(input:focus-visible) { outline: 2px solid var(--c-marino, #1F3C55); outline-offset: 2px; }
+.dip-metodo__icono { color: var(--c-marino, #1F3C55); display: grid; }
+.dip-metodo__texto small { display: block; margin-top: .2rem; color: var(--c-acero, #56677A); font-size: .85em; }
+.dip-metodo__precio { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.dip-fechas__lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: .5rem; }
+.dip-fecha { position: relative; display: grid; justify-items: center; gap: .1rem; padding: .7rem .3rem .6rem; border: 1px solid var(--c-linea-fuerte, #C8D3DD); border-radius: 12px; cursor: pointer; text-align: center; line-height: 1.1; transition: border-color .2s, background-color .2s, transform .2s; }
+.dip-fecha:hover { transform: translateY(-2px); }
+.dip-fecha input { position: absolute; opacity: 0; pointer-events: none; }
+.dip-fecha:has(input:checked) { background: var(--c-marino, #1F3C55); border-color: var(--c-marino, #1F3C55); color: #fff; }
+.dip-fecha:has(input:focus-visible) { outline: 2px solid var(--c-marino, #1F3C55); outline-offset: 2px; }
+.dip-fecha__dia, .dip-fecha__mes { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+.dip-fecha__num { font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.dip-fecha__extra { font-size: .7rem; margin-top: .15rem; opacity: .85; }
+.dip-fechas__nota, .dip-nota-recogida, .dip-perecedero { font-size: .85rem; color: var(--c-acero, #56677A); margin: .7rem 0 0; }
+.dip-aviso { padding: .8rem 1rem; border-left: 3px solid var(--c-senal, #C27A12); background: #FFF6E8; color: #5A4526; border-radius: 6px; font-size: .9rem; }
+.dip-aviso[hidden] { display: none; }
+
+.dip-casilla-empresa label { display: flex; gap: .6rem; align-items: flex-start; font-weight: 500; cursor: pointer; }
+.dip-fijada label { cursor: default; }
+
+.dip-pago-rapido { margin: 1.2rem 0 0; padding: 1rem 0 0; border-top: 1px solid var(--c-linea, #E1E7EC); }
+.dip-pago-rapido[hidden] { display: none; }
+.dip-pago-rapido__titulo { margin: 0 0 .6rem; font-size: .9rem; color: var(--c-acero, #56677A); }
+
+.dip-cuenta-aviso { font-size: .92rem; margin: 0 0 1.5rem; }
+.dip-factura-cta { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; justify-content: space-between; margin: 2rem 0; padding: 1.4rem 1.6rem; border: 1px solid var(--c-linea-fuerte, #C8D3DD); border-radius: 14px; }
+.dip-factura-cta h2 { margin: 0 0 .3rem; font-size: 1.2rem; }
+.dip-factura-cta p { margin: 0; }
+.dip-entrega-pedido { font-weight: 600; }
