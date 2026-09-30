@@ -1,0 +1,14 @@
+/*
+Theme Name: DryIcePack
+Theme URI: https://dryicepack.es/
+Author: INDUNOVA IMS S.L.
+Description: Tema propio de DryIcePack (sin constructor visual). Diseño "Cadena de frío": precisión logística a −78,5 °C y el espectáculo del vapor. Rápido, animado y pensado para vender hielo seco en pellets de 3 mm y nuggets de 16 mm.
+Version: 1.0.0
+Requires at least: 6.4
+Tested up to: 7.1
+Requires PHP: 8.0
+License: Propietaria
+Text Domain: dryicepack
+*/
+
+/* Los estilos están en assets/css/ (base.css + uno por página). Este archivo solo identifica el tema. */
