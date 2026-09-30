@@ -51,7 +51,13 @@ Se abandonan **Divi y el tema hijo**. La web pasa a dos piezas propias, instalab
 - El cambio de tema se hace cuando esté probado. Si no está listo antes del 20/10, se deja para el 2/11.
 
 ## Funnel de venta (objetivo)
-- **Pocos datos:** email, teléfono, nombre y apellidos (un campo), dirección de entrega, piso (opcional), CP y ciudad. La provincia se rellena por el CP y el país es siempre España. Sin tipo de cliente, empresa ni NIF en el checkout.
+- **Pocos datos:** email, teléfono, nombre y apellidos (un campo), dirección de entrega, piso (opcional), CP y ciudad. La provincia se rellena por el CP y el país es siempre España.
+- **Factura (confirmado con la gestoría, 30/09/2026):**
+  - Particulares hasta 400 € (IVA incl.): factura simplificada, sin pedir datos fiscales.
+  - Empresas y autónomos (la industria siempre): **factura completa**. En el checkout, la casilla "Compro para una empresa o autónomo" muestra razón social y NIF/CIF (obligatorios si se marca).
+  - Pedidos de más de 400 €: razón social y NIF/CIF obligatorios siempre.
+  - Las cuentas de empresa guardan sus datos fiscales y no se les vuelven a pedir.
+  - La web no emite facturas: las hace el padre con la aplicación de la gestoría (VeriFactu obligatorio para sociedades desde el 1/1/2027).
 - **Pago:** en el bloque de pago hay dos opciones, **Tarjeta** (por defecto) y **Apple Pay / Google Pay**. Nunca botones exprés arriba del checkout. Un pedido con Apple Pay tiene que guardar la fecha de entrega y respetar el corte. Si WooPayments no lo permite, el plan B es el plugin oficial de Stripe (preguntar antes).
 - **Factura después de la compra:** el email estándar de WooCommerce más un email "¿Necesitas factura?" con un enlace seguro a `/factura/`. El cliente rellena razón social, NIF/CIF y dirección fiscal. Se guarda una nota en el pedido y se envía un aviso a info@dryicepack.es. El mismo botón aparece en la página de gracias.
 
