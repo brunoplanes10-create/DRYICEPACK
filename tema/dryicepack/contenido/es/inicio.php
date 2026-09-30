@@ -33,7 +33,7 @@ return array(
 		'titulo' => 'De nuestra nave en Mataró|a tu puerta, <em>en una noche.</em>',
 		'pasos'  => array(
 			array( '12:00', 'Hora límite', 'Lo que entra antes de las 12:00, de lunes a viernes, sale ese mismo día.' ),
-			array( 'Tarde', 'Sale preparado', 'En caja EPS de 40 mm, cerrada pero no hermética, por mensajería.' ),
+			array( 'Hoy', 'Sale preparado', 'En caja EPS de 40 mm, cerrada pero no hermética, por mensajería.' ),
 			array( 'Mañana', 'Llega por la mañana', 'De martes a viernes. El sábado, según zona y con suplemento de 11,74 €.' ),
 		),
 		'nota'   => 'A toda la península. Sin entregas en domingo ni lunes. Baleares, Canarias, Ceuta y Melilla: consúltanos.',

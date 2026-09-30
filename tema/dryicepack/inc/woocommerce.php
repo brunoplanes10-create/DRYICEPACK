@@ -66,3 +66,17 @@ add_filter( 'rank_math/frontend/robots', static function ( $robots ) {
 	}
 	return $robots;
 }, 9999 );
+
+/* Sin JavaScript, el formulario de compra envía formato y kilos: aquí se traducen a la variación antes de que WooCommerce añada al carrito. */
+add_action( 'wp_loaded', static function () {
+	if ( empty( $_GET['add-to-cart'] ) || empty( $_GET['dipt_kg'] ) || empty( $_GET['dipt_formato'] ) ) return; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$kg      = (float) wp_unslash( $_GET['dipt_kg'] ); // phpcs:ignore
+	$formato = sanitize_key( wp_unslash( $_GET['dipt_formato'] ) ); // phpcs:ignore
+	foreach ( dipt_variaciones() as $v ) {
+		if ( (float) $v['kg'] !== $kg || $v['formato'] !== $formato || empty( $v['padre'] ) ) continue;
+		$_GET['variation_id'] = $_REQUEST['variation_id'] = (string) $v['id'];
+		$_GET['attribute_pa_peso'] = $_REQUEST['attribute_pa_peso'] = $v['peso'];
+		$_GET['attribute_pa_formato'] = $_REQUEST['attribute_pa_formato'] = $v['fslug'];
+		break;
+	}
+}, 5 );

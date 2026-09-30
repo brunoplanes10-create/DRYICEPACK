@@ -85,6 +85,11 @@ if ( class_exists( 'WooCommerce' ) ) {
   update_option( 'woocommerce_specific_allowed_countries', array( 'ES' ) );
   update_option( 'woocommerce_ship_to_countries', '' );
 }
+// Producto en /producto/ como en producción y páginas del tema (registro de inc/paginas.php)
+$wcp = (array) get_option( 'woocommerce_permalinks', array() );
+$wcp['product_base'] = 'producto';
+update_option( 'woocommerce_permalinks', $wcp );
+if ( function_exists( 'dipt_crear_paginas' ) ) dipt_crear_paginas();
 flush_rewrite_rules();
 echo 'ok';
 `;

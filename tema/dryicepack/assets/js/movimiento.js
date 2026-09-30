@@ -184,6 +184,14 @@
 	}
 	if (d.querySelector('[data-corte]')) { pintarCorte(); setInterval(pintarCorte, 30000); }
 
+	/* Abierto o cerrado ahora (nave: lunes a viernes no festivos, 9:00–18:00 hora de Madrid) */
+	d.querySelectorAll('[data-estado]').forEach(function (el) {
+		var a = ahoraMadrid(), hoy = new Date(Date.UTC(a.y, a.m - 1, a.d));
+		var min = a.h * 60 + a.mi, abierto = saleEseDia(hoy) && min >= 540 && min < 1080;
+		el.textContent = el.getAttribute(abierto ? 'data-t-abierto' : 'data-t-cerrado');
+		el.classList.add(abierto ? 'es-abierto' : 'es-cerrado');
+	});
+
 	/* ---------- Imagen que sigue al cursor en listas índice: [data-sigue] con hijos [data-sigue-foto] ---------- */
 	d.querySelectorAll('[data-sigue]').forEach(function (lista) {
 		var visor = lista.querySelector('[data-sigue-visor]');
@@ -216,6 +224,28 @@
 			t.style.setProperty('--brillo-y', ((py + 0.5) * 100).toFixed(0) + '%');
 		});
 		marco.addEventListener('mouseleave', function () { t.style.transform = ''; });
+	});
+
+	/* ---------- Pestañas accesibles: [data-pestanas] con role=tab / role=tabpanel ---------- */
+	d.querySelectorAll('[data-pestanas]').forEach(function (grupo) {
+		var tabs = Array.prototype.slice.call(grupo.querySelectorAll('[role="tab"]'));
+		function elegir(t, foco) {
+			tabs.forEach(function (x) {
+				var on = x === t;
+				x.setAttribute('aria-selected', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1;
+				var p = d.getElementById(x.getAttribute('aria-controls')); if (p) p.hidden = !on;
+			});
+			if (foco) t.focus();
+		}
+		tabs.forEach(function (t, i) {
+			t.addEventListener('click', function () { elegir(t); });
+			t.addEventListener('keydown', function (e) {
+				var dir = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+				if (e.key === 'Home') { e.preventDefault(); elegir(tabs[0], true); }
+				else if (e.key === 'End') { e.preventDefault(); elegir(tabs[tabs.length - 1], true); }
+				else if (dir) { e.preventDefault(); elegir(tabs[(i + dir + tabs.length) % tabs.length], true); }
+			});
+		});
 	});
 
 	/* ---------- Contador del carrito (solo si hay algo en el carrito) ---------- */

@@ -1,0 +1,45 @@
+/* =========================================================================
+   Contacto · C1 a C3
+   ========================================================================= */
+.c-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); background: var(--c-papel); }
+.c-hero__cabeza { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem 3rem; margin: 1.5rem 0 clamp(2rem, 5vw, 4rem); }
+.c-estado { max-width: 24rem; padding: .8rem 1rem; border-left: 2px solid var(--c-marino); color: var(--c-acero); }
+.c-estado.es-cerrado { border-color: var(--c-niebla); }
+.c-canales { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--c-tinta); }
+.c-canales li { border-bottom: 1px solid var(--c-linea-fuerte); }
+.c-canales a { display: grid; grid-template-columns: 12rem minmax(0, 1fr) 16rem; align-items: center; gap: 1.5rem; padding: clamp(1.2rem, 2.6vw, 2.2rem) 0; text-decoration: none; position: relative; overflow: hidden; }
+.c-canales a::before { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--c-noche); transform: scaleY(0); transform-origin: bottom; transition: transform .6s var(--e-salida); }
+.c-canales a > * { position: relative; z-index: 1; transition: color .4s, transform .6s var(--e-salida); }
+.c-canales a:hover::before, .c-canales a:focus-visible::before { transform: scaleY(1); }
+.c-canales a:hover > *, .c-canales a:focus-visible > * { color: #fff; }
+.c-canales a:hover .c-canales__valor { transform: translateX(1.2rem); }
+.c-canales__tipo { display: flex; align-items: center; gap: .6rem; font-family: var(--f-mono); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acero); padding-left: 1rem; }
+.c-canales__valor { font-family: var(--f-display); font-size: clamp(2.2rem, 6vw, 5.6rem); line-height: 1; letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.c-canales__para { font-size: .92rem; color: var(--c-acero); padding-right: 1rem; }
+@media (max-width: 900px) { .c-canales a { grid-template-columns: 1fr; gap: .4rem; padding-inline: 0; } .c-canales__tipo, .c-canales__para { padding: 0; } .c-canales__valor { font-size: clamp(1.9rem, 9vw, 3rem); } }
+
+.c-form__in { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.c-form__texto { margin-top: 1.4rem; }
+.c-lineas { display: grid; gap: 1.6rem; }
+.c-lineas__doble { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+.c-lineas .campo { position: relative; display: block; }
+.c-lineas .campo input, .c-lineas .campo textarea { width: 100%; min-height: 56px; padding: 1.4rem 0 .5rem; border: 0; border-bottom: 1px solid var(--c-linea-fuerte); border-radius: 0; background: transparent; font-size: 1.1rem; box-shadow: none; }
+.c-lineas .campo textarea { min-height: 120px; resize: vertical; }
+.c-lineas .campo label { position: absolute; left: 0; top: 1.3rem; font-size: 1.05rem; font-weight: 400; color: var(--c-acero); pointer-events: none; transform-origin: 0 0; transition: transform .35s var(--e-salida), color .3s; }
+.c-lineas .campo input:focus, .c-lineas .campo textarea:focus { outline: none; border-color: var(--c-marino); box-shadow: 0 1px 0 var(--c-marino); }
+.c-lineas .campo input:focus + label, .c-lineas .campo textarea:focus + label, .c-lineas .campo input:not(:placeholder-shown) + label, .c-lineas .campo textarea:not(:placeholder-shown) + label { transform: translateY(-1.25rem) scale(.78); color: var(--c-marino); }
+.c-lineas .boton { justify-self: start; }
+@media (max-width: 900px) { .c-form__in, .c-lineas__doble { grid-template-columns: 1fr; } }
+
+.c-nave { display: grid; grid-template-columns: 1fr 1fr; min-height: 640px; }
+.c-nave__foto { overflow: hidden; }
+.c-nave__foto img { width: 100%; height: 100%; object-fit: cover; }
+.c-nave__datos { display: grid; align-content: center; gap: 1.4rem; padding: clamp(2.5rem, 6vw, 6rem) var(--margen); }
+.c-nave__dir { font-style: normal; font-family: var(--f-display); font-size: clamp(1.6rem, 2.6vw, 2.4rem); line-height: 1.15; color: #fff; }
+.c-nave__lista { display: grid; gap: .8rem; margin: 0; color: var(--c-hielo-claro); }
+.c-nave__lista div { display: flex; gap: .8rem; align-items: center; }
+.c-nave__lista dt { color: var(--c-hielo); }
+.c-nave__lista dd { margin: 0; }
+.c-nave__empresa { margin-top: 1rem; padding-top: 1.2rem; border-top: 1px solid var(--c-linea-oscura); color: var(--c-niebla); font-size: .9rem; }
+.c-nave__empresa .dato { text-transform: uppercase; letter-spacing: .1em; margin-bottom: .3rem; }
+@media (max-width: 900px) { .c-nave { grid-template-columns: 1fr; } .c-nave__foto { height: 320px; } }

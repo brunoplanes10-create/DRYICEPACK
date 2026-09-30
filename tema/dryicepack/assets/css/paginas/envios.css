@@ -1,0 +1,82 @@
+/* =========================================================================
+   Envíos y plazos · V1 a V6
+   ========================================================================= */
+.v-hero { position: relative; overflow: hidden; padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(4rem, 8vw, 7rem); background: radial-gradient(ellipse at 80% 0%, #1F3C55 0%, #0B141C 58%); }
+.v-hero__in { position: relative; z-index: 2; }
+.v-hero__titulo { margin: 1.4rem 0 clamp(2rem, 5vw, 3.5rem); color: #fff; }
+.v-hero__titulo em { color: var(--c-hielo); }
+.v-reloj__etiqueta { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .12em; }
+.v-reloj__cifras { display: flex; align-items: baseline; font-family: var(--f-mono); font-weight: 400; font-size: clamp(4rem, 13vw, 11rem); line-height: 1; letter-spacing: -.06em; color: var(--c-hielo); font-variant-numeric: tabular-nums; }
+.v-reloj__cifras i { font-style: normal; opacity: .35; margin: 0 .05em; }
+.corte-pasado .v-reloj__cifras { color: var(--c-marino-2); }
+.v-hero__llega { margin-top: 1.5rem; color: #fff; }
+.v-hero__texto { margin-top: .6rem; max-width: 40rem; }
+
+/* V2 · La semana */
+.v-semana__titulo { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.v-calendario { display: grid; gap: .5rem; }
+.v-calendario__cab, .v-calendario__fila { display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem; }
+.v-calendario__cab span { padding: .6rem .4rem; font-family: var(--f-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--c-acero); border-bottom: 1px solid var(--c-tinta); }
+.v-calendario__cab .finde { color: var(--c-niebla); }
+.v-calendario__fila { position: relative; min-height: 64px; align-items: center; }
+.v-calendario__pide, .v-calendario__llega { display: grid; place-items: center; height: 52px; border-radius: 14px; }
+.v-calendario__pide { grid-column: var(--desde); grid-row: 1; background: #fff; border: 1px solid var(--c-linea-fuerte); color: var(--c-marino); }
+.v-calendario__llega { grid-column: var(--hasta); grid-row: 1; background: var(--c-marino); color: #fff; }
+.v-calendario__llega.es-sabado { background: repeating-linear-gradient(135deg, var(--c-marino) 0 8px, var(--c-marino-2) 8px 16px); }
+.v-calendario__viaje { grid-column: var(--desde) / span 2; grid-row: 1; height: 2px; margin: 0 26px; background: var(--c-marino); transform: scaleX(0); transform-origin: left; transition: transform 1s var(--e-salida) .3s; }
+.v-calendario__fila.visto .v-calendario__viaje, .quieto .v-calendario__viaje { transform: none; }
+.v-calendario__nota { grid-column: 7; grid-row: 1; font-size: .72rem; color: var(--c-acero); padding-left: .5rem; }
+.v-semana__notas { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; max-width: 60rem; }
+@media (max-width: 700px) { .v-calendario__cab span { font-size: .6rem; padding-inline: 0; text-align: center; } .v-calendario__nota { grid-column: 1 / -1; grid-row: 2; padding: 0; } .v-semana__notas { grid-template-columns: 1fr; } .v-calendario__pide, .v-calendario__llega { height: 44px; border-radius: 10px; } }
+
+/* V3 · Calculadora */
+.v-tarifa__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+.v-tarifa__controles { display: grid; gap: .7rem; margin-top: 2rem; max-width: 30rem; }
+.v-tarifa__controles output { font-size: 1.1rem; color: var(--c-tinta); }
+.v-tarifa__controles input[type="range"] { width: 100%; accent-color: var(--c-marino); height: 32px; }
+.v-tarifa__controles input[type="number"] { width: 6rem; min-height: 48px; padding: .5rem .8rem; border: 1px solid var(--c-linea-fuerte); border-radius: 12px; font: 500 1rem var(--f-mono); }
+.v-tarifa__nota { margin-top: 1.4rem; font-size: .88rem; max-width: 34rem; }
+.v-tarifa__resultado { padding: clamp(1.6rem, 4vw, 3rem) clamp(1.6rem, 4vw, 3rem) 3.4rem; border-radius: var(--radio-grande); background: var(--c-noche); color: #fff; }
+.v-tarifa__coste { display: grid; gap: .3rem; }
+.v-tarifa__coste .dato { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .1em; }
+.v-tarifa__coste strong { font-family: var(--f-display); font-weight: 400; font-size: clamp(3.5rem, 7vw, 6rem); line-height: 1; }
+.v-tarifa__peso { color: var(--c-hielo); margin-top: .6rem; }
+.v-escalera { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; gap: 8px; height: 180px; }
+.v-escalera li { position: relative; height: var(--h); border-radius: 10px 10px 4px 4px; background: rgba(184, 208, 232, .14); transition: background-color .4s; }
+.v-escalera li.activo { background: var(--c-hielo); }
+.v-escalera span { position: absolute; left: 0; right: 0; top: calc(100% + .5rem); font-family: var(--f-mono); font-size: .68rem; color: var(--c-niebla); text-align: center; }
+@media (max-width: 900px) { .v-tarifa__in { grid-template-columns: 1fr; } }
+
+/* V4 · Recogida */
+.v-recogida__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+.v-recogida__foto { margin: 0; border-radius: 50% 50% var(--radio-grande) var(--radio-grande) / 30% 30% var(--radio-grande) var(--radio-grande); overflow: hidden; aspect-ratio: 4 / 5; }
+.v-recogida__foto img { width: 100%; height: 100%; object-fit: cover; }
+.v-ficha { margin: 2rem 0 1.6rem; }
+.v-ficha div { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+.v-ficha dt { text-transform: uppercase; letter-spacing: .1em; color: var(--c-acero); padding-top: .2rem; }
+.v-ficha dd { margin: 0; }
+@media (max-width: 900px) { .v-recogida__in { grid-template-columns: 1fr; } .v-ficha div { grid-template-columns: 1fr; gap: .2rem; } }
+
+/* V5 · Cobertura */
+.v-cobertura__dos { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--hueco); margin: 2.5rem 0 2rem; }
+.v-cobertura__si, .v-cobertura__no { position: relative; padding: clamp(1.6rem, 4vw, 2.8rem); border-radius: var(--radio-grande); }
+.v-cobertura__si { background: var(--c-hielo); color: var(--c-noche); }
+.v-cobertura__no { border: 1px solid var(--c-linea-oscura); }
+.v-cobertura__marca { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 1.4rem; border-radius: 50%; border: 1.5px solid currentColor; font: 400 1.6rem var(--f-display); }
+.v-cobertura__dos h3 { font-family: var(--f-display); font-size: clamp(1.6rem, 2.6vw, 2.3rem); line-height: 1.05; margin-bottom: .7rem; }
+.v-cobertura__no p { color: var(--c-hielo-claro); }
+@media (max-width: 800px) { .v-cobertura__dos { grid-template-columns: 1fr; } }
+
+/* V6 · Preguntas en pestañas */
+.v-pestanas { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(1.5rem, 5vw, 4rem); margin-top: 2rem; align-items: start; }
+.v-pestanas__lista { display: grid; gap: .3rem; }
+.v-pestanas__lista button { display: grid; grid-template-columns: 2.5rem 1fr; gap: .6rem; padding: 1rem 1.1rem; border: 0; border-radius: 14px; background: transparent; text-align: left; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color .3s, color .3s; }
+.v-pestanas__lista button .dato { color: var(--c-acero); }
+.v-pestanas__lista button:hover { background: var(--c-escarcha); }
+.v-pestanas__lista button[aria-selected="true"] { background: var(--c-marino); color: #fff; }
+.v-pestanas__lista button[aria-selected="true"] .dato { color: var(--c-hielo); }
+.v-pestanas__panel { position: sticky; top: calc(var(--alto-cabecera) + 2rem); padding: clamp(1.6rem, 4vw, 2.8rem); border-radius: var(--radio-grande); background: var(--c-escarcha); animation: aparecer-panel .5s var(--e-salida); }
+.v-pestanas__q { font-family: var(--f-display); font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1.1; margin-bottom: 1rem; }
+@keyframes aparecer-panel { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (max-width: 800px) { .v-pestanas { grid-template-columns: 1fr; } .v-pestanas__panel { position: static; } }
+.v-hero .niebla { opacity: .55; }

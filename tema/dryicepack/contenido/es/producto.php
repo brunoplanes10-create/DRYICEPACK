@@ -1,0 +1,81 @@
+<?php
+/* Comprar (ficha de producto) · castellano */
+return array(
+	'menu' => 'Comprar hielo seco',
+	'seo'  => array(
+		'titulo'      => 'Comprar hielo seco: 3, 10, 15 y 20 kg | DryIcePack',
+		'descripcion' => 'Compra hielo seco en pellets de 3 mm o nuggets de 16 mm. Ves el precio final con envío antes de pagar. Pide antes de las 12:00 y llega mañana.',
+	),
+	'migas'   => array( 'Inicio', 'Comprar hielo seco' ),
+	'titulo'  => 'Comprar hielo seco',
+	'sub'     => 'Pellets de 3 mm o nuggets de 16 mm, en caja EPS de 40 mm. Precio final con envío antes de pagar.',
+	'galeria' => array(
+		'3mm'  => array( array( 'caja-3mm', 'Caja de hielo seco en pellets de 3 mm abierta, con vapor' ), array( 'cenital-3mm', 'Pellets de hielo seco de 3 mm vistos desde arriba' ), array( 'caja-3mm-lateral', 'Caja EPS con pellets de 3 mm y la tapa apoyada' ) ),
+		'16mm' => array( array( 'caja-16mm-niebla', 'Caja de hielo seco en nuggets de 16 mm abierta, con vapor' ), array( 'cenital-16mm', 'Nuggets de hielo seco de 16 mm vistos desde arriba' ), array( 'cenital-caja-nuggets', 'Caja EPS abierta con nuggets de 16 mm, vista cenital' ) ),
+	),
+	'formato' => 'Formato',
+	'formatos' => array(
+		'3mm'  => array( 'Pellets de 3 mm', 'Enfría más rápido. Más niebla.' ),
+		'16mm' => array( 'Nuggets de 16 mm', 'Dura más. Transporte y muestras.' ),
+	),
+	'kilos'     => 'Kilos por caja',
+	'cajas'     => 'Cajas',
+	'menos'     => 'Una caja menos',
+	'mas'       => 'Una caja más',
+	'cp'        => 'Tu código postal (para ver la fecha)',
+	'cp_ph'     => '08301',
+	'llega'     => 'Llega el %s por la mañana',
+	'llega_hoy' => 'Si pides antes de las 12:00, llega el %s por la mañana',
+	'fuera'     => 'Enviamos a la península. Para las islas, Ceuta o Melilla, escríbenos.',
+	'precio'    => 'Hielo seco',
+	'envio'     => 'Envío',
+	'total'     => 'Total',
+	'iva'       => 'IVA incluido',
+	'boton'     => 'Añadir y pagar',
+	'recogida'  => 'O recógelo gratis en Mataró (se paga en efectivo al recoger).',
+	'max'       => 'Máximo 250 kg por pedido. Para más, pide precio por volumen.',
+	'confianza' => array( 'Tarjeta, Apple Pay o Google Pay', 'Factura para empresas', 'Sin crear cuenta' ),
+	'caja' => array(
+		'titulo' => 'Qué llega|en la caja.',
+		'capas'  => array(
+			array( 'Tapa de EPS', 'Encaja sin cerrar hermético: el gas sale poco a poco.' ),
+			array( 'Hielo seco', 'Pellets de 3 mm o nuggets de 16 mm, a −78,5 °C.' ),
+			array( 'Caja de EPS de 40 mm', 'Paredes gruesas de poliestireno: aíslan y frenan la sublimación.' ),
+		),
+	),
+	'comparar' => array(
+		'titulo' => '3 mm o 16 mm:|<em>arrastra</em> y compara.',
+		'izq'    => array( '3 mm', 'Mucha superficie. Enfría en minutos y hace más niebla. Para cócteles, efectos y procesos.' ),
+		'der'    => array( '16 mm', 'Más masa por pieza. Dura más horas. Para transporte, muestras y cadena de frío.' ),
+		'rango'  => 'Deslizar para comparar 3 mm y 16 mm',
+	),
+	'cuanto' => array(
+		'titulo' => '¿Cuánto|<em>necesito?</em>',
+		'texto'  => 'Cantidades orientativas para niebla. Para transporte o muestras depende de las horas y del volumen: te lo calculamos.',
+		'casos'  => array(
+			array( '3 kg', 'En casa', 'Un caldero, una ponchera con doble recipiente, una fiesta pequeña.' ),
+			array( '10 kg', 'Fiesta grande', 'Niebla por el suelo en varias tandas durante la noche.' ),
+			array( '15–20 kg', 'Bar o evento', 'Servicio largo, escenario o varias barras.' ),
+		),
+		'calcula' => 'Pregúntanos por WhatsApp',
+	),
+	'tarifa' => array(
+		'titulo' => 'Lo que cuesta|<em>el envío.</em>',
+		'texto'  => 'Tarifa de la mensajería, igual en toda la península. Se calcula sobre el peso del hielo más 1 kg por caja.',
+		'filas'  => array( array( 'Hasta 2 kg', 8.53 ), array( 'Hasta 5 kg', 10.32 ), array( 'Hasta 10 kg', 13.19 ), array( 'Cada kg de más', 1.12 ) ),
+		'extra'  => array( array( 'Entrega en sábado (según zona)', 9.70 ), array( 'Recogida en Mataró', 0 ) ),
+		'nota'   => 'Precios con IVA incluido.',
+		'gratis' => 'Gratis',
+	),
+	'faq' => array(
+		'titulo' => 'Antes de pagar',
+		'lista'  => array(
+			array( '¿Cuándo llega?', 'Si pides antes de las 12:00 de lunes a viernes, sale ese día y llega al día siguiente por la mañana. No repartimos en domingo ni lunes. Eliges el día en el pago.' ),
+			array( '¿Cuánto dura el hielo en la caja?', 'Depende de la temperatura y de cuánto se abra la caja. Pídelo para el día que lo vas a usar y no abras la caja hasta entonces. Si lo necesitas para varios días, escríbenos y lo calculamos.' ),
+			array( '¿Necesito factura?', 'Si compras para una empresa o como autónomo, marca la casilla al pagar y pon razón social y NIF. Si se te olvida, te enviamos un enlace para pedirla.' ),
+			array( '¿Puedo devolverlo?', 'El hielo seco se sublima desde que sale, así que no tiene derecho de desistimiento. Si llega con cualquier problema, llámanos ese mismo día.' ),
+			array( '¿Cómo lo guardo al recibirlo?', 'En su caja, cerrada con la tapa pero sin precintar, en un sitio ventilado y fuera del alcance de niños y mascotas. Nunca en el congelador ni en un recipiente hermético.' ),
+		),
+	),
+	'barra' => 'Total',
+);

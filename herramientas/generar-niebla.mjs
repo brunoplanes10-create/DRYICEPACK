@@ -22,6 +22,15 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
 const tile = await sharp(Buffer.from(svg)).png().toBuffer();
 const triple = await sharp({ create: { width: W * 3, height: H, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
   .composite([{ input: tile, left: 0, top: 0 }, { input: tile, left: W, top: 0 }, { input: tile, left: W * 2, top: 0 }]).png().toBuffer();
-const suave = await sharp(triple).blur(3).extract({ left: W, top: 0, width: W, height: H }).png().toBuffer();
-const info = await sharp(suave).webp({ quality: 82, alphaQuality: 100, effort: 6 }).toFile('tema/dryicepack/assets/img/niebla-capa.webp');
+const suave = await sharp(triple).blur(3).extract({ left: W, top: 0, width: W, height: H }).raw().toBuffer();
+// librsvg no respeta stitchTiles: se hace la baldosa continua mezclando con una copia desplazada media baldosa
+// (en los bordes manda la copia desplazada, en el centro la original).
+const C = 4, sin = Buffer.alloc(W * H * C);
+for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+  const m = 1 - Math.abs((x / (W - 1)) * 2 - 1); // 0 en los bordes, 1 en el centro
+  const w = m * m * (3 - 2 * m);
+  const xs = (x + W / 2) % W;
+  for (let k = 0; k < C; k++) sin[(y * W + x) * C + k] = Math.round(suave[(y * W + x) * C + k] * w + suave[(y * W + xs) * C + k] * (1 - w));
+}
+const info = await sharp(sin, { raw: { width: W, height: H, channels: C } }).webp({ quality: 82, alphaQuality: 100, effort: 6 }).toFile('tema/dryicepack/assets/img/niebla-capa.webp');
 console.log('niebla-capa.webp', Math.round(info.size / 1024) + ' KB', info.width + 'x' + info.height);
