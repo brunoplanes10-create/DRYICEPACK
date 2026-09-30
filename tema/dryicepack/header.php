@@ -1,34 +1,15 @@
 <?php
 /**
- * Cabecera: franja con el reloj de corte en directo + barra principal + menú móvil.
+ * Cabecera: logo, usos (panel con imagen), empresas, envíos, contacto, teléfono, idioma, carrito y un solo botón (Comprar).
+ * En páginas con portada oscura empieza transparente y se vuelve sólida al bajar; se esconde al bajar y vuelve al subir.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
-$c = dipt_contacto();
-
-/* Menú principal: el que se asigne en Apariencia → Menús; si no hay, este por defecto. */
-$items = array();
-if ( has_nav_menu( 'principal' ) ) {
-	$loc  = get_nav_menu_locations();
-	foreach ( (array) wp_get_nav_menu_items( $loc['principal'] ) as $it ) {
-		if ( ! $it->menu_item_parent ) $items[] = array( 'texto' => $it->title, 'url' => $it->url, 'clase' => implode( ' ', (array) $it->classes ) );
-	}
-} else {
-	$items = array(
-		array( 'texto' => '¿Qué es?', 'url' => home_url( '/que-es-el-hielo-seco/' ) ),
-		array( 'texto' => 'Aplicaciones', 'url' => home_url( '/aplicaciones-del-hielo-seco/' ) ),
-		array( 'texto' => 'Envíos', 'url' => home_url( '/envios-y-plazos/' ) ),
-		array( 'texto' => 'Contacto', 'url' => home_url( '/contacto/' ) ),
-	);
-	// Enlace de temporada: Halloween hasta el 1 de noviembre (desaparece solo)
-	if ( time() < strtotime( '2026-11-02 00:00:00 Europe/Madrid' ) ) {
-		array_splice( $items, 2, 0, array( array( 'texto' => 'Halloween', 'url' => home_url( '/hielo-seco-halloween/' ), 'clase' => 'nav__temporada' ) ) );
-	}
-}
-$ruta_actual = trailingslashit( wp_parse_url( home_url( add_query_arg( array() ) ), PHP_URL_PATH ) ?: '/' );
-$es_actual   = static function ( $url ) use ( $ruta_actual ) {
-	return trailingslashit( wp_parse_url( $url, PHP_URL_PATH ) ?: '/' ) === $ruta_actual;
-};
-$logo = has_custom_logo() ? wp_get_attachment_image_url( get_theme_mod( 'custom_logo' ), 'full' ) : dipt_img( 'logo-dryicepack.webp' );
+$dipt_c      = dipt_contacto();
+$dipt_clave  = dipt_pagina_actual();
+$dipt_oscuro = dipt_cabecera_sobre_oscuro();
+$dipt_menu   = dipt_t( 'menu' );
+// Checkout sin distracciones: logo, teléfono y pago seguro. Nada más.
+$dipt_enfocado = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url();
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -38,60 +19,68 @@ $logo = has_custom_logo() ? wp_get_attachment_image_url( get_theme_mod( 'custom_
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
-<a class="saltar" href="#contenido">Saltar al contenido</a>
+<a class="saltar" href="#contenido"><?php echo esc_html( dipt_t( 'saltar' ) ); ?></a>
 
-<div class="franja">
-	<div class="contenedor franja__in">
-		<?php echo dipt_reloj_corte( 'reloj-corte--franja' ); // phpcs:ignore ?>
-		<p class="franja__contacto">
-			<a href="<?php echo esc_url( $c['telefono_href'] ); ?>"><?php echo dipt_icono( 'telefono' ); // phpcs:ignore ?><?php echo esc_html( $c['telefono'] ); ?></a>
-			<a href="mailto:<?php echo esc_attr( $c['email'] ); ?>"><?php echo dipt_icono( 'email' ); // phpcs:ignore ?><?php echo esc_html( $c['email'] ); ?></a>
-			<span><?php echo esc_html( $c['horario'] ); ?></span>
-		</p>
-	</div>
-</div>
-
-<header class="cab" data-cab>
-	<div class="contenedor cab__in">
-		<a class="cab__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="DryIcePack, ir al inicio">
-			<img src="<?php echo esc_url( $logo ); ?>" alt="DryIcePack" width="198" height="44" fetchpriority="low">
+<?php if ( $dipt_enfocado ) : ?>
+<header class="cabecera cabecera--enfocada es-solida">
+	<div class="envoltura cabecera__in">
+		<a class="cabecera__logo" href="<?php echo esc_url( dipt_url( 'inicio' ) ); ?>" aria-label="DryIcePack, <?php echo esc_attr( dipt_t( 'inicio' ) ); ?>">
+			<img class="logo-oscuro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack.webp' ) ); ?>" alt="DryIcePack" width="721" height="160">
 		</a>
-
-		<nav class="cab__nav" aria-label="Principal">
-			<?php foreach ( $items as $it ) : ?>
-				<a class="nav__enlace <?php echo esc_attr( $it['clase'] ?? '' ); ?>" href="<?php echo esc_url( $it['url'] ); ?>"<?php echo $es_actual( $it['url'] ) ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $it['texto'] ); ?></a>
-			<?php endforeach; ?>
-		</nav>
-
-		<div class="cab__acciones">
-			<a class="btn btn--senal btn--sm cab__comprar" href="<?php echo esc_url( dipt_producto_url() ); ?>" data-iman><span>Comprar hielo seco</span></a>
-			<a class="btn btn--linea btn--sm cab__suministro" href="<?php echo esc_url( home_url( '/programar-suministro-de-hielo-seco/' ) ); ?>"><span>Programar suministro</span></a>
-			<a class="cab__carrito" href="<?php echo esc_url( function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : home_url( '/carrito/' ) ); ?>" aria-label="Ver carrito">
-				<?php echo dipt_icono( 'carrito' ); // phpcs:ignore ?><span class="cab__num" data-carrito-num hidden>0</span>
-			</a>
-			<button class="cab__burger" type="button" aria-expanded="false" aria-controls="menu-movil" data-menu-abrir>
-				<?php echo dipt_icono( 'menu' ); // phpcs:ignore ?><span class="oculto">Abrir menú</span>
-			</button>
-		</div>
-	</div>
-
-	<div class="menu-movil" id="menu-movil" data-menu hidden>
-		<div class="menu-movil__cab">
-			<span class="menu-movil__titulo">Menú</span>
-			<button class="menu-movil__cerrar" type="button" data-menu-cerrar><?php echo dipt_icono( 'cerrar' ); // phpcs:ignore ?><span class="oculto">Cerrar menú</span></button>
-		</div>
-		<nav class="menu-movil__nav" aria-label="Menú móvil">
-			<?php foreach ( $items as $i => $it ) : ?>
-				<a href="<?php echo esc_url( $it['url'] ); ?>" style="--i:<?php echo (int) $i; ?>"<?php echo $es_actual( $it['url'] ) ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $it['texto'] ); ?><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></a>
-			<?php endforeach; ?>
-		</nav>
-		<div class="menu-movil__acciones">
-			<?php echo dipt_boton( 'Comprar hielo seco', dipt_producto_url(), 'senal' ); // phpcs:ignore ?>
-			<?php echo dipt_boton( 'Programar suministro', home_url( '/programar-suministro-de-hielo-seco/' ), 'linea-clara' ); // phpcs:ignore ?>
-		</div>
-		<p class="menu-movil__contacto"><a href="<?php echo esc_url( $c['telefono_href'] ); ?>"><?php echo esc_html( $c['telefono'] ); ?></a> · <?php echo esc_html( $c['horario'] ); ?></p>
-		<?php echo dipt_niebla( 'niebla--menu' ); // phpcs:ignore ?>
+		<p class="cabecera__seguro"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/></svg><?php echo esc_html( dipt_t( 'pago_seguro' ) ); ?></p>
+		<a class="cabecera__tel" href="<?php echo esc_attr( $dipt_c['telefono_href'] ); ?>"><?php echo esc_html( $dipt_c['telefono'] ); ?></a>
 	</div>
 </header>
+<main id="contenido" class="contenido">
+<?php return; endif; ?>
+<header class="cabecera<?php echo $dipt_oscuro ? ' cabecera--sobre-oscuro' : ''; ?>" data-cabecera>
+	<div class="envoltura cabecera__in">
+		<a class="cabecera__logo" href="<?php echo esc_url( dipt_url( 'inicio' ) ); ?>" aria-label="DryIcePack, <?php echo esc_attr( dipt_t( 'inicio' ) ); ?>">
+			<img class="logo-oscuro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack.webp' ) ); ?>" alt="DryIcePack" width="721" height="160">
+			<img class="logo-claro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack-blanco.webp' ) ); ?>" alt="" width="400" height="99">
+		</a>
 
+		<nav class="menu" id="menu-principal" aria-label="Principal">
+			<div class="menu__item" data-submenu>
+				<button class="menu__boton-sub" type="button" aria-expanded="false" aria-controls="submenu-usos"><?php echo esc_html( $dipt_menu['usos'] ); ?><?php echo dipt_icono( 'flecha-ab' ); // phpcs:ignore ?></button>
+				<div class="submenu" id="submenu-usos">
+					<ul class="submenu__lista">
+						<?php foreach ( dipt_t( 'usos' ) as $dipt_i => $dipt_u ) : ?>
+							<li><a href="<?php echo esc_url( dipt_url( $dipt_u[0] ) ); ?>" data-foto="<?php echo esc_attr( $dipt_u[3] ); ?>">
+								<span class="dato">0<?php echo (int) $dipt_i + 1; ?></span>
+								<strong><?php echo esc_html( $dipt_u[1] ); ?></strong>
+								<small><?php echo esc_html( $dipt_u[2] ); ?></small>
+							</a></li>
+						<?php endforeach; ?>
+					</ul>
+					<div class="submenu__foto" aria-hidden="true">
+						<?php foreach ( dipt_t( 'usos' ) as $dipt_i => $dipt_u ) : ?>
+							<img src="<?php echo esc_url( dipt_foto_url( $dipt_u[3], 480 ) ); ?>" alt="" loading="lazy" width="480" height="320" data-foto-id="<?php echo esc_attr( $dipt_u[3] ); ?>"<?php echo 0 === $dipt_i ? ' class="activa"' : ''; ?>>
+						<?php endforeach; ?>
+					</div>
+					<a class="submenu__todos" href="<?php echo esc_url( dipt_url( 'aplicaciones' ) ); ?>"><span><?php echo esc_html( dipt_t( 'todos_usos' ) ); ?></span><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></a>
+				</div>
+			</div>
+			<a class="menu__enlace" href="<?php echo esc_url( dipt_url( 'empresas' ) ); ?>"<?php echo 'empresas' === $dipt_clave ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $dipt_menu['empresas'] ); ?></a>
+			<a class="menu__enlace" href="<?php echo esc_url( dipt_url( 'envios' ) ); ?>"<?php echo 'envios' === $dipt_clave ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $dipt_menu['envios'] ); ?></a>
+			<a class="menu__enlace" href="<?php echo esc_url( dipt_url( 'contacto' ) ); ?>"<?php echo 'contacto' === $dipt_clave ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $dipt_menu['contacto'] ); ?></a>
+			<?php echo dipt_boton( dipt_t( 'comprar' ), dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
+			<div class="menu__extra">
+				<a class="tel-grande" href="<?php echo esc_attr( $dipt_c['telefono_href'] ); ?>"><?php echo dipt_icono( 'telefono' ); // phpcs:ignore ?><?php echo esc_html( $dipt_c['telefono'] ); ?></a>
+				<a class="tel-grande" href="<?php echo esc_url( dipt_whatsapp_url() ); ?>" target="_blank" rel="noopener"><?php echo dipt_icono( 'whatsapp' ); // phpcs:ignore ?>WhatsApp <?php echo esc_html( $dipt_c['whatsapp'] ); ?></a>
+				<?php dipt_selector_idioma(); ?>
+			</div>
+		</nav>
+
+		<div class="cabecera__herramientas">
+			<a class="cabecera__tel" href="<?php echo esc_attr( $dipt_c['telefono_href'] ); ?>"><?php echo esc_html( $dipt_c['telefono'] ); ?></a>
+			<?php dipt_selector_idioma( 'idiomas--cabecera' ); ?>
+			<?php if ( function_exists( 'wc_get_cart_url' ) ) : ?>
+				<a class="cabecera__carrito" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php echo esc_attr( dipt_t( 'carrito' ) ); ?>"><?php echo dipt_icono( 'carrito' ); // phpcs:ignore ?><span data-carrito-n="0">0</span></a>
+			<?php endif; ?>
+			<?php echo dipt_boton( dipt_t( 'comprar_corto' ), dipt_url( 'producto' ), $dipt_oscuro ? 'hielo' : '' ); // phpcs:ignore ?>
+			<button class="cabecera__menu-movil" type="button" aria-expanded="false" aria-controls="menu-principal" data-menu-movil aria-label="<?php echo esc_attr( dipt_t( 'menu_abrir' ) ); ?>"><?php echo dipt_icono( 'menu' ); // phpcs:ignore ?></button>
+		</div>
+	</div>
+</header>
 <main id="contenido" class="contenido">

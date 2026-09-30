@@ -1,28 +1,31 @@
 <?php
 /**
- * Tema DryIcePack · "Cadena de frío"
+ * Tema Dryicepack · "Frío en calma"
  *
- * Organización:
- *   inc/setup.php        Soportes del tema, menús y limpieza del <head>
- *   inc/datos.php        Datos reales del negocio: productos, tarifa de envío, corte de las 12:00
- *   inc/assets.php       CSS/JS por página, fuente y precargas
- *   inc/componentes.php  Piezas reutilizables: botones, etiqueta de expedición, caja EPS 3D, reloj de corte, FAQ
- *   inc/seo.php          Datos estructurados (FAQPage, LocalBusiness) sin duplicar Rank Math
- *   inc/woocommerce.php  Ajustes de tienda (solo si WooCommerce está activo)
+ *   inc/setup.php        Soportes del tema y limpieza del <head>
+ *   inc/idiomas.php      Idioma de la visita y textos comunes (castellano, catalán, inglés)
+ *   inc/paginas.php      Registro de páginas: plantilla, traducciones, hreflang y creación de las que falten
+ *   inc/datos.php        Datos del negocio (vienen del plugin dryicepack-tienda; aquí solo hay respaldo)
+ *   inc/componentes.php  Imágenes, iconos, botones y piezas comunes
+ *   inc/assets.php       CSS y JS por página, fuentes precargadas
+ *   inc/seo.php          Títulos, descripciones y datos estructurados
+ *   inc/woocommerce.php  Ficha de producto, carrito, checkout y Mi cuenta con el diseño del tema
  *
- * La lógica de la tienda (envío, límites, recogida, checkout) vive en el plugin dryicepack-tienda,
- * para que la tienda siga funcionando aunque algún día cambie el tema.
+ * Los textos de cada página están en contenido/{es,ca,en}/*.php y las plantillas en plantillas/.
+ * La lógica de la tienda (envío, fechas, factura, cuentas de empresa) está en el plugin dryicepack-tienda.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'DIPT_VERSION', '1.0.0' );
+define( 'DIPT_VERSION', '2.0.0' );
 define( 'DIPT_DIR', get_template_directory() );
 define( 'DIPT_URI', get_template_directory_uri() );
 
 require DIPT_DIR . '/inc/setup.php';
+require DIPT_DIR . '/inc/idiomas.php';
+require DIPT_DIR . '/inc/paginas.php';
 require DIPT_DIR . '/inc/datos.php';
-require DIPT_DIR . '/inc/assets.php';
 require DIPT_DIR . '/inc/componentes.php';
+require DIPT_DIR . '/inc/assets.php';
 require DIPT_DIR . '/inc/seo.php';
 
 if ( class_exists( 'WooCommerce' ) ) {

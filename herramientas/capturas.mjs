@@ -32,7 +32,7 @@ for (const [nombre, viewport] of vistas) {
   await pagina.goto(url, { waitUntil: 'networkidle0' });
   // Recorre la página para disparar las animaciones de entrada y la carga diferida
   await pagina.evaluate(async () => {
-    for (let y = 0; y < document.body.scrollHeight; y += 400) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); }
+    for (let y = 0; y < document.body.scrollHeight; y += 400) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 160)); }
     window.scrollTo(0, 0); await new Promise((r) => setTimeout(r, 1500));
   });
   // Primera pantalla (lo que se ve sin hacer scroll)
