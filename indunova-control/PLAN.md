@@ -1,7 +1,8 @@
 # INDUNOVA Control · Plan
 
-> **Fase 0 · 01/10/2026 · Propuesta pendiente de tu aprobación.** Todavía no hay código.
+> **Fase 0 · 01/10/2026.** Propuestas P1–P7 aprobadas. **Falta tu OK para empezar la Fase 1.** Todavía no hay código.
 > Prototipo para tocar: <https://claude.ai/artifact/LE1oXPeEtAeyoHZk4qZMg8> (archivo: `docs/estilos/propuestas.html`).
+> Para hacer ya, sin esperar al panel: [`docs/CANCELAR_ODOO.md`](docs/CANCELAR_ODOO.md).
 
 ## Índice
 
@@ -20,9 +21,9 @@
 
 ## 1. En una página
 
-**Qué es.** Una app instalable en el ordenador y en el móvil (PWA) en `panel.indunova.es`. Entras con una animación del logo de INDUNOVA y eliges uno de cuatro espacios: **Global, INDUNOVA, Dryicepack y Cryocar**. Dentro de cada espacio ves solo lo suyo, con poco texto y todo bien separado. Lo que apuntas en una unidad (una venta, un parte, un servicio) se refleja al momento en Global.
+**Qué es.** Una app instalable en el ordenador y en el móvil (PWA) en `panel.indunova.es`. Entras con una animación del logo de INDUNOVA y eliges uno de cuatro espacios: **Global, INDUNOVA, Dryicepack y Cryocar**. Dentro de cada espacio ves solo lo suyo, con poco texto y todo bien separado. Lo que apuntas en una unidad (una venta, un parte, un servicio) se refleja al momento en Global. **La app la adaptas tú:** creas tus propios campos, editas las listas de opciones y eliges el estilo.
 
-**Con qué.** La app (React) va alojada en Cloudflare Pages. La base de datos está en Supabase, en un centro de datos de la UE (París). Los archivos se guardan en vuestro SharePoint/OneDrive, y el correo y el calendario son los de Microsoft 365. La IA es la API de Anthropic.
+**Con qué.** La app (React) va alojada en Cloudflare Pages. La base de datos está en Supabase, en un centro de datos de la UE (París). Los archivos se guardan en el SharePoint de la empresa, y el correo y el calendario son los de Microsoft 365. La IA es la API de Anthropic.
 
 **Cuánto cuesta:**
 - Infraestructura: **0 € al mes mientras construimos.**
@@ -40,7 +41,7 @@
    - Microsoft desaconseja los secretos en producción: usaremos un **certificado**.
 5. **a3:**
    - Exporta el libro de facturas a Excel (gratis).
-   - Su API existe, pero exige contratar el módulo **Conectia**, de pago.
+   - Su API exige el módulo **Conectia**, de pago, que no tenéis: **las facturas entran por sus PDF y por ese Excel**.
    - **a3factura no importa facturas desde Excel**, así que «Datos para a3» será una ficha para copiar.
    - **a3 ya genera remesas SEPA.**
 6. **Sabadell:**
@@ -49,10 +50,12 @@
 7. **Factura electrónica obligatoria entre empresas.** Ya tiene reglamento (**RD 238/2026**). Para una empresa como INDUNOVA llegaría hacia octubre de 2028 y traerá facturas en XML. Diseñamos ya para poder importarlas.
 8. **VeriFactu:** el panel no es un sistema de facturación mientras no emita facturas. Por eso **no hará proformas**, solo presupuestos, y nunca enviará datos a a3 de forma automática.
 9. **La API de Anthropic no permite elegir la UE** (solo «global» o EE. UU.). No entrena con nuestros datos ni los guarda por defecto. Habrá que enviarle lo mínimo.
-10. **Odoo:**
-    - Se renueva solo si no se avisa **30 días antes**.
-    - Tras cancelar, la base se borra en **3 semanas**.
-    - Antes hay que descargar la copia completa.
+10. **Odoo** (no lo renováis):
+    - Se renueva solo si no se avisa **por escrito 30 días antes**.
+    - Tras cancelar, la base se borra en **unas 3 semanas**.
+    - Hay que descargarlo todo **ya**, sin esperar al panel. Guía paso a paso: [`docs/CANCELAR_ODOO.md`](docs/CANCELAR_ODOO.md).
+11. **Las facturas de a3 están en un OneDrive personal** («OneDrive - Personal»), no en el Microsoft 365 de la empresa. Una app de empresa **no puede leerlo**: Microsoft solo da acceso a los datos de la organización. Propuesta **P8**: mover la carpeta «ADMIN INDUNOVA» al SharePoint de la empresa (sección 3.4).
+12. **Correo:** conectar los tres info@ es lo normal y no da problemas. En la Fase 3 verás los correos que llegan y **cuáles faltan por contestar**. Los leads y los borradores con IA llegan en la Fase 4.
 
 **Lo que necesito de ti:** las preguntas de la sección 9.3.
 
@@ -62,7 +65,7 @@
 
 ### 2.1 Entrada y cuatro espacios
 
-1. **Entrada animada.** El logo de INDUNOVA se condensa como el vapor del hielo seco y aparece la línea con los tres colores de las unidades. Dura unos 2 segundos y se salta con un toque. Si el sistema pide menos movimiento, no se anima.
+1. **Entrada animada con el logo real.** Se forma el isotipo (el núcleo, el anillo y el satélite en órbita), las letras de INDUNOVA suben una a una y aparece el lema, sobre un poco de vapor. Dura unos 2,5 segundos y se salta con un toque. Si el sistema pide menos movimiento, no se anima.
 2. **Cuatro iconos grandes:** Global, INDUNOVA, Dryicepack y Cryocar. Cada uno lleva el número de cosas pendientes, como las apps del móvil.
 3. **Dentro de cada espacio, siempre lo mismo y poco:**
    - una tarjeta con dos cifras de hoy;
@@ -90,7 +93,7 @@ Ejemplo (es exactamente lo que hace el prototipo):
 
 1. En **Dryicepack** pulsas «Nueva venta»: 15 kg de pellet 3 mm, por MRW.
 2. Se guarda un **pedido** de Dryicepack y una **salida de hielo** de 15 kg.
-3. **El stock común baja** de 2900 a 2885 kg, en todos los espacios a la vez.
+3. **El stock común baja** de 2.900 a 2.885 kg, en todos los espacios a la vez.
 4. **Global** lo muestra en «Hoy en las tres» y en el desglose de salidas del día.
 5. Igual con un parte de INDUNOVA (kg gastados en un trabajo) o un servicio de Cryocar.
 
@@ -106,19 +109,53 @@ Ejemplo (es exactamente lo que hace el prototipo):
 
 ### 2.4 Estilo
 
-Dos estilos en el prototipo: **Escarcha** (claro) y **Grafito** (oscuro). Los dos tienen modo claro y oscuro, y elegir uno no cambia la estructura.
+Cada persona elige su estilo en **Ajustes** (tocando su inicial, arriba a la derecha):
+- **Escarcha:** claro.
+- **Grafito:** oscuro.
+- **Automático** (por defecto): Escarcha de día y Grafito cuando el móvil o el ordenador están en modo oscuro.
+
+Cambiar de estilo no cambia la estructura, solo los colores.
 
 **Tipografía.** Una sola familia, Onest, muy legible, con números que se alinean en columna.
 
-**Colores de unidad** (tokens CSS del proyecto):
+**Colores de unidad** (decisión D4; tokens CSS del proyecto):
 
-| Token | Valor | Nota |
+| Token | Valor | Texto encima | Nota |
+|---|---|---|---|
+| `--unit-indunova` | `#E5D61A` | `#1F1C04` (11,4:1) | Amarillo del logo. **Nunca como color de texto** (sobre blanco, 1,5:1). Falta confirmar frente al `#FFCC22` del isotipo suelto (pregunta 9.3) |
+| `--unit-dryicepack` | `#B8D0E8` | `#1F3C55` (7,2:1) | «Hielo» de la web nueva. En Escarcha lleva un borde fino para no confundirse con el fondo |
+| `--unit-cryocar` | `#1F3449` | `#FFFFFF` (12,8:1) | En Grafito lleva un borde claro para no confundirse con el fondo |
+
+Cada unidad lleva siempre sus iniciales (IN, DI, CC), nunca solo el color. Todos los pares de texto del prototipo cumplen el contraste AA: el más justo está en 5,6:1 y el mínimo es 4,5:1.
+
+**Marca** (`assets/marca/`, redibujada en vector a partir de vuestros archivos):
+
+| Archivo | Uso |
+|---|---|
+| `indunova-logo.svg` | Logo completo con el nombre en gris `#5A5757`, sobre fondos claros |
+| `indunova-logo-negativo.svg` | Igual, con el nombre en blanco, sobre fondos oscuros |
+| `indunova-isotipo.svg` | Solo el símbolo, en amarillo: icono de la app y favicon |
+
+Dryicepack y Cryocar usan de momento un icono propio (caja y coche). Si tenéis sus logos, se cambian.
+
+### 2.5 La app la adaptas tú
+
+Decisión D3. Sin tocar código y sin pedírmelo:
+
+| Qué | Cómo | Quién |
 |---|---|---|
-| `--unit-indunova` | `#F2C230` | **Provisional**: falta el logo. Nunca como color de texto |
-| `--unit-dryicepack` | `#5FCAEC` | **Provisional**: la web nueva usa «hielo» `#B8D0E8` (pregunta 9.3) |
-| `--unit-cryocar` | `#1F3449` | En oscuro lleva un borde claro para que no desaparezca |
+| **Campos propios** | En cada formulario (venta, parte, servicio, cliente, trabajo, gasto…), **«+ Añadir un campo»**: nombre, tipo (Texto, Número, Fecha, Sí o no, Lista) y si es obligatorio. Se ve al apuntar, en las listas y en la actividad de Global. Se gestionan en Ajustes → Campos propios | Administradores |
+| **Listas de opciones** | Formatos, tipos de servicio, categorías de gasto, motivos… se editan en Ajustes. Nada de eso va fijo en el código | Administradores |
+| **Estilo** | Escarcha, Grafito o Automático | Cada persona |
+| Más adelante | Ordenar y ocultar secciones de cada espacio | Administradores |
 
-Cada unidad lleva siempre sus iniciales (IN, DI, CC), nunca solo el color. He comprobado que todos los pares de colores de texto cumplen el contraste AA.
+Reglas para que no se convierta en un caos:
+- **Los cálculos nunca dependen de un campo propio.** El stock, los importes y las alertas usan campos fijos y probados. Un campo propio guarda lo que quieras anotar.
+- **Quitar un campo lo oculta**, pero no borra lo que ya se guardó.
+- **Un campo propio tiene los mismos permisos que la ficha donde está.** Si algo es confidencial (por ejemplo, un precio), se crea en la parte de importes, que el operario no ve.
+- Los campos propios no se envían a la IA salvo que hagan falta para la tarea.
+
+El prototipo ya lo hace: crea «Nº de albarán» en una venta, márcalo como obligatorio y mira cómo aparece en Pedidos y en Global.
 
 ---
 
@@ -179,6 +216,8 @@ Cada unidad lleva siempre sus iniciales (IN, DI, CC), nunca solo el color. He co
 | Borradores y envío tras un clic | **Confirmado.** Para el borrador, `Mail.ReadWrite`; para el envío, `Mail.Send`. Funciona desde buzones compartidos, que no necesitan licencia hasta 50 GB | El clic humano es una regla de la app: ningún permiso puede imponerlo |
 | Coste de la API | **Confirmado.** Correo, calendario y archivos están incluidos en la licencia | 0 € |
 | EWS | Exchange Online empieza a desactivarlo en octubre de 2026 y lo bloquea el 1/4/2027 (búsq.) | Todo por Graph |
+| **Carpeta de facturas de a3** | **Nuevo (01/10/2026).** Vuestras capturas muestran la ruta «OneDrive - Personal › Desktop › ADMIN INDUNOVA › FACTURACIÓN». Es una **cuenta personal de Microsoft**, no la de la empresa. Microsoft: los permisos de aplicación «can be used only to access data owned by that organization and its employees» | **La app no puede leer esa carpeta.** Propuesta **P8**: moverla al SharePoint de la empresa, sincronizado en el Explorador para seguir trabajando igual. Plan B, peor: conectar la cuenta personal con un inicio de sesión que caduca y hay que renovar |
+| Saber qué correos faltan por contestar | **Matizado.** Por defecto, lo que alguien envía «como» un buzón compartido no se copia en ese buzón (`MessageCopyForSentAsEnabled` = `$false`) | En la Fase 3 activamos esa copia en los tres info@ (un comando, te lo paso). Un correo cuenta como contestado si en su conversación hay un envío posterior desde ese buzón. Se calcula sin IA. Leer un correo desde el panel no lo marca como leído |
 
 ### 3.5 WooCommerce (dryicepack.es)
 
@@ -194,7 +233,8 @@ Cada unidad lleva siempre sus iniciales (IN, DI, CC), nunca solo el color. He co
 | Supuesto | Resultado | Qué significa |
 |---|---|---|
 | Exportar facturas a Excel o CSV | **Confirmado en Excel** (CSV no). En a3factura: Informes → «Listado de facturas expedidas y recibidas (IVA)» → Exportar a Excel. En a3ERP: «Enviar a Excel» | **Segundo adaptador gratuito:** importar ese Excel cada mes para cuadrar con los PDF |
-| a3 tiene API | **Confirmado, de pago.** La API REST de a3factura da facturas, PDF, vencimientos, remesas y avisos, pero exige el módulo **Conectia** (precio sin verificar). En a3innuva, Wolters Kluwer crea el acceso cliente a cliente. a3ERP tiene otro módulo | Opcional. Solo si lo contratáis |
+| a3 tiene API | **Confirmado, de pago.** La API REST de a3factura da facturas, PDF, vencimientos, remesas y avisos, pero exige el módulo **Conectia** (precio sin verificar). En a3innuva, Wolters Kluwer crea el acceso cliente a cliente. a3ERP tiene otro módulo | **No tenéis Conectia** (01/10/2026): las facturas entran por los PDF y el Excel |
+| Dónde quedan los PDF de a3 | **Visto en vuestras capturas (01/10/2026).** Emitidas: `FACTURAS EMITIDAS/<año>/<MM - MES>/`. Recibidas: `FACTURAS RECIBIDAS/<año>/<MM - Mes>/` y, aparte, `<MM - Mes> PARA CONTABILIZAR/`. Nombres del tipo «FACTURA <año>-F<número> <CONCEPTO>», escritos a mano y con variantes (espacios, guiones bajos); algún escaneo en TIF. Una sola serie «F», unas 17 emitidas en enero de 2026 | El panel lee número, fecha, NIF e importes **del contenido del PDF**, no del nombre, y avisa si dos archivos tienen el mismo número. «PARA CONTABILIZAR» se convierte en el estado «pendiente de pasar a la gestoría». Los TIF se guardan como adjunto de su factura. La unidad la propone el concepto («suministro de hielo» → Dryicepack) y la confirmas tú |
 | Importar facturas desde Excel | **Corregido.** a3factura no importa facturas emitidas desde Excel. La contabilidad de la gestoría sí importa «facturas expedidas», pero eso es contabilidad, no emisión | «Datos para a3» = ficha para copiar. Nunca carga automática (ver 3.8) |
 | a3 hace remesas SEPA | **Confirmado.** Remesas B2B y CORE con los mandatos en la ficha del cliente. No se publica la versión del XML: se ve abriendo una remesa | Si ya las hacéis en a3, el panel solo prepara la lista y controla devoluciones |
 | a3 está adaptado a VeriFactu | **Confirmado** (a3factura y a3ERP v15) | — |
@@ -224,7 +264,7 @@ Cada unidad lleva siempre sus iniciales (IN, DI, CC), nunca solo el color. He co
 | El plan Standard no tiene API | **Confirmado.** Solo el plan Custom | Migración por exportaciones |
 | Exportar desde las listas | **Confirmado.** Lista → seleccionar → Acción → Exportar (XLSX o CSV), con «exportación compatible con importación». Facturas en PDF: Imprimir → «Export ZIP» | El importador acepta esos archivos |
 | Copia completa | **Matizado.** odoo.com/my/databases → Gestionar → «Download Backup» (ZIP). Debería incluir los adjuntos: hay que comprobarlo al abrirlo | Paso de la lista para cancelar |
-| Cancelar | **Nuevo.** Se renueva solo si no se avisa por escrito **30 días antes**. Tras cancelar, la base queda desactivada **3 semanas** y se borra | Pregunta: fecha de renovación (9.3) |
+| Cancelar | **Nuevo.** Se renueva solo si no se avisa por escrito **30 días antes**. Tras cancelar, la base queda desactivada **3 semanas** y se borra (política de privacidad, búsq.) | **No lo renováis** (01/10/2026). Guía: [`docs/CANCELAR_ODOO.md`](docs/CANCELAR_ODOO.md). Falta la fecha de renovación (9.3) |
 
 ### 3.10 Inteligencia artificial (Anthropic)
 
@@ -255,7 +295,7 @@ flowchart LR
   subgraph M365["Microsoft 365"]
     MAIL["Buzones info@ y panel@"]
     CAL["Calendario del panel"]
-    SP["SharePoint/OneDrive<br/>(archivos y PDF de a3)"]
+    SP["SharePoint de la empresa<br/>(archivos y PDF de a3)"]
   end
   WOO["WooCommerce<br/>dryicepack.es"]
   AI["API de Anthropic"]
@@ -352,25 +392,27 @@ flowchart LR
 - Lo que se reparte entre unidades (un gasto, un contrato) usa una tabla `*_allocations` con porcentajes.
 - Importes en céntimos, con base, IVA, retención y total por separado. Fechas en UTC, que se muestran en Europe/Madrid.
 - Global no tiene tablas propias: son **vistas que suman** las tres unidades.
+- **Campos propios (D3):** cada ficha editable tiene una columna `custom` (jsonb) con los valores. Su forma la describe `custom_field_definitions`, y un trigger rechaza lo que no encaje (tipo, opciones, obligatorio). Lleva índice GIN para poder filtrar. Las listas de opciones viven en tablas, nunca en el código.
 
 Borrador. Cada fase lo concreta en su migración. «Op.» = qué ve un operario; «Gest.» = qué ve la gestoría.
 
 | Módulo | Tablas | Qué guardan | Op. | Gest. | Fase |
 |---|---|---|---|---|---|
 | Núcleo | `profiles`, `workers`, `settings`, `targets`, `activity_log`, `integration_status`, `ai_usage` | Usuarios y rol, trabajadores (con o sin usuario), ajustes, objetivos por unidad, registro de actividad, estado de las conexiones, consumo de IA | Su perfil | Su perfil | 1 |
+| Personalización | `user_preferences`, `custom_field_definitions`, `option_lists`, `option_items` (+ columna `custom` en cada ficha) | Estilo de cada persona; campos propios (ficha, unidad, nombre, tipo, opciones, obligatorio, orden, oculto desde); listas de opciones editables | Los campos de lo que ve | Los campos de lo que ve | 1 (estilo) / 2 (campos y listas) |
 | Tareas | `tasks`, `task_comments`, `task_checklist_items`, `decisions`, `quick_notes` | Tareas y «Pedir algo a…», comentarios, registro de decisiones, notas | Las suyas | Las suyas | 1 |
 | Calendario | `events`, `resources`, `resource_bookings` | Eventos propios y espejo de Outlook; operarios, vehículos, máquinas y elevador; reservas | Los de sus trabajos | — | 1 |
 | Hielo seco | `ice_movements`, `ice_settings`, `pelletizer_scenarios` | Entradas (compras a SOL), salidas por unidad y destino, ajustes por pesaje; sublimación diaria `TODO` (dato tuyo); previsión 45/120/35 t; escenarios de la peletizadora | Registra consumo en el parte | — | 2* |
-| Ventas Dryicepack | `orders`, `order_lines`, `recurring_orders`, `deliveries`, `carrier_incidents` | Pedidos por canal (web, correo, teléfono, recurrente, nave), formato (pellet 3 mm, nugget 16 mm), cajas, entrega, MRW, cobro, tipo de factura | Hoja de reparto, sin importes | — | 2*/5 |
-| Comercial | `clients`, `client_units`, `contacts`, `leads`, `catalog_items`, `quotes`, `quote_lines`, `forms`, `form_responses`, `emails`, `commitments` | Clientes con dirección fiscal estructurada; unidades con las que trabajan; leads; catálogo; presupuestos (numeración propia `P-AA-NNN`, «No es una factura»); formularios; metadatos y resumen de correos; compromisos | Nombre, dirección de obra y contacto en planta de sus trabajos (vista) | — | 3 |
-| Trabajos | `jobs`, `job_financials`, `job_assignments`, `job_prep_items`, `job_travel`, `work_reports`, `work_report_photos`, `recurring_services` | Trabajos y su estado; importes y márgenes (aparte); asignaciones; checklist de preparación; hotel y transporte; partes (horas, kg, firma, conformidad); fotos; servicio diario de TMB | Los suyos, sin importes | — | 4 |
-| CAE | `company_documents`, `training_types`, `worker_credentials`, `cae_platforms`, `client_requirements`, `cae_validations`, `work_permits` | Documentos de empresa, cursos, acreditaciones por trabajador (salud: solo apto o no apto y fecha), plataformas (solo enlace), qué exige cada cliente, semáforo y permisos | Las suyas | — | 4 |
-| Flota | `vehicles`, `machines`, `maintenance_events` | ITV, seguro, revisiones, horas y averías (incluido el elevador) | Las de sus trabajos | — | 4 |
-| Finanzas | `invoices`, `invoice_links`, `invoice_allocations`, `payments`, `bank_statements`, `bank_movements`, `reconciliations`, `sepa_mandates`, `sepa_batches`, `sepa_returns`, `cash_movements`, `cash_counts`, `suppliers`, `expenses`, `expense_allocations`, `contracts`, `contract_templates`, `accountant_packages` | Facturas importadas (origen PDF, Excel, API o XML; archivo y hash; estado de cobro); cobros; extractos y movimientos; conciliación; mandatos (IBAN cifrado); remesas y devoluciones; caja y arqueos; proveedores; gastos con reparto; contratos; paquetes para la gestoría | — | Facturas, gastos, contratos marcados y paquetes (lectura) | 2/6 |
-| Inteligencia | `alerts`, `alert_rules`, `daily_plans`, `knowledge_pages`, `projects`, `notifications`, `push_subscriptions` | Avisos (tipo, gravedad, unidad, enlace, pospuesto hasta), umbrales, plan del día, Memoria, proyectos, notificaciones y dispositivos | Los suyos | — | 1→7 |
-| Documentos | `documents` | Metadatos de archivos de SharePoint (ruta, tipo, tamaño, hash, a qué pertenece) y miniatura | Los de sus trabajos y los suyos | Los de sus facturas, gastos y contratos | 2 |
+| Ventas Dryicepack | `orders`, `order_lines`, `recurring_orders`, `deliveries`, `carrier_incidents` | Pedidos por canal (web, correo, teléfono, recurrente, nave), formato (pellet 3 mm, nugget 16 mm), cajas, entrega, MRW, cobro, tipo de factura | Hoja de reparto, sin importes | — | 2*/6 |
+| Comercial | `clients`, `client_units`, `contacts`, `leads`, `catalog_items`, `quotes`, `quote_lines`, `forms`, `form_responses`, `emails`, `commitments` | Clientes con dirección fiscal estructurada; unidades con las que trabajan; leads; catálogo; presupuestos (numeración propia `P-AA-NNN`, «No es una factura»); formularios; metadatos y resumen de correos; compromisos | Nombre, dirección de obra y contacto en planta de sus trabajos (vista) | — | 3/4 |
+| Trabajos | `jobs`, `job_financials`, `job_assignments`, `job_prep_items`, `job_travel`, `work_reports`, `work_report_photos`, `recurring_services` | Trabajos y su estado; importes y márgenes (aparte); asignaciones; checklist de preparación; hotel y transporte; partes (horas, kg, firma, conformidad); fotos; servicio diario de TMB | Los suyos, sin importes | — | 2*/5 |
+| CAE | `company_documents`, `training_types`, `worker_credentials`, `cae_platforms`, `client_requirements`, `cae_validations`, `work_permits` | Documentos de empresa, cursos, acreditaciones por trabajador (salud: solo apto o no apto y fecha), plataformas (solo enlace), qué exige cada cliente, semáforo y permisos | Las suyas | — | 5 |
+| Flota | `vehicles`, `machines`, `maintenance_events` | ITV, seguro, revisiones, horas y averías (incluido el elevador) | Las de sus trabajos | — | 5 |
+| Finanzas | `invoices`, `invoice_links`, `invoice_allocations`, `payments`, `bank_statements`, `bank_movements`, `reconciliations`, `sepa_mandates`, `sepa_batches`, `sepa_returns`, `cash_movements`, `cash_counts`, `suppliers`, `expenses`, `expense_allocations`, `contracts`, `contract_templates`, `accountant_packages` | Facturas importadas (origen PDF, Excel o XML; archivo y hash; estado de cobro y «pendiente de pasar a la gestoría»); cobros; extractos y movimientos; conciliación; mandatos (IBAN cifrado); remesas y devoluciones; caja y arqueos; proveedores; gastos con reparto; contratos; paquetes para la gestoría | — | Facturas, gastos, contratos marcados y paquetes (lectura) | 2*/3/7 |
+| Inteligencia | `alerts`, `alert_rules`, `daily_plans`, `knowledge_pages`, `projects`, `notifications`, `push_subscriptions` | Avisos (tipo, gravedad, unidad, enlace, pospuesto hasta), umbrales, plan del día, Memoria, proyectos, notificaciones y dispositivos | Los suyos | — | 1→8 |
+| Documentos | `documents` | Metadatos de archivos de SharePoint (ruta, tipo, tamaño, hash, a qué pertenece) y miniatura | Los de sus trabajos y los suyos | Los de sus facturas, gastos y contratos | 3 |
 
-\* Si apruebas adelantarlo (propuesta P1 en la sección 9.2).
+La columna «Fase» sigue el orden aprobado de la sección 7. \* = la parte manual se adelanta a la Fase 2 (P1, aprobada el 01/10/2026): stock de hielo, ventas, partes simples, cobro en la nave y caja.
 
 ---
 
@@ -406,7 +448,7 @@ Los volúmenes son **supuestos**: con tus cifras reales (pregunta 9.3) la afino.
 | Clasificar correo entrante | Haiku 4.5 | 880 (60 al día, menos publicidad filtrada sin IA) | 2,9 $ |
 | Compromisos en correo enviado | Haiku 4.5 | 525 | 1,2 $ |
 | Borradores de respuesta | Sonnet 5.5 | 170 | 2,4 $ |
-| Facturas de a3 (PDF) | Haiku 4.5 (lotes) | 80 | 0,4 $ |
+| Facturas de a3 (PDF) | Haiku 4.5 (lotes) | 80 (unas 17 emitidas, según enero de 2026; el resto, recibidas) | 0,4 $ |
 | Gastos y tickets | Haiku 4.5 | 120 | 0,7 $ |
 | Documentos CAE | Haiku 4.5 | 30 | 0,2 $ |
 | Plan del día (2 administradores) | Sonnet 5.5 | 60 | 3,5 $ |
@@ -430,19 +472,21 @@ Los volúmenes son **supuestos**: con tus cifras reales (pregunta 9.3) la afino.
 
 Cada fase termina desplegada y probada. Te digo qué se ha hecho, cómo probarlo, qué tienes que hacer y qué queda pendiente. **Después, paro.**
 
-**Propuesta P1:** adelantar a la Fase 2 el hielo seco y las ventas o partes manuales. Es exactamente lo que describiste («apunto una venta, baja el stock y se ve en Global»), y hace la app útil desde muy pronto sin depender de Microsoft ni de a3. Con P1, las fases quedan así (si no la apruebas, se mantiene el orden del encargo):
+**P1, aprobada el 01/10/2026:** el hielo seco y las ventas o partes manuales se adelantan a la Fase 2. Es lo que describiste («apunto una venta, baja el stock y se ve en Global») y hace la app útil muy pronto, sin depender de Microsoft ni de a3. Las fases quedan así:
 
 | Fase | Contenido | Lo que tendrás que hacer tú |
 |---|---|---|
-| **1 · Base** | <ul><li>Repo privado y despliegue en `panel.indunova.es`.</li><li>PWA instalable.</li><li>Entrada animada y cuatro espacios con su estructura («Próximamente» en lo que falte).</li><li>Usuarios con 2FA, roles, RLS con tests y «Ver como…».</li><li>Global básico.</li><li>Tareas con «Pedir algo a…».</li><li>Calendario conjunto con colores.</li><li>Copia nocturna con restauración probada.</li></ul> | <ul><li>Crear cuentas en GitHub, Supabase y Cloudflare (te guío).</li><li>Añadir el CNAME en Arsys.</li><li>Instalar la app en PC y móvil.</li></ul> |
-| **2 · Apuntar y sumar** (P1) | <ul><li>Stock de hielo común (compras a SOL, pesajes, sublimación).</li><li>Ventas manuales de Dryicepack (incluida la venta en la nave en 20 s).</li><li>Partes simples de INDUNOVA y servicios de Cryocar con kg de hielo.</li><li>Global con stock, salidas por unidad y actividad.</li></ul> | <ul><li>Pasar Supabase a Pro.</li><li>Darme el % de sublimación (o lo medimos con pesajes).</li></ul> |
-| **3 · Datos reales** | <ul><li>Microsoft 365: app con certificado y piloto de permisos de archivos.</li><li>Documentos en SharePoint.</li><li>Migración de Odoo (clientes y productos).</li><li>Facturas de a3: PDF con IA y Excel del libro.</li><li>Cifras reales en Global con objetivos.</li></ul> | <ul><li>Registrar la app en Entra.</li><li>Crear el sitio de SharePoint y `panel@`.</li><li>Conceder los permisos (te paso los comandos).</li><li>Exportaciones de Odoo.</li><li>Cuenta en la Claude Console con límite de gasto.</li></ul> |
-| **4 · Comercial** | <ul><li>Correo de los tres buzones (y bandeja conjunta en Global).</li><li>Leads.</li><li>Presupuestos con PDF y envío tras un clic.</li><li>Clientes completo.</li><li>Formularios.</li></ul> | Comandos de RBAC en Exchange (te los paso) |
+| **1 · Base** | <ul><li>Repo privado y despliegue en `panel.indunova.es`.</li><li>PWA instalable.</li><li>Entrada animada con el logo y cuatro espacios con su estructura («Próximamente» en lo que falte).</li><li>Estilo a elegir: Escarcha, Grafito o Automático.</li><li>Usuarios con 2FA, roles, RLS con tests y «Ver como…».</li><li>Global básico.</li><li>Tareas con «Pedir algo a…».</li><li>Calendario conjunto con colores.</li><li>Copia nocturna con restauración probada.</li></ul> | <ul><li>Crear cuentas en GitHub, Supabase y Cloudflare (te guío).</li><li>Añadir el CNAME en Arsys.</li><li>Instalar la app en PC y móvil.</li></ul> |
+| **2 · Apuntar y sumar** (P1) | <ul><li>Stock de hielo común (compras a SOL, pesajes, sublimación).</li><li>Ventas manuales de Dryicepack (incluida la venta en la nave en 20 s), con cobro en la nave y caja.</li><li>Partes simples de INDUNOVA y servicios de Cryocar con kg de hielo.</li><li>Campos propios y listas de opciones editables en esos formularios.</li><li>Global con stock, salidas por unidad y actividad.</li></ul> | <ul><li>Pasar Supabase a Pro.</li><li>Darme el % de sublimación (o lo medimos con pesajes).</li></ul> |
+| **3 · Datos reales** | <ul><li>Microsoft 365: app con certificado y piloto de permisos de archivos.</li><li>Correo de los tres info@: los que llegan y cuáles faltan por contestar (sin IA).</li><li>Documentos en SharePoint.</li><li>Importación de Odoo (clientes y productos) desde los Excel ya descargados.</li><li>Facturas de a3: PDF con IA y Excel del libro.</li><li>Cifras reales en Global con objetivos.</li></ul> | <ul><li>Mover «ADMIN INDUNOVA» al SharePoint de la empresa (P8, te guío).</li><li>Registrar la app en Entra.</li><li>Crear `panel@` y conceder los permisos, incluido el RBAC de los info@ (te paso los comandos).</li><li>Pasarme las exportaciones de Odoo.</li><li>Cuenta en la Claude Console con límite de gasto.</li></ul> |
+| **4 · Comercial** | <ul><li>Correo con IA: clasificación, leads y borradores (y bandeja conjunta en Global).</li><li>Presupuestos con PDF y envío tras un clic.</li><li>Clientes completo.</li><li>Formularios.</li></ul> | — |
 | **5 · Operación** | <ul><li>Trabajos con preparación, logística y orden de trabajo.</li><li>Parte móvil sin conexión.</li><li>Acreditaciones y CAE.</li><li>Flota y maquinaria.</li><li>Calendario de Outlook.</li></ul> | Compartir el calendario de `panel@` |
 | **6 · Dryicepack conectado** | <ul><li>WooCommerce (aviso + sondeo).</li><li>MRW.</li><li>Recurrentes.</li><li>Reparto.</li><li>TMB diario.</li><li>Calculadora de la peletizadora.</li></ul> | <ul><li>Clave de solo lectura y webhook en WooCommerce.</li><li>Decidir el ajuste de Cloudflare para el panel.</li></ul> |
-| **7 · Finanzas** | <ul><li>Norma 43 y conciliación.</li><li>Remesas: control, o XML .08 si a3 no las hace.</li><li>Caja.</li><li>Gastos con foto.</li><li>Contratos.</li><li>Gestoría (rol propio).</li><li>Lista para cancelar Odoo.</li></ul> | <ul><li>Descargar extractos.</li><li>Avisar a Odoo 30 días antes de la renovación.</li></ul> |
+| **7 · Finanzas** | <ul><li>Norma 43 y conciliación.</li><li>Remesas: control, o XML .08 si a3 no las hace.</li><li>Caja de las tres unidades.</li><li>Gastos con foto.</li><li>Contratos.</li><li>Gestoría (rol propio).</li></ul> | Descargar extractos del banco |
 | **8 · Inteligencia y análisis** | <ul><li>Plan del día a las 05:00.</li><li>Compromisos.</li><li>Preparación de reuniones.</li><li>Asistente y Memoria.</li><li>Analytics y Proyectos.</li><li>Notificaciones push.</li><li>Resumen por correo.</li></ul> | — |
 | **9 · Opcional** | <ul><li>Analítica web y de anuncios.</li><li>Registro de jornada.</li><li>Apps de tienda (Capacitor).</li><li>Instalador de escritorio (Tauri).</li><li>WhatsApp Business.</li></ul> | Solo si lo pides |
+
+**Ahora, sin esperar a ninguna fase:** descargar Odoo y avisar de que no se renueva ([`docs/CANCELAR_ODOO.md`](docs/CANCELAR_ODOO.md)).
 
 **En todas las fases:**
 - Tests de toda la lógica de cálculo.
@@ -467,7 +511,10 @@ Cada fase termina desplegada y probada. Te digo qué se ha hecho, cómo probarlo
 | Partes sin cobertura que no se envían (iPhone) | Cola en el móvil, aviso visible de «pendiente de enviar» y reenvío al abrir la app |
 | Colores del calendario de Outlook distintos en cada móvil | Colores de categoría limitados a 25; en la app los colores son los nuestros |
 | Gasto de IA inesperado | Límite en la Console, consumo por función en Ajustes y modo manual |
-| Odoo se renueva o se borra antes de tiempo | Fecha de renovación en el calendario; copia completa y exportaciones antes de cancelar |
+| Odoo se renueva sin querer o se borra con datos dentro | Guía `docs/CANCELAR_ODOO.md`: fecha, copia completa comprobada, Excel de cada lista y aviso por escrito; segunda descarga la última semana |
+| Facturas de la empresa en un OneDrive personal | P8: moverlas al SharePoint de la empresa antes de la Fase 3. Mientras tanto, mantener una copia en un disco externo |
+| Correos contestados desde el móvil o desde otra cuenta que el panel no ve | Copia de enviados activada en los info@ y prueba con respuestas reales en la Fase 3, antes de fiarse de «sin contestar» |
+| Demasiados campos propios o campos que nadie rellena | Solo los crean administradores; quitar es ocultar; los cálculos nunca dependen de ellos; Ajustes muestra cuántas fichas usan cada campo |
 | Proyecto grande para mantener entre los dos | Pila simple, documentación, tests y fases pequeñas que siempre funcionan |
 
 ---
@@ -479,39 +526,41 @@ Cada fase termina desplegada y probada. Te digo qué se ha hecho, cómo probarlo
 | N.º | Decisión | Quién y cuándo |
 |---|---|---|
 | D1 | Navegación por **espacios**: entrada animada con el logo, cuatro iconos (Global, INDUNOVA, Dryicepack, Cryocar), poco y bien separado dentro de cada uno, y todo lo de las unidades sumado en Global. Sustituye a la barra lateral única del apartado 8 del encargo | Andrés, 01/10/2026 |
+| D2 | **Propuestas P1 a P7 aprobadas** (tabla 9.2) | Andrés, 01/10/2026 |
+| D3 | **La app la adapta el usuario:** campos propios en cada formulario, listas de opciones editables y estilo a elegir (Escarcha, Grafito o Automático). Sustituye a la P6 (elegir un solo estilo). Detalle en 2.5 | Andrés, 01/10/2026 |
+| D4 | **Marca y colores:** logo real de INDUNOVA (`assets/marca/`), INDUNOVA `#E5D61A`, Dryicepack `#B8D0E8`, Cryocar `#1F3449` | Andrés, 01/10/2026 (el amarillo, pendiente de confirmar) |
+| D5 | **Odoo no se renueva.** Se descarga todo antes y se importa en la Fase 3 | Andrés, 01/10/2026 |
+| D6 | **Sin Conectia:** las facturas de a3 entran por sus PDF y por el Excel del libro | Andrés, 01/10/2026 |
+| D7 | **Los tres info@ (buzones compartidos) conectados a la app:** ver lo que llega y lo que falta por contestar en la Fase 3; leads y borradores con IA en la Fase 4 | Andrés, 01/10/2026 |
+| D8 | **Repositorio privado propio** `indunova-control`, fuera del de la web | Andrés, 01/10/2026 |
 
-### 9.2 Propuestas que necesitan tu OK
+### 9.2 Propuestas
 
-| N.º | Propuesta | Mi recomendación |
+| N.º | Propuesta | Estado |
 |---|---|---|
-| P1 | Adelantar a la Fase 2 el hielo seco y las ventas o partes manuales (sección 7) | Sí |
-| P2 | Supabase Pro (25 $/mes) desde la Fase 2 | Sí |
-| P3 | Cloudflare Pages con un CNAME en Arsys, sin mover el DNS | Sí |
-| P4 | Event Calendar (gratis) en lugar de FullCalendar | Sí |
-| P5 | Buzón compartido `panel@indunova.es` para el calendario del panel y los emails del sistema | Sí |
-| P6 | Estilo: Escarcha, Grafito, o uno en el móvil y otro en el ordenador | Escarcha de día, con el modo oscuro en Grafito |
-| P7 | Región de Supabase: París | Sí |
+| P1 | Adelantar a la Fase 2 el hielo seco y las ventas o partes manuales (sección 7) | Aprobada |
+| P2 | Supabase Pro (25 $/mes) desde la Fase 2 | Aprobada |
+| P3 | Cloudflare Pages con un CNAME en Arsys, sin mover el DNS | Aprobada |
+| P4 | Event Calendar (gratis) en lugar de FullCalendar | Aprobada |
+| P5 | Buzón compartido `panel@indunova.es` para el calendario del panel y los emails del sistema | Aprobada |
+| P6 | Estilo: Escarcha, Grafito, o uno en el móvil y otro en el ordenador | Sustituida por D3: cada uno elige |
+| P7 | Región de Supabase: París | Aprobada |
+| **P8** | **Mover «ADMIN INDUNOVA» del OneDrive personal al SharePoint de la empresa**, sincronizado en el Explorador de Windows para seguir guardando los PDF igual que ahora. Es lo único que permite que el panel lea las facturas sin guardar contraseñas, y saca documentos de la empresa de una cuenta personal | **Pendiente de tu OK.** Recomiendo sí, antes de la Fase 3. Coste: 0 € si vuestro plan incluye SharePoint (pregunta 1) |
 
 ### 9.3 Preguntas para ti
 
-1. **Logo de INDUNOVA** (SVG o PNG). Sirve para la animación de entrada y para sacar el amarillo exacto. Si tienes los de Dryicepack y Cryocar, también.
-2. **Azul de Dryicepack:** ¿`#5FCAEC` (el provisional del encargo) o el «hielo» `#B8D0E8` de la web nueva?
-3. **Carpetas de PDF de a3 en OneDrive:**
-   - ¿En el OneDrive de quién están?
-   - ¿Cómo se organizan (por año, mes, unidad…)?
-   - ¿Cómo se llaman los archivos?
-4. **a3:**
-   - ¿Qué producto exacto usáis (nombre en pantalla; ¿se abre en el navegador o en Windows?) y a nombre de quién está la licencia?
-   - ¿Tenéis el módulo Conectia?
-   - ¿Quién hace hoy las remesas SEPA y con qué?
-5. **Microsoft 365:**
-   - ¿Qué plan tenéis?
-   - ¿Los info@ son buzones compartidos o tienen licencia?
-   - ¿Quién es el administrador global?
-6. **Odoo:** ¿cuándo se renueva la suscripción? (lo ves en odoo.com/my/subscriptions)
-7. **Repositorio:** ¿creo el repo privado `indunova-control` en tu cuenta de GitHub y muevo allí esta carpeta, o lo creas tú?
-8. **Volumen aproximado** (para afinar el coste de IA): correos al día en los tres buzones, facturas emitidas al mes y tickets de gasto al mes.
-9. **Móviles:** ¿qué móvil usáis tu padre y tú? (iPhone con iOS 16.4 o superior para las notificaciones)
+**Para empezar la Fase 1:**
+
+1. **Microsoft 365:** ¿qué plan tenéis y quién es el administrador global? Lo ves en admin.microsoft.com → Facturación → Sus productos (en inglés, Billing → Your products). Me basta una captura de esa página. Así sé si incluye SharePoint (P8).
+2. **Amarillo de INDUNOVA:** el logo usa `#E5D61A` y el isotipo suelto `#FFCC22`. He elegido `#E5D61A`. ¿Es el bueno?
+3. **Odoo:** la fecha en que termina el periodo (paso 1 de [`docs/CANCELAR_ODOO.md`](docs/CANCELAR_ODOO.md)).
+
+**Para más adelante (Fase 3):**
+
+4. **a3:** una captura de la pantalla principal del programa, o de «Ayuda → Acerca de». Así sé qué producto es (a3factura, a3ERP, a3innuva…). Sin datos de clientes a la vista.
+5. **Remesas:** ¿se preparan en a3 o en la web del Sabadell?
+6. **Volumen aproximado:** correos al día en los tres buzones y tickets de gasto al mes. Las facturas ya las sé: unas 17 emitidas al mes.
+7. **Móviles:** ¿qué móvil usáis tu padre y tú? Para las notificaciones en iPhone hace falta iOS 16.4 o superior.
 
 ### 9.4 Para la gestoría, Sabadell o Wolters Kluwer (sin prisa)
 
@@ -588,6 +637,8 @@ Consultadas el 01/10/2026. Se da la URL pública; si se leyó en su fuente ofici
 - Límites de uso: https://learn.microsoft.com/en-us/graph/throttling-limits
 - APIs de pago: https://learn.microsoft.com/en-us/graph/metered-api-overview
 - Credenciales de la app: https://learn.microsoft.com/en-us/entra/identity-platform/how-to-add-credentials
+- Permisos de aplicación solo para datos de la organización: https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-client-creds-grant-flow
+- Copia de lo enviado desde un buzón compartido (`MessageCopyForSentAsEnabled`): https://learn.microsoft.com/powershell/module/exchangepowershell/set-mailbox
 
 **WooCommerce** (fuentes: github.com/woocommerce/woocommerce-rest-api-docs y woocommerce/woocommerce)
 - API REST: https://woocommerce.github.io/woocommerce-rest-api-docs/
