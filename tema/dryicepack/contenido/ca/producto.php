@@ -34,6 +34,7 @@ return array(
 	'boton'     => 'Afegir i pagar',
 	'recogida'  => 'O recull-lo gratis a Mataró (es paga en efectiu en recollir-lo).',
 	'max'       => 'Màxim 250 kg per comanda. Per a més quantitat, demana preu per volum.',
+	'medida'    => 'Més de 150 kg fora de la província de Barcelona: escriu-nos abans de demanar i et preparem l\'enviament.',
 	'confianza' => array( 'Targeta, Apple Pay o Google Pay', 'Factura per a empreses', 'Sense crear cap compte' ),
 	'caja' => array(
 		'titulo' => 'Què arriba|a la caixa.',

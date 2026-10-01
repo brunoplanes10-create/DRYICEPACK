@@ -29,7 +29,7 @@ return array(
 		'titulo' => 'What changes|with an <em>account.</em>',
 		'lista'  => array(
 			array( 'Your own price', 'Based on volume and frequency. Agreed once, so there is no need to negotiate every order.' ),
-			array( 'One invoice a month', 'All the month’s orders on one full invoice. Pay by bank transfer or direct debit.' ),
+			array( 'One invoice a month', 'All the month’s orders on one full invoice, payable at 30 days by bank transfer or direct debit.' ),
 			array( 'Details saved', 'Company name, tax ID and delivery address: you never type them again.' ),
 			array( 'Reminders, if you want them', 'If you order at a regular pace, we let you know when it’s due. Switch it off in one click.' ),
 			array( 'No commitment', 'Pause or adjust it whenever your activity changes.' ),
@@ -41,9 +41,9 @@ return array(
 		'cajas'   => '%1$s boxes · %2$s kg',
 		'caja'    => '1 box · %s kg',
 		'notas'   => array(
-			'web'   => 'Up to 250 kg per order, online or through your account.',
+			'web'   => 'Up to 250 kg per order, online or through your account (150 kg outside the province of Barcelona).',
 			'bcn'   => 'Over 150 kg in the province of Barcelona: delivered to your premises. Ask us about lead times.',
-			'fuera' => 'Large volumes outside the province of Barcelona: we assess each case individually.',
+			'fuera' => 'Over 150 kg outside the province of Barcelona: message us and we will give you a price and a day. Delivery costs more.',
 		),
 	),
 	'casos' => array(
@@ -80,7 +80,7 @@ return array(
 		'titulo' => 'Business questions',
 		'lista'  => array(
 			array( 'Is there a minimum order?', 'Online, from 3 kg. With a business account we adjust it to your usage.' ),
-			array( 'How do we pay?', 'With one invoice a month, by bank transfer or direct debit, as agreed when we open the account.' ),
+			array( 'How do we pay?', 'With one invoice a month, payable at 30 days by bank transfer or direct debit.' ),
 			array( 'Can I change the kilos or the frequency?', 'Yes. Give us 24 to 48 working hours’ notice so we can plan the preparation and the route.' ),
 			array( 'Do you issue full invoices?', 'Always, with your tax details. For every order and in the monthly summary.' ),
 			array( 'Do you deliver outside Catalonia?', 'Anywhere in mainland Spain by courier, with delivery the next morning. Large orders outside the province of Barcelona are assessed case by case.' ),

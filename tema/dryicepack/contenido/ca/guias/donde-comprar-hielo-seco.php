@@ -1,7 +1,7 @@
 <?php
 /* Guia · On comprar gel sec (respon a "venen gel sec a les farmàcies / al Mercadona?"). El slug es manté igual que en castellà. */
 return array(
-	'slug'     => 'donde-comprar-hielo-seco',
+	'slug'     => 'on-comprar-gel-sec',
 	'titulo'   => 'On comprar gel sec: farmàcia, supermercat o botiga especialitzada?',
 	'extracto' => 'Les farmàcies i els supermercats no en solen tenir. T\'expliquem per què i on es compra de debò, amb enviament o recollida.',
 	'seo'      => array(
@@ -24,7 +24,7 @@ return array(
 <h3>Botiga en línia amb enviament</h3>
 <p>Tries format i quilos, pagues i t\'arriba en una caixa d\'EPS. A DryIcePack, si demanes abans de les 12:00 de dilluns a divendres, arriba l\'endemà al matí a tota la península.</p>
 <h3>Recollida al magatzem</h3>
-<p>Si ets a prop, és l\'opció més ràpida i sense despeses d\'enviament. La nostra nau és a Mataró (Barcelona) i s\'hi pot recollir de dilluns a divendres de 9:00 a 18:00, avisant abans.</p>
+<p>Si ets a prop, és l\'opció més ràpida i sense despeses d\'enviament. La nostra nau és a Mataró (Barcelona) i s\'hi pot recollir de dilluns a dissabte: tries el dia en demanar i et confirmem l\'hora.</p>
 <h3>Proveïdors de gasos industrials</h3>
 <p>Per a quantitats molt grans i subministrament continu en una planta, treballen amb contractes a mida.</p>
 

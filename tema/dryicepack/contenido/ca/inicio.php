@@ -70,7 +70,7 @@ return array(
 	),
 	'recogida' => array(
 		'titulo'  => 'Ets a prop de Mataró?|Recull-lo <em>gratis.</em>',
-		'texto'   => 'A la nostra nau, de dilluns a divendres de 9:00 a 18:00. Avisa\'ns abans i el tindrem preparat. Es paga en efectiu en recollir-lo.',
+		'texto'   => 'A la nostra nau, de dilluns a dissabte. Tries el dia en demanar, et confirmem l\'hora i el tenim preparat. Es paga en efectiu en recollir-lo.',
 		'ficha'   => 'Nau DryIcePack',
 		'como'    => 'Com arribar-hi',
 		'alt'     => 'Càrrega d\'una caixa de gel sec a la furgoneta de repartiment',
@@ -85,7 +85,7 @@ return array(
 		'lista'  => array(
 			array( 'Quant gel sec necessito?', 'Depèn de l\'ús i de les hores. Per fer boira, com a referència: a casa 3 kg, en una festa gran 10 kg i en un bar o un esdeveniment de 15 a 20 kg. Per a transport o mostres, digues-nos quantes hores i quin volum i t\'ho calculem.' ),
 			array( 'Quan m\'arriba?', 'Si demanes abans de les 12:00 de dilluns a divendres, surt aquell dia i arriba l\'endemà al matí. No repartim ni diumenge ni dilluns. El dissabte, segons la zona i amb un suplement d\'11,74 € (IVA inclòs).' ),
-			array( 'El puc recollir en persona?', 'Sí, gratis, a la nostra nau de Mataró (Camí Ca La Madrona 19 D), de dilluns a divendres de 9:00 a 18:00, avisant abans. Es paga en efectiu en recollir-lo.' ),
+			array( 'El puc recollir en persona?', 'Sí, a la nostra nau de Mataró (Camí Ca La Madrona 19 D), de dilluns a dissabte. De dilluns a divendres és gratis i el dissabte té un suplement d\'11,74 €. Et confirmem l\'hora abans i es paga en efectiu en recollir-lo.' ),
 			array( 'Quina diferència hi ha entre 3 mm i 16 mm?', 'Els pèl·lets de 3 mm tenen més superfície: refreden més de pressa i fan més boira. Els nuggets de 16 mm tenen més massa per peça i duren més; per això es fan servir en transport i mostres.' ),
 			array( 'Feu factura a empreses?', 'Sí. En pagar, marca «Compro per a una empresa o autònom» i escriu la raó social i el NIF. Si ja has pagat sense marcar-ho, t\'enviem un enllaç per demanar-la. Els comptes d\'empresa reben una factura al mes.' ),
 			array( 'Envieu a les Balears o a les Canàries?', 'La botiga en línia envia a la península. Per a les illes, Ceuta o Melilla, escriu-nos i estudiem el teu cas.' ),

@@ -13,4 +13,10 @@ return array(
 	'lectura'      => '%d min de lectura',
 	'indice'       => 'En esta guía',
 	'cta'          => '¿Lo necesitas mañana?',
+	'seguir'       => 'Para seguir',
+	'enlaces'      => array(
+		array( 'seguridad', 'Cómo manipular el hielo seco con seguridad' ),
+		array( 'producto', 'Comprar hielo seco en pellets de 3 mm o nuggets de 16 mm' ),
+		array( 'envios', 'Envíos, plazos y recogida en Mataró' ),
+	),
 );

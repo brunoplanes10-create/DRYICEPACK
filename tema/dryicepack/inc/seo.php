@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 function dipt_seo_actual() {
 	$clave = dipt_pagina_actual();
-	// Guías (entradas): los metadatos que dipt_crear_guias() guarda para Rank Math, también si Rank Math no está activo
+	// Entradas del blog: los metadatos de Rank Math, también si Rank Math no está activo
 	if ( ! $clave && is_singular( 'post' ) ) {
 		$id = get_queried_object_id();
 		$t  = (string) get_post_meta( $id, 'rank_math_title', true );
@@ -21,6 +21,7 @@ function dipt_seo_actual() {
 	$p = dipt_paginas()[ $clave ];
 	if ( 'zona' === $p['plantilla'] && function_exists( 'dipt_seo_zona' ) ) return dipt_seo_zona( $p['zona'] );
 	if ( 'legal' === $p['plantilla'] ) return dipt_contenido( 'legal-' . $clave )['seo'] ?? null;
+	if ( 'guia' === $p['plantilla'] ) return dipt_guia( $p['guia'] )['seo'] ?? null;
 	return dipt_contenido( $p['plantilla'] === 'inicio' ? 'inicio' : $clave )['seo'] ?? null;
 }
 

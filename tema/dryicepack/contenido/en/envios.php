@@ -41,7 +41,7 @@ return array(
 		'titulo' => 'Collection|in <em>Mataró.</em>',
 		'lista'  => array(
 			array( 'Where', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). It’s our own warehouse, not a courier depot.' ),
-			array( 'When', 'Monday to Friday, 9:00 to 18:00. Choose the day at checkout and tell us the time.' ),
+			array( 'When', 'Monday to Saturday, including public holidays. Choose the day at checkout and we confirm the time by phone or WhatsApp. Saturday has a €11.74 surcharge (VAT included).' ),
 			array( 'Cost', 'Free. You only pay for the ice, in cash on collection.' ),
 			array( 'How to carry it', 'In the boot, with ventilation. Never inside a closed car.' ),
 		),

@@ -41,7 +41,7 @@ return array(
 		'titulo' => 'Recogida|en <em>Mataró.</em>',
 		'lista'  => array(
 			array( 'Dónde', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). Es nuestra nave, no una oficina de la mensajería.' ),
-			array( 'Cuándo', 'De lunes a viernes, de 9:00 a 18:00. Elige el día al pagar y avísanos de la hora.' ),
+			array( 'Cuándo', 'De lunes a sábado, también festivos. Elige el día al pagar y te confirmamos la hora por teléfono o WhatsApp. El sábado tiene un suplemento de 11,74 € (IVA incluido).' ),
 			array( 'Cuánto', 'Gratis. Pagas solo el hielo, en efectivo al recogerlo.' ),
 			array( 'Cómo llevarlo', 'En el maletero y con ventilación. Nunca en el habitáculo cerrado.' ),
 		),

@@ -13,4 +13,10 @@ return array(
 	'lectura'      => '%d min read',
 	'indice'       => 'In this guide',
 	'cta'          => 'Need it tomorrow?',
+	'seguir'       => 'Read next',
+	'enlaces'      => array(
+		array( 'seguridad', 'How to handle dry ice safely' ),
+		array( 'producto', 'Buy dry ice in 3 mm pellets or 16 mm nuggets' ),
+		array( 'envios', 'Delivery times and collection in Mataró' ),
+	),
 );

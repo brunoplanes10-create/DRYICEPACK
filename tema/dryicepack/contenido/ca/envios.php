@@ -41,7 +41,7 @@ return array(
 		'titulo' => 'Recollida|a <em>Mataró.</em>',
 		'lista'  => array(
 			array( 'On', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). És la nostra nau, no una oficina de la missatgeria.' ),
-			array( 'Quan', 'De dilluns a divendres, de 9:00 a 18:00. Tria el dia en pagar i avisa\'ns de l\'hora.' ),
+			array( 'Quan', 'De dilluns a dissabte, també festius. Tria el dia en pagar i et confirmem l\'hora per telèfon o WhatsApp. El dissabte té un suplement d\'11,74 € (IVA inclòs).' ),
 			array( 'Quant', 'Gratis. Només pagues el gel, en efectiu quan el recculls.' ),
 			array( 'Com portar-lo', 'Al maleter i amb ventilació. Mai a l\'habitacle tancat.' ),
 		),

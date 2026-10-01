@@ -70,7 +70,7 @@ return array(
 	),
 	'recogida' => array(
 		'titulo'  => 'Near Mataró?|Collect it <em>free.</em>',
-		'texto'   => 'From our warehouse, Monday to Friday, 9:00 to 18:00. Let us know in advance and we’ll have it ready. You pay in cash on collection.',
+		'texto'   => 'From our warehouse, Monday to Saturday. You choose the day when ordering, we confirm the time and have it ready. You pay in cash on collection.',
 		'ficha'   => 'DryIcePack warehouse',
 		'como'    => 'Get directions',
 		'alt'     => 'Loading a box of dry ice into the delivery van',
@@ -85,7 +85,7 @@ return array(
 		'lista'  => array(
 			array( 'How much dry ice do I need?', 'It depends on the use and how many hours you need it for. For fog, as a guide: 3 kg at home, 10 kg for a big party and 15 to 20 kg for a bar or an event. For transport or samples, tell us the hours and the volume and we’ll work it out.' ),
 			array( 'When will it arrive?', 'If you order before 12:00, Monday to Friday, it leaves that day and arrives the next morning. We don’t deliver on Sunday or Monday. Saturday delivery depends on the area and has a €11.74 surcharge (VAT included).' ),
-			array( 'Can I collect it in person?', 'Yes, free, from our warehouse in Mataró (Camí Ca La Madrona 19 D), Monday to Friday, 9:00 to 18:00. Let us know in advance. You pay in cash on collection.' ),
+			array( 'Can I collect it in person?', 'Yes, from our warehouse in Mataró (Camí Ca La Madrona 19 D), Monday to Saturday. Monday to Friday is free and Saturday has a €11.74 surcharge. We confirm the time beforehand and you pay in cash on collection.' ),
 			array( 'What’s the difference between 3 mm and 16 mm?', '3 mm pellets have more surface area: they cool faster and make more fog. 16 mm nuggets have more mass per piece and last longer, which is why they’re used for transport and samples.' ),
 			array( 'Do you invoice businesses?', 'Yes. At checkout, tick ‘I am buying for a company or as self-employed’ and enter the company name and tax ID (NIF/CIF). If you’ve already paid without ticking it, we’ll send you a link to request the invoice. Business accounts get one invoice a month.' ),
 			array( 'Do you deliver to the Balearic or Canary Islands?', 'The online shop delivers to mainland Spain. For the islands, Ceuta or Melilla, message us and we’ll look at your case.' ),

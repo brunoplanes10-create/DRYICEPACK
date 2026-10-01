@@ -7,6 +7,9 @@
  * Peso facturable = hielo + 1 kg por caja (medido el 31/08/2026), redondeado al alza.
  * Corte a las 12:00 (Madrid). Sale de lunes a viernes y llega al día siguiente por la mañana.
  * Sin entregas en domingo ni lunes. Sábado según zona con suplemento de 9,70 € + IVA.
+ * Recogida en la nave de lunes a sábado, también en festivos (la confirma la empresa). El sábado lleva el mismo suplemento.
+ * Más de 150 kg fuera de la provincia de Barcelona: sin envío online, se prepara a medida (el proveedor solo sirve
+ * más de 150 kg dentro de la provincia).
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -20,6 +23,7 @@ if ( ! defined( 'DIP_TARIFA_HASTA_5' ) )               define( 'DIP_TARIFA_HASTA
 if ( ! defined( 'DIP_TARIFA_HASTA_10' ) )              define( 'DIP_TARIFA_HASTA_10', 13.19 );
 if ( ! defined( 'DIP_TARIFA_KG_EXTRA' ) )              define( 'DIP_TARIFA_KG_EXTRA', 1.12 );
 if ( ! defined( 'DIP_PESO_EMBALAJE' ) )                define( 'DIP_PESO_EMBALAJE', 1.0 );
+if ( ! defined( 'DIP_KG_A_MEDIDA' ) )                  define( 'DIP_KG_A_MEDIDA', 150 );
 
 /** Datos de contacto y de empresa (los usa también el tema). */
 function dip_contacto() {
@@ -129,6 +133,12 @@ function dip_provincia_por_cp( $cp ) {
 	return $mapa[ substr( $cp, 0, 2 ) ] ?? '';
 }
 
+/** ¿Envío a medida? Más de 150 kg con destino fuera de la provincia de Barcelona: se pide por mensaje. */
+function dip_envio_a_medida( $kg, $cp ) {
+	$cp = preg_replace( '/\D/', '', (string) $cp );
+	return (float) $kg > DIP_KG_A_MEDIDA + 0.0001 && strlen( $cp ) >= 2 && '08' !== substr( $cp, 0, 2 );
+}
+
 /* =========================================================
  * Días de salida y de entrega
  * ========================================================= */
@@ -151,6 +161,11 @@ function dip_es_dia_de_salida( DateTimeInterface $dia ) {
 	return (int) $dia->format( 'N' ) <= 5 && ! dip_es_festivo( $dia );
 }
 
+/** ¿Se puede recoger ese día? De lunes a sábado, también en festivos: la nave no cierra y la recogida se confirma antes. */
+function dip_es_dia_de_recogida( DateTimeInterface $dia ) {
+	return (int) $dia->format( 'N' ) <= 6;
+}
+
 function dip_antes_del_corte( ?DateTimeImmutable $ahora = null ) {
 	$ahora = $ahora ?: new DateTimeImmutable( 'now', dip_zona_horaria() );
 	return ( (int) $ahora->format( 'G' ) * 60 + (int) $ahora->format( 'i' ) ) < ( DIP_CUTOFF_HOUR * 60 + DIP_CUTOFF_MINUTE );
@@ -159,21 +174,25 @@ function dip_antes_del_corte( ?DateTimeImmutable $ahora = null ) {
 /**
  * Fechas que se pueden elegir.
  * - Envío: sale un día de salida y llega al día siguiente (martes a sábado). El sábado lleva suplemento.
- * - Recogida: días de salida (lunes a viernes no festivos) desde hoy si es antes del corte.
+ * - Recogida: de lunes a sábado (también festivos) desde hoy si es antes del corte. El sábado lleva suplemento.
  *
  * @return array[] [ ['fecha' => 'Y-m-d', 'sabado' => bool, 'sale' => 'Y-m-d'], … ]
  */
 function dip_fechas_disponibles( $metodo = 'envio', $cuantas = 8, ?DateTimeImmutable $ahora = null ) {
 	$ahora  = $ahora ?: new DateTimeImmutable( 'now', dip_zona_horaria() );
 	$dia    = $ahora->setTime( 0, 0 );
-	if ( ! dip_es_dia_de_salida( $dia ) || ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
 	$fechas = array();
+	if ( 'recogida' === $metodo ) {
+		if ( ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
+		for ( $i = 0; $i < 60 && count( $fechas ) < $cuantas; $i++, $dia = $dia->modify( '+1 day' ) ) {
+			if ( ! dip_es_dia_de_recogida( $dia ) ) continue;
+			$fechas[] = array( 'fecha' => $dia->format( 'Y-m-d' ), 'sabado' => 6 === (int) $dia->format( 'N' ), 'sale' => $dia->format( 'Y-m-d' ) );
+		}
+		return $fechas;
+	}
+	if ( ! dip_es_dia_de_salida( $dia ) || ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
 	for ( $i = 0; $i < 60 && count( $fechas ) < $cuantas; $i++, $dia = $dia->modify( '+1 day' ) ) {
 		if ( ! dip_es_dia_de_salida( $dia ) ) continue;
-		if ( 'recogida' === $metodo ) {
-			$fechas[] = array( 'fecha' => $dia->format( 'Y-m-d' ), 'sabado' => false, 'sale' => $dia->format( 'Y-m-d' ) );
-			continue;
-		}
 		$llega = $dia->modify( '+1 day' );
 		if ( dip_es_festivo( $llega ) ) continue;
 		$fechas[] = array(

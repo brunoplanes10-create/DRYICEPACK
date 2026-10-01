@@ -70,7 +70,7 @@ return array(
 	),
 	'recogida' => array(
 		'titulo'  => '¿Estás cerca de Mataró?|Recógelo <em>gratis.</em>',
-		'texto'   => 'En nuestra nave, de lunes a viernes de 9:00 a 18:00. Avísanos antes y lo tenemos preparado. Se paga en efectivo al recoger.',
+		'texto'   => 'En nuestra nave, de lunes a sábado. Eliges el día al pedir, te confirmamos la hora y lo tenemos preparado. Se paga en efectivo al recoger.',
 		'ficha'   => 'Nave DryIcePack',
 		'como'    => 'Cómo llegar',
 		'alt'     => 'Carga de una caja de hielo seco en la furgoneta de reparto',
@@ -85,7 +85,7 @@ return array(
 		'lista'  => array(
 			array( '¿Cuánto hielo seco necesito?', 'Depende del uso y de las horas. Para niebla, como referencia: en casa 3 kg, en una fiesta grande 10 kg y en un bar o un evento de 15 a 20 kg. Para transporte o muestras, dinos cuántas horas y qué volumen y te lo calculamos.' ),
 			array( '¿Cuándo me llega?', 'Si pides antes de las 12:00 de lunes a viernes, sale ese día y llega al día siguiente por la mañana. No repartimos en domingo ni lunes. El sábado, según zona y con un suplemento de 11,74 € (IVA incluido).' ),
-			array( '¿Puedo recogerlo en persona?', 'Sí, gratis, en nuestra nave de Mataró (Camí Ca La Madrona 19 D), de lunes a viernes de 9:00 a 18:00, avisando antes. Se paga en efectivo al recoger.' ),
+			array( '¿Puedo recogerlo en persona?', 'Sí, en nuestra nave de Mataró (Camí Ca La Madrona 19 D), de lunes a sábado. De lunes a viernes es gratis y el sábado lleva un suplemento de 11,74 €. Te confirmamos la hora antes y se paga en efectivo al recoger.' ),
 			array( '¿Qué diferencia hay entre 3 mm y 16 mm?', 'Los pellets de 3 mm tienen más superficie: enfrían más rápido y hacen más niebla. Los nuggets de 16 mm tienen más masa por pieza y duran más, por eso se usan en transporte y muestras.' ),
 			array( '¿Hacéis factura a empresas?', 'Sí. Al pagar, marca «Compro para una empresa o autónomo» y escribe la razón social y el NIF. Si ya has pagado sin marcarlo, te enviamos un enlace para pedirla. Las cuentas de empresa reciben una factura al mes.' ),
 			array( '¿Enviáis a Baleares o Canarias?', 'La tienda online envía a la península. Para las islas, Ceuta o Melilla, escríbenos y estudiamos tu caso.' ),

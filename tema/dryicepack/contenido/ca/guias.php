@@ -13,4 +13,10 @@ return array(
 	'lectura'      => '%d min de lectura',
 	'indice'       => 'En aquesta guia',
 	'cta'          => 'El necessites demà?',
+	'seguir'       => 'Per continuar',
+	'enlaces'      => array(
+		array( 'seguridad', 'Com manipular el gel sec amb seguretat' ),
+		array( 'producto', 'Comprar gel sec en pèl·lets de 3 mm o nuggets de 16 mm' ),
+		array( 'envios', 'Enviaments, terminis i recollida a Mataró' ),
+	),
 );

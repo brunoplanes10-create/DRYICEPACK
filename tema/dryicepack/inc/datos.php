@@ -32,8 +32,8 @@ function dipt_variaciones() {
 		array( 'id' => 1658, 'kg' => 3, 'formato' => '16mm', 'precio' => 29.80 ),
 		array( 'id' => 1659, 'kg' => 10, 'formato' => '3mm', 'precio' => 53.30 ),
 		array( 'id' => 1655, 'kg' => 10, 'formato' => '16mm', 'precio' => 53.30 ),
-		array( 'id' => 1660, 'kg' => 15, 'formato' => '3mm', 'precio' => 68.40 ),
-		array( 'id' => 1656, 'kg' => 15, 'formato' => '16mm', 'precio' => 68.40 ),
+		array( 'id' => 1660, 'kg' => 15, 'formato' => '3mm', 'precio' => 75.90 ),
+		array( 'id' => 1656, 'kg' => 15, 'formato' => '16mm', 'precio' => 75.90 ),
 		array( 'id' => 1661, 'kg' => 20, 'formato' => '3mm', 'precio' => 98.60 ),
 		array( 'id' => 1657, 'kg' => 20, 'formato' => '16mm', 'precio' => 98.60 ),
 	);

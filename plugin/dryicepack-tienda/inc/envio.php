@@ -34,6 +34,7 @@ add_filter( 'woocommerce_package_rates', static function ( $rates, $package ) {
 	}
 	if ( $kg <= 0 ) return $rates;
 	if ( $kg > DIP_MAX_KG + 0.0001 ) return array();
+	$a_medida = dip_envio_a_medida( $kg, $cp ); // más de 150 kg fuera de la provincia de Barcelona: solo recogida online
 
 	$coste    = dip_coste_transporte( $kg, $bultos );
 	$envios   = array();
@@ -45,6 +46,7 @@ add_filter( 'woocommerce_package_rates', static function ( $rates, $package ) {
 			$recogida[ $id ] = $rate;
 			continue;
 		}
+		if ( $a_medida ) continue;
 		$rate->set_cost( $coste );
 		$rate->set_taxes( class_exists( 'WC_Tax' ) && wc_tax_enabled() ? WC_Tax::calc_shipping_tax( $coste, WC_Tax::get_shipping_tax_rates() ) : array() );
 		$envios[ $id ] = $rate;
@@ -95,6 +97,7 @@ function dip_mensaje_sin_envio( $html ) {
 	if ( dip_cp_fuera_de_peninsula( $cp ) ) {
 		return '<p class="dip-aviso">' . esc_html( $t['fuera_peninsula'] ?? 'Enviamos solo a la península. Escríbenos y estudiamos tu caso.' ) . '</p>';
 	}
+	if ( dip_envio_a_medida( $kg, $cp ) && function_exists( 'dip_html_envio_a_medida' ) ) return dip_html_envio_a_medida();
 	return $html;
 }
 add_filter( 'woocommerce_no_shipping_available_html', 'dip_mensaje_sin_envio' );

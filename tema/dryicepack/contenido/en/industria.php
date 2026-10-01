@@ -31,8 +31,8 @@ return array(
 		'marcas' => array(
 			array( 3, 'From 3 kg', 'Trials and small orders.' ),
 			array( 150, 'Over 150 kg', 'In the province of Barcelona, delivered to your premises. Ask us about lead times.' ),
-			array( 250, 'Up to 250 kg', 'Per online order, anywhere in mainland Spain.' ),
-			array( 400, 'Larger volumes', 'Outside the province of Barcelona, case by case.' ),
+			array( 250, 'Up to 250 kg', 'Per online order in the province of Barcelona. Elsewhere in mainland Spain, up to 150 kg online.' ),
+			array( 400, 'Larger volumes', 'Over 200 kg: ask us, we can deliver it ourselves. Outside the province of Barcelona, delivery arranged individually.' ),
 		),
 	),
 	'compras' => array(

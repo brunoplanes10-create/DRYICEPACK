@@ -47,6 +47,8 @@
 			inputCajas.value = String(estado.cajas);
 			if (aviso) aviso.hidden = estado.cajas < maxCajas;
 			var kgTotal = estado.kg * estado.cajas;
+			var medida = raiz.querySelector('[data-medida]');
+			if (medida) medida.hidden = kgTotal <= 150 || !(aviso && aviso.hidden);
 			var pack = v.precio * iva * estado.cajas, env = envio(kgTotal, estado.cajas) * iva;
 			raiz.querySelector('[data-precio-concepto]').textContent = raiz.querySelector('[data-precio-concepto]').textContent.split('·')[0].trim() + ' · ' + (estado.cajas > 1 ? estado.cajas + ' × ' : '') + estado.kg + ' kg';
 			raiz.querySelector('[data-precio-pack]').textContent = euros(pack);

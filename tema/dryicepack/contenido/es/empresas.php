@@ -29,7 +29,7 @@ return array(
 		'titulo' => 'Lo que cambia|con una <em>cuenta.</em>',
 		'lista'  => array(
 			array( 'Precio propio', 'Según volumen y frecuencia. Se acuerda una vez y no hay que negociarlo en cada pedido.' ),
-			array( 'Una factura al mes', 'Todos los pedidos del mes, en una factura completa. Pago por transferencia o domiciliación.' ),
+			array( 'Una factura al mes', 'Todos los pedidos del mes, en una factura completa. Pago a 30 días por transferencia o domiciliación.' ),
 			array( 'Datos guardados', 'Razón social, NIF y dirección de entrega: no se vuelven a escribir.' ),
 			array( 'Recordatorio, si lo quiere', 'Si pide con un ritmo fijo, le avisamos cuando toca. Se desactiva con un clic.' ),
 			array( 'Sin permanencia', 'Se para o se ajusta cuando cambie su actividad.' ),
@@ -41,9 +41,9 @@ return array(
 		'cajas'   => '%1$s cajas · %2$s kg',
 		'caja'    => '1 caja · %s kg',
 		'notas'   => array(
-			'web'   => 'Hasta 250 kg por pedido, en la web o con su cuenta.',
+			'web'   => 'Hasta 250 kg por pedido en la web o con su cuenta (150 kg fuera de la provincia de Barcelona).',
 			'bcn'   => 'Más de 150 kg en la provincia de Barcelona: entrega en sus instalaciones, consulte el plazo.',
-			'fuera' => 'Mucho peso fuera de la provincia de Barcelona: lo estudiamos caso a caso.',
+			'fuera' => 'Más de 150 kg fuera de la provincia de Barcelona: escríbanos y le damos precio y día. El envío sale más caro.',
 		),
 	),
 	'casos' => array(
@@ -80,7 +80,7 @@ return array(
 		'titulo' => 'Preguntas de empresa',
 		'lista'  => array(
 			array( '¿Hay pedido mínimo?', 'En la web, desde 3 kg. Con cuenta de empresa lo ajustamos a su consumo.' ),
-			array( '¿Cómo se paga?', 'Con una factura al mes, por transferencia o domiciliación, según lo que acordemos al abrir la cuenta.' ),
+			array( '¿Cómo se paga?', 'Con una factura al mes que se paga a 30 días, por transferencia o domiciliación.' ),
 			array( '¿Puedo cambiar kilos o frecuencia?', 'Sí. Avísenos con 24 a 48 horas laborables para organizar la preparación y la ruta.' ),
 			array( '¿Emiten factura completa?', 'Siempre, con sus datos fiscales. En cada pedido y en el resumen mensual.' ),
 			array( '¿Llegan fuera de Cataluña?', 'A toda la península por mensajería, con entrega al día siguiente por la mañana. Los pedidos de mucho peso fuera de la provincia de Barcelona los estudiamos caso a caso.' ),

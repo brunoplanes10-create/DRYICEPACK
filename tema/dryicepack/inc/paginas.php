@@ -26,7 +26,7 @@ function dipt_paginas() {
 		'que-es'       => array( 'plantilla' => 'que-es', 'es' => 'que-es-el-hielo-seco', 'ca' => 'ca/que-es-el-gel-sec', 'en' => 'en/what-is-dry-ice' ),
 		'seguridad'    => array( 'plantilla' => 'seguridad', 'es' => 'seguridad-del-hielo-seco', 'ca' => 'ca/seguretat-del-gel-sec', 'en' => 'en/dry-ice-safety' ),
 		'contacto'     => array( 'plantilla' => 'contacto', 'es' => 'contacto', 'ca' => 'ca/contacte', 'en' => 'en/contact' ),
-		'guias'        => array( 'plantilla' => 'guias', 'es' => 'guias' ),
+		'guias'        => array( 'plantilla' => 'guias', 'es' => 'guias', 'ca' => 'ca/guies', 'en' => 'en/guides' ),
 		'aviso-legal'  => array( 'plantilla' => 'legal', 'es' => 'aviso-legal', 'ca' => 'ca/avis-legal', 'en' => 'en/legal-notice' ),
 		'privacidad'   => array( 'plantilla' => 'legal', 'es' => 'politica-de-privacidad', 'ca' => 'ca/politica-de-privacitat', 'en' => 'en/privacy-policy' ),
 		'cookies'      => array( 'plantilla' => 'legal', 'es' => 'politica-de-cookies', 'ca' => 'ca/politica-de-galetes', 'en' => 'en/cookie-policy' ),
@@ -39,7 +39,40 @@ function dipt_paginas() {
 			$paginas[ 'zona-' . $clave ] = array( 'plantilla' => 'zona', 'es' => $z['es'], 'ca' => $z['ca'] ?? null, 'en' => $z['en'] ?? null, 'zona' => $clave );
 		}
 	}
+	// Guías (contenido/{idioma}/guias/*.php): páginas hijas de /guias/, /ca/guies/ y /en/guides/ con su slug en cada idioma
+	foreach ( dipt_guias() as $slug => $g ) {
+		$paginas[ 'guia-' . $slug ] = array( 'plantilla' => 'guia', 'es' => 'guias/' . $g['es'], 'ca' => isset( $g['ca'] ) ? 'ca/guies/' . $g['ca'] : null, 'en' => isset( $g['en'] ) ? 'en/guides/' . $g['en'] : null, 'guia' => $slug );
+	}
 	return $paginas;
+}
+
+/** Guías disponibles: slug del archivo (el de castellano) → slug de la dirección en cada idioma. */
+function dipt_guias() {
+	static $guias = null;
+	if ( null !== $guias ) return $guias;
+	$guias = array();
+	foreach ( (array) glob( DIPT_DIR . '/contenido/es/guias/*.php' ) as $archivo ) {
+		$slug = basename( $archivo, '.php' );
+		foreach ( array_keys( dipt_idiomas() ) as $idioma ) {
+			$g = dipt_guia( $slug, $idioma, false );
+			if ( $g ) $guias[ $slug ][ $idioma ] = sanitize_title( $g['slug'] ?? $slug );
+		}
+	}
+	ksort( $guias );
+	return $guias;
+}
+
+/** Datos de una guía en un idioma (sin traducción: castellano, salvo que $respaldo sea false). */
+function dipt_guia( $slug, $idioma = null, $respaldo = true ) {
+	static $cache = array();
+	$idioma = $idioma ?: dipt_idioma();
+	$slug   = sanitize_file_name( $slug );
+	$clave  = $idioma . '/' . $slug . ( $respaldo ? '' : '/x' );
+	if ( isset( $cache[ $clave ] ) ) return $cache[ $clave ];
+	$archivo = DIPT_DIR . '/contenido/' . $idioma . '/guias/' . $slug . '.php';
+	if ( ! file_exists( $archivo ) && $respaldo ) $archivo = DIPT_DIR . '/contenido/es/guias/' . $slug . '.php';
+	$datos = file_exists( $archivo ) ? include $archivo : null;
+	return $cache[ $clave ] = is_array( $datos ) ? $datos : null;
 }
 
 /** Dirección de una página en un idioma (o la de castellano si no está traducida). */
@@ -115,6 +148,7 @@ add_action( 'admin_menu', static function () {
 } );
 
 function dipt_titulo_pagina( $clave, $idioma ) {
+	if ( 'guia' === dipt_paginas()[ $clave ]['plantilla'] ) return dipt_guia( dipt_paginas()[ $clave ]['guia'], $idioma )['titulo'] ?? $clave;
 	$c = dipt_contenido( dipt_paginas()[ $clave ]['plantilla'] === 'zona' ? 'zonas' : $clave, $idioma );
 	if ( 'zona' === dipt_paginas()[ $clave ]['plantilla'] && function_exists( 'dipt_zonas' ) ) {
 		$z = dipt_zonas()[ dipt_paginas()[ $clave ]['zona'] ];
@@ -152,41 +186,10 @@ function dipt_crear_paginas() {
 	return $creadas;
 }
 
-/** Guías iniciales (contenido/es/guias/*.php): se publican como entradas si no existen. */
-function dipt_crear_guias() {
-	$creadas = array();
-	$cat     = get_term_by( 'slug', 'guias', 'category' );
-	$cat_id  = $cat ? (int) $cat->term_id : 0;
-	if ( ! $cat_id ) {
-		$nuevo  = wp_insert_term( 'Guías', 'category', array( 'slug' => 'guias' ) );
-		$cat_id = is_wp_error( $nuevo ) ? 0 : (int) $nuevo['term_id'];
-	}
-	foreach ( (array) glob( DIPT_DIR . '/contenido/es/guias/*.php' ) as $archivo ) {
-		$g = include $archivo;
-		if ( ! is_array( $g ) || empty( $g['slug'] ) ) continue;
-		if ( get_page_by_path( $g['slug'], OBJECT, 'post' ) ) continue;
-		$id = wp_insert_post( array(
-			'post_type'     => 'post',
-			'post_status'   => 'publish',
-			'post_name'     => $g['slug'],
-			'post_title'    => $g['titulo'],
-			'post_excerpt'  => $g['extracto'],
-			'post_content'  => $g['contenido'],
-			'post_category' => $cat_id ? array( $cat_id ) : array(),
-		) );
-		if ( $id && ! is_wp_error( $id ) ) {
-			update_post_meta( $id, 'rank_math_title', $g['seo']['titulo'] );
-			update_post_meta( $id, 'rank_math_description', $g['seo']['descripcion'] );
-			$creadas[] = 'guía ' . $g['slug'];
-		}
-	}
-	return $creadas;
-}
-
 function dipt_pantalla_paginas() {
 	if ( ! current_user_can( 'edit_pages' ) ) return;
 	$creadas = null;
-	if ( isset( $_POST['dipt_crear'] ) && check_admin_referer( 'dipt_crear_paginas' ) ) $creadas = array_merge( dipt_crear_paginas(), dipt_crear_guias() );
+	if ( isset( $_POST['dipt_crear'] ) && check_admin_referer( 'dipt_crear_paginas' ) ) $creadas = dipt_crear_paginas();
 	?>
 	<div class="wrap">
 		<h1>Páginas Dryicepack</h1>

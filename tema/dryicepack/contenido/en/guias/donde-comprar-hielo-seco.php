@@ -1,7 +1,7 @@
 <?php
 /* Guía · Dónde comprar hielo seco · inglés (responde a "where to buy dry ice in Spain", "do pharmacies sell dry ice") */
 return array(
-	'slug'     => 'donde-comprar-hielo-seco',
+	'slug'     => 'where-to-buy-dry-ice',
 	'titulo'   => 'Where to buy dry ice: pharmacy, supermarket or specialist supplier?',
 	'extracto' => 'Pharmacies and supermarkets don’t usually stock it. Here’s why, and where you can actually buy it, with delivery or collection.',
 	'seo'      => array(
@@ -24,7 +24,7 @@ return array(
 <h3>Online shop with delivery</h3>
 <p>You choose the format and the kilos, pay, and it arrives in an EPS box. At DryIcePack, if you order before 12:00 (Spanish time), Monday to Friday, it arrives the next morning anywhere in mainland Spain.</p>
 <h3>Collection from the warehouse</h3>
-<p>If you’re nearby, this is the fastest option, with no delivery charge. Our warehouse is in Mataró (Barcelona) and you can collect Monday to Friday, 9:00 to 18:00, if you let us know in advance.</p>
+<p>If you’re nearby, this is the fastest option, with no delivery charge. Our warehouse is in Mataró (Barcelona) and you can collect Monday to Saturday: you choose the day when ordering and we confirm the time.</p>
 <h3>Industrial gas suppliers</h3>
 <p>For very large quantities and continuous supply to a plant, they work with tailored contracts.</p>
 

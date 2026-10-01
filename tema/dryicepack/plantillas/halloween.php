@@ -64,7 +64,7 @@ $hw_faq = array(
 	),
 	array(
 		'q' => '¿Puedo recogerlo en vuestro almacén?',
-		'a' => 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a viernes. Elige la recogida al finalizar la compra y te confirmamos la franja. Está pensada para clientes del Maresme, el Vallès y el área de Barcelona.',
+		'a' => 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a sábado; el sábado 31 también, con suplemento de 11,74 €. Elige la recogida al finalizar la compra y te confirmamos la hora. Está pensada para clientes del Maresme, el Vallès y el área de Barcelona.',
 	),
 );
 
@@ -325,14 +325,14 @@ get_header();
 					<p class="hw-pack__uso">En casa</p>
 					<p class="hw-pack__kg"><span class="hw-pack__num">3</span> kg</p>
 					<p class="hw-pack__desc">Un caldero o una ponchera para una fiesta en casa.</p>
-					<p class="hw-pack__precio">36,06 € <small>IVA incl. · 29,80 € + IVA</small></p>
+					<p class="hw-pack__precio"><?php echo esc_html( dipt_euros( dipt_precio_pack( 3 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 3 )['sin_iva'] ) ); ?> + IVA</small></p>
 					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir 3 kg</a>
 				</li>
 				<li class="hw-pack">
 					<p class="hw-pack__uso">Fiesta grande</p>
 					<p class="hw-pack__kg"><span class="hw-pack__num">10</span> kg</p>
 					<p class="hw-pack__desc">Varios puntos de niebla o una fiesta de varias horas.</p>
-					<p class="hw-pack__precio">64,49 € <small>IVA incl. · 53,30 € + IVA</small></p>
+					<p class="hw-pack__precio"><?php echo esc_html( dipt_euros( dipt_precio_pack( 10 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 10 )['sin_iva'] ) ); ?> + IVA</small></p>
 					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 10 ) ); ?>">Pedir 10 kg</a>
 				</li>
 				<li class="hw-pack hw-pack--doble">
@@ -341,11 +341,11 @@ get_header();
 					<p class="hw-pack__desc">Para un local o un evento con varios puntos de niebla.</p>
 					<div class="hw-pack__opciones">
 						<div>
-							<p class="hw-pack__precio"><b>15 kg</b> 82,76 € <small>IVA incl. · 68,40 € + IVA</small></p>
+							<p class="hw-pack__precio"><b>15 kg</b> <?php echo esc_html( dipt_euros( dipt_precio_pack( 15 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 15 )['sin_iva'] ) ); ?> + IVA</small></p>
 							<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 15 ) ); ?>">Pedir 15 kg</a>
 						</div>
 						<div>
-							<p class="hw-pack__precio"><b>20 kg</b> 119,31 € <small>IVA incl. · 98,60 € + IVA</small></p>
+							<p class="hw-pack__precio"><b>20 kg</b> <?php echo esc_html( dipt_euros( dipt_precio_pack( 20 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 20 )['sin_iva'] ) ); ?> + IVA</small></p>
 							<a class="hw-btn hw-btn--bloque hw-btn--linea" href="<?php echo esc_url( $hw_pedir( 20 ) ); ?>">Pedir 20 kg</a>
 						</div>
 					</div>
@@ -411,7 +411,7 @@ get_header();
 				</li>
 				<li>
 					<p class="hw-linea__cuando">Recogida en Mataró</p>
-					<p>De lunes a viernes, con franja acordada. Para Maresme, Vallès y área de Barcelona.</p>
+					<p>De lunes a sábado, con hora confirmada. Para Maresme, Vallès y área de Barcelona.</p>
 				</li>
 			</ol>
 			<p class="hw-nota hw-fecha__nota">No lo pidas con muchos días de antelación: el hielo seco sublima poco a poco. Lo ideal es recibirlo la víspera de la fiesta. ¿Tu fiesta es el sábado por la noche y lo recibes el viernes? Elige 16 mm, que aguanta más, o entrega en sábado si tu zona la tiene.</p>

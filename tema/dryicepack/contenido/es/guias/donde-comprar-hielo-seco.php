@@ -24,7 +24,7 @@ return array(
 <h3>Tienda online con envío</h3>
 <p>Eliges formato y kilos, pagas y te llega en una caja de EPS. En DryIcePack, si pides antes de las 12:00 de lunes a viernes, llega al día siguiente por la mañana en toda la península.</p>
 <h3>Recogida en el almacén</h3>
-<p>Si estás cerca, es la opción más rápida y sin gastos de envío. Nuestra nave está en Mataró (Barcelona) y se recoge de lunes a viernes de 9:00 a 18:00, avisando antes.</p>
+<p>Si estás cerca, es la opción más rápida y sin gastos de envío. Nuestra nave está en Mataró (Barcelona) y se recoge de lunes a sábado: eliges el día al pedir y te confirmamos la hora.</p>
 <h3>Proveedores de gases industriales</h3>
 <p>Para cantidades muy grandes y suministro continuo en una planta, trabajan con contratos a medida.</p>
 

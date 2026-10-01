@@ -34,6 +34,7 @@ return array(
 	'boton'     => 'Add and pay',
 	'recogida'  => 'Or collect it free in Mataró (pay in cash on collection).',
 	'max'       => 'Maximum 250 kg per order. For more, ask for a volume price.',
+	'medida'    => 'Over 150 kg outside the province of Barcelona: message us before ordering and we will arrange the delivery.',
 	'confianza' => array( 'Card, Apple Pay or Google Pay', 'Invoices for businesses', 'No account needed' ),
 	'caja' => array(
 		'titulo' => 'What comes|in the box.',

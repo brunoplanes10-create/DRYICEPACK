@@ -55,17 +55,18 @@ Los textos legales tienen un dato marcado `[PENDIENTE]`: la inscripción en el R
 1. Ve a Apariencia → **Páginas Dryicepack** → "Crear las que faltan".
 2. Qué crea:
    - Las páginas nuevas: empresas, sectores, zonas, versiones en catalán (/ca/) y en inglés (/en/), y textos legales.
-   - Las 2 guías iniciales.
+   - Las guías, en castellano (/guias/…), catalán (/ca/guies/…) e inglés (/en/guides/…).
 3. Qué conserva: las páginas que ya existen con la misma dirección. Por ejemplo, /que-es-el-hielo-seco/ y /contacto/ se reutilizan y el tema les pone el diseño y el texto nuevos.
 4. La tabla de esa pantalla marca en verde cada dirección que ya existe.
 
 ### 5. Enlaces permanentes
 Ve a Ajustes → Enlaces permanentes:
-- **Estructura personalizada:** `/guias/%postname%/`. Las guías quedan en /guias/nombre/. WordPress redirige solo las entradas antiguas a su nueva dirección.
+- **Estructura:** déjala como está ("Nombre de la entrada", `/%postname%/`). Las guías son páginas y ya tienen su dirección.
 - **Base de producto:** déjala como está (`/producto/`). La ficha sigue en /producto/hielo-seco/.
 - Pulsa **Guardar cambios** aunque no cambies nada: así se regeneran las reglas de direcciones del tema nuevo.
 
 ### 6. Ajustes de WooCommerce
+- **Precio del pack de 15 kg:** Productos → Hielo seco → Variaciones. En las dos de 15 kg (3 mm y 16 mm), precio **75,90** (sin IVA). Las páginas y la de Halloween leen el precio de WooCommerce y se actualizan solas.
 - **WooCommerce → Ajustes → Avanzado → Página de términos y condiciones:** "Condiciones de venta".
 - **Ajustes → Privacidad** (de WordPress) → Página de política de privacidad: "Política de privacidad".
 - **WooCommerce → Ajustes → Envío → zona España:**
@@ -82,15 +83,15 @@ Ve a menú **Dryicepack → Ajustes**:
 
 | Campo | Qué poner |
 |---|---|
-| Google Analytics 4 | El ID `G-…` (Site Kit → Analytics lo muestra). Se carga **solo** si el visitante acepta las cookies |
+| Google Analytics 4 | Viene puesto: `G-G1272ZSS41`. Se carga **solo** si el visitante acepta las cookies |
 | Correo de avisos | info@dryicepack.es (facturas pedidas, solicitudes de cuenta y presupuestos) |
 | Festivos sin salida ni entrega | Vienen cargados los de Cataluña de 2026 y 2027. Añade los locales de Mataró, uno por línea (AAAA-MM-DD) |
-| Enlace para reseñas de Google | El enlace "Pedir reseñas" de Google Business Profile. Va en el email de pedido completado |
+| Enlace para reseñas de Google | Viene puesto (tu enlace de g.page). Va en el email de pedido completado |
 | Factura completa obligatoria desde | 400 € (lo acordado con la gestoría) |
 | Recordatorio de reposición | Actívalo cuando quieras. Avisa a las cuentas de empresa que lo aceptaron cuando les toca repetir el pedido, con un enlace para darse de baja |
 
 ### 8. Site Kit (Google Analytics)
-Si has puesto el ID de GA4 en el paso 7, en Site Kit desactiva que inserte su código de Analytics: Site Kit → Ajustes → Analytics → Editar → código de seguimiento: **No**.
+Como el ID de GA4 ya está en el plugin, en Site Kit desactiva que inserte su código de Analytics: Site Kit → Ajustes → Analytics → Editar → código de seguimiento: **No**.
 - Si no lo desactivas, Analytics se carga dos veces y cada visita se cuenta doble. Además, el código de Site Kit no espera al banner de cookies del plugin.
 - Search Console y los informes de Site Kit siguen funcionando igual.
 - Si hay un plugin de cookies anterior (Complianz u otro), desactívalo: el banner ya lo pone el plugin.
@@ -122,15 +123,18 @@ Desactívalos **después** de las pruebas del paso 11 (y con la tienda funcionan
    - El total debe ser 81,81 € (64,49 € + envío 17,32 €, IVA incluido).
    - Elige fecha y paga con tarjeta. Usa WooPayments en modo prueba o un pedido real que después reembolsas.
 3. **Pedido con recogida:**
-   - Tiene que aparecer solo "Efectivo al recoger", sin coste de envío.
+   - Tiene que aparecer solo "Efectivo al recoger", sin coste de envío de lunes a viernes. El sábado suma 11,74 €.
+   - Se puede elegir de lunes a sábado, también los festivos.
    - Con un código postal de fuera de Cataluña sale un aviso.
-4. **Sábado:** elige un sábado como fecha de entrega. Debe sumar 11,74 € (IVA incluido).
-5. **Más de 400 €:** sin razón social ni NIF no deja pagar. Con B66800103 sí.
-6. **Factura:** en la página de gracias, el botón "¿Necesitas factura?" abre /factura/. Rellénalo y comprueba que llega el aviso a info@ y que queda la nota en el pedido.
-7. **Cookies:** el banner tiene Aceptar, Rechazar y Elegir. Con "Rechazar", Analytics no se carga (en el navegador: F12 → Red → filtrar "gtag").
-8. **Formularios:** envía uno de contacto y comprueba que llega al email de avisos y a Dryicepack → Solicitudes.
-9. **Idioma:** cambia a CA y a EN desde el selector. Después vuelve a una página en castellano: debe salir en castellano.
-10. **WP Rocket:** vacía la caché (WP Rocket → Vaciar caché) y repite la prueba 2.
+   - En el pedido (WooCommerce → Pedidos), escribe la hora en "Hora de recogida" y elige **Acciones del pedido → Confirmar recogida al cliente (email)**. Al cliente le llega el día, la hora, la dirección, el importe en efectivo y los avisos para el coche. La lista de pedidos marca "Confirmada" o "Sin confirmar".
+4. **Más de 150 kg fuera de la provincia de Barcelona:** con un código postal de Madrid (28001) y 160 kg, el envío desaparece y sale el aviso con WhatsApp, teléfono y email. Con un código postal 08… se puede comprar hasta 250 kg.
+5. **Sábado:** elige un sábado como fecha de entrega. Debe sumar 11,74 € (IVA incluido).
+6. **Más de 400 €:** sin razón social ni NIF no deja pagar. Con B66800103 sí.
+7. **Factura:** en la página de gracias, el botón "¿Necesitas factura?" abre /factura/. Rellénalo y comprueba que llega el aviso a info@ y que queda la nota en el pedido.
+8. **Cookies:** el banner tiene Aceptar, Rechazar y Elegir. Con "Rechazar", Analytics no se carga (en el navegador: F12 → Red → filtrar "gtag").
+9. **Formularios:** envía uno de contacto y comprueba que llega al email de avisos y a Dryicepack → Solicitudes.
+10. **Idioma:** cambia a CA y a EN desde el selector. Después vuelve a una página en castellano: debe salir en castellano.
+11. **WP Rocket:** vacía la caché (WP Rocket → Vaciar caché) y repite la prueba 2.
     - Si el selector de fechas no responde, ve a WP Rocket → Archivos → Retrasar la ejecución de JavaScript → Exclusiones.
     - Añade `dryicepack-tienda` y `jquery`.
 

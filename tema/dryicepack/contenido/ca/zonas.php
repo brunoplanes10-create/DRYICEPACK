@@ -33,7 +33,7 @@ return array(
 			'filas'  => array(
 				array( 'Comanda abans de les 12:00', 'Arriba l\'endemà al matí, de dimarts a divendres.' ),
 				array( 'Dissabte', 'Segons el codi postal, amb un suplement d\'11,74 €.' ),
-				array( 'Recollida', 'Gratis a Mataró, de dilluns a divendres de 9:00 a 18:00, a {km} km de {nombre}.' ),
+				array( 'Recollida', 'A Mataró, a {km} km de {nombre}, de dilluns a dissabte. Gratis entre setmana; et confirmem l\'hora.' ),
 				array( 'Enviament de 10 kg', '17,32 € amb IVA, el mateix preu que a tota la península.' ),
 				array( 'Empreses del {comarca}', 'Compte amb preu propi i factura mensual.' ),
 			),

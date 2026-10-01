@@ -17,12 +17,14 @@ function dip_festivos_por_defecto() {
 }
 
 function dip_ajustes_por_defecto() {
+	// GA4 y reseñas de serie solo en la web real: las copias de prueba no envían datos a Analytics
+	$produccion = false !== strpos( (string) wp_parse_url( home_url(), PHP_URL_HOST ), 'dryicepack.es' );
 	return array(
-		'ga4'               => '',
+		'ga4'               => $produccion ? 'G-G1272ZSS41' : '',
 		'email_avisos'      => 'info@dryicepack.es',
 		'festivos'          => implode( "\n", dip_festivos_por_defecto() ),
 		'recordatorios'     => 0,
-		'resenas_url'       => '',
+		'resenas_url'       => 'https://g.page/r/CTbZyC_fpj4LECE/review',
 		'limite_factura'    => 400,
 	);
 }

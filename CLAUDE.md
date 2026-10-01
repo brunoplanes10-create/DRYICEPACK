@@ -16,12 +16,14 @@ Antes de cada tarea, di qué especialistas intervienen y aplica sus estándares 
 - **DryIcePack** (dryicepack.es), marca de INDUNOVA IMS S.L. (B66800103), Mataró (Barcelona).
 - **Producto:** hielo seco (CO₂ sólido, −78,5 °C) en **pellets de 3 mm y nuggets de 16 mm**. No inventes otros formatos.
   - Producto WooCommerce variable `hielo-seco` (ID 261). Atributos `pa_peso` (3, 10, 15, 20 kg) y `pa_formato` (3mm, 16mm).
-  - Precios (iguales en 3 y 16 mm, + IVA): 3 kg 29,80 € · 10 kg 53,30 € · 15 kg 68,40 € · 20 kg 98,60 €. Caja EPS de 40 mm/lado incluida.
-  - Máximo 250 kg por pedido.
+  - Precios (iguales en 3 y 16 mm, + IVA): 3 kg 29,80 € · 10 kg 53,30 € · 15 kg 75,90 € (subido desde 68,40 € el 01/10/2026; el pack de 15 kg va en la caja grande, la misma que el de 20 kg) · 20 kg 98,60 €. Caja EPS de 40 mm/lado incluida. El precio por kilo baja con cada pack.
+  - Máximo 250 kg por pedido. **Más de 150 kg fuera de la provincia de Barcelona:** sin envío online, el cliente escribe (WhatsApp, teléfono o email) y se prepara a medida, más caro. El proveedor solo sirve más de 150 kg dentro de la provincia. Más de 200 kg: a veces reparto propio (consultar).
+  - Cuentas de empresa: factura mensual a **30 días**.
   - **Envío (tarifa del 31/08/2026, igual en toda la península, sin IVA):** hasta 2 kg 8,53 € · hasta 5 kg 10,32 € · hasta 10 kg 13,19 € · cada kg de más 1,12 €. Se calcula sobre el peso facturable: hielo + 1 kg por caja, redondeado al alza.
 - **Logística:** MRW, España peninsular. Pedido antes de las **12:00** → entrega el siguiente día laborable por la mañana. Sin entregas en domingo ni lunes.
   - **Sábado:** según zona, suplemento de **9,70 € + IVA (11,74 € IVA incluido)**.
-  - **Recogida en almacén:** Camí Ca La Madrona 19 D, 08304 Mataró. Gratis, L–V 9:00–18:00 avisando antes. En el checkout aparece debajo del envío y avisa si el código postal no es de Cataluña. **Recogida = solo pago en efectivo** al recoger (método "contra reembolso" renombrado); el efectivo no se ofrece en pedidos con envío. Es el pedido de mayor margen.
+  - **Festivos:** no se envía si hay festivo en Mataró, en Cataluña o en toda España, ni se entrega en un día festivo de MRW en el destino (calendario por oficina en mrw.es/oficina_transporte_urgente/mrw_festividades.asp). Toda automatización tiene que avisar por email si falla y tener una alternativa manual.
+  - **Recogida en almacén:** Camí Ca La Madrona 19 D, 08304 Mataró. De lunes a sábado, también festivos (nunca en domingo). Gratis entre semana; el sábado lleva el suplemento de sábado. **La hora la confirma la empresa** (teléfono o WhatsApp, y email "Confirmar recogida" desde el pedido). En el checkout aparece debajo del envío y avisa si el código postal no es de Cataluña. **Recogida = solo pago en efectivo** al recoger (método "contra reembolso" renombrado); el efectivo no se ofrece en pedidos con envío. Es el pedido de mayor margen.
   - Suministro programado semanal, quincenal o mensual con mejor precio.
 - **Contacto:** 936 73 76 41 · info@dryicepack.es · L–V 9:00–18:00.
 - **Hosting:** Arsys. Cloudflare delante.
@@ -193,7 +195,7 @@ Todo contenido que explique un uso incluye estos avisos, o enlaza a /seguridad-d
   8. FAQ con schema
   9. CTA final
 - **Fecha límite:** Halloween cae en sábado. Pedido antes de las **12:00 del jueves 29/10** → entrega el viernes 30. Para el sábado 31: pedido antes de las 12:00 del viernes 30, según zona y con suplemento de 11,74 € (IVA incl.). También recogida en Mataró.
-- **Promoción:** código de descuento `[PENDIENTE: código e importe]`. Sin urgencias falsas: la única urgencia es la fecha logística.
+- **Promoción:** sin descuento (decidido el 01/10/2026). Nunca subir el precio para anunciar una rebaja: el precio anterior de una rebaja tiene que ser el más bajo de los últimos 30 días (art. 20 de la Ley de Ordenación del Comercio Minorista). Sin urgencias falsas: la única urgencia es la fecha logística.
 - **Estética:** negro y naranja, niebla animada y fotos reales. Oscuro y elegante, sin gore.
 - **Calendario:**
 

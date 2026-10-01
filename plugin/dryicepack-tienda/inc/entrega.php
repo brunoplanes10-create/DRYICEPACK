@@ -36,13 +36,14 @@ add_action( 'woocommerce_checkout_update_order_review', static function ( $post_
 add_action( 'woocommerce_cart_calculate_fees', static function ( $carrito ) {
 	if ( is_admin() && ! wp_doing_ajax() ) return;
 	if ( ! is_checkout() && ! wp_doing_ajax() ) return;
-	if ( 'envio' !== dip_metodo_elegido() ) return;
-	$fecha = dip_fecha_elegida( 'envio' );
+	// Entrega en sábado y también recogida en sábado
+	$metodo = dip_metodo_elegido();
+	$fecha  = dip_fecha_elegida( $metodo );
 	if ( ! $fecha ) return;
 	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', $fecha, dip_zona_horaria() );
 	if ( ! $d || 6 !== (int) $d->format( 'N' ) ) return;
 	$t = dip_textos_tienda();
-	$carrito->add_fee( $t['suplemento_sabado'], (float) DIP_SATURDAY_SURCHARGE_EXCL_TAX, true );
+	$carrito->add_fee( 'recogida' === $metodo ? $t['suplemento_sabado_recogida'] : $t['suplemento_sabado'], (float) DIP_SATURDAY_SURCHARGE_EXCL_TAX, true );
 }, 20 );
 
 /* ---------- Bloque "Entrega": método + día. Se repinta con cada actualización del checkout. ---------- */
@@ -83,11 +84,15 @@ function dip_html_entrega() {
 		);
 	}
 	echo '</fieldset>';
+	// Más de 150 kg fuera de la provincia de Barcelona: el envío se prepara a medida (solo queda la recogida)
+	$kg = dip_carrito_kg()['kg'];
+	$cp = WC()->customer ? ( WC()->customer->get_shipping_postcode() ?: WC()->customer->get_billing_postcode() ) : '';
+	if ( dip_envio_a_medida( $kg, $cp ) ) echo dip_html_envio_a_medida(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escapado en la función
 	if ( 'recogida' === $metodo ) {
 		echo '<p class="dip-aviso dip-aviso--lejos" data-dip-aviso-lejos hidden>' . esc_html( $t['recogida_lejos'] ) . '</p>';
 	}
 
-	$fechas = dip_fechas_disponibles( $metodo, 'recogida' === $metodo ? 5 : 6 );
+	$fechas = dip_fechas_disponibles( $metodo, 6 );
 	echo '<fieldset class="dip-fechas"><legend class="dip-leyenda">' . esc_html( 'recogida' === $metodo ? $t['que_dia_recogida'] : $t['que_dia'] ) . '</legend><div class="dip-fechas__lista">';
 	foreach ( $fechas as $f ) {
 		$corta = dip_fecha_corta( $f['fecha'], $idioma );
@@ -106,10 +111,26 @@ function dip_html_entrega() {
 	}
 	echo '</div>';
 	$hay_sabado = (bool) array_filter( $fechas, static fn( $f ) => $f['sabado'] );
-	echo '<p class="dip-fechas__nota">' . esc_html( $t['corte'] );
-	if ( 'envio' === $metodo && $hay_sabado ) echo ' ' . esc_html( $t['sabado_nota'] );
+	echo '<p class="dip-fechas__nota">';
+	if ( 'recogida' === $metodo ) {
+		echo esc_html( $t['recogida_confirmar'] );
+	} else {
+		echo esc_html( $t['corte'] );
+		if ( $hay_sabado ) echo ' ' . esc_html( $t['sabado_nota'] );
+	}
 	echo '</p></fieldset></div>';
 	return ob_get_clean();
+}
+
+/** Aviso con WhatsApp, teléfono y email para pedidos de más de 150 kg fuera de la provincia de Barcelona. */
+function dip_html_envio_a_medida() {
+	$t = dip_textos_tienda();
+	$c = dip_contacto();
+	$w = 'https://wa.me/' . $c['whatsapp_num'] . '?text=' . rawurlencode( $t['a_medida_whatsapp'] );
+	return '<div class="dip-aviso dip-aviso--medida"><p><strong>' . esc_html( $t['a_medida_titulo'] ) . '</strong> ' . esc_html( $t['a_medida_texto'] ) . '</p><p>'
+		. '<a href="' . esc_url( $w ) . '" target="_blank" rel="noopener">WhatsApp ' . esc_html( $c['whatsapp'] ) . '</a> · '
+		. '<a href="' . esc_url( $c['telefono_href'] ) . '">' . esc_html( $c['telefono'] ) . '</a> · '
+		. '<a href="mailto:' . esc_attr( $c['email'] ) . '">' . esc_html( $c['email'] ) . '</a></p></div>';
 }
 
 function dip_svg_furgoneta() {
@@ -197,25 +218,85 @@ function dip_texto_entrega( WC_Order $pedido, $idioma = null ) {
 	return $tipo . ': ' . dip_fecha_larga( $fecha, $idioma );
 }
 
+function dip_es_pedido_de_recogida( WC_Order $pedido ) {
+	return 'recogida' === $pedido->get_meta( '_dip_metodo_entrega' );
+}
+
 add_action( 'woocommerce_admin_order_data_after_shipping_address', static function ( $pedido ) {
 	$texto = dip_texto_entrega( $pedido, 'es' );
 	if ( $texto ) echo '<p><strong>' . esc_html( $texto ) . '</strong></p>';
+	if ( ! dip_es_pedido_de_recogida( $pedido ) ) return;
+	// Recogida: la confirma la empresa. Hora para el email "Tu pedido está listo" (Acciones del pedido → Confirmar recogida).
+	$confirmada = (string) $pedido->get_meta( '_dip_recogida_confirmada' );
+	printf(
+		'<p class="form-field form-field-wide"><label for="dip_hora_recogida">Hora de recogida (para el email al cliente)</label><input type="text" id="dip_hora_recogida" name="dip_hora_recogida" value="%s" placeholder="p. ej. 10:30 o entre 16:00 y 18:00"></p><p>%s</p>',
+		esc_attr( (string) $pedido->get_meta( '_dip_hora_recogida' ) ),
+		$confirmada ? esc_html( 'Recogida confirmada al cliente el ' . wp_date( 'j/n/Y H:i', (int) $confirmada ) . '.' ) : '<em>' . esc_html( 'Recogida sin confirmar: escribe la hora y elige "Confirmar recogida al cliente" en Acciones del pedido.' ) . '</em>'
+	);
 } );
+
+/* Guardar la hora antes de que WooCommerce ejecute la acción del pedido (prioridad 50). */
+add_action( 'woocommerce_process_shop_order_meta', static function ( $pedido_id ) {
+	if ( ! isset( $_POST['dip_hora_recogida'] ) ) return; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verificó el nonce del pedido
+	$pedido = wc_get_order( $pedido_id );
+	if ( ! $pedido ) return;
+	$pedido->update_meta_data( '_dip_hora_recogida', sanitize_text_field( wp_unslash( $_POST['dip_hora_recogida'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$pedido->save_meta_data();
+}, 10 );
+
+add_filter( 'woocommerce_order_actions', static function ( $acciones, $pedido = null ) {
+	$pedido = $pedido instanceof WC_Order ? $pedido : ( isset( $GLOBALS['theorder'] ) && $GLOBALS['theorder'] instanceof WC_Order ? $GLOBALS['theorder'] : null );
+	if ( $pedido && dip_es_pedido_de_recogida( $pedido ) ) $acciones['dip_confirmar_recogida'] = 'Confirmar recogida al cliente (email)';
+	return $acciones;
+}, 10, 2 );
+
+add_action( 'woocommerce_order_action_dip_confirmar_recogida', 'dip_enviar_confirmacion_recogida' );
+
+/** Email "Tu pedido está listo para recoger" en el idioma del pedido, con día, hora, dirección e importe en efectivo. */
+function dip_enviar_confirmacion_recogida( WC_Order $pedido ) {
+	$idioma = (string) $pedido->get_meta( '_dip_idioma' ) ?: 'es';
+	$t      = dip_textos_tienda( $idioma );
+	$c      = dip_contacto();
+	$fecha  = (string) $pedido->get_meta( '_dip_fecha_entrega' );
+	$hora   = trim( (string) $pedido->get_meta( '_dip_hora_recogida' ) );
+	$cuando = ( $fecha ? dip_fecha_larga( $fecha, $idioma ) : '' ) . ( $hora ? ' · ' . $hora : '' );
+	$pago   = 'cod' === $pedido->get_payment_method() ? sprintf( $t['recogida_lista_pago'], wp_strip_all_tags( wc_price( $pedido->get_total(), array( 'currency' => $pedido->get_currency() ) ) ) ) : '';
+	$cuerpo = '<p>' . esc_html( sprintf( $t['recogida_lista_hola'], $pedido->get_billing_first_name() ) ) . '</p>'
+		. '<p style="font-size:18px"><strong>' . esc_html( $cuando ) . '</strong></p>'
+		. '<p>' . esc_html( $c['direccion'] . ', ' . $c['cp'] . ' ' . $c['localidad'] ) . '<br><a href="' . esc_url( $c['mapa'] ) . '">' . esc_html( $t['recogida_lista_mapa'] ) . '</a></p>'
+		. ( $pago ? '<p>' . esc_html( $pago ) . '</p>' : '' )
+		. '<p>' . esc_html( $t['recogida_lista_seguridad'] ) . '</p>'
+		. '<p>' . esc_html( sprintf( $t['recogida_lista_cambio'], $c['telefono'], $c['whatsapp'] ) ) . '</p>';
+	$mailer = WC()->mailer();
+	$asunto = sprintf( $t['recogida_lista_asunto'], $pedido->get_order_number() );
+	$html   = $mailer->wrap_message( $asunto, $cuerpo );
+	$ok     = $mailer->send( $pedido->get_billing_email(), $asunto, $html );
+	if ( $ok ) {
+		$pedido->update_meta_data( '_dip_recogida_confirmada', (string) time() );
+		$pedido->save_meta_data();
+	}
+	$pedido->add_order_note( $ok ? 'Recogida confirmada al cliente por email: ' . $cuando . '.' : 'No se pudo enviar el email de confirmación de recogida.' );
+}
 
 add_action( 'woocommerce_email_after_order_table', static function ( $pedido, $a_admin, $texto_plano ) {
 	if ( ! $pedido instanceof WC_Order ) return;
 	$texto = dip_texto_entrega( $pedido, $a_admin ? 'es' : null );
 	if ( ! $texto ) return;
+	// Al cliente que recoge: se le avisa de que confirmamos la hora antes
+	$nota = ( ! $a_admin && dip_es_pedido_de_recogida( $pedido ) ) ? dip_textos_tienda( (string) $pedido->get_meta( '_dip_idioma' ) ?: 'es' )['recogida_confirmar'] : '';
 	if ( $texto_plano ) {
-		echo "\n" . esc_html( $texto ) . "\n";
+		echo "\n" . esc_html( $texto ) . "\n" . ( $nota ? esc_html( $nota ) . "\n" : '' );
 		return;
 	}
-	echo '<p style="margin:16px 0;font-size:16px"><strong>' . esc_html( $texto ) . '</strong></p>';
+	echo '<p style="margin:16px 0;font-size:16px"><strong>' . esc_html( $texto ) . '</strong>' . ( $nota ? '<br><span style="font-size:14px">' . esc_html( $nota ) . '</span>' : '' ) . '</p>';
 }, 5, 3 );
 
 add_action( 'woocommerce_order_details_after_order_table', static function ( $pedido ) {
 	$texto = dip_texto_entrega( $pedido );
-	if ( $texto ) echo '<p class="dip-entrega-pedido">' . esc_html( $texto ) . '</p>';
+	if ( ! $texto ) return;
+	echo '<p class="dip-entrega-pedido">' . esc_html( $texto );
+	if ( dip_es_pedido_de_recogida( $pedido ) ) echo '<br><small>' . esc_html( dip_textos_tienda()['recogida_confirmar'] ) . '</small>';
+	echo '</p>';
 }, 5 );
 
 /* Columna "Entrega" en la lista de pedidos (tablas modernas y antiguas). */
@@ -239,7 +320,9 @@ function dip_columna_entrega( $columna, $pedido ) {
 		return;
 	}
 	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', $fecha, dip_zona_horaria() );
-	echo esc_html( ( 'recogida' === $pedido->get_meta( '_dip_metodo_entrega' ) ? 'Recoge ' : '' ) . ( $d ? wp_date( 'D j M', $d->getTimestamp() ) : $fecha ) );
+	$recoge = dip_es_pedido_de_recogida( $pedido );
+	echo esc_html( ( $recoge ? 'Recoge ' : '' ) . ( $d ? wp_date( 'D j M', $d->getTimestamp() ) : $fecha ) );
+	if ( $recoge ) echo '<br><small>' . esc_html( $pedido->get_meta( '_dip_recogida_confirmada' ) ? 'Confirmada' : 'Sin confirmar' ) . '</small>';
 }
 add_action( 'manage_woocommerce_page_wc-orders_custom_column', 'dip_columna_entrega', 10, 2 );
 add_action( 'manage_shop_order_posts_custom_column', 'dip_columna_entrega', 10, 2 );

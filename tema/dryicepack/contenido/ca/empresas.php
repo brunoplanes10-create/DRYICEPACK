@@ -29,7 +29,7 @@ return array(
 		'titulo' => 'El que canvia|amb un <em>compte.</em>',
 		'lista'  => array(
 			array( 'Preu propi', 'Segons el volum i la freqüència. S\'acorda una vegada i no cal negociar-lo a cada comanda.' ),
-			array( 'Una factura al mes', 'Totes les comandes del mes, en una factura completa. Pagament per transferència o domiciliació.' ),
+			array( 'Una factura al mes', 'Totes les comandes del mes, en una factura completa. Pagament a 30 dies per transferència o domiciliació.' ),
 			array( 'Dades desades', 'Raó social, NIF i adreça d\'entrega: no s\'han de tornar a escriure.' ),
 			array( 'Recordatori, si el vol', 'Si demana amb un ritme fix, l\'avisem quan toca. Es desactiva amb un clic.' ),
 			array( 'Sense permanència', 'S\'atura o s\'ajusta quan canviï la seva activitat.' ),
@@ -41,9 +41,9 @@ return array(
 		'cajas'   => '%1$s caixes · %2$s kg',
 		'caja'    => '1 caixa · %s kg',
 		'notas'   => array(
-			'web'   => 'Fins a 250 kg per comanda, al web o amb el seu compte.',
+			'web'   => 'Fins a 250 kg per comanda al web o amb el seu compte (150 kg fora de la província de Barcelona).',
 			'bcn'   => 'Més de 150 kg a la província de Barcelona: entrega a les seves instal·lacions, consulti el termini.',
-			'fuera' => 'Molt pes fora de la província de Barcelona: ho estudiem cas per cas.',
+			'fuera' => 'Més de 150 kg fora de la província de Barcelona: escrigui\'ns i li donem preu i dia. L\'enviament surt més car.',
 		),
 	),
 	'casos' => array(
@@ -80,7 +80,7 @@ return array(
 		'titulo' => 'Preguntes d\'empresa',
 		'lista'  => array(
 			array( 'Hi ha comanda mínima?', 'Al web, des de 3 kg. Amb compte d\'empresa l\'ajustem al seu consum.' ),
-			array( 'Com es paga?', 'Amb una factura al mes, per transferència o domiciliació, segons el que acordem en obrir el compte.' ),
+			array( 'Com es paga?', 'Amb una factura al mes que es paga a 30 dies, per transferència o domiciliació.' ),
 			array( 'Puc canviar quilos o freqüència?', 'Sí. Avisi\'ns amb 24 a 48 hores laborables per organitzar la preparació i la ruta.' ),
 			array( 'Emeten factura completa?', 'Sempre, amb les seves dades fiscals. A cada comanda i en el resum mensual.' ),
 			array( 'Arriben fora de Catalunya?', 'A tota la península per missatgeria, amb entrega l\'endemà al matí. Les comandes de molt pes fora de la província de Barcelona les estudiem cas per cas.' ),

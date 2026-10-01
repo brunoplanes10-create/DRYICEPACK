@@ -13,3 +13,12 @@
 .gu-compra__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.2rem 2rem; }
 .gu-compra .t-h3 { color: #fff; }
 @media (max-width: 900px) { .gu-cuerpo { grid-template-columns: 1fr; } .gu-indice { position: static; } }
+
+/* Para seguir: enlaces a la seguridad, la compra, los envíos y la otra guía */
+.gu-seguir { padding-block: clamp(2rem, 4vw, 3rem); border-top: 1px solid var(--c-linea); }
+.gu-seguir .dato { margin: 0 0 1rem; text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; color: var(--c-acero); }
+.gu-seguir ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; max-width: 44rem; }
+.gu-seguir a { display: flex; align-items: baseline; gap: .8rem; padding: .7rem 0; border-bottom: 1px solid var(--c-linea); color: var(--c-tinta); text-decoration: none; font-size: 1.05rem; transition: color var(--d-corta) var(--e-salida); }
+.gu-seguir a::before { content: "→"; font-family: var(--f-mono); color: var(--c-marino); transition: transform var(--d-corta) var(--e-salida); }
+.gu-seguir a:hover, .gu-seguir a:focus-visible { color: var(--c-marino); }
+.gu-seguir a:hover::before { transform: translateX(4px); }

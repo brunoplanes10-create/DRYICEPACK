@@ -31,8 +31,8 @@ return array(
 		'marcas' => array(
 			array( 3, 'Des de 3 kg', 'Proves i comandes petites.' ),
 			array( 150, 'Més de 150 kg', 'A la província de Barcelona, entrega a les seves instal·lacions. Consulti el termini.' ),
-			array( 250, 'Fins a 250 kg', 'Per comanda en línia, a tota la península.' ),
-			array( 400, 'Més volum', 'Fora de la província de Barcelona, cas per cas.' ),
+			array( 250, 'Fins a 250 kg', 'Per comanda en línia a la província de Barcelona. A la resta de la península, en línia fins a 150 kg.' ),
+			array( 400, 'Més volum', 'Més de 200 kg: consulti\'ns, el podem portar nosaltres. Fora de la província de Barcelona, enviament a mida.' ),
 		),
 	),
 	'compras' => array(

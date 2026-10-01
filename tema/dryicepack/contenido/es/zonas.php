@@ -34,7 +34,7 @@ return array(
 			'filas'  => array(
 				array( 'Pedido antes de las 12:00', 'Llega al día siguiente por la mañana, de martes a viernes.' ),
 				array( 'Sábado', 'Según el código postal, con suplemento de 11,74 €.' ),
-				array( 'Recogida', 'Gratis en Mataró, de lunes a viernes de 9:00 a 18:00, a {km} km de {nombre}.' ),
+				array( 'Recogida', 'En Mataró, a {km} km de {nombre}, de lunes a sábado. Gratis entre semana; te confirmamos la hora.' ),
 				array( 'Envío de 10 kg', '17,32 € con IVA, el mismo precio que en toda la península.' ),
 				array( 'Empresas de {comarca}', 'Cuenta con precio propio y factura mensual.' ),
 			),

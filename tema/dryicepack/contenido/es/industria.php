@@ -31,8 +31,8 @@ return array(
 		'marcas' => array(
 			array( 3, 'Desde 3 kg', 'Pruebas y pedidos pequeños.' ),
 			array( 150, 'Más de 150 kg', 'En la provincia de Barcelona, entrega en sus instalaciones. Consulte el plazo.' ),
-			array( 250, 'Hasta 250 kg', 'Por pedido online, a toda la península.' ),
-			array( 400, 'Más volumen', 'Fuera de la provincia de Barcelona, caso a caso.' ),
+			array( 250, 'Hasta 250 kg', 'Por pedido online en la provincia de Barcelona. Al resto de la península, online hasta 150 kg.' ),
+			array( 400, 'Más volumen', 'Más de 200 kg: consúltenos, podemos llevarlo nosotros. Fuera de la provincia de Barcelona, envío a medida.' ),
 		),
 	),
 	'compras' => array(

@@ -1,7 +1,7 @@
 <?php
 /* Guia · Com fer boira amb gel sec (respon a "on comprar gel sec per fer fum", "gel sec per fer fum"). El slug es manté igual que en castellà. */
 return array(
-	'slug'     => 'como-hacer-niebla-con-hielo-seco',
+	'slug'     => 'com-fer-boira-amb-gel-sec',
 	'titulo'   => 'Com fer boira amb gel sec, pas a pas',
 	'extracto' => 'Aigua calenta, un recipient ample i pèl·lets de 3 mm. Quant en necessites segons la festa i com fer-ho sense risc.',
 	'seo'      => array(

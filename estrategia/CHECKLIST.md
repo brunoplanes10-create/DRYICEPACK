@@ -13,7 +13,7 @@ Para comprobarlo:
 
 | # | Punto | Estado | Qué hay y cómo se ha comprobado |
 |---|---|---|---|
-| 1 | Aviso legal | **Falta un dato** | /aviso-legal/ en ES, CA y EN: razón social, NIF, domicilio social, nave, email y teléfono (LSSI art. 10). Falta la inscripción en el Registro Mercantil, marcada `[PENDIENTE]`; el PDF antiguo también la tenía vacía. Conviene que la gestoría revise los cuatro textos legales. |
+| 1 | Aviso legal | **Hecho, con un dato pendiente** | /aviso-legal/ en ES, CA y EN: razón social, NIF, domicilio social, nave, email y teléfono de la web. Por decisión del propietario (01/10/2026) se publica sin la inscripción en el Registro Mercantil, que el art. 10 de la LSSI pide a las sociedades: conviene añadirla en cuanto se tenga. |
 | 2 | Política de privacidad | **Falta un paso** (6) | /politica-de-privacidad/: responsable, finalidades, base legal, plazos, quién más ve los datos (Arsys y Cloudflare, WooPayments/Stripe, la mensajería, la gestoría y Google Analytics solo con consentimiento) y derechos ante la AEPD. Hay que elegirla en Ajustes → Privacidad. |
 | 3 | Cookies | **Falta un paso** (8) | Banner con Aceptar, Rechazar y Elegir, los tres igual de visibles. Google Consent Mode v2 empieza en "denegado" y GA4 se carga solo tras aceptar. Fuera la atribución de pedidos de WooCommerce, que ponía cookies de seguimiento sin pedirlas. Política en /politica-de-cookies/. Hay que quitar el código de Analytics de Site Kit. |
 | 4 | HTTPS | **Hecho** | La web ya va en HTTPS con Cloudflare. El tema construye todas las direcciones con `home_url()`, sin rutas fijas en http, así que no hay contenido mixto. |
@@ -38,7 +38,7 @@ Para comprobarlo:
 
 | Pendiente | Quién | Notas |
 |---|---|---|
-| Inscripción en el Registro Mercantil para el aviso legal | Propietario / gestoría | Tomo, folio, hoja e inscripción |
+| Inscripción en el Registro Mercantil para el aviso legal | Propietario / gestoría | Tomo, folio, hoja e inscripción. De momento se publica sin ella. |
 | Revisión de los textos legales | Gestoría o abogado | Domicilio social (Ronda Alfonso X El Sabio 10) frente al email y teléfono de contacto de la web |
 | Precio del pack de 20 kg | Propietario | 98,60 € + IVA rompe la escala: por kilo sale más caro que el de 15 kg (68,40 €) |
 | Bizum | Propietario | Necesita un TPV de Redsys con el banco. Las cuentas de empresa ya pueden pagar con factura mensual. |

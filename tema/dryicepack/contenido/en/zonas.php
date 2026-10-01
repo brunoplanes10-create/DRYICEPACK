@@ -33,7 +33,7 @@ return array(
 			'filas'  => array(
 				array( 'Order before 12:00', 'Arrives the next morning, Tuesday to Friday.' ),
 				array( 'Saturday', 'Depending on the postcode, with a €11.74 surcharge.' ),
-				array( 'Collection', 'Free in Mataró, Monday to Friday, 9:00 to 18:00, {km} km from {nombre}.' ),
+				array( 'Collection', 'In Mataró, {km} km from {nombre}, Monday to Saturday. Free on weekdays; we confirm the time.' ),
 				array( '10 kg delivery', '€17.32 incl. VAT, the same price as anywhere in mainland Spain.' ),
 				array( 'Businesses in {comarca}', 'An account with your own price and a monthly invoice.' ),
 			),

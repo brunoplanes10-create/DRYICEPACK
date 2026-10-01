@@ -347,7 +347,7 @@ get_header();
 					<p class="hw-pack__desc">Para un local o un evento con varios puntos de niebla.</p>
 					<div class="hw-pack__opciones">
 						<div>
-							<p class="hw-pack__precio"><b>15 kg</b> 82,76 € <small>IVA incl. · 68,40 € + IVA</small></p>
+							<p class="hw-pack__precio"><b>15 kg</b> 91,84 € <small>IVA incl. · 75,90 € + IVA</small></p>
 							<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 15 ) ); ?>">Pedir 15 kg</a>
 						</div>
 						<div>
