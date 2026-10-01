@@ -89,7 +89,8 @@ if ( class_exists( 'WooCommerce' ) ) {
 $wcp = (array) get_option( 'woocommerce_permalinks', array() );
 $wcp['product_base'] = 'producto';
 update_option( 'woocommerce_permalinks', $wcp );
-if ( function_exists( 'dipt_crear_paginas' ) ) dipt_crear_paginas();
+if ( function_exists( 'dipt_crear_paginas' ) ) { dipt_crear_paginas(); dipt_crear_guias(); }
+$GLOBALS['wp_rewrite']->set_permalink_structure( '/guias/%postname%/' );
 flush_rewrite_rules();
 echo 'ok';
 `;

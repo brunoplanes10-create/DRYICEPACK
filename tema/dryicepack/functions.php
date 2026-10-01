@@ -4,6 +4,7 @@
  *
  *   inc/setup.php        Soportes del tema y limpieza del <head>
  *   inc/idiomas.php      Idioma de la visita y textos comunes (castellano, catalán, inglés)
+ *   inc/zonas.php        Zonas de entrega: datos reales (distancia, tiempo, mapa) para las páginas por ciudad y comarca
  *   inc/paginas.php      Registro de páginas: plantilla, traducciones, hreflang y creación de las que falten
  *   inc/datos.php        Datos del negocio (vienen del plugin dryicepack-tienda; aquí solo hay respaldo)
  *   inc/componentes.php  Imágenes, iconos, botones y piezas comunes
@@ -22,6 +23,7 @@ define( 'DIPT_URI', get_template_directory_uri() );
 
 require DIPT_DIR . '/inc/setup.php';
 require DIPT_DIR . '/inc/idiomas.php';
+require DIPT_DIR . '/inc/zonas.php';
 require DIPT_DIR . '/inc/paginas.php';
 require DIPT_DIR . '/inc/datos.php';
 require DIPT_DIR . '/inc/componentes.php';

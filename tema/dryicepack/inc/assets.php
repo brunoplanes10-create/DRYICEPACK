@@ -21,6 +21,7 @@ function dipt_hoja_pagina() {
 	if ( $clave ) {
 		$plantilla = dipt_paginas()[ $clave ]['plantilla'] ?? '';
 		if ( in_array( $plantilla, array( 'hosteleria', 'transporte', 'industria', 'laboratorios', 'eventos' ), true ) ) return 'sector-' . $plantilla;
+		if ( 'factura' === $plantilla ) return 'pagina';
 		return $plantilla;
 	}
 	if ( is_singular( 'post' ) ) return 'guia';

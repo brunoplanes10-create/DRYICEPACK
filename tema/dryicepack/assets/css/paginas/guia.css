@@ -1,0 +1,15 @@
+/* Guía (entrada): lectura con índice lateral */
+.gu-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2rem, 4vw, 3rem); background: var(--c-escarcha); }
+.gu-cabeza h1 { margin: 1rem 0 .8rem; max-width: 22ch; }
+.gu-cuerpo { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+.gu-indice { position: sticky; top: calc(var(--alto-cabecera) + 1.5rem); align-self: start; }
+.gu-indice .dato { text-transform: uppercase; letter-spacing: .1em; color: var(--c-acero); margin-bottom: .8rem; }
+.gu-indice ol { margin: 0; padding-left: 1.1rem; display: grid; gap: .5rem; font-size: .92rem; }
+.gu-indice a { color: var(--c-acero); text-decoration: none; }
+.gu-indice a:hover { color: var(--c-tinta); text-decoration: underline; }
+.gu-texto .resumen { padding: 1.2rem 1.4rem; border-left: 3px solid var(--c-marino); background: var(--c-escarcha); border-radius: 0 14px 14px 0; font-size: 1.12rem; }
+.gu-texto h2 { scroll-margin-top: calc(var(--alto-cabecera) + 1rem); }
+.gu-compra { padding: clamp(2.5rem, 5vw, 4rem) 0; }
+.gu-compra__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.2rem 2rem; }
+.gu-compra .t-h3 { color: #fff; }
+@media (max-width: 900px) { .gu-cuerpo { grid-template-columns: 1fr; } .gu-indice { position: static; } }

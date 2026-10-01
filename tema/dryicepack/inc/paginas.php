@@ -152,10 +152,41 @@ function dipt_crear_paginas() {
 	return $creadas;
 }
 
+/** Guías iniciales (contenido/es/guias/*.php): se publican como entradas si no existen. */
+function dipt_crear_guias() {
+	$creadas = array();
+	$cat     = get_term_by( 'slug', 'guias', 'category' );
+	$cat_id  = $cat ? (int) $cat->term_id : 0;
+	if ( ! $cat_id ) {
+		$nuevo  = wp_insert_term( 'Guías', 'category', array( 'slug' => 'guias' ) );
+		$cat_id = is_wp_error( $nuevo ) ? 0 : (int) $nuevo['term_id'];
+	}
+	foreach ( (array) glob( DIPT_DIR . '/contenido/es/guias/*.php' ) as $archivo ) {
+		$g = include $archivo;
+		if ( ! is_array( $g ) || empty( $g['slug'] ) ) continue;
+		if ( get_page_by_path( $g['slug'], OBJECT, 'post' ) ) continue;
+		$id = wp_insert_post( array(
+			'post_type'     => 'post',
+			'post_status'   => 'publish',
+			'post_name'     => $g['slug'],
+			'post_title'    => $g['titulo'],
+			'post_excerpt'  => $g['extracto'],
+			'post_content'  => $g['contenido'],
+			'post_category' => $cat_id ? array( $cat_id ) : array(),
+		) );
+		if ( $id && ! is_wp_error( $id ) ) {
+			update_post_meta( $id, 'rank_math_title', $g['seo']['titulo'] );
+			update_post_meta( $id, 'rank_math_description', $g['seo']['descripcion'] );
+			$creadas[] = 'guía ' . $g['slug'];
+		}
+	}
+	return $creadas;
+}
+
 function dipt_pantalla_paginas() {
 	if ( ! current_user_can( 'edit_pages' ) ) return;
 	$creadas = null;
-	if ( isset( $_POST['dipt_crear'] ) && check_admin_referer( 'dipt_crear_paginas' ) ) $creadas = dipt_crear_paginas();
+	if ( isset( $_POST['dipt_crear'] ) && check_admin_referer( 'dipt_crear_paginas' ) ) $creadas = array_merge( dipt_crear_paginas(), dipt_crear_guias() );
 	?>
 	<div class="wrap">
 		<h1>Páginas Dryicepack</h1>

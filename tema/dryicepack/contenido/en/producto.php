@@ -1,0 +1,81 @@
+<?php
+/* Comprar (ficha de producto) · inglés */
+return array(
+	'menu' => 'Buy dry ice',
+	'seo'  => array(
+		'titulo'      => 'Buy dry ice online: 3, 10, 15 and 20 kg | DryIcePack',
+		'descripcion' => 'Buy dry ice as 3 mm pellets or 16 mm nuggets. See the final price with delivery before you pay. Order before 12:00 and it arrives tomorrow morning.',
+	),
+	'migas'   => array( 'Home', 'Buy dry ice' ),
+	'titulo'  => 'Buy dry ice',
+	'sub'     => '3 mm pellets or 16 mm nuggets, in a 40 mm EPS box. See the final price with delivery before you pay.',
+	'galeria' => array(
+		'3mm'  => array( array( 'caja-3mm', 'Open box of 3 mm dry ice pellets, with vapour' ), array( 'cenital-3mm', 'Top view of 3 mm dry ice pellets' ), array( 'caja-3mm-lateral', 'EPS box of 3 mm pellets with the lid propped against it' ) ),
+		'16mm' => array( array( 'caja-16mm-niebla', 'Open box of 16 mm dry ice nuggets, with vapour' ), array( 'cenital-16mm', 'Top view of 16 mm dry ice nuggets' ), array( 'cenital-caja-nuggets', 'Open EPS box of 16 mm nuggets, seen from above' ) ),
+	),
+	'formato' => 'Format',
+	'formatos' => array(
+		'3mm'  => array( '3 mm pellets', 'Cools faster. More fog.' ),
+		'16mm' => array( '16 mm nuggets', 'Lasts longer. Transport and samples.' ),
+	),
+	'kilos'     => 'Kilos per box',
+	'cajas'     => 'Boxes',
+	'menos'     => 'Remove a box',
+	'mas'       => 'Add a box',
+	'cp'        => 'Your postcode (to see the date)',
+	'cp_ph'     => '08301',
+	'llega'     => 'Arrives on the morning of %s',
+	'llega_hoy' => 'Order before 12:00 (Spanish time) for delivery on the morning of %s',
+	'fuera'     => 'We deliver to mainland Spain. For the islands, Ceuta or Melilla, message us.',
+	'precio'    => 'Dry ice',
+	'envio'     => 'Delivery',
+	'total'     => 'Total',
+	'iva'       => 'VAT included',
+	'boton'     => 'Add and pay',
+	'recogida'  => 'Or collect it free in Mataró (pay in cash on collection).',
+	'max'       => 'Maximum 250 kg per order. For more, ask for a volume price.',
+	'confianza' => array( 'Card, Apple Pay or Google Pay', 'Invoices for businesses', 'No account needed' ),
+	'caja' => array(
+		'titulo' => 'What comes|in the box.',
+		'capas'  => array(
+			array( 'EPS lid', 'Fits without an airtight seal: the gas escapes little by little.' ),
+			array( 'Dry ice', '3 mm pellets or 16 mm nuggets, at −78.5 °C.' ),
+			array( '40 mm EPS box', 'Thick polystyrene walls: they insulate and slow down sublimation.' ),
+		),
+	),
+	'comparar' => array(
+		'titulo' => '3 mm or 16 mm:|<em>drag</em> to compare.',
+		'izq'    => array( '3 mm', 'Lots of surface area. Cools in minutes and makes more fog. For cocktails, effects and processes.' ),
+		'der'    => array( '16 mm', 'More mass per piece. Lasts more hours. For transport, samples and the cold chain.' ),
+		'rango'  => 'Slide to compare 3 mm and 16 mm',
+	),
+	'cuanto' => array(
+		'titulo' => 'How much|<em>do I need?</em>',
+		'texto'  => 'Guide quantities for fog. For transport or samples it depends on the hours and the volume: we’ll work it out for you.',
+		'casos'  => array(
+			array( '3 kg', 'At home', 'A cauldron, a punch bowl with a double container, a small party.' ),
+			array( '10 kg', 'Big party', 'Fog across the floor in several rounds through the night.' ),
+			array( '15–20 kg', 'Bar or event', 'A long service, a stage or several bars.' ),
+		),
+		'calcula' => 'Ask us on WhatsApp',
+	),
+	'tarifa' => array(
+		'titulo' => 'What delivery|<em>costs.</em>',
+		'texto'  => 'The courier’s rate, the same across mainland Spain. It’s based on the weight of the ice plus 1 kg per box.',
+		'filas'  => array( array( 'Up to 2 kg', 8.53 ), array( 'Up to 5 kg', 10.32 ), array( 'Up to 10 kg', 13.19 ), array( 'Each extra kg', 1.12 ) ),
+		'extra'  => array( array( 'Saturday delivery (depending on area)', 9.70 ), array( 'Collection in Mataró', 0 ) ),
+		'nota'   => 'Prices include VAT.',
+		'gratis' => 'Free',
+	),
+	'faq' => array(
+		'titulo' => 'Before you pay',
+		'lista'  => array(
+			array( 'When will it arrive?', 'If you order before 12:00, Monday to Friday, it leaves that day and arrives the next morning. We don’t deliver on Sunday or Monday. You choose the day at checkout.' ),
+			array( 'How long does the ice last in the box?', 'It depends on the temperature and how often the box is opened. Order it for the day you’ll use it and don’t open the box until then. If you need it for several days, message us and we’ll work it out.' ),
+			array( 'Need an invoice?', 'If you’re buying for a company or as self-employed, tick the box at checkout and enter the company name and tax ID. If you forget, we’ll send you a link to request it.' ),
+			array( 'Can I return it?', 'Dry ice sublimates from the moment it leaves us, so there is no right of withdrawal. If it arrives with any problem, call us the same day.' ),
+			array( 'How do I store it when it arrives?', 'In its box, with the lid on but not taped shut, somewhere ventilated and out of reach of children and pets. Never in the freezer or an airtight container.' ),
+		),
+	),
+	'barra' => 'Total',
+);

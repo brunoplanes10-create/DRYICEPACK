@@ -1,0 +1,81 @@
+<?php
+/* Comprar (fitxa de producte) · català */
+return array(
+	'menu' => 'Comprar gel sec',
+	'seo'  => array(
+		'titulo'      => 'Comprar gel sec: 3, 10, 15 i 20 kg | DryIcePack',
+		'descripcion' => 'Compra gel sec en pèl·lets de 3 mm o nuggets de 16 mm. Veus el preu final amb enviament abans de pagar. Demana abans de les 12:00 i arriba demà.',
+	),
+	'migas'   => array( 'Inici', 'Comprar gel sec' ),
+	'titulo'  => 'Comprar gel sec',
+	'sub'     => 'Pèl·lets de 3 mm o nuggets de 16 mm, en caixa EPS de 40 mm. Preu final amb enviament abans de pagar.',
+	'galeria' => array(
+		'3mm'  => array( array( 'caja-3mm', 'Caixa de gel sec en pèl·lets de 3 mm oberta, amb vapor' ), array( 'cenital-3mm', 'Pèl·lets de gel sec de 3 mm vistos des de dalt' ), array( 'caja-3mm-lateral', 'Caixa EPS amb pèl·lets de 3 mm i la tapa recolzada' ) ),
+		'16mm' => array( array( 'caja-16mm-niebla', 'Caixa de gel sec en nuggets de 16 mm oberta, amb vapor' ), array( 'cenital-16mm', 'Nuggets de gel sec de 16 mm vistos des de dalt' ), array( 'cenital-caja-nuggets', 'Caixa EPS oberta amb nuggets de 16 mm, vista zenital' ) ),
+	),
+	'formato' => 'Format',
+	'formatos' => array(
+		'3mm'  => array( 'Pèl·lets de 3 mm', 'Refreda més de pressa. Més boira.' ),
+		'16mm' => array( 'Nuggets de 16 mm', 'Dura més. Transport i mostres.' ),
+	),
+	'kilos'     => 'Quilos per caixa',
+	'cajas'     => 'Caixes',
+	'menos'     => 'Una caixa menys',
+	'mas'       => 'Una caixa més',
+	'cp'        => 'El teu codi postal (per veure la data)',
+	'cp_ph'     => '08301',
+	'llega'     => 'Arriba el %s al matí',
+	'llega_hoy' => 'Si demanes abans de les 12:00, arriba el %s al matí',
+	'fuera'     => 'Enviem a la península. Per a les illes, Ceuta o Melilla, escriu-nos.',
+	'precio'    => 'Gel sec',
+	'envio'     => 'Enviament',
+	'total'     => 'Total',
+	'iva'       => 'IVA inclòs',
+	'boton'     => 'Afegir i pagar',
+	'recogida'  => 'O recull-lo gratis a Mataró (es paga en efectiu en recollir-lo).',
+	'max'       => 'Màxim 250 kg per comanda. Per a més quantitat, demana preu per volum.',
+	'confianza' => array( 'Targeta, Apple Pay o Google Pay', 'Factura per a empreses', 'Sense crear cap compte' ),
+	'caja' => array(
+		'titulo' => 'Què arriba|a la caixa.',
+		'capas'  => array(
+			array( 'Tapa d\'EPS', 'Encaixa sense tancar hermèticament: el gas surt a poc a poc.' ),
+			array( 'Gel sec', 'Pèl·lets de 3 mm o nuggets de 16 mm, a −78,5 °C.' ),
+			array( 'Caixa d\'EPS de 40 mm', 'Parets gruixudes de poliestirè: aïllen i frenen la sublimació.' ),
+		),
+	),
+	'comparar' => array(
+		'titulo' => '3 mm o 16 mm:|<em>arrossega</em> i compara.',
+		'izq'    => array( '3 mm', 'Molta superfície. Refreda en minuts i fa més boira. Per a còctels, efectes i processos.' ),
+		'der'    => array( '16 mm', 'Més massa per peça. Dura més hores. Per a transport, mostres i cadena de fred.' ),
+		'rango'  => 'Llisca per comparar 3 mm i 16 mm',
+	),
+	'cuanto' => array(
+		'titulo' => 'Quant|<em>en necessito?</em>',
+		'texto'  => 'Quantitats orientatives per fer boira. Per a transport o mostres depèn de les hores i del volum: t\'ho calculem.',
+		'casos'  => array(
+			array( '3 kg', 'A casa', 'Un calder, una ponxera amb doble recipient, una festa petita.' ),
+			array( '10 kg', 'Festa gran', 'Boira arran de terra en diverses tandes durant la nit.' ),
+			array( '15–20 kg', 'Bar o esdeveniment', 'Servei llarg, escenari o diverses barres.' ),
+		),
+		'calcula' => 'Pregunta\'ns per WhatsApp',
+	),
+	'tarifa' => array(
+		'titulo' => 'El que costa|<em>l\'enviament.</em>',
+		'texto'  => 'Tarifa de la missatgeria, igual a tota la península. Es calcula sobre el pes del gel més 1 kg per caixa.',
+		'filas'  => array( array( 'Fins a 2 kg', 8.53 ), array( 'Fins a 5 kg', 10.32 ), array( 'Fins a 10 kg', 13.19 ), array( 'Cada kg de més', 1.12 ) ),
+		'extra'  => array( array( 'Entrega en dissabte (segons la zona)', 9.70 ), array( 'Recollida a Mataró', 0 ) ),
+		'nota'   => 'Preus amb IVA inclòs.',
+		'gratis' => 'Gratis',
+	),
+	'faq' => array(
+		'titulo' => 'Abans de pagar',
+		'lista'  => array(
+			array( 'Quan arriba?', 'Si demanes abans de les 12:00 de dilluns a divendres, surt aquell dia i arriba l\'endemà al matí. No repartim ni diumenge ni dilluns. Tries el dia en el pagament.' ),
+			array( 'Quant dura el gel a la caixa?', 'Depèn de la temperatura i de quant s\'obri la caixa. Demana\'l per al dia que el faràs servir i no obris la caixa fins aleshores. Si el necessites per a diversos dies, escriu-nos i ho calculem.' ),
+			array( 'Necessito factura?', 'Si compres per a una empresa o com a autònom, marca la casella en pagar i posa-hi la raó social i el NIF. Si te n\'oblides, t\'enviem un enllaç per demanar-la.' ),
+			array( 'El puc tornar?', 'El gel sec se sublima des que surt, així que no té dret de desistiment. Si arriba amb qualsevol problema, truca\'ns aquell mateix dia.' ),
+			array( 'Com el guardo quan el rebo?', 'A la seva caixa, tancada amb la tapa però sense precintar, en un lloc ventilat i fora de l\'abast de nens i mascotes. Mai al congelador ni en un recipient hermètic.' ),
+		),
+	),
+	'barra' => 'Total',
+);

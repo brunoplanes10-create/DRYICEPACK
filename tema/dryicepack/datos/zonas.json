@@ -1,0 +1,171 @@
+{
+ "nave": [
+  41.5533687,
+  2.4528255
+ ],
+ "zonas": {
+  "barcelona": {
+   "nombre": "Barcelona",
+   "tipo": "ciudad",
+   "comarca": "Barcelonès",
+   "lat": 41.3826,
+   "lon": 2.1771,
+   "km": 36,
+   "min": 33
+  },
+  "maresme": {
+   "nombre": "el Maresme",
+   "tipo": "comarca",
+   "comarca": "Maresme",
+   "lat": 41.54,
+   "lon": 2.4449,
+   "km": 2,
+   "min": 6
+  },
+  "valles-occidental": {
+   "nombre": "el Vallès Occidental",
+   "tipo": "comarca",
+   "comarca": "Vallès Occidental",
+   "lat": 41.5461,
+   "lon": 2.1083,
+   "km": 46,
+   "min": 40
+  },
+  "valles-oriental": {
+   "nombre": "el Vallès Oriental",
+   "tipo": "comarca",
+   "comarca": "Vallès Oriental",
+   "lat": 41.608,
+   "lon": 2.2876,
+   "km": 20,
+   "min": 20
+  },
+  "baix-llobregat": {
+   "nombre": "el Baix Llobregat",
+   "tipo": "comarca",
+   "comarca": "Baix Llobregat",
+   "lat": 41.3813,
+   "lon": 2.0446,
+   "km": 46,
+   "min": 42
+  },
+  "mataro": {
+   "nombre": "Mataró",
+   "tipo": "ciudad",
+   "comarca": "Maresme",
+   "lat": 41.54,
+   "lon": 2.4449,
+   "km": 2,
+   "min": 6
+  },
+  "badalona": {
+   "nombre": "Badalona",
+   "tipo": "ciudad",
+   "comarca": "Barcelonès",
+   "lat": 41.4494,
+   "lon": 2.2483,
+   "km": 25,
+   "min": 23
+  },
+  "hospitalet": {
+   "nombre": "L'Hospitalet de Llobregat",
+   "tipo": "ciudad",
+   "comarca": "Barcelonès",
+   "lat": 41.3595,
+   "lon": 2.0996,
+   "km": 45,
+   "min": 40
+  },
+  "sabadell": {
+   "nombre": "Sabadell",
+   "tipo": "ciudad",
+   "comarca": "Vallès Occidental",
+   "lat": 41.5461,
+   "lon": 2.1083,
+   "km": 46,
+   "min": 40
+  },
+  "terrassa": {
+   "nombre": "Terrassa",
+   "tipo": "ciudad",
+   "comarca": "Vallès Occidental",
+   "lat": 41.563,
+   "lon": 2.01,
+   "km": 52,
+   "min": 41
+  },
+  "granollers": {
+   "nombre": "Granollers",
+   "tipo": "ciudad",
+   "comarca": "Vallès Oriental",
+   "lat": 41.608,
+   "lon": 2.2876,
+   "km": 20,
+   "min": 20
+  },
+  "rubi": {
+   "nombre": "Rubí",
+   "tipo": "ciudad",
+   "comarca": "Vallès Occidental",
+   "lat": 41.4936,
+   "lon": 2.0319,
+   "km": 49,
+   "min": 41
+  },
+  "sant-cugat": {
+   "nombre": "Sant Cugat del Vallès",
+   "tipo": "ciudad",
+   "comarca": "Vallès Occidental",
+   "lat": 41.4708,
+   "lon": 2.0849,
+   "km": 44,
+   "min": 38
+  },
+  "martorell": {
+   "nombre": "Martorell",
+   "tipo": "ciudad",
+   "comarca": "Baix Llobregat",
+   "lat": 41.4744,
+   "lon": 1.9307,
+   "km": 64,
+   "min": 52
+  },
+  "cornella": {
+   "nombre": "Cornellà de Llobregat",
+   "tipo": "ciudad",
+   "comarca": "Baix Llobregat",
+   "lat": 41.3557,
+   "lon": 2.0706,
+   "km": 45,
+   "min": 42
+  },
+  "el-prat": {
+   "nombre": "El Prat de Llobregat",
+   "tipo": "ciudad",
+   "comarca": "Baix Llobregat",
+   "lat": 41.3306,
+   "lon": 2.0931,
+   "km": 47,
+   "min": 43
+  },
+  "mollet": {
+   "nombre": "Mollet del Vallès",
+   "tipo": "ciudad",
+   "comarca": "Vallès Oriental",
+   "lat": 41.5393,
+   "lon": 2.2131,
+   "km": 29,
+   "min": 25
+  },
+  "sant-boi": {
+   "nombre": "Sant Boi de Llobregat",
+   "tipo": "ciudad",
+   "comarca": "Baix Llobregat",
+   "lat": 41.3241,
+   "lon": 2.0511,
+   "km": 54,
+   "min": 56
+  }
+ },
+ "fuente": "OpenStreetMap (Nominatim) y OSRM, 2026-09-30"
+}

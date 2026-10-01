@@ -1,0 +1,11 @@
+/* Guías (índice): lista editorial */
+.gs-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2rem, 4vw, 3rem); background: var(--c-papel); }
+.gs-cabeza h1 { margin: 1rem 0 1rem; color: var(--c-marino); }
+.gs-entradas { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--c-tinta); }
+.gs-entradas a { display: grid; grid-template-columns: clamp(4rem, 9vw, 8rem) minmax(0, 1.2fr) minmax(0, 1fr); grid-template-areas: "n titulo resumen" "n meta resumen"; gap: .4rem 2rem; padding: clamp(1.4rem, 3vw, 2.4rem) 0; border-bottom: 1px solid var(--c-linea-fuerte); text-decoration: none; transition: background-color .4s; }
+.gs-entradas a:hover { background: var(--c-escarcha); }
+.gs-entradas__n { grid-area: n; font-family: var(--f-display); font-size: clamp(3rem, 6vw, 5rem); line-height: .85; color: var(--c-hielo); -webkit-text-stroke: 1px var(--c-marino); }
+.gs-entradas__titulo { grid-area: titulo; font-family: var(--f-display); font-size: clamp(1.6rem, 2.8vw, 2.4rem); line-height: 1.08; }
+.gs-entradas__resumen { grid-area: resumen; color: var(--c-acero); align-self: center; }
+.gs-entradas__meta { grid-area: meta; color: var(--c-acero); }
+@media (max-width: 800px) { .gs-entradas a { grid-template-columns: 3.5rem 1fr; grid-template-areas: "n titulo" "n resumen" "n meta"; } }

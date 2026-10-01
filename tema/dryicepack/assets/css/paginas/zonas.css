@@ -1,0 +1,17 @@
+/* =========================================================================
+   Zonas de entrega (índice)
+   ========================================================================= */
+@import url(zona.css);
+.zs-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); }
+.zs-hero__in { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.zs-hero h1 { margin: 1.2rem 0 1.4rem; color: #fff; }
+.zs-hero h1 em { color: var(--c-hielo); }
+.zs-hero .entrada { color: var(--c-hielo-claro); }
+@media (max-width: 900px) { .zs-hero__in { grid-template-columns: 1fr; } }
+.zs-comarcas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--hueco); margin-top: 2rem; }
+.zs-comarca h3 { font-family: var(--f-display); font-weight: 400; font-size: 1.8rem; margin-bottom: .8rem; padding-bottom: .6rem; border-bottom: 1px solid var(--c-tinta); }
+.zs-comarca ul { list-style: none; margin: 0; padding: 0; }
+.zs-comarca a { display: flex; justify-content: space-between; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--c-linea-fuerte); text-decoration: none; transition: padding .4s var(--e-salida); }
+.zs-comarca a:hover { padding-left: .6rem; }
+.zs-comarca .dato { color: var(--c-acero); }
+.zs-resto { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; align-items: center; }

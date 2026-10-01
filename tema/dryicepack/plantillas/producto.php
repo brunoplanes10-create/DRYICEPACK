@@ -12,6 +12,11 @@ $packs = dipt_packs();
 $iva   = dipt_factor_iva();
 $kg0   = isset( $packs['10'] ) ? 10 : (float) array_key_first( $packs );
 $f0    = '16mm';
+// Selección desde un enlace: ?kg=10&formato=3mm (página de Halloween, guías)
+$kg_url = isset( $_GET['kg'] ) ? (string) (float) wp_unslash( $_GET['kg'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$f_url  = isset( $_GET['formato'] ) ? sanitize_key( wp_unslash( $_GET['formato'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+if ( '' !== $kg_url && isset( $packs[ $kg_url ] ) ) $kg0 = (float) $kg_url;
+if ( in_array( $f_url, array( '3mm', '16mm' ), true ) ) $f0 = $f_url;
 $v0    = null;
 foreach ( dipt_variaciones() as $v ) if ( (float) $v['kg'] === (float) $kg0 && $f0 === $v['formato'] ) $v0 = $v;
 $p0    = dipt_precio_pack( $kg0 );

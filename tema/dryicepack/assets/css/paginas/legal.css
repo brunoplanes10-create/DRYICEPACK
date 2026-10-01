@@ -1,0 +1,16 @@
+/* Textos legales: documento con índice fijo */
+.lg-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2rem, 4vw, 3rem); background: var(--c-escarcha); border-bottom: 1px solid var(--c-linea-fuerte); }
+.lg-cabeza h1 { margin: 1rem 0 .6rem; }
+.lg-cuerpo { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: var(--seccion); }
+.lg-indice { position: sticky; top: calc(var(--alto-cabecera) + 1.5rem); align-self: start; }
+.lg-indice ol { list-style: none; margin: 0; padding: 0; counter-reset: lg; display: grid; gap: .2rem; border-left: 1px solid var(--c-linea-fuerte); }
+.lg-indice li { counter-increment: lg; }
+.lg-indice a { display: block; padding: .4rem 0 .4rem 1rem; margin-left: -1px; border-left: 2px solid transparent; font-size: .9rem; color: var(--c-acero); text-decoration: none; }
+.lg-indice a::before { content: counter(lg, decimal-leading-zero) "  "; font-family: var(--f-mono); font-size: .75rem; }
+.lg-indice a:hover { color: var(--c-tinta); border-left-color: var(--c-marino); }
+.lg-texto section { scroll-margin-top: calc(var(--alto-cabecera) + 1rem); }
+.lg-texto section:first-child h2 { margin-top: 0; }
+.lg-texto h2 { display: flex; gap: 1rem; align-items: baseline; }
+.lg-texto h2 .dato { color: var(--c-marino); font-size: .8rem; }
+.lg-texto table { display: block; overflow-x: auto; }
+@media (max-width: 900px) { .lg-cuerpo { grid-template-columns: 1fr; } .lg-indice { position: static; } }

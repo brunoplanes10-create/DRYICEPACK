@@ -99,7 +99,9 @@ function dipt_precio_pack( $kg ) {
 	);
 }
 
+/** 81,81 € en castellano y catalán; €81.81 en inglés. */
 function dipt_euros( $n, $decimales = 2 ) {
+	if ( 'en' === dipt_idioma() ) return '€' . number_format( (float) $n, $decimales, '.', ',' );
 	return number_format( (float) $n, $decimales, ',', '.' ) . ' €';
 }
 
