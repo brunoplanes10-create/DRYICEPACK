@@ -12,7 +12,7 @@ const F = '.tmp/fuentes/';
 // [nombre, origen, anchos, recorte {left, top, width, height} en píxeles del original ya girado, ajuste]
 const lista = [
   // Fotos reales del producto
-  ['caja-16mm-niebla', H + 'IMG_3591 (3).jpeg', [640, 1000, 1500], { left: 180, top: 700, width: 2843, height: 2700 }, 'oscura'],
+  ['caja-16mm-niebla', H + 'IMG_3591 (3).jpeg', [640, 800, 1000, 1500], { left: 180, top: 700, width: 2843, height: 2700 }, 'oscura'],
   ['caja-3mm', H + 'IMG_3576.jpeg', [640, 1000], { left: 0, top: 900, width: 3024, height: 2900 }, 'oscura'],
   ['caja-16mm-lateral', F + 'HIELO-SECO-16MM.jpeg', [480, 900, 1400], null, 'oscura'],
   ['caja-3mm-lateral', F + 'HIELO-SECO-3MM.jpeg', [480, 900, 1400], null, 'oscura'],

@@ -3,7 +3,7 @@
 return array(
 	'seo'        => array(
 		'titulo'      => 'Condiciones de venta del hielo seco | DryIcePack',
-		'descripcion' => 'Condiciones de venta de DryIcePack: precios, pago, factura, plazos de entrega, recogida en Mataró, sábado, incidencias y por qué el hielo seco no tiene desistimiento.',
+		'descripcion' => 'Condiciones de venta de DryIcePack: precios, pago, factura, plazos, recogida en Mataró, entregas en sábado, incidencias y por qué no hay desistimiento.',
 	),
 	'titulo'     => 'Condiciones de venta',
 	'actualizado'=> 'Última actualización: 30 de septiembre de 2026',

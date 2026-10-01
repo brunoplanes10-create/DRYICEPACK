@@ -3,7 +3,7 @@
 return array(
 	'menu' => 'Zonas de entrega',
 	'seo'  => array(
-		'titulo'      => 'Zonas de entrega de hielo seco cerca de Barcelona | DryIcePack',
+		'titulo'      => 'Hielo seco cerca de Barcelona: zonas de entrega | DryIcePack',
 		'descripcion' => 'Hielo seco en Barcelona, el Maresme, el Vallès y el Baix Llobregat: entrega al día siguiente por la mañana o recogida gratis en nuestra nave de Mataró.',
 	),
 	'mapa'   => 'Mapa con la nave de Mataró en el centro, anillos cada 10 km y las zonas de entrega',
@@ -17,7 +17,9 @@ return array(
 	),
 	'zona' => array(
 		'seo_titulo'      => 'Hielo seco en {nombre}: entrega mañana | DryIcePack',
-		'seo_descripcion' => 'Hielo seco en {nombre}: pide antes de las 12:00 y llega al día siguiente por la mañana, o recógelo en nuestra nave de Mataró, a {km} km. Desde 3 kg.',
+		'seo_descripcion' => 'Hielo seco en {nombre}: pide antes de las 12:00 y llega al día siguiente por la mañana, o recógelo gratis en nuestra nave de Mataró, a {km} km. Desde 3 kg.',
+		// Para nombres largos (la descripción no debe pasar de 155 caracteres)
+		'seo_descripcion_corta' => 'Hielo seco en {nombre}: pide antes de las 12:00 y llega al día siguiente por la mañana, o recógelo gratis en Mataró, a {km} km. Desde 3 kg.',
 		'migas'   => array( 'Inicio', 'Zonas', '{Nombre}' ),
 		'titulo'  => 'Hielo seco en|<em>{nombre}.</em>',
 		'texto'   => 'Pide antes de las 12:00 y te lo llevamos a {nombre} al día siguiente por la mañana. O recógelo en nuestra nave de Mataró, a {km} km.',

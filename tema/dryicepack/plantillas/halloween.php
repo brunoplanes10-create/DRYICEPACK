@@ -460,7 +460,7 @@ get_header();
 					<a class="hw-btn" href="<?php echo esc_url( $hw_tel ); ?>">Llamar 936 73 76 41</a>
 					<a class="hw-btn hw-btn--linea" href="<?php echo esc_url( $hw_whatsapp ); ?>" rel="noopener">Escribir por WhatsApp</a>
 				</div>
-				<p class="hw-nota">L–V, 9:00–18:00 · <a href="<?php echo esc_url( home_url( '/programar-suministro-de-hielo-seco/' ) ); ?>">Programar suministro de hielo seco</a></p>
+				<p class="hw-nota">L–V, 9:00–18:00 · <a href="<?php echo esc_url( dipt_url( 'empresas' ) ); ?>">Programar suministro de hielo seco</a></p>
 			</div>
 		</div>
 	</section>

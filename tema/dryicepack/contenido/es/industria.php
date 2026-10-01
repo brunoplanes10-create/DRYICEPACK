@@ -4,7 +4,7 @@ return array(
 	'menu' => 'Hielo seco industrial',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco industrial: volumen y fecha cerrada | DryIcePack',
-		'descripcion' => 'Hielo seco para industria: enfriar piezas y baterías, ensayos, montaje por contracción y transporte. Hasta 250 kg online y más en la provincia de Barcelona.',
+		'descripcion' => 'Hielo seco para industria: enfriar piezas y baterías, ensayos, montaje por contracción y transporte. Hasta 250 kg online; más en la provincia de Barcelona.',
 	),
 	'migas' => array( 'Inicio', 'Usos', 'Industria' ),
 	'hero'  => array(

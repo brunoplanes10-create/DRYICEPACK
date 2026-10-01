@@ -25,10 +25,11 @@ add_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
 add_action( 'wp_enqueue_scripts', static function () {
 	// Atribución de pedidos (cookies de seguimiento): no se usa y así no hace falta pedir consentimiento para ella.
 	foreach ( array( 'sourcebuster-js', 'wc-order-attribution' ) as $h ) wp_dequeue_script( $h );
-	$tienda = is_cart() || is_checkout() || is_account_page() || ( function_exists( 'is_product' ) && is_product() ) || 'producto' === dipt_pagina_actual();
-	if ( $tienda ) return;
-	foreach ( array( 'wc-blocks-style', 'wc-blocks-vendors-style' ) as $h ) wp_dequeue_style( $h );
-	foreach ( array( 'wc-cart-fragments', 'woocommerce', 'wc-add-to-cart', 'wc-add-to-cart-variation', 'jquery-blockui', 'js-cookie' ) as $h ) wp_dequeue_script( $h );
+	if ( is_cart() || is_checkout() || is_account_page() ) return;
+	foreach ( array( 'wc-blocks-style', 'wc-blocks-vendors-style', 'photoswipe', 'photoswipe-default-skin' ) as $h ) wp_dequeue_style( $h );
+	// La ficha de compra añade al carrito con un formulario normal (plantillas/producto.php): sin jQuery ni scripts de Woo,
+	// que bloqueaban el primer pintado (unos 100 KB y 1 s en Lighthouse móvil)
+	foreach ( array( 'wc-cart-fragments', 'woocommerce', 'wc-add-to-cart', 'wc-add-to-cart-variation', 'wc-single-product', 'zoom', 'flexslider', 'photoswipe', 'photoswipe-ui-default', 'wc-photoswipe', 'wc-zoom', 'wc-flexslider', 'wc-jquery-blockui', 'jquery-blockui', 'wc-js-cookie', 'js-cookie' ) as $h ) wp_dequeue_script( $h );
 }, 99 );
 add_filter( 'woocommerce_order_attribution_allow_tracking', '__return_false' );
 

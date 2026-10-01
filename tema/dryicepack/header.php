@@ -25,7 +25,7 @@ $dipt_enfocado = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_en
 <header class="cabecera cabecera--enfocada es-solida">
 	<div class="envoltura cabecera__in">
 		<a class="cabecera__logo" href="<?php echo esc_url( dipt_url( 'inicio' ) ); ?>" aria-label="DryIcePack, <?php echo esc_attr( dipt_t( 'inicio' ) ); ?>">
-			<img class="logo-oscuro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack.webp' ) ); ?>" alt="DryIcePack" width="721" height="160">
+			<img class="logo-oscuro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack-400.webp' ) ); ?>" srcset="<?php echo esc_url( dipt_img( 'logo-dryicepack-280.webp' ) ); ?> 280w, <?php echo esc_url( dipt_img( 'logo-dryicepack-400.webp' ) ); ?> 400w, <?php echo esc_url( dipt_img( 'logo-dryicepack.webp' ) ); ?> 721w" sizes="(max-width: 900px) 138px, 168px" alt="DryIcePack" width="721" height="160">
 		</a>
 		<p class="cabecera__seguro"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 018 0v3"/></svg><?php echo esc_html( dipt_t( 'pago_seguro' ) ); ?></p>
 		<a class="cabecera__tel" href="<?php echo esc_attr( $dipt_c['telefono_href'] ); ?>"><?php echo esc_html( $dipt_c['telefono'] ); ?></a>
@@ -36,8 +36,8 @@ $dipt_enfocado = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_en
 <header class="cabecera<?php echo $dipt_oscuro ? ' cabecera--sobre-oscuro' : ''; ?>" data-cabecera>
 	<div class="envoltura cabecera__in">
 		<a class="cabecera__logo" href="<?php echo esc_url( dipt_url( 'inicio' ) ); ?>" aria-label="DryIcePack, <?php echo esc_attr( dipt_t( 'inicio' ) ); ?>">
-			<img class="logo-oscuro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack.webp' ) ); ?>" alt="DryIcePack" width="721" height="160">
-			<img class="logo-claro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack-blanco.webp' ) ); ?>" alt="" width="400" height="99">
+			<img class="logo-oscuro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack-400.webp' ) ); ?>" srcset="<?php echo esc_url( dipt_img( 'logo-dryicepack-280.webp' ) ); ?> 280w, <?php echo esc_url( dipt_img( 'logo-dryicepack-400.webp' ) ); ?> 400w, <?php echo esc_url( dipt_img( 'logo-dryicepack.webp' ) ); ?> 721w" sizes="(max-width: 900px) 138px, 168px" alt="DryIcePack" width="721" height="160">
+			<img class="logo-claro" src="<?php echo esc_url( dipt_img( 'logo-dryicepack-blanco.webp' ) ); ?>" srcset="<?php echo esc_url( dipt_img( 'logo-dryicepack-blanco-280.webp' ) ); ?> 280w, <?php echo esc_url( dipt_img( 'logo-dryicepack-blanco.webp' ) ); ?> 400w" sizes="(max-width: 900px) 138px, 168px" alt="" width="400" height="99">
 		</a>
 
 		<nav class="menu" id="menu-principal" aria-label="Principal">

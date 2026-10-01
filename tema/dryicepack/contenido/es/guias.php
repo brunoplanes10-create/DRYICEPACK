@@ -4,7 +4,7 @@ return array(
 	'menu'         => 'Guías',
 	'seo'          => array(
 		'titulo'      => 'Guías de hielo seco: cómo usarlo, cuánto pedir | DryIcePack',
-		'descripcion' => 'Guías prácticas sobre hielo seco: dónde comprarlo, cómo hacer niebla, cuánto pedir según el uso y cómo manipularlo con seguridad.',
+		'descripcion' => 'Guías prácticas de hielo seco: dónde comprarlo, cómo hacer niebla en casa o en un evento, cuánto pedir según el uso y cómo manipularlo con seguridad.',
 	),
 	'titulo'       => 'Guías',
 	'titulo_corto' => 'Guías',

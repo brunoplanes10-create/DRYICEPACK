@@ -119,10 +119,21 @@ const blueprint = {
 };
 writeFileSync('.tmp/blueprint-tema.json', JSON.stringify(blueprint, null, 2));
 
+// PAQUETE=1: prueba lo que se va a subir (los .zip de dist/, con CSS y JS minificados) en vez del código fuente
+const origen = process.env.PAQUETE ? '.tmp/paquete' : null;
+if (origen) {
+  const { execFileSync } = await import('node:child_process');
+  const { rmSync, mkdirSync } = await import('node:fs');
+  rmSync(origen, { recursive: true, force: true }); mkdirSync(origen, { recursive: true });
+  for (const z of ['dist/dryicepack-tema.zip', 'dist/dryicepack-tienda.zip']) execFileSync('C:/Windows/System32/tar.exe', ['-x', '-f', z, '-C', origen]);
+}
+const dirTema = origen ? `./${origen}/dryicepack` : './tema/dryicepack';
+const dirPlugin = origen ? `./${origen}/dryicepack-tienda` : './plugin/dryicepack-tienda';
+
 const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 const args = ['--yes', '@wp-playground/cli@latest', 'server', '--port=9500',
-  '--mount=./tema/dryicepack:/wordpress/wp-content/themes/dryicepack',
+  `--mount=${dirTema}:/wordpress/wp-content/themes/dryicepack`,
   '--blueprint=./.tmp/blueprint-tema.json', '--mount=./.tmp/pg:/salida'];
-if (existsSync('plugin/dryicepack-tienda')) args.push('--mount=./plugin/dryicepack-tienda:/wordpress/wp-content/plugins/dryicepack-tienda');
+if (existsSync('plugin/dryicepack-tienda')) args.push(`--mount=${dirPlugin}:/wordpress/wp-content/plugins/dryicepack-tienda`);
 const hijo = spawn(npx, args, { stdio: 'inherit', shell: process.platform === 'win32' });
 hijo.on('exit', (c) => process.exit(c ?? 0));

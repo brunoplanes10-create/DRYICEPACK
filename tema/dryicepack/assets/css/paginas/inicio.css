@@ -36,7 +36,8 @@
 	.i-hero__foto::after { background: linear-gradient(0deg, #10161D 2%, rgba(16, 22, 29, 0) 45%), linear-gradient(180deg, rgba(16, 22, 29, .7) 0%, rgba(16, 22, 29, 0) 28%); }
 	.i-hero__in { margin-top: -6rem; }
 	.i-hero__escala { display: none; }
-	.niebla--hero { top: 20%; }
+	/* Caja de altura fija anclada arriba: si el hero crece al cargar fuentes o datos en directo, la niebla no se mueve (CLS) */
+	.niebla--hero { top: 12.5rem; bottom: auto; height: 40rem; }
 }
 
 /* ---------- I2 · Cinta ---------- */

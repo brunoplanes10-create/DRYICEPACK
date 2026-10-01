@@ -4,7 +4,7 @@ return array(
 	'menu' => 'Hielo seco para fiestas y eventos',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco para fiestas y eventos: niebla baja | DryIcePack',
-		'descripcion' => 'Hielo seco para hacer niebla en bodas, fiestas, escenarios y Halloween. Cuánto necesitas, cómo se hace en 3 pasos y cómo usarlo sin riesgo.',
+		'descripcion' => 'Hielo seco para hacer niebla baja en bodas, fiestas, escenarios y Halloween. Cuánto necesitas, cómo se hace en 3 pasos y cómo usarlo sin riesgo.',
 	),
 	'migas' => array( 'Inicio', 'Usos', 'Fiestas y eventos' ),
 	'hero'  => array(

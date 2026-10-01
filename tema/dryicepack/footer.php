@@ -51,7 +51,8 @@ if ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url()
 			</div>
 		</div>
 	</div>
-	<p class="pie__cifra" aria-hidden="true" data-paralaje="-0.12"><span>−78,5</span><span>°C</span></p>
+	<?php /* Firma gráfica, no texto: se dibuja con CSS (content) para que no cuente como texto de bajo contraste */ ?>
+	<p class="pie__cifra" aria-hidden="true" data-paralaje="-0.12"><span data-cifra="−78,5"></span><span data-cifra="°C"></span></p>
 	<div class="envoltura">
 		<div class="pie__abajo">
 			<span><?php echo esc_html( dipt_t( 'derechos' ) ); ?></span>

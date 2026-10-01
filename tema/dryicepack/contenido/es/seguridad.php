@@ -4,7 +4,7 @@ return array(
 	'menu' => 'Seguridad del hielo seco',
 	'seo'  => array(
 		'titulo'      => '¿El hielo seco es tóxico? Seguridad y ficha | DryIcePack',
-		'descripcion' => 'El hielo seco no es tóxico ni inflamable, pero a −78,5 °C quema y en sitios cerrados desplaza el oxígeno. Normas de uso, primeros auxilios y ficha de datos.',
+		'descripcion' => 'El hielo seco no es tóxico ni inflamable, pero a −78,5 °C quema y, sin ventilación, desplaza el oxígeno. Normas de uso, primeros auxilios y ficha de datos.',
 	),
 	'migas' => array( 'Inicio', 'Seguridad' ),
 	'hero'  => array(

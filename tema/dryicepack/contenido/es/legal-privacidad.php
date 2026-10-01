@@ -3,7 +3,7 @@
 return array(
 	'seo'        => array(
 		'titulo'      => 'Política de privacidad | DryIcePack',
-		'descripcion' => 'Qué datos tratamos en dryicepack.es, para qué, durante cuánto tiempo y cómo ejercer tus derechos. Responsable: INDUNOVA IMS S.L., Mataró.',
+		'descripcion' => 'Qué datos personales tratamos en dryicepack.es, para qué, durante cuánto tiempo y cómo ejercer tus derechos. Responsable: INDUNOVA IMS S.L., Mataró.',
 	),
 	'titulo'     => 'Política de privacidad',
 	'actualizado'=> 'Última actualización: 30 de septiembre de 2026',

@@ -17,7 +17,8 @@ return array(
 	),
 	'zona' => array(
 		'seo_titulo'      => 'Gel sec a {nombre}: entrega demà | DryIcePack',
-		'seo_descripcion' => 'Gel sec a {nombre}: demana abans de les 12:00 i arriba l\'endemà al matí, o recull-lo a la nostra nau de Mataró, a {km} km. Des de 3 kg.',
+		'seo_descripcion' => 'Gel sec a {nombre}: demana abans de les 12:00 i arriba l\'endemà al matí, o recull-lo gratis a la nostra nau de Mataró, a {km} km. Comandes des de 3 kg.',
+		'seo_descripcion_corta' => 'Gel sec a {nombre}: demana abans de les 12:00 i arriba l\'endemà al matí, o recull-lo gratis a la nau de Mataró, a {km} km. Des de 3 kg.',
 		'migas'   => array( 'Inici', 'Zones', '{Nombre}' ),
 		'titulo'  => 'Gel sec a|<em>{nombre}.</em>',
 		'texto'   => 'Demana abans de les 12:00 i te\'l portem a {nombre} l\'endemà al matí. O recull-lo a la nostra nau de Mataró, a {km} km.',

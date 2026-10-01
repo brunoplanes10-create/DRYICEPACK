@@ -5,16 +5,46 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/** es · ca · en. Por la URL (/ca/, /en/) y, en páginas sin prefijo (carrito, checkout, AJAX), por la cookie de la visita. */
+/**
+ * es · ca · en.
+ * - Páginas de contenido: manda la dirección (/ca/…, /en/…; sin prefijo es castellano).
+ * - Carrito, checkout, Mi cuenta, /factura/ y peticiones AJAX/REST (no tienen versión por idioma):
+ *   el idioma de la última página de contenido visitada, guardado en la cookie dip_idioma.
+ */
 function dip_idioma() {
 	static $idioma = null;
 	if ( null !== $idioma ) return $idioma;
+	$ruta = dip_ruta_actual();
+	if ( preg_match( '#^(ca|en)(/|$)#', $ruta, $m ) ) return $idioma = $m[1];
+	$usa_cookie = wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || isset( $_GET['wc-ajax'] ) || dip_es_ruta_de_tienda( $ruta ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( ! $usa_cookie ) return $idioma = 'es';
+	$cookie = isset( $_COOKIE['dip_idioma'] ) ? sanitize_key( wp_unslash( $_COOKIE['dip_idioma'] ) ) : '';
+	return $idioma = in_array( $cookie, array( 'ca', 'en' ), true ) ? $cookie : 'es';
+}
+
+/** Ruta pedida sin la carpeta de instalación ni barras: "ca/empreses". */
+function dip_ruta_actual() {
 	$ruta = trim( (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );
 	$base = trim( (string) wp_parse_url( home_url( '/' ), PHP_URL_PATH ), '/' );
 	if ( $base && 0 === strpos( $ruta, $base ) ) $ruta = trim( substr( $ruta, strlen( $base ) ), '/' );
-	if ( preg_match( '#^(ca|en)(/|$)#', $ruta, $m ) ) return $idioma = $m[1];
-	$cookie = isset( $_COOKIE['dip_idioma'] ) ? sanitize_key( wp_unslash( $_COOKIE['dip_idioma'] ) ) : '';
-	return $idioma = in_array( $cookie, array( 'ca', 'en' ), true ) ? $cookie : 'es';
+	return rawurldecode( $ruta );
+}
+
+/** ¿Es el carrito, el checkout, Mi cuenta o /factura/ (o algo dentro de ellos, como pedido-recibido)? */
+function dip_es_ruta_de_tienda( $ruta ) {
+	static $rutas = null;
+	if ( null === $rutas ) {
+		$rutas = array( 'factura' );
+		foreach ( array( 'woocommerce_cart_page_id', 'woocommerce_checkout_page_id', 'woocommerce_myaccount_page_id' ) as $opcion ) {
+			$id = (int) get_option( $opcion );
+			if ( $id > 0 && function_exists( 'get_page_uri' ) && get_post( $id ) ) $rutas[] = trim( (string) get_page_uri( $id ), '/' );
+		}
+		$rutas = array_filter( $rutas );
+	}
+	foreach ( $rutas as $r ) {
+		if ( $ruta === $r || 0 === strpos( $ruta, $r . '/' ) ) return true;
+	}
+	return false;
 }
 
 function dip_locale_de( $idioma ) {
@@ -36,6 +66,7 @@ add_filter( 'determine_locale', 'dip_filtrar_locale', 20 );
 add_action( 'template_redirect', static function () {
 	if ( is_admin() || wp_doing_ajax() ) return;
 	if ( function_exists( 'is_woocommerce' ) && ( is_cart() || is_checkout() || is_account_page() ) ) return;
+	if ( is_page( 'factura' ) ) return;
 	if ( is_404() || is_feed() ) return;
 	$idioma = dip_idioma();
 	$actual = isset( $_COOKIE['dip_idioma'] ) ? sanitize_key( wp_unslash( $_COOKIE['dip_idioma'] ) ) : '';

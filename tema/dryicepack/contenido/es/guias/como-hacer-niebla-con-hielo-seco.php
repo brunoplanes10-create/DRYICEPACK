@@ -6,7 +6,7 @@ return array(
 	'extracto' => 'Agua caliente, un recipiente ancho y pellets de 3 mm. Cuánto necesitas según la fiesta y cómo hacerlo sin riesgo.',
 	'seo'      => array(
 		'titulo'      => 'Cómo hacer niebla con hielo seco paso a paso | DryIcePack',
-		'descripcion' => 'Para hacer niebla con hielo seco necesitas agua caliente, un recipiente ancho y pellets de 3 mm. Cuánto pedir para casa, una fiesta o un evento, y cómo hacerlo seguro.',
+		'descripcion' => 'Para hacer niebla con hielo seco necesitas agua caliente, un recipiente ancho y pellets de 3 mm. Cuánto pedir para casa o un evento, y cómo hacerlo seguro.',
 	),
 	'contenido' => '<p class="resumen"><strong>En resumen:</strong> echa pellets de hielo seco en agua caliente, en un recipiente ancho y abierto. La niebla sale al momento, pesa más que el aire y se queda en el suelo.</p>
 

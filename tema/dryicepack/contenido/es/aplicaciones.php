@@ -4,7 +4,7 @@ return array(
 	'menu' => 'Usos del hielo seco',
 	'seo'  => array(
 		'titulo'      => 'Para qué sirve el hielo seco: usos por sector | DryIcePack',
-		'descripcion' => 'Usos del hielo seco en hostelería, transporte en frío, industria, laboratorios y eventos. Qué formato elegir y cuánto pedir en cada caso.',
+		'descripcion' => 'Usos del hielo seco en hostelería, transporte en frío, industria, laboratorios y eventos. Qué formato elegir (3 o 16 mm) y cuánto pedir en cada caso.',
 	),
 	'migas'  => array( 'Inicio', 'Usos' ),
 	'titulo' => 'Para qué sirve|el <em>hielo seco.</em>',

@@ -6,7 +6,7 @@ return array(
 	'extracto' => 'Las farmacias y los supermercados no suelen tenerlo. Te contamos por qué y dónde se compra de verdad, con envío o recogida.',
 	'seo'      => array(
 		'titulo'      => '¿Venden hielo seco en farmacias o Mercadona? | DryIcePack',
-		'descripcion' => 'Las farmacias y los supermercados no suelen vender hielo seco porque se sublima y viaja como mercancía peligrosa. Dónde comprarlo y qué mirar antes de pedir.',
+		'descripcion' => 'Las farmacias y los supermercados no suelen vender hielo seco porque se sublima y viaja como mercancía peligrosa. Dónde comprarlo y qué mirar al pedir.',
 	),
 	'contenido' => '<p class="resumen"><strong>Respuesta corta:</strong> las farmacias y los supermercados no suelen vender hielo seco. Se compra a proveedores especializados, que lo envían en caja aislante o lo preparan para recoger.</p>
 

@@ -4,7 +4,7 @@ return array(
 	'menu' => 'Contacto',
 	'seo'  => array(
 		'titulo'      => 'Contacto: teléfono, WhatsApp y nave en Mataró | DryIcePack',
-		'descripcion' => 'Llama al 936 73 76 41, escríbenos por WhatsApp al 686 980 471 o ven a la nave de Mataró. De lunes a viernes, de 9:00 a 18:00.',
+		'descripcion' => 'Llama al 936 73 76 41, escríbenos por WhatsApp al 686 980 471 o ven a recoger tu pedido a la nave de Mataró. De lunes a viernes, de 9:00 a 18:00.',
 	),
 	'migas'  => array( 'Inicio', 'Contacto' ),
 	'titulo' => 'Hablemos.',

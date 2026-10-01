@@ -17,7 +17,8 @@ return array(
 	),
 	'zona' => array(
 		'seo_titulo'      => 'Dry ice in {nombre}: next-day delivery | DryIcePack',
-		'seo_descripcion' => 'Dry ice in {nombre}: order before 12:00 and it arrives the next morning, or collect it from our warehouse in Mataró, {km} km away. Order from 3 kg.',
+		'seo_descripcion' => 'Dry ice in {nombre}: order before 12:00 and it arrives the next morning, or collect it free from our warehouse in Mataró, {km} km away. Order from 3 kg.',
+		'seo_descripcion_corta' => 'Dry ice in {nombre}: order before 12:00 and it arrives the next morning, or collect it free in Mataró, {km} km away. From 3 kg.',
 		'migas'   => array( 'Home', 'Areas', '{Nombre}' ),
 		'titulo'  => 'Dry ice in|<em>{nombre}.</em>',
 		'texto'   => 'Order before 12:00 (Spanish time) and we deliver to {nombre} the next morning. Or collect it from our warehouse in Mataró, {km} km away.',

@@ -59,9 +59,12 @@ function dipt_seo_zona( $clave ) {
 	// Nombres largos: primero fuera la marca, después lo que va tras los dos puntos (máximo 60 caracteres)
 	if ( mb_strlen( $titulo ) > 60 ) $titulo = preg_replace( '/\s*\|\s*DryIcePack$/u', '', $titulo );
 	if ( mb_strlen( $titulo ) > 60 ) $titulo = preg_replace( '/:.*$/u', '', $titulo );
+	// Descripción: 140–155 caracteres; los nombres largos usan la versión corta
+	$descripcion = dipt_zona_texto( $c['zona']['seo_descripcion'], $z );
+	if ( mb_strlen( $descripcion ) > 155 && ! empty( $c['zona']['seo_descripcion_corta'] ) ) $descripcion = dipt_zona_texto( $c['zona']['seo_descripcion_corta'], $z );
 	return array(
 		'titulo'      => $titulo,
-		'descripcion' => dipt_zona_texto( $c['zona']['seo_descripcion'], $z ),
+		'descripcion' => $descripcion,
 	);
 }
 

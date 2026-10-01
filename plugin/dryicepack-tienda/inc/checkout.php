@@ -235,8 +235,11 @@ remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_login_f
 /* ---------- JavaScript y estilos del checkout ---------- */
 add_action( 'wp_enqueue_scripts', static function () {
 	if ( ! is_checkout() || is_wc_endpoint_url() ) return;
-	$v = DIP_TIENDA_VERSION . '.' . filemtime( DIP_TIENDA_DIR . 'assets/checkout.js' );
-	wp_enqueue_script( 'dip-checkout', DIP_TIENDA_URL . 'assets/checkout.js', array( 'jquery', 'wc-checkout' ), $v, array( 'in_footer' => true ) );
+	// Versión .min si existe (el paquete .zip la lleva; herramientas/empaquetar.mjs)
+	$js  = file_exists( DIP_TIENDA_DIR . 'assets/checkout.min.js' ) ? 'assets/checkout.min.js' : 'assets/checkout.js';
+	$css = file_exists( DIP_TIENDA_DIR . 'assets/checkout.min.css' ) ? 'assets/checkout.min.css' : 'assets/checkout.css';
+	$v   = DIP_TIENDA_VERSION . '.' . filemtime( DIP_TIENDA_DIR . $js );
+	wp_enqueue_script( 'dip-checkout', DIP_TIENDA_URL . $js, array( 'jquery', 'wc-checkout' ), $v, array( 'in_footer' => true ) );
 	$t = dip_textos_tienda();
 	wp_localize_script( 'dip-checkout', 'DIP_CHECKOUT', array(
 		'limite'       => (float) dip_ajuste( 'limite_factura' ),
@@ -246,5 +249,5 @@ add_action( 'wp_enqueue_scripts', static function () {
 		'decimal'      => wc_get_price_decimal_separator(),
 		'miles'        => wc_get_price_thousand_separator(),
 	) );
-	wp_enqueue_style( 'dip-checkout', DIP_TIENDA_URL . 'assets/checkout.css', array(), DIP_TIENDA_VERSION . '.' . filemtime( DIP_TIENDA_DIR . 'assets/checkout.css' ) );
+	wp_enqueue_style( 'dip-checkout', DIP_TIENDA_URL . $css, array(), DIP_TIENDA_VERSION . '.' . filemtime( DIP_TIENDA_DIR . $css ) );
 }, 30 );
