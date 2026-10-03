@@ -52,6 +52,7 @@ Cada sección tiene una composición distinta y no se repite en ninguna otra pá
 | I3 | Inicio | Elegir | Dos paneles 3 mm / 16 mm que se expanden y regla de kilos con total en directo |
 | I4 | Inicio | Cómo llega | Mapa peninsular con rutas que se dibujan desde Mataró y tres horas grandes |
 | I5 | Inicio | Usos | Índice editorial numerado con imagen que sigue al cursor |
+| I5b | Inicio | Clientes | Cajetín de plano a fondo oscuro: una casilla por cliente con nombre, logotipo en una tinta y uso en mono; el vapor se aparta del logotipo al entrar |
 | I6 | Inicio | −78,5 °C | Cifra gigante que baja contando, con cotas de plano técnico alrededor |
 | I7 | Inicio | Empresas | Tarjeta de cliente que se inclina con el cursor y texto a un lado |
 | I8 | Inicio | Recogida | Foto a sangre con ficha de dirección solapada y mini mapa del Maresme |
@@ -68,7 +69,8 @@ Cada sección tiene una composición distinta y no se repite en ninguna otra pá
 | E2 | Empresas | Cómo piden | Tres pantallas: WhatsApp, "repetir pedido" y email, en carrusel |
 | E3 | Empresas | Ventajas | Lista numerada gigante con líneas que se dibujan |
 | E4 | Empresas | Volumen | Pila de cajas que crece con los kilos |
-| E5 | Empresas | Usos reales | Mosaico de textos e imágenes de tamaños distintos |
+| E5 | Empresas | Usos reales | Mosaico de textos e imágenes de tamaños distintos; los clientes con nombre llevan su logotipo en un marbete con ojal |
 | E6 | Empresas | Alta | Formulario en frase para completar |
 | E7 | Empresas | Preguntas | Dos columnas de pregunta y respuesta abiertas |
+| H3b · T3b · N3b · L3b | Hostelería, transporte, industria, laboratorios | Cliente | Placa de características con remaches: «Cliente» (logotipo, nombre, detalle) y «Uso» en serif grande. Misma pieza en la familia de sectores, un cliente por página |
 | … | (resto) | | Se completa al construir cada página |

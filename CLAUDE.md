@@ -18,7 +18,10 @@ Antes de cada tarea, di qué especialistas intervienen y aplica sus estándares 
   - Producto WooCommerce variable `hielo-seco` (ID 261). Atributos `pa_peso` (3, 10, 15, 20 kg) y `pa_formato` (3mm, 16mm).
   - Precios (iguales en 3 y 16 mm, + IVA): 3 kg 29,80 € · 10 kg 53,30 € · 15 kg 75,90 € (subido desde 68,40 € el 01/10/2026; el pack de 15 kg va en la caja grande, la misma que el de 20 kg) · 20 kg 98,60 €. Caja EPS de 40 mm/lado incluida. El precio por kilo baja con cada pack.
   - Máximo 250 kg por pedido. **Más de 150 kg fuera de la provincia de Barcelona:** sin envío online, el cliente escribe (WhatsApp, teléfono o email) y se prepara a medida, más caro. El proveedor solo sirve más de 150 kg dentro de la provincia. Más de 200 kg: a veces reparto propio (consultar).
-  - Cuentas de empresa: factura mensual a **30 días**.
+  - Cuentas de empresa: **contrato de suministro de hielo seco** firmado y, si puede ser, **domiciliación SEPA**; factura mensual a **30 días**. Nunca decir "sin permanencia" ni "sin contratos" de las cuentas de empresa (la compra online normal sí es sin contrato).
+  - Más de 250 kg por pedido: el cliente escribe y se le da precio y día. Los presupuestos de industria se contestan normalmente el mismo día laborable.
+  - **No se envía a Baleares, Canarias, Ceuta ni Melilla** (decidido el 02/10/2026). En pedidos de empresa, **cada caja lleva hasta 30 kg** (la tienda online vende packs de 3, 10, 15 y 20 kg).
+  - **Reservas:** se puede pedir para cualquier día válido de los próximos 90 días (hay clientes que reservan con un mes de antelación).
   - **Envío (tarifa del 31/08/2026, igual en toda la península, sin IVA):** hasta 2 kg 8,53 € · hasta 5 kg 10,32 € · hasta 10 kg 13,19 € · cada kg de más 1,12 €. Se calcula sobre el peso facturable: hielo + 1 kg por caja, redondeado al alza.
 - **Logística:** MRW, España peninsular. Pedido antes de las **12:00** → entrega el siguiente día laborable por la mañana. Sin entregas en domingo ni lunes.
   - **Sábado:** según zona, suplemento de **9,70 € + IVA (11,74 € IVA incluido)**.
@@ -59,7 +62,8 @@ Se abandonan **Divi y el tema hijo**. La web pasa a dos piezas propias, instalab
   - Empresas y autónomos (la industria siempre): **factura completa**. En el checkout, la casilla "Compro para una empresa o autónomo" muestra razón social y NIF/CIF (obligatorios si se marca).
   - Pedidos de más de 400 €: razón social y NIF/CIF obligatorios siempre.
   - Las cuentas de empresa guardan sus datos fiscales y no se les vuelven a pedir.
-  - La web no emite facturas: las hace el padre con la aplicación de la gestoría (VeriFactu obligatorio para sociedades desde el 1/1/2027).
+  - **Factura simplificada automática (decidido el 02/10/2026):** pedidos de hasta 400 € IVA incluido sin la casilla de empresa → la web emite la factura simplificada (serie propia de la web, p. ej. W2026-00001) y la manda en un email desde info@dryicepack.es con el PDF y el enlace para pedir factura completa. Si marcan empresa, no se aplica.
+  - El resto de facturas (completas, cuentas de empresa, rectificativas) las hace el padre con la aplicación de la gestoría. **VeriFactu obligatorio para sociedades desde el 1/1/2027:** el módulo de la web no lo cumple y deja de emitir solo ese día (avisa desde el 1/12/2026).
 - **Pago:** en el bloque de pago hay dos opciones, **Tarjeta** (por defecto) y **Apple Pay / Google Pay**. Nunca botones exprés arriba del checkout. Un pedido con Apple Pay tiene que guardar la fecha de entrega y respetar el corte. Si WooPayments no lo permite, el plan B es el plugin oficial de Stripe (preguntar antes).
 - **Factura después de la compra:** el email estándar de WooCommerce más un email "¿Necesitas factura?" con un enlace seguro a `/factura/`. El cliente rellena razón social, NIF/CIF y dirección fiscal. Se guarda una nota en el pedido y se envía un aviso a info@dryicepack.es. El mismo botón aparece en la página de gracias.
 

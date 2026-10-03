@@ -67,7 +67,7 @@ Los picos de julio y septiembre son los pedidos grandes de Nissan y PSG.
 | Italpizza | 18 | 1.694,00 € | Transporte en frío |
 | Cervecería Salas 7 | 25 | 1.080,36 € | Hostelería: humo, frío, cócteles |
 | Sushitok (Alfafar y Pamplona) | 14 | 734,79 € | Efecto humo al emplatar |
-| Patricia | 11 | 440,00 € | [PENDIENTE: uso; el nombre en Odoo indica quimioterapia] |
+| Clienta particular (quimio) | 11 | 440,00 € | Gorros fríos en la quimioterapia: 5 kg por sesión (confirmado por el propietario el 01/10/2026; usaba el antiguo pack de 5 kg). Ya no es clienta y le fue bien. No se publica su nombre |
 | Semillas Fitó | 4 | 420,11 € | Transporte de muestras |
 
 **Conclusiones:**
@@ -570,9 +570,9 @@ Cada una lleva la opción por defecto. Si no dices nada, se aplica esa.
    - *Por defecto:* exportación para importar (opción A).
 4. **Más de 150 kg en la provincia de Barcelona:** plazo mínimo y días de entrega del proveedor.
    - *Por defecto:* la web dice "más de 150 kg: consulta plazo" sin prometer fecha.
-5. **Casos y logos:** hay que pedir permiso a cada cliente (Nissan Formula E, PSG Tech, Italpizza, Semillas Fitó…).
+5. **Casos y logos:** DECIDIDO el 01/10/2026. El propietario confirma en el chat que todos los clientes dan permiso ("Tots, pots agafar els seus logos i ficarlos"). Se publican Nissan Formula E Team, Italpizza, Sushitok y Semillas Fitó; PSG Tech NO.
    - *Por defecto:* sección preparada y oculta hasta tener el permiso por escrito.
-6. **Uso de "Patricia (quimio)":** ¿es para gorros fríos de quimioterapia? ¿Quieres una guía sobre eso?
+6. **Gorros fríos en la quimioterapia:** DECIDIDO el 01/10/2026. Sí era ese uso (5 kg por sesión). Se publica una guía prudente en ES/CA/EN, sin afirmaciones médicas ni datos de la clienta.
    - *Por defecto:* no se hace.
 7. **Reparto propio en la zona:** ¿repartís vosotros alguna vez en el Maresme o Barcelona, o siempre MRW?
    - *Por defecto:* solo MRW y recogida.
