@@ -8,11 +8,11 @@ return array(
 	'titulo'     => 'Política de privacitat',
 	'actualizado'=> 'Darrera actualització: 30 de setembre de 2026',
 	'secciones'  => array(
-		array( 'Responsable', '<ul><li><strong>INDUNOVA IMS S.L.</strong> · NIF B66800103</li><li>Ronda Alfonso X El Sabio, 10, 2º 1ª, 08301 Mataró (Barcelona)</li><li>info@dryicepack.es · 936 73 76 41</li></ul>' ),
+		array( 'Responsable', '<ul><li><strong>INDUNOVA IMS S.L.</strong> · NIF B66800103</li><li>Ronda Alfonso X El Sabio, 10, 2n 1a, 08301 Mataró (Barcelona)</li><li>info@dryicepack.es · 936 73 76 41</li></ul>' ),
 		array( 'Quines dades tractem i per a què', '<table><thead><tr><th>Per a què</th><th>Dades</th><th>Base legal</th><th>Quant de temps</th></tr></thead><tbody>
 <tr><td>Gestionar la teva comanda, l\'enviament i la recollida</td><td>Nom, correu electrònic, telèfon, adreça, dades de la comanda i dia d\'entrega</td><td>Execució del contracte</td><td>Mentre duri la relació i, després, els terminis legals</td></tr>
 <tr><td>Emetre la factura</td><td>Raó social, NIF, adreça fiscal i imports</td><td>Obligació legal</td><td>6 anys (Codi de comerç) i els terminis fiscals</td></tr>
-<tr><td>Enviar-te l\'enllaç per demanar factura amb les teves dades</td><td>Correu electrònic i número de comanda</td><td>Execució del contracte</td><td>Fins a 30 dies després de la comanda</td></tr>
+<tr><td>Enviar-te l\'enllaç per demanar factura amb les teves dades</td><td>Correu electrònic i número de comanda</td><td>Execució del contracte</td><td>Durant els 30 dies posteriors a la comanda</td></tr>
 <tr><td>Respondre formularis, trucades i missatges de WhatsApp</td><td>Nom, correu electrònic, telèfon i el que ens expliquis</td><td>Consentiment i mesures precontractuals</td><td>Fins a resoldre la consulta i 1 any més</td></tr>
 <tr><td>Comptes d\'empresa</td><td>Dades de contacte i fiscals, preu acordat i historial de comandes</td><td>Execució del contracte</td><td>Mentre el compte estigui actiu i els terminis legals</td></tr>
 <tr><td>Recordatori de reposició</td><td>Correu electrònic i historial de comandes</td><td>Consentiment (només s\'activa si el demanes i es desactiva amb un clic)</td><td>Fins que te\'n donis de baixa</td></tr>

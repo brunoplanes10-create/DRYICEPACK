@@ -55,7 +55,7 @@ get_header();
 			</div>
 			<p class="campo"><textarea id="c-mensaje" name="mensaje" rows="4" placeholder=" " required></textarea><label for="c-mensaje"><?php echo esc_html( $c['form']['mensaje'] ); ?></label></p>
 			<label class="casilla"><input type="checkbox" name="privacidad" value="1" required> <span><?php echo wp_kses( sprintf( dipt_t( 'form_privacidad' ), esc_url( dipt_url( 'privacidad' ) ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label>
-			<button type="submit" class="boton"><span><?php echo esc_html( $c['form']['boton'] ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></button>
+			<button type="submit" class="boton boton--marino"><span><?php echo esc_html( $c['form']['boton'] ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></button>
 			<p class="aviso-form<?php echo $enviado ? ' aviso-form--ok' : ( $error ? ' aviso-form--error' : '' ); ?>" data-form-aviso role="status" tabindex="-1"<?php echo ( $enviado || $error ) ? '' : ' hidden'; ?>><?php echo esc_html( $enviado ? dipt_t( 'form_ok' ) : ( $error ? dipt_t( 'form_error' ) : '' ) ); ?></p>
 		</form>
 	</div>

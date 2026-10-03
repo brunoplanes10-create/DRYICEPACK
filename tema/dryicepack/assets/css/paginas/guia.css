@@ -1,24 +1,101 @@
-/* Guía (entrada): lectura con índice lateral */
-.gu-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2rem, 4vw, 3rem); background: var(--c-escarcha); }
-.gu-cabeza h1 { margin: 1rem 0 .8rem; max-width: 22ch; }
-.gu-cuerpo { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
-.gu-indice { position: sticky; top: calc(var(--alto-cabecera) + 1.5rem); align-self: start; }
-.gu-indice .dato { text-transform: uppercase; letter-spacing: .1em; color: var(--c-acero); margin-bottom: .8rem; }
-.gu-indice ol { margin: 0; padding-left: 1.1rem; display: grid; gap: .5rem; font-size: .92rem; }
-.gu-indice a { color: var(--c-acero); text-decoration: none; }
-.gu-indice a:hover { color: var(--c-tinta); text-decoration: underline; }
-.gu-texto .resumen { padding: 1.2rem 1.4rem; border-left: 3px solid var(--c-marino); background: var(--c-escarcha); border-radius: 0 14px 14px 0; font-size: 1.12rem; }
-.gu-texto h2 { scroll-margin-top: calc(var(--alto-cabecera) + 1rem); }
-.gu-compra { padding: clamp(2.5rem, 5vw, 4rem) 0; }
-.gu-compra__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.2rem 2rem; }
-.gu-compra .t-h3 { color: #fff; }
-@media (max-width: 900px) { .gu-cuerpo { grid-template-columns: 1fr; } .gu-indice { position: static; } }
+/* Guía (entrada): lectura con índice lateral. Retícula asimétrica fija (índice 240 px · texto 44 rem) que repiten
+   el cuerpo y "Para seguir"; apartados numerados como una ficha técnica; compra en una tarjeta que pisa el pie. */
+.gu { --gu-col: 240px; --gu-hueco: clamp(2rem, 6vw, 6rem); }
 
-/* Para seguir: enlaces a la seguridad, la compra, los envíos y la otra guía */
-.gu-seguir { padding-block: clamp(2rem, 4vw, 3rem); border-top: 1px solid var(--c-linea); }
-.gu-seguir .dato { margin: 0 0 1rem; text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; color: var(--c-acero); }
-.gu-seguir ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; max-width: 44rem; }
-.gu-seguir a { display: flex; align-items: baseline; gap: .8rem; padding: .7rem 0; border-bottom: 1px solid var(--c-linea); color: var(--c-tinta); text-decoration: none; font-size: 1.05rem; transition: color var(--d-corta) var(--e-salida); }
+/* ---------- Cabecera ---------- */
+.gu-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2.2rem, 4vw, 3.4rem); background: var(--c-escarcha); border-bottom: 1px solid var(--c-linea-fuerte); }
+.gu-cabeza h1 { margin: 1rem 0 1.1rem; max-width: 20ch; }
+.gu-cabeza__meta { display: inline-flex; align-items: center; gap: .55rem; padding: .4rem .8rem .4rem .6rem; border: 1px solid var(--c-linea-fuerte); border-radius: 999px; background: var(--c-blanco); color: var(--c-acero); }
+.gu-cabeza__meta .ico { width: 16px; height: 16px; color: var(--c-marino); }
+/* Migas: el último tramo (el título, que ya es el H1) se recorta en una línea en vez de partirse */
+.gu-cabeza .migas li:last-child { flex: 1 1 0; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* ---------- Cuerpo ---------- */
+.gu-cuerpo { display: grid; grid-template-columns: var(--gu-col) minmax(0, 1fr); gap: var(--gu-hueco); padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+
+/* Índice: números en monoespaciada y una marca que crece al pasar el ratón */
+.gu-indice { position: sticky; top: calc(var(--alto-cabecera) + 1.5rem); align-self: start; }
+.gu-indice .dato { margin-bottom: .9rem; text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; color: var(--c-acero); }
+.gu-indice ol { list-style: none; margin: 0; padding: 0; counter-reset: gi; border-left: 1px solid var(--c-linea-fuerte); }
+.gu-indice li { counter-increment: gi; }
+.gu-indice a { position: relative; display: grid; grid-template-columns: 2rem minmax(0, 1fr); padding: .42rem 0 .42rem 1rem; font-size: .9rem; line-height: 1.4; color: var(--c-acero); text-decoration: none; }
+.gu-indice a::before { content: counter(gi, decimal-leading-zero); padding-top: .12rem; font: 500 .72rem/1.4 var(--f-mono); }
+.gu-indice a::after { content: ""; position: absolute; left: -1px; top: .3rem; bottom: .3rem; width: 2px; background: var(--c-marino); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--d-corta) var(--e-salida); }
+.gu-indice a:hover, .gu-indice a:focus-visible { color: var(--c-tinta); }
+.gu-indice a:hover::after, .gu-indice a:focus-visible::after { transform: scaleY(1); }
+
+/* Texto: cada apartado empieza con un filete y su número */
+.gu-texto { counter-reset: ap; }
+.gu-texto h2 { counter-increment: ap; scroll-margin-top: calc(var(--alto-cabecera) + 1rem); padding-top: 1.5rem; border-top: 1px solid var(--c-linea-fuerte); }
+.gu-texto h2::before { content: counter(ap, decimal-leading-zero); display: block; margin-bottom: .8rem; font: 500 var(--t-dato)/1 var(--f-mono); letter-spacing: .04em; color: var(--c-acero); }
+.gu-texto h3 { font-family: var(--f-display); font-weight: 700; letter-spacing: -.01em; }
+
+/* Resumen: la ficha de arriba, con profundidad real (varias sombras) y el borde marino a la izquierda */
+.gu-texto .resumen {
+	padding: 1.35rem 1.6rem 1.35rem 1.7rem; background: var(--c-blanco);
+	border: 1px solid var(--c-linea-fuerte); border-left: 4px solid var(--c-marino); border-radius: 4px var(--radio) var(--radio) 4px;
+	box-shadow: 0 1px 1px rgba(11, 20, 28, .05), 0 10px 22px -14px rgba(11, 20, 28, .3), 0 34px 60px -44px rgba(11, 20, 28, .45);
+	font-size: 1.12rem; line-height: 1.6;
+}
+.gu-texto .resumen + * { margin-top: 1.6em; }
+
+/* Listas: rombo marino (el mismo motivo que la cinta de datos) */
+.gu-texto ul { list-style: none; padding-left: 0; }
+.gu-texto ul > li { position: relative; padding-left: 1.6rem; }
+.gu-texto ul > li::before { content: ""; position: absolute; left: .2rem; top: .7em; width: 7px; height: 7px; border: 1.5px solid var(--c-marino); transform: rotate(45deg); }
+
+/* Pasos: tecla numerada con canto (sombra dura) y un hilo que los une */
+.gu-texto ol { list-style: none; padding-left: 0; counter-reset: paso; }
+.gu-texto ol > li { counter-increment: paso; position: relative; min-height: 2.4rem; padding: .2rem 0 0 3.4rem; }
+.gu-texto ol > li + li { margin-top: 1.1rem; }
+.gu-texto ol > li::before {
+	content: counter(paso); position: absolute; left: 0; top: 0; width: 2.3rem; height: 2.3rem;
+	display: grid; place-items: center; border: 1px solid var(--c-tinta); border-radius: 8px; background: var(--c-blanco);
+	box-shadow: 0 2px 0 var(--c-tinta); font: 600 .9rem/1 var(--f-mono); color: var(--c-tinta);
+}
+.gu-texto ol > li:not(:last-child)::after { content: ""; position: absolute; left: calc(1.15rem - .5px); top: 2.75rem; bottom: -1rem; width: 1px; background: var(--c-linea-fuerte); }
+
+/* Tablas: filete grueso arriba, cabecera en versalitas pequeñas y la cantidad en negrita */
+.gu-texto table { border-top: 2px solid var(--c-tinta); font-variant-numeric: tabular-nums; }
+.gu-texto th { padding-top: .8rem; font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acero); }
+.gu-texto td:last-child { font-weight: 600; }
+
+@media (max-width: 900px) {
+	.gu-cuerpo { grid-template-columns: minmax(0, 1fr); gap: 2.2rem; }
+	.gu-indice { position: static; padding: 1.2rem 1.2rem .8rem; background: var(--c-blanco); border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio); box-shadow: 0 1px 1px rgba(11, 20, 28, .04), 0 14px 28px -22px rgba(11, 20, 28, .35); }
+	.gu-indice ol { border-left: 0; }
+	.gu-indice a { padding-left: 0; }
+	.gu-indice a::after { display: none; }
+}
+
+/* ---------- Para seguir: misma retícula que el cuerpo (la etiqueta en la columna del índice) ---------- */
+.gu-seguir { position: relative; display: grid; grid-template-columns: var(--gu-col) minmax(0, 44rem); gap: 1rem var(--gu-hueco); padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3.5rem, 7vw, 6rem); }
+.gu-seguir::before { content: ""; position: absolute; top: 0; left: var(--margen); right: var(--margen); height: 1px; background: var(--c-linea-fuerte); }
+.gu-seguir .dato { margin: 0; padding-top: .9rem; text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; color: var(--c-acero); }
+.gu-seguir ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--c-tinta); }
+.gu-seguir a { display: grid; grid-template-columns: 1.8rem minmax(0, 1fr); align-items: baseline; padding: .9rem 0; border-bottom: 1px solid var(--c-linea-fuerte); color: var(--c-tinta); font-weight: 500; font-size: 1.05rem; text-decoration: none; }
 .gu-seguir a::before { content: "→"; font-family: var(--f-mono); color: var(--c-marino); transition: transform var(--d-corta) var(--e-salida); }
-.gu-seguir a:hover, .gu-seguir a:focus-visible { color: var(--c-marino); }
-.gu-seguir a:hover::before { transform: translateX(4px); }
+.gu-seguir a:hover, .gu-seguir a:focus-visible { color: var(--c-marino); text-decoration: underline; text-decoration-thickness: 1px; }
+.gu-seguir a:hover::before, .gu-seguir a:focus-visible::before { transform: translate3d(5px, 0, 0); }
+@media (max-width: 900px) { .gu-seguir { grid-template-columns: minmax(0, 1fr); } .gu-seguir .dato { padding-top: 0; } }
+
+/* ---------- Compra: tarjeta marina a caballo entre el papel y el pie ---------- */
+.gu-compra { background: linear-gradient(180deg, var(--c-papel) 0 50%, var(--c-noche) 50% 100%); }
+.gu-compra__in {
+	position: relative; overflow: hidden;
+	display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1.2rem clamp(1.2rem, 3vw, 2.4rem);
+	padding: clamp(1.6rem, 3.6vw, 2.6rem) clamp(1.4rem, 3.6vw, 3rem);
+	border: 1px solid rgba(184, 208, 232, .24); border-radius: var(--radio);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), 0 2px 4px rgba(11, 20, 28, .18), 0 26px 50px -24px rgba(11, 20, 28, .6), 0 70px 100px -70px rgba(11, 20, 28, .7);
+}
+/* Filete de escarcha arriba: el corte de la caja EPS */
+.gu-compra__in::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: repeating-linear-gradient(90deg, var(--c-hielo) 0 18px, transparent 18px 26px); opacity: .55; }
+.gu-compra__ico { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; border: 1px solid rgba(184, 208, 232, .35); color: var(--c-hielo); }
+.gu-compra__ico .ico { width: 30px; height: 30px; }
+.gu-compra__t { color: #fff; font-size: clamp(1.55rem, 2.7vw, 2.4rem); line-height: 1.06; }
+@media (max-width: 640px) {
+	.gu-compra__in { grid-template-columns: auto minmax(0, 1fr); }
+	.gu-compra__ico { width: 48px; height: 48px; }
+	.gu-compra__ico .ico { width: 24px; height: 24px; }
+	.gu-compra__in .boton { grid-column: 1 / -1; justify-content: space-between; }
+}

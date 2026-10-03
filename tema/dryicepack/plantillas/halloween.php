@@ -7,7 +7,8 @@
  * WordPress la aplica sola a la página con slug `hielo-seco-halloween`.
  * Funciona en el tema hijo actual y, sin cambios, en el tema nuevo `dryicepack`.
  *
- * Archivos: esta plantilla + assets/halloween/{css,js,img,fonts}/
+ * Archivos: esta plantilla + assets/halloween/{css,js,img,video}/
+ * Vídeos: se regeneran desde los originales con herramientas/preparar-videos-halloween.mjs
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -19,6 +20,40 @@ $hw_img = $hw_uri . '/img';
 $hw_ver = static function ( $rel ) use ( $hw_dir ) {
 	$path = $hw_dir . '/' . $rel;
 	return file_exists( $path ) ? (string) filemtime( $path ) : '1';
+};
+
+/* ---------------------------------------------------------
+   Vídeos reales (assets/halloween/video/): sin audio, en bucle y con preload="none",
+   así no se descarga nada hasta que se reproducen. El póster es una <img loading="lazy">
+   encima del vídeo con su ancho y alto (el atributo poster se descargaría siempre al cargar la página).
+   halloween.js los reproduce solo cuando están a la vista y los pausa al salir. Con "reducir movimiento"
+   o ahorro de datos no arrancan solos: se ve el póster con el botón de reproducir.
+   Sin JavaScript se ve el póster como una foto, con su pie.
+--------------------------------------------------------- */
+$hw_video = static function ( $o ) use ( $hw_uri, $hw_ver ) {
+	$mp4     = 'video/' . $o['archivo'] . '.mp4';
+	$poster  = 'video/' . $o['archivo'] . '-poster.webp';
+	$rotulos = '';
+	foreach ( $o['rotulos'] ?? array() as $i => $r ) {
+		$rotulos .= sprintf( '<li data-desde="%1$s"%2$s><b>%3$s</b>%4$s</li>', esc_attr( $r[0] ), 0 === $i ? ' class="is-on"' : '', esc_html( $r[1] ), esc_html( $r[2] ) );
+	}
+	return sprintf(
+		'<div class="hw-video__marco">'
+		. '<video class="hw-video__v" width="%3$d" height="%4$d" muted playsinline loop preload="none" disablepictureinpicture disableremoteplayback aria-label="%5$s" aria-describedby="%6$s"><source src="%1$s" type="video/mp4"></video>'
+		. '<img class="hw-video__poster" src="%2$s" width="%3$d" height="%4$d" alt="" loading="lazy" decoding="async">'
+		. '%8$s'
+		. '<button type="button" class="hw-video__btn" hidden><svg class="hw-video__ico" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="hw-video__ico-play" d="M4.5 2.6v10.8l8.6-5.4z"/><path class="hw-video__ico-pausa" d="M4 2.5h3v11H4zm5 0h3v11H9z"/></svg><span class="hw-video__btn-txt">Reproducir</span><span class="hw-oculto"> vídeo</span></button>'
+		. '<p id="%6$s" hidden>%7$s</p>'
+		. '</div>',
+		esc_url( $hw_uri . '/' . $mp4 . '?ver=' . $hw_ver( $mp4 ) ),
+		esc_url( $hw_uri . '/' . $poster . '?ver=' . $hw_ver( $poster ) ),
+		(int) $o['ancho'],
+		(int) $o['alto'],
+		esc_attr( $o['etiqueta'] ),
+		esc_attr( $o['id'] ),
+		esc_html( $o['descripcion'] ),
+		$rotulos ? '<ol class="hw-video__rotulos" aria-hidden="true">' . $rotulos . '</ol>' : ''
+	);
 };
 
 /* ---------------------------------------------------------
@@ -180,8 +215,9 @@ $hw_ilus = static function ( $nombre ) {
 $hw_murcielago = '<i class="hw-aleteo"><svg viewBox="0 0 64 30" aria-hidden="true" focusable="false"><path d="M31 13C25 5 15 3 3 7c5 2 7 5 7 8 3-2 6-1 8 2 2-3 6-3 9 0z"/><path d="M33 13c6-8 16-10 28-6-5 2-7 5-7 8-3-2-6-1-8 2-2-3-6-3-9 0z"/><path d="M29 11l1-3 1.5 2h1l1.5-2 1 3c.6 4-.4 8-3 10-2.6-2-3.6-6-3-10z"/></svg></i>';
 
 get_header();
+// <div> y no <main>: la cabecera del tema ya abre <main id="contenido"> (un solo landmark principal por página)
 ?>
-<main id="hw" class="hw">
+<div id="hw" class="hw">
 
 	<!-- 1 · HERO -->
 	<section class="hw-hero" aria-labelledby="hw-h1">
@@ -230,11 +266,29 @@ get_header();
 	<section class="hw-seccion hw-seccion--bruma" id="ideas" aria-labelledby="hw-ideas-t">
 		<div class="hw-bruma" aria-hidden="true"><span></span></div>
 		<div class="hw-wrap">
-			<header class="hw-cabecera" data-hw-revela>
-				<p class="hw-antetitulo">Ideas</p>
-				<h2 id="hw-ideas-t">4 formas de usar hielo seco en Halloween</h2>
-				<p>El hielo seco pasa de sólido a gas sin derretirse. Con agua caliente suelta una niebla blanca y pesada que cae y se arrastra por el suelo.</p>
-			</header>
+			<div class="hw-ideas__intro">
+				<header class="hw-cabecera" data-hw-revela>
+					<p class="hw-antetitulo">Ideas</p>
+					<h2 id="hw-ideas-t">4 formas de usar hielo seco en Halloween</h2>
+					<p>El hielo seco pasa de sólido a gas sin derretirse. Con agua caliente suelta una niebla blanca y pesada que cae y se arrastra por el suelo.</p>
+				</header>
+				<figure class="hw-video hw-video--horizontal" data-hw-video data-hw-revela>
+					<?php
+					echo $hw_video( array( // phpcs:ignore -- HTML ya escapado dentro de $hw_video
+						'archivo'     => 'calabazas-niebla',
+						'ancho'       => 1280,
+						'alto'        => 720,
+						'id'          => 'hw-v-calabazas-desc',
+						'etiqueta'    => 'Vídeo: tres calabazas iluminadas con niebla de hielo seco a ras de mesa',
+						'descripcion' => 'Vídeo de 8 segundos en bucle, sin sonido. Plano fijo de tres calabazas talladas e iluminadas por dentro, sobre una mesa y delante de una pared con telarañas. Por la boca de las calabazas sale niebla de hielo seco que cubre la mesa a ras de superficie.',
+					) );
+					?>
+					<figcaption>
+						<p class="hw-video__ficha">Vídeo · 8 s · sin sonido</p>
+						<p><b>Calabazas que echan niebla.</b> Vacía la calabaza, talla la cara y mete dentro un vaso con agua caliente. Añade unos pellets con guantes y pinzas: la niebla sale por la boca y se queda a ras de mesa.</p>
+					</figcaption>
+				</figure>
+			</div>
 			<ol class="hw-ideas" data-hw-revela="grupo">
 				<li>
 					<div class="hw-ideas__ilus"><?php echo $hw_ilus( 'caldero' ); // phpcs:ignore ?></div>
@@ -365,6 +419,29 @@ get_header();
 				<p class="hw-temp"><span aria-hidden="true"><span class="hw-temp__num" data-hw-temp>−78,5</span><span class="hw-temp__u">°C</span></span><span class="hw-oculto">−78,5 °C</span></p>
 				<p class="hw-temp__pie">Es la temperatura del hielo seco. Por eso, siempre con guantes y pinzas.</p>
 			</div>
+			<figure class="hw-video hw-video--vertical hw-como__video" data-hw-video data-hw-revela>
+				<?php
+				echo $hw_video( array( // phpcs:ignore -- HTML ya escapado dentro de $hw_video
+					'archivo'     => 'como-hacer-niebla',
+					'ancho'       => 720,
+					'alto'        => 1280,
+					'id'          => 'hw-v-como-desc',
+					'etiqueta'    => 'Vídeo: pellets de hielo seco en una calabaza tallada y la niebla que sale de ella',
+					'descripcion' => 'Vídeo de 6 segundos, sin sonido. Una mano con guante echa pellets de hielo seco por la abertura de arriba de una calabaza tallada y vaciada. Sale niebla blanca por la boca de la calabaza, cae sobre la mesa entre hojas secas y se arrastra hasta el borde. Al final la cámara se aleja: se ven dos calabazas más, iluminadas, y la niebla cayendo de la mesa hacia el suelo.',
+					// Rótulos que siguen al vídeo: segundo en que empieza cada momento, marca y texto
+					'rotulos'     => array(
+						array( '0', 't+0,0 s', 'Pellets dentro' ),
+						array( '1.6', 't+1,6 s', 'Sale la niebla' ),
+						array( '4.4', 't+4,4 s', 'Cae hacia el suelo' ),
+					),
+				) );
+				?>
+				<figcaption>
+					<p class="hw-video__ficha">Vídeo · 6 s · sin sonido · pellets 3 mm</p>
+					<p>Pellets de 3 mm dentro de una calabaza vaciada y sin tapa. La niebla sale por la boca, se extiende por la mesa y cae por el borde: pesa más que el aire.</p>
+					<p class="hw-video__aviso"><b>Seguridad</b> Guantes térmicos y pinzas, nunca la mano. Si cae algún pellet a la mesa, recógelo con las pinzas: que no quede al alcance de niños ni mascotas.</p>
+				</figcaption>
+			</figure>
 			<ol class="hw-pasos" data-hw-pasos>
 				<li>
 					<h3>Prepara un recipiente abierto</h3>
@@ -433,7 +510,7 @@ get_header();
 				<li><b>Lejos de niños y mascotas.</b> Guárdalo donde no lleguen.</li>
 				<li><b>En el coche, en el maletero.</b> Y con una ventanilla abierta durante el trayecto.</li>
 			</ol>
-			<a class="hw-enlace-flecha" href="<?php echo esc_url( home_url( '/seguridad-del-hielo-seco/' ) ); ?>">Guía completa de seguridad del hielo seco</a>
+			<a class="hw-enlace-flecha" href="<?php echo esc_url( home_url( '/seguridad-del-hielo-seco/' ) ); ?>">Guía completa de seguridad del hielo <span class="hw-enlace-flecha__fin">seco<span class="hw-enlace-flecha__ico" aria-hidden="true">→</span></span></a>
 		</div>
 	</section>
 
@@ -504,6 +581,6 @@ get_header();
 		</div>
 	</section>
 
-</main>
+</div>
 <?php
 get_footer();

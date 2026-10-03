@@ -2,23 +2,49 @@
 .pag { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 var(--seccion); background: var(--c-papel); }
 .pag__cabeza { margin-bottom: clamp(2rem, 4vw, 3rem); }
 
-/* /factura/: el formulario como una factura en papel */
-.dip-factura { position: relative; max-width: 760px; padding: clamp(1.8rem, 5vw, 3.2rem); background: #fff; border-radius: 4px; box-shadow: 0 1px 0 var(--c-linea), 0 40px 80px -50px rgba(11, 20, 28, .45); }
-.dip-factura::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: repeating-linear-gradient(90deg, var(--c-marino) 0 24px, var(--c-hielo) 24px 48px); }
+/* /factura/ en escritorio: el título a la izquierda y la hoja a la derecha, más baja (composición asimétrica) */
+@media (min-width: 1000px) {
+	.pag:has(.dip-factura) .envoltura { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 0 clamp(2rem, 5vw, 5rem); align-items: start; }
+	.pag:has(.dip-factura) .pag__cabeza { position: sticky; top: calc(var(--alto-cabecera) + 2rem); margin: 0; padding-top: .2rem; border-top: 2px solid var(--c-tinta); }
+	.pag:has(.dip-factura) .pag__cabeza h1 { margin-top: 1.2rem; }
+	.pag:has(.dip-factura) .pag__cuerpo { padding-top: clamp(3rem, 6vw, 5rem); }
+}
+
+/* /factura/: el formulario como una factura en papel, con una segunda hoja asomando detrás (profundidad real) */
+.dip-factura { position: relative; isolation: isolate; max-width: 760px; margin-right: 14px; padding: clamp(1.8rem, 5vw, 3.2rem); }
+.dip-factura::before {
+	content: ""; position: absolute; inset: 0; z-index: -1; border: 1px solid var(--c-linea-fuerte); border-radius: 4px;
+	background: repeating-linear-gradient(90deg, var(--c-marino) 0 24px, var(--c-hielo) 24px 48px) 0 0 / 100% 6px no-repeat, var(--c-blanco);
+	box-shadow: 0 1px 2px rgba(11, 20, 28, .06), 0 18px 36px -20px rgba(11, 20, 28, .32), 0 50px 90px -50px rgba(11, 20, 28, .42);
+}
+.dip-factura::after { content: ""; position: absolute; inset: 12px -12px -12px 12px; z-index: -2; border: 1px solid var(--c-linea-fuerte); border-radius: 4px; background: var(--c-hielo-claro); }
 .dip-factura__pedido { font-family: var(--f-mono); font-size: .85rem; letter-spacing: .04em; color: var(--c-acero); padding-bottom: 1rem; margin-bottom: 1.2rem; border-bottom: 2px solid var(--c-tinta); }
-.dip-factura__nota, .dip-factura__ok, .dip-factura__error { margin-bottom: 1.4rem; }
+.dip-factura__nota, .dip-factura__ok, .dip-factura__error { margin-bottom: 1.6rem; }
 .dip-factura__ok { padding: 1rem 1.2rem; border-radius: 12px; background: #E7F4EC; color: #0F5132; font-weight: 500; }
 .dip-factura__error { padding: 1rem 1.2rem; border-radius: 12px; background: #FBEAEA; color: #7A1712; font-weight: 500; }
-.dip-factura__form { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem 1.2rem; }
-.dip-factura__campo { display: grid; gap: .35rem; }
-.dip-factura__campo label { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--c-acero); }
-.dip-factura__campo input { width: 100%; min-height: 48px; padding: .6rem 0; border: 0; border-bottom: 1px solid var(--c-linea-fuerte); background: transparent; font-size: 1.05rem; }
+.dip-factura__form { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.3rem 1.4rem; }
+.dip-factura__campo { display: grid; gap: .15rem; }
+.dip-factura__campo label { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acero); }
+.dip-factura__campo input { width: 100%; min-height: 46px; padding: .5rem 0; border: 0; border-bottom: 1px solid var(--c-linea-fuerte); border-radius: 0; background: transparent; font-size: 1.05rem; }
 .dip-factura__campo input:focus { outline: none; border-color: var(--c-marino); box-shadow: 0 1px 0 var(--c-marino); }
 .dip-factura__campo--ancho { grid-column: 1 / -1; }
 .dip-factura__campo--medio { grid-column: span 3; }
 .dip-factura__campo--tercio { grid-column: span 2; }
 .dip-factura__campo--dos-tercios { grid-column: span 4; }
 .dip-factura__privacidad { grid-column: 1 / -1; font-size: .82rem; color: var(--c-acero); }
-.dip-factura__form .dip-boton { grid-column: 1 / -1; justify-self: start; min-height: 54px; padding: .8rem 1.8rem; border: 0; border-radius: 999px; background: var(--c-marino); color: #fff; font: 500 1rem var(--f-texto); cursor: pointer; }
+/* Enviar datos no es una compra: botón secundario marino, con la misma elevación que los demás */
+.dip-factura__form .dip-boton {
+	grid-column: 1 / -1; justify-self: start; min-height: 54px; padding: .8rem 1.8rem; border: 0; border-radius: 999px;
+	background: var(--c-marino); color: #fff; font: 600 1rem var(--f-texto); cursor: pointer;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 1px 2px rgba(11, 20, 28, .2), 0 12px 26px -14px rgba(11, 20, 28, .55);
+	transition: transform var(--d-corta) var(--e-salida);
+}
+.dip-factura__form .dip-boton:hover { transform: translate3d(0, -2px, 0); }
+.dip-factura__form .dip-boton:active { transform: none; }
+.dip-factura--error { padding-top: clamp(2rem, 5vw, 3rem); }
 .dip-factura--error p { max-width: 36rem; }
-@media (max-width: 600px) { .dip-factura__form > * { grid-column: 1 / -1 !important; } }
+@media (max-width: 600px) {
+	.dip-factura { margin-right: 8px; }
+	.dip-factura::after { inset: 8px -8px -8px 8px; }
+	.dip-factura__form > * { grid-column: 1 / -1 !important; }
+}

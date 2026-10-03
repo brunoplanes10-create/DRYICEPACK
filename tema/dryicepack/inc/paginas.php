@@ -152,7 +152,8 @@ function dipt_titulo_pagina( $clave, $idioma ) {
 	$c = dipt_contenido( dipt_paginas()[ $clave ]['plantilla'] === 'zona' ? 'zonas' : $clave, $idioma );
 	if ( 'zona' === dipt_paginas()[ $clave ]['plantilla'] && function_exists( 'dipt_zonas' ) ) {
 		$z = dipt_zonas()[ dipt_paginas()[ $clave ]['zona'] ];
-		return sprintf( array( 'es' => 'Hielo seco en %s', 'ca' => 'Gel sec a %s', 'en' => 'Dry ice in %s' )[ $idioma ], $z['nombre'] );
+		// Con las contracciones de cada idioma: "Gel sec al Maresme", "Gel sec a l'Hospitalet"
+		return wp_strip_all_tags( dipt_zona_texto( array( 'es' => 'Hielo seco en {nombre}', 'ca' => 'Gel sec a {nombre}', 'en' => 'Dry ice in {nombre}' )[ $idioma ], $z, $idioma ) );
 	}
 	return $c['menu'] ?? ( $c['seo']['titulo'] ?? ucfirst( str_replace( '-', ' ', $clave ) ) );
 }

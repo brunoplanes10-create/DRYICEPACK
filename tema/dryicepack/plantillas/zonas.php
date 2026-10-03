@@ -19,7 +19,7 @@ get_header();
 	<div class="envoltura zs-hero__in">
 		<div>
 			<?php echo dipt_migas( array( array( $ci['migas'][0], dipt_url( 'inicio' ) ), array( $ci['migas'][1], dipt_url( 'zonas' ) ) ) ); // phpcs:ignore ?>
-			<h1 class="t-hero" id="zs-hero-t"><?php dipt_html( str_replace( '|', '<br>', $ci['titulo'] ) ); ?></h1>
+			<h1 class="t-hero" id="zs-hero-t"><?php dipt_html( '<span class="tramo">' . str_replace( '|', '</span><span class="tramo">', $ci['titulo'] ) . '</span>' ); ?></h1>
 			<p class="entrada"><?php echo esc_html( $ci['texto'] ); ?></p>
 		</div>
 		<div class="zs-hero__mapa"><?php echo dipt_mapa_radial( array(), true ); // phpcs:ignore ?></div>

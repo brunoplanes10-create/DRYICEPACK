@@ -1,7 +1,7 @@
 <?php
 /**
  * Envíos y plazos: V1 cuenta atrás del corte a segundos · V2 semana con flechas de pedido a entrega ·
- * V3 calculadora de envío con escalones de tarifa · V4 recogida con foto y lista de ficha ·
+ * V3 calculadora de envío con desglose (cajas como en la tienda) · V4 recogida con foto y lista de ficha ·
  * V5 cobertura sí / consulta · V6 preguntas en pestañas.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -10,6 +10,82 @@ $c   = dipt_contenido( 'envios' );
 $con = dipt_contacto();
 $iva = dipt_factor_iva();
 $e0  = dipt_primera_entrega();
+
+/*
+ * V3 · Paradas de la calculadora. Cada parada es un pedido real: cajas del pack más grande (20 kg) y el resto
+ * en el pack más pequeño que lo cubre (3, 10 o 15 kg). El coste sale de dipt_coste_envio(), la misma función
+ * que cobra el checkout (peso facturable = hielo + 1 kg por caja, redondeado al alza), y el IVA se redondea
+ * como el de WooCommerce. Por encima de 150 kg no hay precio: se prepara a medida.
+ */
+$t = array_replace_recursive( (array) ( dipt_contenido( 'envios', 'es' )['tarifa'] ?? array() ), (array) ( $c['tarifa'] ?? array() ) );
+$v_en      = 'en' === dipt_idioma();
+$v_num     = static fn( $n ) => $v_en ? (string) ( 0 + $n ) : str_replace( '.', ',', (string) ( 0 + $n ) );
+$v_packs   = array_map( 'floatval', array_keys( dipt_packs() ) );
+sort( $v_packs, SORT_NUMERIC );
+$v_mayor   = $v_packs ? max( $v_packs ) : 20.0;
+$v_limite  = defined( 'DIP_KG_A_MEDIDA' ) ? (float) DIP_KG_A_MEDIDA : 150.0;
+$v_emb     = defined( 'DIP_PESO_EMBALAJE' ) ? (float) DIP_PESO_EMBALAJE : 1.0;
+$v_tarifa  = array(
+	2  => defined( 'DIP_TARIFA_HASTA_2' ) ? DIP_TARIFA_HASTA_2 : 8.53,
+	5  => defined( 'DIP_TARIFA_HASTA_5' ) ? DIP_TARIFA_HASTA_5 : 10.32,
+	10 => defined( 'DIP_TARIFA_HASTA_10' ) ? DIP_TARIFA_HASTA_10 : 13.19,
+);
+$v_kg_extra = defined( 'DIP_TARIFA_KG_EXTRA' ) ? DIP_TARIFA_KG_EXTRA : 1.12;
+$v_pct      = round( ( $iva - 1 ) * 100, 2 );
+$v_iva_txt  = sprintf( $t['filas']['iva'], $v_num( $v_pct ) . ( $v_en ? '%' : ' %' ) );
+
+$v_paradas = array();
+$v_vistos  = array();
+for ( $k = 1; $k <= $v_limite; $k++ ) {
+	$cajas = $v_mayor > 0 ? array_fill( 0, (int) floor( $k / $v_mayor ), $v_mayor ) : array();
+	$resto = $k - $v_mayor * count( $cajas );
+	if ( $resto > 0.0001 ) {
+		foreach ( $v_packs as $p ) {
+			if ( $p >= $resto - 0.0001 ) { $cajas[] = $p; break; }
+		}
+	}
+	$kg = array_sum( $cajas );
+	if ( ! $cajas || $kg > $v_limite + 0.0001 || isset( $v_vistos[ (string) $kg ] ) ) continue;
+	$v_vistos[ (string) $kg ] = true;
+	$n     = count( $cajas );
+	$f     = (int) ceil( $kg + $v_emb * $n );
+	$sin   = (float) dipt_coste_envio( $kg, $n );
+	$iva_e = round( $sin * ( $iva - 1 ), 2 );
+	// "2 cajas de 20 kg + 1 de 10 kg"
+	$grupos = array_count_values( array_map( static fn( $x ) => (string) ( 0 + $x ), $cajas ) );
+	krsort( $grupos, SORT_NUMERIC );
+	$desglose = '';
+	foreach ( $grupos as $peso => $cuantas ) {
+		$desglose .= '' === $desglose ? sprintf( 1 === $cuantas ? $t['caja_una'] : $t['caja_varias'], $cuantas, $v_num( $peso ) ) : sprintf( $t['caja_resto'], $cuantas, $v_num( $peso ) );
+	}
+	// De dónde sale el precio sin IVA: tramo fijo o "13,19 € hasta 10 kg + 36 kg × 1,12 €"
+	if ( $f > 10 ) $tarifa = sprintf( $t['extra'], dipt_euros( $v_tarifa[10] ), $f - 10, dipt_euros( $v_kg_extra ) );
+	else $tarifa = sprintf( $t['tramo'], $f <= 2 ? 2 : ( $f <= 5 ? 5 : 10 ) );
+	$tarifa = preg_replace( '/(\d) (€|kg)/u', "\$1\u{00A0}\$2", $tarifa ); // la cifra y su unidad no se separan al cortar la línea
+	$v_paradas[] = array(
+		'kg'     => 0 + $kg,
+		'cajas'  => array_map( static fn( $x ) => 0 + $x, $cajas ),
+		'texto'  => $desglose,
+		'hielo'  => $v_num( $kg ) . ' kg',
+		'emb'    => '+ ' . $v_num( $v_emb * $n ) . ' kg',
+		'peso'   => $f . ' kg',
+		'tarifa' => $tarifa,
+		'sin'    => dipt_euros( $sin ),
+		'iva'    => dipt_euros( $iva_e ),
+		'total'  => dipt_euros( $sin + $iva_e ),
+	);
+}
+usort( $v_paradas, static fn( $a, $b ) => $a['kg'] <=> $b['kg'] );
+$v_ini = 0;
+foreach ( $v_paradas as $i => $p ) {
+	if ( 10.0 === (float) $p['kg'] ) $v_ini = $i;
+}
+$v_p = $v_paradas[ $v_ini ] ?? null;
+/* Caja dibujada según el pack: la de 15 y 20 kg es la grande; la de 10 kg, mediana; la de 3 kg, pequeña. */
+$v_caja = static function ( $kg ) use ( $v_num ) {
+	$tam = $kg >= 15 ? 'g' : ( $kg >= 10 ? 'm' : 'p' );
+	return '<span class="v-caja v-caja--' . $tam . '">' . esc_html( $v_num( $kg ) ) . '</span>';
+};
 $GLOBALS['dipt_hero_oscuro'] = true;
 dipt_registrar_faq( $c['faq']['lista'] );
 get_header();
@@ -56,33 +132,62 @@ get_header();
 	</div>
 </section>
 
-<!-- V3 · Calculadora de envío -->
-<section class="v-tarifa tono-blanco seccion" aria-labelledby="v-tarifa-t" data-calc-envio data-t-peso="<?php echo esc_attr( $c['tarifa']['peso'] ); ?>">
+<!-- V3 · Calculadora de envío: kilos → cajas como en la tienda → desglose del precio (o "a medida" por encima de 150 kg) -->
+<?php if ( $v_p ) : ?>
+<?php
+// JSON entre comillas simples: ' & < > " salen como \u00XX (JSON_HEX_*), así que no puede cerrar el atributo ni abrir etiquetas,
+// y el atributo pesa la mitad que con &quot;.
+$v_json = wp_json_encode( $v_paradas, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG );
+?>
+<section class="v-tarifa tono-blanco seccion" aria-labelledby="v-tarifa-t" data-calc-envio data-paradas='<?php echo $v_json; // phpcs:ignore WordPress.Security.EscapeOutput -- JSON con JSON_HEX_* ?>'data-t-mas="<?php echo esc_attr( $t['mas'] ); ?>" data-t-mas-cifra="<?php echo esc_attr( $t['mas_cifra'] ); ?>" data-t-medida-cajas="<?php echo esc_attr( $t['medida']['cajas'] ); ?>">
 	<div class="envoltura v-tarifa__in">
-		<div>
-			<?php echo dipt_titulo( 'h2', $c['tarifa']['titulo'], 't-h2', 'v-tarifa-t' ); // phpcs:ignore ?>
+		<div class="v-tarifa__mando">
+			<?php echo dipt_titulo( 'h2', $t['titulo'], 't-h2', 'v-tarifa-t' ); // phpcs:ignore ?>
 			<div class="v-tarifa__controles">
-				<label class="dato" for="v-kg"><?php echo esc_html( $c['tarifa']['kg'] ); ?> <output data-calc-kg>10</output> kg</label>
-				<input id="v-kg" type="range" min="1" max="250" value="10" data-calc-rango>
-				<label class="dato" for="v-cajas"><?php echo esc_html( $c['tarifa']['cajas'] ); ?></label>
-				<input id="v-cajas" type="number" min="1" max="50" value="1" inputmode="numeric" data-calc-cajas>
+				<label class="v-tarifa__etiqueta" for="v-kg"><span class="dato"><?php echo esc_html( $t['kg'] ); ?></span> <span class="v-tarifa__kg"><output for="v-kg" data-calc-kg><?php echo esc_html( $v_num( $v_p['kg'] ) ); ?></output> kg</span></label>
+				<input id="v-kg" type="range" min="0" max="<?php echo (int) count( $v_paradas ); ?>" step="1" value="<?php echo (int) $v_ini; ?>" aria-valuetext="<?php echo esc_attr( $v_p['hielo'] . ' · ' . $v_p['texto'] ); ?>" data-calc-rango>
+				<p class="v-tarifa__escala dato" aria-hidden="true"><span><?php echo esc_html( $v_paradas[0]['hielo'] ); ?></span><span><?php echo esc_html( $t['mas'] ); ?></span></p>
 			</div>
-			<p class="suave v-tarifa__nota"><?php echo esc_html( $c['tarifa']['nota'] ); ?></p>
+			<div class="v-envio-cajas">
+				<p class="dato v-envio-cajas__titulo"><?php echo esc_html( $t['cajas_titulo'] ); ?></p>
+				<div class="v-cajas" data-calc-cajas aria-hidden="true"><?php foreach ( $v_p['cajas'] as $kg ) echo $v_caja( $kg ); // phpcs:ignore ?></div>
+				<p class="v-envio-cajas__texto" data-calc-texto><?php echo esc_html( $v_p['texto'] ); ?></p>
+			</div>
+			<p class="suave v-tarifa__nota"><?php echo esc_html( $t['nota'] ); ?></p>
 		</div>
 		<div class="v-tarifa__resultado">
-			<p class="v-tarifa__coste"><span class="dato"><?php echo esc_html( $c['tarifa']['coste'] ); ?></span><strong data-calc-coste><?php echo esc_html( dipt_euros( dipt_coste_envio( 10, 1 ) * $iva ) ); ?></strong></p>
-			<p class="dato v-tarifa__peso" data-calc-peso><?php echo esc_html( sprintf( $c['tarifa']['peso'], 11 ) ); ?></p>
-			<ol class="v-escalera" aria-hidden="true">
-				<?php
-				$tramos = array( 8.53, 10.32, 13.19, 13.19 + 1.12 * 5 );
-				foreach ( $c['tarifa']['tramos'] as $i => $t ) :
-					?>
-					<li data-tramo="<?php echo (int) $i; ?>" style="--h:<?php echo esc_attr( round( $tramos[ $i ] / 20 * 100 ) ); ?>%"><span><?php echo esc_html( $t ); ?></span></li>
-				<?php endforeach; ?>
-			</ol>
+			<div class="v-tarifa__vista v-tarifa__vista--precio" data-vista-precio>
+				<p class="v-tarifa__coste"><span class="dato"><?php echo esc_html( $t['coste_iva'] ); ?></span><strong data-calc="total" aria-live="polite"><?php echo esc_html( $v_p['total'] ); ?></strong></p>
+				<dl class="v-recibo">
+					<div><dt><?php echo esc_html( $t['filas']['hielo'] ); ?></dt><dd data-calc="hielo"><?php echo esc_html( $v_p['hielo'] ); ?></dd></div>
+					<div><dt><?php echo esc_html( $t['filas']['embalaje'] ); ?></dt><dd data-calc="emb"><?php echo esc_html( $v_p['emb'] ); ?></dd></div>
+					<div class="v-recibo__suma"><dt><?php echo esc_html( $t['filas']['peso'] ); ?> <small><?php echo esc_html( $t['filas']['redondeo'] ); ?></small></dt><dd data-calc="peso"><?php echo esc_html( $v_p['peso'] ); ?></dd></div>
+					<div><dt><?php echo esc_html( $t['filas']['sin_iva'] ); ?> <small data-calc="tarifa"><?php echo esc_html( $v_p['tarifa'] ); ?></small></dt><dd data-calc="sin"><?php echo esc_html( $v_p['sin'] ); ?></dd></div>
+					<div><dt><?php echo esc_html( $v_iva_txt ); ?></dt><dd data-calc="iva"><?php echo esc_html( $v_p['iva'] ); ?></dd></div>
+				</dl>
+				<?php /* Pedir justo esta combinación: se deja en el carrito tal cual y se va al pago (inc/woocommerce.php, dipt_pedido) */ ?>
+				<div class="v-pedir" data-calc-pedir-caja>
+					<fieldset class="v-pedir__formato">
+						<legend class="dato"><?php echo esc_html( $t['pedir']['formato'] ); ?></legend>
+						<?php foreach ( array( '3mm', '16mm' ) as $v_i => $v_f ) : ?>
+							<label><input type="radio" name="v-formato" value="<?php echo esc_attr( $v_f ); ?>"<?php checked( 0, $v_i ); ?> data-calc-formato><span><?php echo esc_html( $t['pedir'][ 'f' . $v_f ] ); ?></span></label>
+						<?php endforeach; ?>
+					</fieldset>
+					<a class="boton v-pedir__boton" href="<?php echo esc_url( dipt_url_pedido( $v_p['cajas'], '3mm' ) ); ?>" data-calc-pedir data-t-boton="<?php echo esc_attr( $t['pedir']['boton'] ); ?>" data-base="<?php echo esc_url( home_url( '/' ) ); ?>"><span data-calc-pedir-texto><?php echo esc_html( sprintf( $t['pedir']['boton'], $v_num( $v_p['kg'] ) ) ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></a>
+					<p class="v-pedir__nota"><?php echo esc_html( $t['pedir']['nota'] ); ?></p>
+				</div>
+			</div>
+			<div class="v-tarifa__vista v-tarifa__vista--medida" data-vista-medida>
+				<p class="dato v-medida__etiqueta"><?php echo esc_html( $t['mas'] ); ?></p>
+				<p class="v-medida__titulo"><?php echo esc_html( $t['medida']['titulo'] ); ?></p>
+				<p class="v-medida__texto"><?php echo esc_html( $t['medida']['texto'] ); ?></p>
+				<?php echo dipt_boton( $t['medida']['boton'], dipt_whatsapp_url( $t['medida']['wa'] ), 'blanco', array( 'target' => '_blank', 'rel' => 'noopener' ) ); // phpcs:ignore ?>
+				<p class="dato v-medida__tel"><?php echo esc_html( $t['medida']['tel'] ); ?> <a href="<?php echo esc_attr( $con['telefono_href'] ); ?>"><?php echo esc_html( $con['telefono'] ); ?></a></p>
+			</div>
 		</div>
 	</div>
 </section>
+<?php endif; ?>
 
 <!-- V4 · Recogida en Mataró -->
 <section class="v-recogida tono-escarcha seccion" aria-labelledby="v-recogida-t" id="recogida">
@@ -100,13 +205,13 @@ get_header();
 	</div>
 </section>
 
-<!-- V5 · Cobertura: sí / consúltanos -->
+<!-- V5 · Cobertura: sí (península) / no (Baleares, Canarias, Ceuta y Melilla) -->
 <section class="v-cobertura tono-marino seccion" aria-labelledby="v-cobertura-t">
 	<div class="envoltura">
 		<h2 class="t-h2" id="v-cobertura-t" data-revela><?php echo esc_html( $c['cobertura']['titulo'] ); ?></h2>
 		<div class="v-cobertura__dos">
 			<div class="v-cobertura__si" data-revela="izq"><span class="v-cobertura__marca" aria-hidden="true"><?php echo dipt_icono( 'check' ); // phpcs:ignore ?></span><h3><?php echo esc_html( $c['cobertura']['si']['titulo'] ); ?></h3><p><?php echo esc_html( $c['cobertura']['si']['texto'] ); ?></p></div>
-			<div class="v-cobertura__no" data-revela="der"><span class="v-cobertura__marca" aria-hidden="true">?</span><h3><?php echo esc_html( $c['cobertura']['no']['titulo'] ); ?></h3><p><?php echo esc_html( $c['cobertura']['no']['texto'] ); ?></p></div>
+			<div class="v-cobertura__no" data-revela="der"><span class="v-cobertura__marca" aria-hidden="true"><?php echo dipt_icono( 'cerrar' ); // phpcs:ignore ?></span><h3><?php echo esc_html( $c['cobertura']['no']['titulo'] ); ?></h3><p><?php echo esc_html( $c['cobertura']['no']['texto'] ); ?></p></div>
 		</div>
 		<p><?php echo dipt_enlace( $c['cobertura']['zonas'], dipt_url( 'zonas' ) ); // phpcs:ignore ?></p>
 	</div>

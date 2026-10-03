@@ -1,4 +1,6 @@
-/* Empresas: pila de cajas que crece con los kilos (cajas de hasta 20 kg) y notas según el volumen. */
+/* Empresas: pila de cajas que crece con los kilos y una nota según el volumen.
+   Cuenta de empresa: cada caja lleva hasta 30 kg (30 kg = 1 caja, 31 kg = 2 cajas).
+   Notas, una encendida cada vez: hasta 150 kg · más de 150 y hasta 250 kg · más de 250 kg. */
 (function () {
 	'use strict';
 	var raiz = document.querySelector('[data-volumen]');
@@ -8,7 +10,7 @@
 	var textoCajas = raiz.querySelector('[data-volumen-cajas]');
 	var cajas = raiz.querySelectorAll('.e-pila__caja');
 	var notas = raiz.querySelectorAll('[data-nota]');
-	var POR_CAJA = 20;
+	var POR_CAJA = parseInt(raiz.getAttribute('data-por-caja'), 10) || 30;
 	function pintar() {
 		var kg = parseInt(rango.value, 10) || 0;
 		var n = Math.max(1, Math.ceil(kg / POR_CAJA));
@@ -21,10 +23,8 @@
 			c.classList.toggle('mas', n > cajas.length && orden === cajas.length - 1);
 			c.style.setProperty('--orden', orden);
 		});
-		notas.forEach(function (li) {
-			var t = li.getAttribute('data-nota');
-			li.classList.toggle('activa', (t === 'web' && kg <= 250) || (t === 'bcn' && kg > 150) || (t === 'fuera' && kg > 250));
-		});
+		var tramo = kg <= 150 ? 'web' : kg <= 250 ? 'bcn' : 'fuera';
+		notas.forEach(function (li) { li.classList.toggle('activa', li.getAttribute('data-nota') === tramo); });
 	}
 	rango.addEventListener('input', pintar);
 	pintar();

@@ -108,9 +108,12 @@ function dipt_euros( $n, $decimales = 2 ) {
 /** Primera entrega posible por envío: ['fecha' => 'Y-m-d', 'sale' => 'Y-m-d'] */
 function dipt_primera_entrega() {
 	if ( function_exists( 'dip_primera_entrega' ) ) return dip_primera_entrega();
-	$d = new DateTimeImmutable( 'tomorrow', new DateTimeZone( 'Europe/Madrid' ) );
-	while ( in_array( (int) $d->format( 'N' ), array( 1, 6, 7 ), true ) ) $d = $d->modify( '+1 day' );
-	return array( 'fecha' => $d->format( 'Y-m-d' ), 'sale' => $d->modify( '-1 day' )->format( 'Y-m-d' ), 'sabado' => false );
+	// Respaldo sin el plugin: corte a las 12:00 (Madrid). Sale de lunes a jueves y llega al día siguiente (el sábado es opcional).
+	$ahora = new DateTimeImmutable( 'now', new DateTimeZone( 'Europe/Madrid' ) );
+	$sale  = $ahora->setTime( 0, 0 );
+	if ( (int) $ahora->format( 'G' ) >= 12 ) $sale = $sale->modify( '+1 day' );
+	while ( (int) $sale->format( 'N' ) > 4 ) $sale = $sale->modify( '+1 day' );
+	return array( 'fecha' => $sale->modify( '+1 day' )->format( 'Y-m-d' ), 'sale' => $sale->format( 'Y-m-d' ), 'sabado' => false );
 }
 
 function dipt_fecha_larga( $ymd, $idioma = null ) {
@@ -119,8 +122,22 @@ function dipt_fecha_larga( $ymd, $idioma = null ) {
 	return (string) $ymd;
 }
 
+/**
+ * Días sin salida ni entrega para el JavaScript, separados como los usa el checkout:
+ * - 'festivos': la lista manual (Dryicepack → Ajustes). Ni sale ni se entrega.
+ * - 'sinSalida': días en que cierra MRW Mataró y no están en la lista manual. No sale nada, pero sí se entrega
+ *   lo que salió el día anterior (si se trataran como festivos, "llega el …" saltaría un día que el checkout ofrece).
+ */
+function dipt_dias_sin_servicio() {
+	$manual = function_exists( 'dip_festivos' ) ? array_map( 'strval', array_keys( dip_festivos() ) ) : array();
+	sort( $manual );
+	$salida = function_exists( 'dip_festivos_salida' ) ? dip_festivos_salida() : $manual;
+	return array( 'festivos' => $manual, 'sinSalida' => array_values( array_diff( $salida, $manual ) ) );
+}
+
 /** Configuración para el JavaScript (calculadoras, configurador, reloj del corte). */
 function dipt_config_js() {
+	$dias = dipt_dias_sin_servicio();
 	return array(
 		'idioma'      => dipt_idioma(),
 		'variaciones' => array_values( dipt_variaciones() ),
@@ -136,7 +153,9 @@ function dipt_config_js() {
 		'iva'         => dipt_factor_iva(),
 		'corte'       => array( 'hora' => defined( 'DIP_CUTOFF_HOUR' ) ? DIP_CUTOFF_HOUR : 12, 'minuto' => defined( 'DIP_CUTOFF_MINUTE' ) ? DIP_CUTOFF_MINUTE : 0 ),
 		'entrega'     => dipt_primera_entrega(),
-		'festivos'    => function_exists( 'dip_festivos' ) ? array_keys( dip_festivos() ) : array(),
+		// Lista manual (ni sale ni se entrega) y cierres de MRW Mataró (solo no sale): misma regla que el checkout
+		'festivos'    => $dias['festivos'],
+		'sinSalida'   => $dias['sinSalida'],
 		'ahora'       => time(),
 		'urls'        => array(
 			'checkout' => function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : home_url( '/' ),

@@ -25,29 +25,65 @@
 		setInterval(tic, 1000);
 	}
 
+	/* Calculadora: cada posición del deslizador es un pedido real (cajas de 20 kg y el resto en el pack que toque).
+	   Los importes vienen calculados del servidor con la misma función que cobra el checkout; aquí solo se pintan.
+	   La última posición es "más de 150 kg": sin precio, se prepara a medida. */
 	var calc = document.querySelector('[data-calc-envio]');
-	if (calc && CFG.tarifa) {
-		var T = CFG.tarifa, iva = CFG.iva || 1.21, en = CFG.idioma === 'en';
-		var rango = calc.querySelector('[data-calc-rango]'), cajas = calc.querySelector('[data-calc-cajas]');
-		var euros = function (n) {
-			var p = (Math.round(n * 100) / 100).toFixed(2).split('.');
-			p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, en ? ',' : '.');
-			return en ? '€' + p.join('.') : p.join(',') + ' €';
+	var paradas = null;
+	try { paradas = calc && JSON.parse(calc.getAttribute('data-paradas')); } catch (e) { paradas = null; }
+	if (calc && paradas && paradas.length) {
+		var rango = calc.querySelector('[data-calc-rango]');
+		var salidaKg = calc.querySelector('[data-calc-kg]');
+		var pila = calc.querySelector('[data-calc-cajas]');
+		var texto = calc.querySelector('[data-calc-texto]');
+		var campos = calc.querySelectorAll('[data-calc]');
+		var num = function (n) { return CFG.idioma === 'en' ? String(n) : String(n).replace('.', ','); };
+		var tam = function (kg) { return kg >= 15 ? 'g' : kg >= 10 ? 'm' : 'p'; };
+		var antes = (function () { var a = []; pila.querySelectorAll('.v-caja').forEach(function (c) { a.push(c.textContent); }); return a; })();
+		var dibujar = function (cajas, quietas) {
+			pila.textContent = '';
+			cajas.forEach(function (kg, i) {
+				var c = document.createElement('span');
+				c.className = 'v-caja v-caja--' + tam(kg) + (!quietas && antes[i] !== num(kg) ? ' nueva' : '');
+				c.textContent = num(kg);
+				pila.appendChild(c);
+			});
+			antes = cajas.map(num);
 		};
 		var pintar = function () {
-			var kg = parseInt(rango.value, 10) || 1;
-			var n = Math.max(1, parseInt(cajas.value, 10) || 1, Math.ceil(kg / 20));
-			cajas.value = n;
-			var f = Math.ceil(kg + (T.embalaje || 1) * n);
-			var coste = f <= 2 ? T.hasta2 : f <= 5 ? T.hasta5 : f <= 10 ? T.hasta10 : T.hasta10 + (f - 10) * T.kgExtra;
-			calc.querySelector('[data-calc-kg]').textContent = kg;
-			calc.querySelector('[data-calc-coste]').textContent = euros(coste * iva);
-			calc.querySelector('[data-calc-peso]').textContent = calc.getAttribute('data-t-peso').replace('%s', f);
-			var tramo = f <= 2 ? 0 : f <= 5 ? 1 : f <= 10 ? 2 : 3;
-			calc.querySelectorAll('[data-tramo]').forEach(function (li) { li.classList.toggle('activo', +li.getAttribute('data-tramo') === tramo); });
+			var i = Math.max(0, Math.min(paradas.length, parseInt(rango.value, 10) || 0));
+			var p = paradas[i]; // en la última posición no hay parada: más de 150 kg
+			calc.classList.toggle('es-medida', !p);
+			if (!p) {
+				salidaKg.textContent = calc.getAttribute('data-t-mas-cifra');
+				rango.setAttribute('aria-valuetext', calc.getAttribute('data-t-mas'));
+				texto.textContent = calc.getAttribute('data-t-medida-cajas');
+				dibujar(paradas[paradas.length - 1].cajas, true); // las de 150 kg en fantasma: a partir de ahí, a medida
+				return;
+			}
+			salidaKg.textContent = num(p.kg);
+			rango.setAttribute('aria-valuetext', p.hielo + ' · ' + p.texto);
+			texto.textContent = p.texto;
+			dibujar(p.cajas);
+			campos.forEach(function (el) { var k = el.getAttribute('data-calc'); if (p[k] != null) el.textContent = p[k]; });
+			enlazar(p);
 		};
-		rango.addEventListener('input', function () { cajas.value = Math.ceil((parseInt(rango.value, 10) || 1) / 20); pintar(); });
-		cajas.addEventListener('input', pintar);
+		/* Botón "Pedir 75 kg": deja en el carrito justo estas cajas (3 de 20 kg + 1 de 15 kg) en el formato elegido y va al pago */
+		var pedir = calc.querySelector('[data-calc-pedir]');
+		var pedirTexto = calc.querySelector('[data-calc-pedir-texto]');
+		var formatos = calc.querySelectorAll('[data-calc-formato]');
+		var enlazar = function (p) {
+			if (!pedir || !p) return;
+			var grupos = {};
+			p.cajas.forEach(function (kg) { grupos[kg] = (grupos[kg] || 0) + 1; });
+			var partes = Object.keys(grupos).sort(function (a, b) { return b - a; }).map(function (kg) { return kg + 'x' + grupos[kg]; });
+			var formato = '3mm';
+			formatos.forEach(function (f) { if (f.checked) formato = f.value; });
+			pedir.href = pedir.getAttribute('data-base') + '?dipt_pedido=' + encodeURIComponent(partes.join(',')) + '&dipt_formato=' + formato;
+			pedirTexto.textContent = pedir.getAttribute('data-t-boton').replace('%s', num(p.kg));
+		};
+		formatos.forEach(function (f) { f.addEventListener('change', pintar); });
+		rango.addEventListener('input', pintar);
 		pintar();
 	}
 })();

@@ -1,7 +1,7 @@
 <?php
 /**
- * Industria: N1 cifra gigante sobre foto · N2 usos en plano técnico con coordenadas · N3 escala de kilos ·
- * N4 lo que pide compras (lista de control) · N5 presupuesto en tarjeta oscura · N6 preguntas.
+ * Industria: N1 −78,5 °C en contorno sobre foto · N2 usos en plano técnico con coordenadas · N3 escala de kilos ·
+ * N3b cliente en placa de características · N4 lo que pide compras (lista de control) · N5 presupuesto en tarjeta oscura · N6 preguntas.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -15,15 +15,22 @@ $fds = dipt_contenido( 'seguridad' )['fds']['archivo'] ?? '';
 get_header();
 ?>
 
-<!-- N1 · Cifra gigante sobre foto -->
+<!-- N1 · −78,5 °C en contorno sobre foto -->
 <section class="n-hero tono-oscuro" aria-labelledby="n-hero-t">
 	<div class="n-hero__foto"><?php echo dipt_foto( 'uso-industria', $c['hero']['alt'], array( 'lcp' => true, 'sizes' => '(max-width: 900px) 100vw, 55vw' ) ); // phpcs:ignore ?></div>
 	<div class="envoltura n-hero__in">
 		<?php echo dipt_migas( array( array( $c['migas'][0], dipt_url( 'inicio' ) ), array( $c['migas'][1], dipt_url( 'aplicaciones' ) ), array( $c['migas'][2], dipt_url( 'industria' ) ) ) ); // phpcs:ignore ?>
-		<h1 class="t-h1" id="n-hero-t"><?php dipt_html( str_replace( '|', '<br>', $c['hero']['titulo'] ) ); ?></h1>
+		<h1 class="t-h1" id="n-hero-t"><?php dipt_html( '<span class="tramo">' . str_replace( '|', '</span><span class="tramo">', $c['hero']['titulo'] ) . '</span>' ); ?></h1>
 		<p class="entrada"><?php echo esc_html( $c['hero']['texto'] ); ?></p>
 		<?php echo dipt_boton( $c['hero']['boton'], '#presupuesto', 'hielo' ); // phpcs:ignore ?>
-		<p class="n-hero__cifra" aria-hidden="true"><span data-cuenta="<?php echo esc_attr( $c['hero']['cifra'] ); ?>" data-desde="0" data-duracion="1800"><?php echo esc_html( $c['hero']['cifra'] ); ?></span><small><?php echo esc_html( $c['hero']['unidad'] ); ?></small></p>
+		<?php
+		// Firma de marca: −78,5 °C en contorno. El contador baja desde −20 (un congelador) para que el ancho no cambie (CLS 0).
+		// En inglés va con punto decimal y sin contador (el contador de movimiento.js escribe siempre coma).
+		$n_en   = 'en' === dipt_idioma();
+		$n_temp = $n_en ? '−78.5' : '−78,5';
+		$n_anim = $n_en ? '' : ' data-cuenta="-78.5" data-decimales="1" data-desde="-20" data-duracion="1800"';
+		?>
+		<p class="n-hero__cifra"><span class="n-hero__temp" aria-hidden="true"><span class="n-hero__num"<?php echo $n_anim; // phpcs:ignore ?>><?php echo esc_html( $n_temp ); ?></span><span class="n-hero__grados">°C</span></span><small><span class="visually-hidden"><?php echo esc_html( $n_temp ); ?> °C: </span><?php echo esc_html( $c['hero']['temperatura'] ?? '' ); ?></small></p>
 	</div>
 </section>
 
@@ -51,6 +58,23 @@ get_header();
 				<?php endforeach; ?>
 			</ol>
 		</div>
+	</div>
+</section>
+
+<!-- N3b · Cliente: placa de características (cliente · uso) -->
+<section class="sc-cliente tono-escarcha" aria-labelledby="n-cliente-t">
+	<div class="envoltura sc-cliente__in">
+		<?php echo dipt_titulo( 'h2', $c['cliente']['titulo'], 't-h2 sc-cliente__titulo', 'n-cliente-t' ); // phpcs:ignore ?>
+		<dl class="sc-placa" data-revela>
+			<div class="sc-placa__campo">
+				<dt class="dato"><?php echo esc_html( $c['cliente']['etiquetas'][0] ); ?></dt>
+				<dd><?php echo dipt_logo_cliente( $c['cliente']['id'], $c['cliente']['alt'] ); // phpcs:ignore ?><span class="sc-placa__nombre dato" aria-hidden="true"><?php echo esc_html( dipt_cliente_nombre( $c['cliente']['id'] ) ); ?></span><span class="sc-placa__detalle"><?php echo esc_html( $c['cliente']['detalle'] ); ?></span></dd>
+			</div>
+			<div class="sc-placa__campo">
+				<dt class="dato"><?php echo esc_html( $c['cliente']['etiquetas'][1] ); ?></dt>
+				<dd class="sc-placa__uso"><?php echo esc_html( $c['cliente']['uso'] ); ?></dd>
+			</div>
+		</dl>
 	</div>
 </section>
 

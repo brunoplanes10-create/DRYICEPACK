@@ -14,7 +14,7 @@ get_header();
 		<div class="envoltura">
 			<?php echo dipt_migas( array( array( dipt_t( 'inicio' ), dipt_url( 'inicio' ) ), array( $c['titulo'] ?? get_the_title(), dipt_url( $clave ) ) ) ); // phpcs:ignore ?>
 			<h1 class="t-h1"><?php echo esc_html( $c['titulo'] ?? get_the_title() ); ?></h1>
-			<?php if ( ! empty( $c['actualizado'] ) ) : ?><p class="dato suave"><?php echo esc_html( $c['actualizado'] ); ?></p><?php endif; ?>
+			<?php if ( ! empty( $c['actualizado'] ) ) : ?><p class="lg-cabeza__meta dato"><?php echo dipt_icono( 'calendario' ); // phpcs:ignore ?><span><?php echo esc_html( $c['actualizado'] ); ?></span></p><?php endif; ?>
 		</div>
 	</header>
 	<div class="envoltura lg-cuerpo">

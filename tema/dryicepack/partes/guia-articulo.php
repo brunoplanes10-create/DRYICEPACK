@@ -16,6 +16,21 @@ $html = preg_replace_callback( '#<h2([^>]*)>(.*?)</h2>#s', static function ( $m 
 	return '<h2' . $m[1] . ' id="' . esc_attr( $id ) . '">' . $m[2] . '</h2>';
 }, $html );
 $minutos = max( 1, (int) round( str_word_count( wp_strip_all_tags( $html ) ) / 220 ) );
+// Otras guías del mismo idioma para "Para seguir". Una guía con 'relacionadas' => false no aparece en las demás
+// y tampoco las lista: en ella solo salen los enlaces fijos de contenido/{idioma}/guias.php.
+$dipt_relacionadas = array();
+$dipt_sin_rel      = false;
+foreach ( dipt_guias() as $dipt_slug => $dipt_rutas ) {
+	if ( empty( $dipt_rutas[ dipt_idioma() ] ) ) continue;
+	$dipt_otra  = dipt_guia( $dipt_slug );
+	$dipt_fuera = ! $dipt_otra || false === ( $dipt_otra['relacionadas'] ?? null );
+	if ( dipt_url( 'guia-' . $dipt_slug ) === $dipt_g['url'] ) {
+		$dipt_sin_rel = $dipt_fuera;
+		continue;
+	}
+	if ( ! $dipt_fuera ) $dipt_relacionadas[] = array( dipt_url( 'guia-' . $dipt_slug ), $dipt_otra['titulo'] ?? '' );
+}
+if ( $dipt_sin_rel ) $dipt_relacionadas = array();
 dipt_migas( array( array( dipt_t( 'inicio' ), dipt_url( 'inicio' ) ), array( $c['titulo_corto'] ?? 'Guías', dipt_url( 'guias' ) ), array( $dipt_g['titulo'], $dipt_g['url'] ) ) );
 ?>
 <article class="gu">
@@ -23,7 +38,7 @@ dipt_migas( array( array( dipt_t( 'inicio' ), dipt_url( 'inicio' ) ), array( $c[
 		<div class="envoltura">
 			<?php echo dipt_migas( $GLOBALS['dipt_migas'] ); // phpcs:ignore ?>
 			<h1 class="t-h1"><?php echo esc_html( $dipt_g['titulo'] ); ?></h1>
-			<p class="dato suave"><?php echo esc_html( ( ! empty( $dipt_g['fecha'] ) ? $dipt_g['fecha'] . ' · ' : '' ) . sprintf( $c['lectura'] ?? '%d min', $minutos ) ); ?></p>
+			<p class="gu-cabeza__meta dato"><?php echo dipt_icono( 'reloj' ); // phpcs:ignore ?><span><?php echo esc_html( ( ! empty( $dipt_g['fecha'] ) ? $dipt_g['fecha'] . ' · ' : '' ) . sprintf( $c['lectura'] ?? '%d min', $minutos ) ); ?></span></p>
 		</div>
 	</header>
 	<div class="envoltura gu-cuerpo">
@@ -42,17 +57,20 @@ dipt_migas( array( array( dipt_t( 'inicio' ), dipt_url( 'inicio' ) ), array( $c[
 				<?php foreach ( $c['enlaces'] as $e ) : ?>
 					<li><a href="<?php echo esc_url( dipt_url( $e[0] ) ); ?>"><?php echo esc_html( $e[1] ); ?></a></li>
 				<?php endforeach; ?>
-				<?php foreach ( dipt_guias() as $slug => $rutas ) : // la otra guía del mismo idioma ?>
-					<?php if ( empty( $rutas[ dipt_idioma() ] ) || dipt_url( 'guia-' . $slug ) === $dipt_g['url'] ) continue; ?>
-					<li><a href="<?php echo esc_url( dipt_url( 'guia-' . $slug ) ); ?>"><?php echo esc_html( dipt_guia( $slug )['titulo'] ?? '' ); ?></a></li>
+				<?php foreach ( $dipt_relacionadas as $e ) : // las demás guías del mismo idioma, salvo las que llevan 'relacionadas' => false ?>
+					<li><a href="<?php echo esc_url( $e[0] ); ?>"><?php echo esc_html( $e[1] ); ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 		</nav>
 	<?php endif; ?>
-	<aside class="gu-compra tono-oscuro">
-		<div class="envoltura gu-compra__in">
-			<p class="t-h3"><?php echo esc_html( $c['cta'] ?? '' ); ?></p>
-			<?php echo dipt_boton( dipt_t( 'comprar' ), dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
+	<?php /* Tarjeta de compra a caballo entre la página y el pie (fondo partido: papel arriba, noche abajo) */ ?>
+	<aside class="gu-compra">
+		<div class="envoltura">
+			<div class="gu-compra__in tono-marino" data-revela>
+				<span class="gu-compra__ico" aria-hidden="true"><?php echo dipt_icono( 'reloj' ); // phpcs:ignore ?></span>
+				<p class="gu-compra__t t-h2"><?php echo esc_html( $c['cta'] ?? '' ); ?></p>
+				<?php echo dipt_boton( dipt_t( 'comprar' ), dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
+			</div>
 		</div>
 	</aside>
 </article>

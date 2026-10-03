@@ -1,7 +1,8 @@
 <?php
 /**
  * Empresas: E1 hero con foto vertical · E2 tres formas de pedir (pantallas) · E3 ventajas en lista gigante ·
- * E4 pila de cajas que crece con los kilos · E5 mosaico de usos reales · E6 alta en una frase · E7 preguntas abiertas.
+ * E4 pila de cajas que crece con los kilos · E5 mosaico de usos reales con el logotipo de cada cliente · E6 alta en una frase ·
+ * E7 preguntas abiertas.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -85,35 +86,41 @@ get_header();
 	</div>
 </section>
 
-<!-- E4 · Pila de cajas que crece con los kilos -->
-<section class="e-volumen tono-marino seccion" aria-labelledby="e-volumen-t" data-volumen data-t-cajas="<?php echo esc_attr( $c['volumen']['cajas'] ); ?>" data-t-caja="<?php echo esc_attr( $c['volumen']['caja'] ); ?>">
+<!-- E4 · Pila de cajas que crece con los kilos (cuenta de empresa: hasta 30 kg por caja; 400 kg = 14 cajas en una pila de 15) -->
+<?php
+$e_por_caja = 30;
+$e_kg       = 60;
+$e_cajas    = (int) max( 1, ceil( $e_kg / $e_por_caja ) );
+?>
+<section class="e-volumen tono-marino seccion" aria-labelledby="e-volumen-t" data-volumen data-por-caja="<?php echo (int) $e_por_caja; ?>" data-t-cajas="<?php echo esc_attr( $c['volumen']['cajas'] ); ?>" data-t-caja="<?php echo esc_attr( $c['volumen']['caja'] ); ?>">
 	<div class="envoltura e-volumen__in">
 		<div class="e-volumen__control">
 			<?php echo dipt_titulo( 'h2', $c['volumen']['titulo'], 't-h2', 'e-volumen-t' ); // phpcs:ignore ?>
 			<label class="e-volumen__etiqueta dato" for="e-kg"><?php echo esc_html( $c['volumen']['rango'] ); ?></label>
-			<p class="e-volumen__cifra"><output for="e-kg" data-volumen-kg>60</output><span>kg</span></p>
-			<input class="e-volumen__rango" id="e-kg" type="range" min="3" max="400" step="1" value="60" data-volumen-rango>
-			<p class="e-volumen__cajas dato" data-volumen-cajas><?php echo esc_html( sprintf( $c['volumen']['cajas'], 3, 60 ) ); ?></p>
+			<p class="e-volumen__cifra"><output for="e-kg" data-volumen-kg><?php echo (int) $e_kg; ?></output><span>kg</span></p>
+			<input class="e-volumen__rango" id="e-kg" type="range" min="3" max="400" step="1" value="<?php echo (int) $e_kg; ?>" data-volumen-rango>
+			<p class="e-volumen__cajas dato" data-volumen-cajas><?php echo esc_html( 1 === $e_cajas ? sprintf( $c['volumen']['caja'], $e_kg ) : sprintf( $c['volumen']['cajas'], $e_cajas, $e_kg ) ); ?></p>
 			<ul class="e-volumen__notas">
-				<li data-nota="web"><?php echo esc_html( $c['volumen']['notas']['web'] ); ?></li>
+				<li data-nota="web" class="activa"><?php echo esc_html( $c['volumen']['notas']['web'] ); ?></li>
 				<li data-nota="bcn"><?php echo esc_html( $c['volumen']['notas']['bcn'] ); ?></li>
 				<li data-nota="fuera"><?php echo esc_html( $c['volumen']['notas']['fuera'] ); ?></li>
 			</ul>
 		</div>
 		<div class="e-pila" aria-hidden="true">
-			<?php for ( $i = 0; $i < 20; $i++ ) : ?><span class="e-pila__caja" style="--i:<?php echo (int) $i; ?>"></span><?php endfor; ?>
+			<?php for ( $i = 0; $i < 15; $i++ ) : ?><span class="e-pila__caja<?php echo $i >= 15 - $e_cajas ? ' llena' : ''; ?>" style="--i:<?php echo (int) $i; ?>"></span><?php endfor; ?>
 		</div>
 	</div>
 </section>
 
-<!-- E5 · Usos reales en mosaico -->
+<!-- E5 · Usos reales en mosaico: los clientes que salen con su nombre llevan el logotipo en un marbete -->
 <section class="e-casos tono-blanco seccion" aria-labelledby="e-casos-t">
 	<div class="envoltura">
 		<?php echo dipt_titulo( 'h2', $c['casos']['titulo'], 't-h2 e-casos__titulo', 'e-casos-t' ); // phpcs:ignore ?>
 		<ul class="e-mosaico">
-			<?php foreach ( $c['casos']['lista'] as $i => $caso ) : ?>
+			<?php foreach ( $c['casos']['lista'] as $i => $caso ) : $cliente = $caso[3] ?? ''; ?>
 				<li class="e-mosaico__pieza e-mosaico__pieza--<?php echo (int) $i + 1; ?>" data-revela style="--i:<?php echo (int) $i; ?>">
 					<?php echo dipt_foto( $caso[2], '', array( 'sizes' => '(max-width: 900px) 100vw, 40vw' ) ); // phpcs:ignore ?>
+					<?php if ( $cliente ) : ?><span class="e-marbete"><?php echo dipt_logo_cliente( $cliente, $c['casos']['logos'][ $cliente ] ?? dipt_cliente_nombre( $cliente ) ); // phpcs:ignore ?></span><?php endif; ?>
 					<div><strong><?php echo esc_html( $caso[0] ); ?></strong><span><?php echo esc_html( $caso[1] ); ?></span></div>
 				</li>
 			<?php endforeach; ?>

@@ -2,7 +2,8 @@
    - Aparición de secciones al hacer scroll (solo lo que está por debajo del pliegue: nada parpadea al cargar)
    - Ambientación solo con la página cargada y en la sección visible; en pausa con la pestaña oculta
    - Cuenta atrás a la fecha límite (el HTML ya trae la fecha: sin JS se lee igual)
-   - Contador de temperatura 20 °C → −78,5 °C y progreso de los 3 pasos */
+   - Contador de temperatura 20 °C → −78,5 °C y progreso de los 3 pasos
+   - Vídeos: solo a la vista, con botón de pausa y sin arrancar solos con "reducir movimiento" */
 (function () {
   "use strict";
   var d = document, w = window;
@@ -162,5 +163,82 @@
       pasos.style.setProperty("--hw-progreso", n > 1 ? String(Math.max(0, hechos - 1) / (n - 1)) : "1");
     }, { rootMargin: "0px 0px -35% 0px", threshold: 0.5 });
     Array.prototype.forEach.call(items, function (li) { obsP.observe(li); });
+  }
+
+  /* ---- Vídeos reales ----
+     En silencio y en bucle. Solo se reproducen con el vídeo a la vista; se pausan al salir o con la pestaña oculta.
+     Con "reducir movimiento" o ahorro de datos no arrancan solos: póster con el botón de reproducir en el centro.
+     El botón de pausa está siempre visible; si alguien pausa, el vídeo no vuelve a arrancar solo. */
+  var figuras = raiz.querySelectorAll("[data-hw-video]");
+  if (figuras.length) {
+    var html = d.documentElement, red = navigator.connection || {};
+    var ahorro = html.classList.contains("ligero") || !!red.saveData || /2g/.test(red.effectiveType || "");
+    var solo = io && !reducido && !html.classList.contains("quieto") && !ahorro;
+    var vids = [];
+
+    Array.prototype.forEach.call(figuras, function (fig) {
+      var v = fig.querySelector("video"), btn = fig.querySelector(".hw-video__btn");
+      if (!v || !btn || typeof v.play !== "function") return;
+      var txt = btn.querySelector(".hw-video__btn-txt");
+      var x = { fig: fig, marco: fig.querySelector(".hw-video__marco") || fig, visible: !io, aMano: false, quiere: false };
+
+      var pintar = function () {
+        fig.classList.toggle("hw-video--parado", v.paused);
+        if (txt) txt.textContent = v.paused ? "Reproducir" : "Pausar";
+      };
+      var reproducir = function () {
+        var p = v.play();
+        if (p && typeof p.catch === "function") p.catch(pintar); // bloqueado (p. ej. ahorro de batería): queda el póster con el botón
+      };
+      x.decidir = function () {
+        if (x.visible && !d.hidden && !x.aMano && (solo || x.quiere)) { if (v.paused) reproducir(); }
+        else if (!v.paused) v.pause();
+      };
+
+      v.addEventListener("play", pintar);
+      v.addEventListener("pause", pintar);
+      v.addEventListener("playing", function () { fig.classList.add("hw-video--listo"); });
+      // Si el vídeo no carga se queda el póster, y el botón sobra
+      (v.querySelector("source") || v).addEventListener("error", function () { btn.hidden = true; fig.classList.remove("hw-video--listo"); });
+
+      // Rótulos sincronizados con el momento del vídeo (data-desde en segundos)
+      var rotulos = fig.querySelectorAll("[data-desde]");
+      if (rotulos.length > 1) {
+        var marcas = Array.prototype.map.call(rotulos, function (li) { return parseFloat(li.getAttribute("data-desde")) || 0; });
+        var actual = 0;
+        v.addEventListener("timeupdate", function () {
+          var i = 0;
+          while (i + 1 < marcas.length && v.currentTime >= marcas[i + 1]) i++;
+          if (i !== actual) { rotulos[actual].classList.remove("is-on"); rotulos[i].classList.add("is-on"); actual = i; }
+        });
+      }
+
+      btn.addEventListener("click", function () {
+        fig.classList.remove("hw-video--inicio");
+        if (v.paused) { x.aMano = false; x.quiere = true; reproducir(); }
+        else { x.aMano = true; v.pause(); }
+      });
+
+      if (!solo) fig.classList.add("hw-video--inicio");
+      fig.classList.add("hw-video--parado");
+      btn.hidden = false;
+      vids.push(x);
+    });
+
+    if (io && vids.length) {
+      // Arranca tras 300 ms a la vista: un scroll que solo pasa por encima (p. ej. un enlace a #cantidad) no descarga el vídeo
+      var obsV = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (e) {
+          vids.forEach(function (x) {
+            if (x.marco !== e.target) return;
+            clearTimeout(x.espera);
+            x.visible = e.isIntersecting;
+            if (x.visible) x.espera = setTimeout(x.decidir, 300); else x.decidir();
+          });
+        });
+      }, { threshold: 0.35 });
+      vids.forEach(function (x) { obsV.observe(x.marco); });
+    }
+    d.addEventListener("visibilitychange", function () { vids.forEach(function (x) { x.decidir(); }); });
   }
 })();

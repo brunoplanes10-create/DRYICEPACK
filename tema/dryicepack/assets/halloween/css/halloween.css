@@ -1,6 +1,6 @@
 /* =========================================================
    Página Halloween 2026 · DryIcePack
-   Misma tipografía que la web (Instrument Serif en títulos, Geist en texto)
+   Misma tipografía que la web (Inter Tight en títulos, Inter en texto)
    y mismo lenguaje (píldoras, chips). Cambian los colores y la
    ambientación: negro, naranja y niebla. Todo va dentro de #hw.
    Animaciones solo con transform y opacity.
@@ -21,12 +21,15 @@
   --hw-hielo: #b7d2e6;
   --hw-vapor: #ffffff;
 
-  --hw-fuente: var(--f-texto, "Geist", Arial, sans-serif);
-  --hw-titulos: var(--f-display, "Instrument Serif", Georgia, serif);
+  --hw-fuente: var(--f-texto, "Inter", Arial, sans-serif);
+  --hw-titulos: var(--f-display, "Inter Tight", Arial, sans-serif);
+  --hw-mono: var(--f-mono, ui-monospace, "SFMono-Regular", Consolas, monospace); /* solo datos técnicos */
   --hw-ancho: 1200px;
   --hw-margen: 16px;
   --hw-radio: 8px;
   --hw-curva: cubic-bezier(.2, .8, .2, 1);
+  /* Profundidad real sobre negro: brillo interior arriba y sombras en capas (no se animan) */
+  --hw-sombra: inset 0 1px 0 rgba(255, 255, 255, .06), 0 1px 2px rgba(0, 0, 0, .55), 0 18px 40px -22px rgba(0, 0, 0, .85), 0 56px 90px -60px rgba(0, 0, 0, .95);
 
   display: block;
   position: relative;
@@ -46,13 +49,14 @@
 #hw a:hover { color: var(--hw-vapor); }
 #hw :focus-visible { outline: 2px solid var(--hw-naranja-texto); outline-offset: 3px; border-radius: 3px; }
 
+/* Titulares como en la web: Inter Tight 800 (h3 700), compactos y con interletraje cerrado */
 #hw h1, #hw h2 {
   font-family: var(--hw-titulos);
-  font-weight: 400;
+  font-weight: 800;
 }
 #hw h3 {
-  font-family: var(--hw-fuente);
-  font-weight: 600;
+  font-family: var(--hw-titulos);
+  font-weight: 700;
 }
 #hw h1, #hw h2, #hw h3 {
   font-style: normal;
@@ -60,9 +64,9 @@
   color: var(--hw-vapor);
 }
 #hw h1, #hw h2 { text-wrap: balance; }
-#hw h1 { font-size: clamp(2.6rem, 5.4vw + 1rem, 5.2rem); line-height: .98; letter-spacing: -.02em; }
-#hw h2 { font-size: clamp(2rem, 3vw + 1rem, 3.4rem); line-height: 1.02; letter-spacing: -.012em; margin-bottom: 14px; }
-#hw h3 { font-size: 1.12rem; line-height: 1.3; letter-spacing: 0; margin-bottom: 6px; }
+#hw h1 { font-size: clamp(2.45rem, 4.4vw + 1rem, 4.5rem); line-height: 1.02; letter-spacing: -.03em; word-spacing: .04em; }
+#hw h2 { font-size: clamp(1.85rem, 2.4vw + 1rem, 3rem); line-height: 1.06; letter-spacing: -.024em; word-spacing: .03em; margin-bottom: 14px; }
+#hw h3 { font-size: 1.16rem; line-height: 1.25; letter-spacing: -.008em; word-spacing: .03em; margin-bottom: 6px; }
 #hw p { margin-bottom: 1em; }
 #hw p:last-child { margin-bottom: 0; }
 
@@ -239,6 +243,9 @@
 }
 
 /* ---------- Ideas ---------- */
+/* Cabecera y vídeo de las calabazas: apilados en móvil, lado a lado en escritorio */
+#hw .hw-ideas__intro { display: grid; gap: 28px; margin-bottom: 40px; }
+#hw .hw-ideas__intro .hw-cabecera { margin-bottom: 0; }
 #hw .hw-ideas { display: grid; gap: 0; }
 #hw .hw-ideas li {
   display: grid; grid-template-columns: 96px 1fr; column-gap: 18px; align-items: start; align-content: start;
@@ -248,7 +255,8 @@
   grid-row: 1 / span 2;
   border-radius: var(--hw-radio);
   background: radial-gradient(90% 90% at 50% 100%, rgba(255, 107, 26, .12), transparent 70%), var(--hw-carbon);
-  border: 1px solid var(--hw-linea);
+  border: 1px solid var(--hw-linea-fuerte);
+  box-shadow: var(--hw-sombra);
   padding: 6px 4px 2px;
 }
 #hw .hw-ideas p { color: var(--hw-texto-2); }
@@ -288,11 +296,12 @@
 #hw .hw-i-ojos { animation: none 2.2s steps(1, end) infinite; }
 
 /* ---------- Formato ---------- */
-#hw .hw-formatos { display: grid; gap: 18px; }
+#hw .hw-formatos { display: grid; gap: 30px; }
 #hw .hw-formato {
+  position: relative;
   display: grid; grid-template-columns: 40% 1fr; gap: 16px; align-items: start;
-  padding: 14px; border: 1px solid var(--hw-linea); border-radius: var(--hw-radio);
-  background: var(--hw-negro);
+  padding: 22px 14px 14px; border: 1px solid var(--hw-linea-fuerte); border-radius: var(--hw-radio);
+  background: var(--hw-negro); box-shadow: var(--hw-sombra);
   transition: transform .3s var(--hw-curva);
 }
 #hw .hw-formato:hover { transform: translateY(-3px); border-color: var(--hw-linea-fuerte); }
@@ -306,13 +315,15 @@
   opacity: .35; animation: none 16s ease-in-out infinite alternate;
 }
 #hw .hw-formato p { color: var(--hw-texto-2); font-size: .98rem; }
+/* El sello pisa el borde superior de la tarjeta: solape intencionado, como una etiqueta pegada a la caja */
 #hw .hw-formato .hw-sello {
-  display: inline-block; margin-bottom: 10px; padding: 4px 10px;
+  position: absolute; z-index: 2; top: 0; left: 14px; transform: translateY(-50%);
+  display: inline-block; margin: 0; padding: 5px 11px;
   background: var(--hw-naranja); color: #140a04;
-  font-weight: 700; font-size: .66rem; line-height: 1.4; letter-spacing: .06em; text-transform: uppercase;
-  border-radius: 999px;
+  font-weight: 700; font-size: .66rem; line-height: 1.4; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+  border-radius: 999px; box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .8);
 }
-#hw .hw-formato .hw-sello--linea { background: transparent; color: var(--hw-texto); border: 1px solid var(--hw-linea-fuerte); }
+#hw .hw-formato .hw-sello--linea { background: var(--hw-negro); color: var(--hw-texto); border: 1px solid var(--hw-linea-fuerte); }
 #hw .hw-datos { margin-top: 14px; border-top: 1px dashed var(--hw-linea-fuerte); }
 #hw .hw-datos > div { padding: 8px 0; border-bottom: 1px dashed var(--hw-linea); }
 #hw .hw-datos dt { font-weight: 700; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--hw-hielo); }
@@ -326,6 +337,7 @@
   padding: 24px 20px 20px;
   border: 1px solid var(--hw-linea-fuerte); border-radius: var(--hw-radio);
   background: linear-gradient(180deg, var(--hw-carbon), var(--hw-noche));
+  box-shadow: var(--hw-sombra);
   transition: transform .3s var(--hw-curva);
 }
 #hw .hw-pack::before { content: ""; position: absolute; left: 20px; right: 20px; top: 0; height: 3px; background: var(--hw-naranja); border-radius: 0 0 3px 3px; }
@@ -338,7 +350,7 @@
 #hw .hw-pack:hover::after { opacity: 1; }
 #hw .hw-pack__uso { font-weight: 700; font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; color: var(--hw-naranja-texto); margin-bottom: 4px; }
 #hw .hw-pack__kg { font-weight: 700; font-size: 1.15rem; color: var(--hw-texto-2); margin-bottom: 8px; }
-#hw .hw-pack__num { font-size: 3.4rem; line-height: 1.05; letter-spacing: -.03em; color: var(--hw-vapor); font-variant-numeric: tabular-nums; }
+#hw .hw-pack__num { font-family: var(--hw-titulos); font-weight: 800; font-size: 3.6rem; line-height: 1; letter-spacing: -.045em; color: var(--hw-vapor); font-variant-numeric: tabular-nums; }
 #hw .hw-pack__desc { color: var(--hw-texto-2); min-height: 3.3em; }
 #hw .hw-pack__precio { font-weight: 700; font-size: 1.2rem; color: var(--hw-vapor); margin-bottom: 14px; font-variant-numeric: tabular-nums; }
 #hw .hw-pack__precio small { display: block; font-size: .78rem; font-weight: 600; color: var(--hw-texto-2); }
@@ -346,14 +358,19 @@
 #hw .hw-pack__opciones { display: grid; gap: 18px; }
 
 /* ---------- Cómo hacer niebla ---------- */
-#hw .hw-como { display: grid; gap: 32px; }
+/* Móvil: intro → vídeo → pasos. Desde tablet, el vídeo vertical va a la derecha de la intro y los pasos */
+#hw .hw-como { display: grid; gap: 32px; grid-template-areas: "intro" "video" "pasos"; }
+#hw .hw-como__intro { grid-area: intro; }
+#hw .hw-como__video { grid-area: video; width: 100%; max-width: 340px; justify-self: center; }
+#hw .hw-como .hw-pasos { grid-area: pasos; }
 #hw .hw-temp {
-  margin: 10px 0 6px;
-  font-weight: 700; font-size: clamp(3.6rem, 8vw + 1rem, 6.6rem); line-height: 1;
-  letter-spacing: -.04em; color: var(--hw-vapor); font-variant-numeric: tabular-nums;
+  margin: 14px 0 8px;
+  font-family: var(--hw-titulos); font-weight: 800; font-size: clamp(3.6rem, 7.4vw + 1rem, 6.4rem); line-height: 1;
+  letter-spacing: -.045em; color: var(--hw-vapor); font-variant-numeric: tabular-nums;
 }
-#hw .hw-temp__num { display: inline-block; min-width: 4.25ch; text-align: right; }
-#hw .hw-temp__u { font-size: .45em; color: var(--hw-naranja-texto); margin-left: .12em; vertical-align: .95em; letter-spacing: 0; }
+/* Ancho fijo = el de "−78,5" (el valor final): el contador no mueve el °C mientras baja desde 20 °C */
+#hw .hw-temp__num { display: inline-block; min-width: 2.72em; text-align: right; }
+#hw .hw-temp__u { font-size: .42em; color: var(--hw-naranja-texto); margin-left: .14em; vertical-align: 1em; letter-spacing: 0; }
 #hw .hw-temp__pie { color: var(--hw-texto-2); max-width: 26em; }
 #hw .hw-pasos { position: relative; counter-reset: paso; }
 #hw .hw-pasos::before, #hw .hw-pasos::after {
@@ -373,18 +390,77 @@
 #hw .hw-pasos li.is-on::before { background: var(--hw-naranja); color: #140a04; transform: scale(1.06); }
 #hw .hw-pasos p { color: var(--hw-texto-2); }
 
+/* ---------- Vídeos reales ----------
+   Marco con proporción fija (CLS 0). Póster encima del vídeo hasta que se ve el primer fotograma. */
+#hw .hw-video__marco {
+  position: relative; overflow: hidden; isolation: isolate;
+  border: 1px solid var(--hw-linea-fuerte); border-radius: var(--hw-radio);
+  background: #000; box-shadow: var(--hw-sombra);
+}
+#hw .hw-video--vertical .hw-video__marco { aspect-ratio: 9 / 16; }
+#hw .hw-video--horizontal .hw-video__marco { aspect-ratio: 16 / 9; }
+#hw .hw-video__v, #hw .hw-video__poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#hw .hw-video__poster { z-index: 1; transition: opacity .4s var(--hw-curva); }
+#hw .hw-video--listo .hw-video__poster { opacity: 0; }
+/* Rótulos que siguen al vídeo, como el registro de una prueba de laboratorio */
+#hw .hw-video__rotulos { position: absolute; z-index: 2; left: 10px; top: 10px; display: grid; pointer-events: none; }
+#hw .hw-video__rotulos li {
+  grid-area: 1 / 1; justify-self: start;
+  padding: 6px 10px; border-radius: 4px; background: rgba(11, 11, 14, .82);
+  font: 500 .76rem/1.3 var(--hw-mono); letter-spacing: .02em; color: var(--hw-vapor); /* sin mayúsculas: las unidades (s, mm) no se tocan */
+  white-space: nowrap; opacity: 0; transform: translate3d(0, 6px, 0);
+  transition: opacity .25s, transform .25s var(--hw-curva);
+}
+#hw .hw-video__rotulos li.is-on { opacity: 1; transform: none; }
+#hw .hw-video__rotulos b { font-weight: 600; color: var(--hw-naranja-texto); margin-right: 8px; }
+/* Pausa / reproducción, siempre visible. Anclado a la izquierda: al cambiar "Pausar" por "Reproducir"
+   solo crece hacia la derecha y su esquina no se mueve (sin desplazamiento de diseño) */
+#hw .hw-video__btn {
+  position: absolute; z-index: 3; left: 10px; bottom: 10px;
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 10px 16px 10px 13px;
+  border: 1px solid rgba(255, 255, 255, .4); border-radius: 999px;
+  background: rgba(11, 11, 14, .8); color: var(--hw-vapor);
+  font: 700 .85rem/1 var(--hw-fuente); cursor: pointer;
+  transition: transform .2s var(--hw-curva);
+}
+#hw .hw-video__btn[hidden] { display: none; }
+#hw .hw-video__btn:hover { background: rgba(11, 11, 14, .94); border-color: var(--hw-vapor); transform: translateY(-1px); }
+#hw .hw-video__btn:active { transform: scale(.97); }
+#hw .hw-video__ico { width: 14px; height: 14px; fill: currentColor; flex: none; }
+#hw .hw-video__ico-play, #hw .hw-video--parado .hw-video__ico-pausa { display: none; }
+#hw .hw-video--parado .hw-video__ico-play { display: inline; }
+/* Sin reproducción automática (reducir movimiento o ahorro de datos): botón naranja en el centro del póster hasta el primer clic */
+#hw .hw-video--inicio .hw-video__btn {
+  bottom: auto; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  min-height: 52px; padding: 14px 24px 14px 20px; font-size: .95rem;
+  background: var(--hw-naranja); border-color: var(--hw-naranja); color: #140a04;
+}
+#hw .hw-video--inicio .hw-video__btn:hover { background: var(--hw-naranja-hover); border-color: var(--hw-naranja-hover); transform: translate(-50%, calc(-50% - 2px)); }
+#hw .hw-video figcaption { margin-top: 14px; color: var(--hw-texto-2); font-size: .95rem; }
+#hw .hw-video figcaption p { margin-bottom: .6em; }
+#hw .hw-video figcaption b { color: var(--hw-vapor); }
+#hw .hw-video__ficha { font: 500 .78rem/1.4 var(--hw-mono); letter-spacing: .02em; color: var(--hw-hielo); }
+#hw .hw-video__aviso {
+  margin-top: 12px; padding: 10px 14px;
+  border-left: 3px solid var(--hw-naranja); border-radius: 0 6px 6px 0;
+  background: rgba(255, 107, 26, .08); color: var(--hw-texto); font-size: .9rem;
+}
+#hw .hw-video__aviso b { display: block; margin-bottom: 2px; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--hw-naranja-texto); }
+
 /* ---------- Fecha límite ---------- */
 #hw .hw-fecha { display: grid; gap: 36px; }
 #hw .hw-fecha__cuenta {
   position: relative; overflow: hidden;
   padding: 28px 22px; border: 1px solid var(--hw-naranja); border-radius: var(--hw-radio);
   background: radial-gradient(120% 90% at 0% 0%, rgba(255, 107, 26, .16), transparent 60%), var(--hw-carbon);
+  box-shadow: var(--hw-sombra);
 }
 #hw .hw-reloj {
   min-height: 1.15em; display: flex; align-items: flex-end; flex-wrap: wrap; gap: 4px 16px;
   margin: 6px 0 8px;
-  font-weight: 700; font-size: clamp(2rem, 3.6vw + 1rem, 3.1rem); line-height: 1.1;
-  font-variant-numeric: tabular-nums; color: var(--hw-vapor); letter-spacing: -.02em;
+  font-family: var(--hw-titulos); font-weight: 800; font-size: clamp(2rem, 3.6vw + 1rem, 3.1rem); line-height: 1.1;
+  font-variant-numeric: tabular-nums; color: var(--hw-vapor); letter-spacing: -.03em;
 }
 #hw .hw-reloj__u { display: inline-flex; align-items: baseline; gap: 4px; }
 #hw .hw-reloj__u b { display: inline-block; font-weight: 700; }
@@ -425,8 +501,10 @@
 }
 #hw .hw-reglas b { color: var(--hw-vapor); font-weight: 700; }
 #hw .hw-enlace-flecha { font-weight: 700; text-decoration: none; }
-#hw .hw-enlace-flecha::after { content: " →"; display: inline-block; transition: transform .2s var(--hw-curva); }
-#hw .hw-enlace-flecha:hover::after { transform: translateX(4px); }
+/* La flecha va pegada a la última palabra: nunca queda sola en una línea */
+#hw .hw-enlace-flecha__fin { white-space: nowrap; }
+#hw .hw-enlace-flecha__ico { display: inline-block; margin-left: .3em; transition: transform .2s var(--hw-curva); }
+#hw .hw-enlace-flecha:hover .hw-enlace-flecha__ico { transform: translateX(4px); }
 
 /* ---------- Negocios ---------- */
 #hw .hw-b2b { display: grid; gap: 28px; align-items: center; }
@@ -461,6 +539,8 @@
 #hw .hw-final { position: relative; isolation: isolate; overflow: hidden; padding: 104px 0 112px; text-align: center; border-top: 1px solid var(--hw-linea); }
 #hw .hw-final__img { position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; object-fit: cover; opacity: .5; }
 #hw .hw-final::before { content: ""; position: absolute; inset: 0; z-index: -2; background: radial-gradient(70% 70% at 50% 50%, rgba(11, 11, 14, .4), var(--hw-negro)); }
+/* Abajo funde con el azul noche del pie de la web, por encima de la niebla (sin escalón entre la campaña y el pie) */
+#hw .hw-final::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: 140px; pointer-events: none; background: linear-gradient(180deg, rgba(11, 20, 28, 0), var(--c-noche, #0B141C) 92%); }
 #hw .hw-niebla--final { top: auto; bottom: 0; height: 55%; }
 #hw .hw-murcielagos--final { top: 8%; }
 #hw .hw-final__cuerpo { max-width: 780px; }
@@ -545,6 +625,12 @@ html[data-hw-fase="cerrado"] #hw .hw-solo-abierto, html[data-hw-fase="fin"] #hw 
   #hw .hw-packs { grid-template-columns: 1fr 1fr; }
   #hw .hw-pack--doble { grid-column: 1 / -1; }
   #hw .hw-pack--doble .hw-pack__opciones { grid-template-columns: 1fr 1fr; }
+  /* El vídeo ocupa las dos filas; si es más alto, el hueco queda bajo los pasos y no entre la intro y los pasos */
+  #hw .hw-como {
+    grid-template-columns: minmax(0, 1fr) 300px; grid-template-rows: auto 1fr;
+    grid-template-areas: "intro video" "pasos video"; column-gap: 40px; row-gap: 24px; align-items: start;
+  }
+  #hw .hw-como__video { max-width: none; }
 }
 
 /* =========================================================
@@ -562,22 +648,34 @@ html[data-hw-fase="cerrado"] #hw .hw-solo-abierto, html[data-hw-fase="fin"] #hw 
       linear-gradient(0deg, var(--hw-negro) 2%, rgba(11, 11, 14, 0) 30%),
       linear-gradient(180deg, rgba(11, 11, 14, .55) 0, rgba(11, 11, 14, 0) 16%);
   }
-  #hw .hw-hero__cuerpo h1 { max-width: 13.5em; }
+  #hw .hw-hero__cuerpo h1 { max-width: 11.5em; }
   #hw .hw-entrada { max-width: 30em; }
   #hw .hw-vela { left: 70%; top: 60%; width: 34vw; height: 22vw; }
   #hw .hw-vela--2 { left: 52%; top: 64%; width: 18vw; height: 13vw; }
   #hw .hw-niebla { bottom: 4%; height: 50%; }
   #hw .hw-murcielagos { left: 36%; }
   #hw .hw-murcielagos--final { left: 0; }
-  #hw .hw-ideas { grid-template-columns: repeat(4, 1fr); column-gap: 28px; }
-  #hw .hw-ideas li { grid-template-columns: 1fr; row-gap: 16px; border-top: 0; padding: 0; }
-  #hw .hw-ideas__ilus { grid-row: auto; padding: 18px 20px 8px; }
+  /* Ideas: una idea protagonista (el caldero, en grande) y las otras tres en filas a su lado.
+     Nada de cuatro tarjetas iguales con el dibujo arriba. */
+  #hw .hw-ideas { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: repeat(3, auto); column-gap: 56px; }
+  #hw .hw-ideas li { grid-template-columns: 148px 1fr; column-gap: 24px; padding: 26px 0; }
+  #hw .hw-ideas li:nth-child(2) { border-top: 0; padding-top: 0; }
+  #hw .hw-ideas li:first-child { grid-row: 1 / span 3; grid-template-columns: 1fr; row-gap: 0; align-content: start; padding: 0; border-top: 0; }
+  #hw .hw-ideas li:first-child .hw-ideas__ilus { grid-row: auto; display: grid; place-items: center; margin-bottom: 26px; padding: 44px 48px 30px; }
+  #hw .hw-ideas li:first-child .hw-ilus { width: min(100%, 330px); }
+  /* En grande, el trazo baja de grosor para que siga pareciendo un dibujo de línea */
+  #hw .hw-ideas li:first-child .hw-t { stroke-width: 1.4; }
+  #hw .hw-ideas li:first-child .hw-n { stroke-width: 1.5; }
+  #hw .hw-ideas li:first-child .hw-b { stroke-width: 1.1; }
+  #hw .hw-ideas li:first-child h3 { font-size: 1.7rem; letter-spacing: -.02em; margin-bottom: 10px; }
+  #hw .hw-ideas li:first-child p { max-width: 34em; font-size: 1.05rem; }
   #hw .hw-ideas li:hover .hw-ideas__ilus { border-color: rgba(255, 107, 26, .5); }
   #hw .hw-formatos { gap: 28px; }
   #hw .hw-formato { grid-template-columns: 44% 1fr; gap: 24px; padding: 20px; }
   #hw .hw-packs { grid-template-columns: 1fr 1fr 1.6fr; }
   #hw .hw-pack--doble { grid-column: auto; }
-  #hw .hw-como { grid-template-columns: 5fr 7fr; gap: 72px; align-items: start; }
+  #hw .hw-ideas__intro { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 56px; align-items: center; margin-bottom: 56px; }
+  #hw .hw-como { grid-template-columns: minmax(0, 1fr) 380px; column-gap: 88px; row-gap: 32px; }
   #hw .hw-fecha { grid-template-columns: 5fr 6fr; gap: 72px; align-items: start; }
   #hw .hw-fecha__nota { grid-column: 1 / -1; }
   #hw .hw-reglas { display: grid; grid-template-columns: 1fr 1fr; column-gap: 56px; }

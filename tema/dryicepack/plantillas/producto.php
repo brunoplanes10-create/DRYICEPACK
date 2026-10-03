@@ -21,6 +21,8 @@ $v0    = null;
 foreach ( dipt_variaciones() as $v ) if ( (float) $v['kg'] === (float) $kg0 && $f0 === $v['formato'] ) $v0 = $v;
 $p0    = dipt_precio_pack( $kg0 );
 $e0    = dipt_primera_entrega();
+// Aviso: círculo con exclamación, mismo trazo que los iconos del tema (lo usan el campo del código postal y la línea de entrega)
+$ico_aviso = '<svg class="ico p-ico-aviso" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.2M12 16.3v.2"/></svg>';
 $GLOBALS['dipt_barra_compra'] = true;
 dipt_precargar( $c['galeria'][ $f0 ][0][0], '(max-width: 900px) 100vw, 55vw' );
 dipt_registrar_faq( $c['faq']['lista'] );
@@ -97,14 +99,20 @@ if ( function_exists( 'wc_print_notices' ) ) {
 							<button type="button" data-cajas="1" aria-label="<?php echo esc_attr( $c['mas'] ); ?>">+</button>
 						</div>
 					</div>
+					<?php // El código postal va con el pedido (dipt_cp): el checkout lo recibe escrito, también sin JavaScript ?>
 					<div class="p-grupo p-grupo--cp">
 						<label class="p-grupo__titulo" for="p-cp"><?php echo esc_html( $c['cp'] ); ?></label>
-						<input id="p-cp" type="text" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code" placeholder="<?php echo esc_attr( $c['cp_ph'] ); ?>" data-cp>
+						<div class="p-cp" data-cp-caja data-cp-estado="">
+							<input id="p-cp" name="dipt_cp" type="text" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code" placeholder="<?php echo esc_attr( $c['cp_ph'] ); ?>" aria-describedby="p-cp-nota" data-cp>
+							<span class="p-cp__icono" aria-hidden="true"><span class="p-cp__giro"></span><?php echo dipt_icono( 'check', 'p-cp__ok' ) . $ico_aviso; // phpcs:ignore ?></span>
+						</div>
+						<p class="p-cp__nota" id="p-cp-nota" data-cp-nota<?php foreach ( array( 'ayuda', 'buscando', 'correcto', 'fuera', 'medida', 'no_valido', 'corto' ) as $k ) printf( ' data-t-%s="%s"', esc_attr( str_replace( '_', '-', $k ) ), esc_attr( $c[ 'cp_' . $k ] ?? '' ) ); ?>><?php echo esc_html( $c['cp_ayuda'] ?? '' ); ?></p>
 					</div>
 				</div>
 
-				<p class="p-llega" data-llega data-t-llega="<?php echo esc_attr( $c['llega'] ); ?>" data-t-fuera="<?php echo esc_attr( $c['fuera'] ); ?>" aria-live="polite">
-					<?php echo dipt_icono( 'furgoneta' ); // phpcs:ignore ?><span data-llega-texto><?php echo esc_html( sprintf( $c['llega_hoy'], $e0 ? dipt_fecha_larga( $e0['fecha'] ) : '' ) ); ?></span>
+				<p class="p-llega" data-llega data-t-llega="<?php echo esc_attr( $c['llega'] ); ?>"<?php foreach ( array( 'ok', 'sabado', 'fuera', 'medida', 'error' ) as $k ) printf( ' data-t-%s="%s"', esc_attr( $k ), esc_attr( $c[ 'llega_cp_' . $k ] ?? '' ) ); ?> data-wa="<?php echo esc_url( dipt_whatsapp_url() ); ?>" aria-live="polite">
+					<span class="p-llega__ico" aria-hidden="true"><?php echo dipt_icono( 'furgoneta', 'p-llega__base' ) . dipt_icono( 'check', 'p-llega__ok' ) . $ico_aviso; // phpcs:ignore ?></span>
+					<span class="p-llega__txt"><span data-llega-texto><?php echo esc_html( sprintf( $c['llega_hoy'], $e0 ? dipt_fecha_larga( $e0['fecha'] ) : '' ) ); ?></span><span class="p-llega__extra" data-llega-extra hidden></span></span>
 				</p>
 
 				<dl class="p-precio" aria-live="polite">
@@ -164,11 +172,15 @@ if ( function_exists( 'wc_print_notices' ) ) {
 			<?php echo dipt_titulo( 'h2', $c['cuanto']['titulo'], 't-h2', 'p-cuanto-t' ); // phpcs:ignore ?>
 			<p class="suave" data-revela><?php echo esc_html( $c['cuanto']['texto'] ); ?></p>
 			<p data-revela style="--i:1"><?php echo dipt_enlace( $c['cuanto']['calcula'], dipt_whatsapp_url(), array( 'target' => '_blank', 'rel' => 'noopener' ) ); // phpcs:ignore ?></p>
+			<?php if ( ! empty( $c['cuanto']['seguridad'] ) ) : // Caldero, ponchera y niebla: antes de usarlo, las reglas de seguridad ?>
+				<p data-revela style="--i:2"><?php echo dipt_enlace( $c['cuanto']['seguridad'], dipt_url( 'seguridad' ) ); // phpcs:ignore ?></p>
+			<?php endif; ?>
 		</div>
 		<ol class="p-escalones">
 			<?php foreach ( $c['cuanto']['casos'] as $i => $caso ) : ?>
 				<li class="p-escalon p-escalon--<?php echo (int) $i + 1; ?>" data-revela style="--i:<?php echo (int) $i; ?>">
-					<span class="p-escalon__kg"><?php echo esc_html( $caso[0] ); ?></span>
+					<?php // La cifra en grande y la unidad aparte, para que "15–20 kg" no parta entre el número y "kg" ?>
+					<span class="p-escalon__kg"><?php echo preg_match( '/^(.+?)\s*(kg)$/u', (string) $caso[0], $m_kg ) ? esc_html( $m_kg[1] ) . '<small>' . esc_html( $m_kg[2] ) . '</small>' : esc_html( $caso[0] ); ?></span>
 					<strong><?php echo esc_html( $caso[1] ); ?></strong>
 					<span><?php echo esc_html( $caso[2] ); ?></span>
 				</li>
@@ -180,9 +192,12 @@ if ( function_exists( 'wc_print_notices' ) ) {
 <!-- P5 · Tarifa de envío en billete -->
 <section class="p-tarifa tono-escarcha seccion" aria-labelledby="p-tarifa-t">
 	<div class="envoltura p-tarifa__in">
-		<div>
+		<div class="texto">
 			<?php echo dipt_titulo( 'h2', $c['tarifa']['titulo'], 't-h2', 'p-tarifa-t' ); // phpcs:ignore ?>
 			<p class="entrada suave" data-revela><?php echo esc_html( $c['tarifa']['texto'] ); ?></p>
+			<?php if ( ! empty( $c['tarifa']['enlace'] ) ) : ?>
+				<p data-revela style="--i:1"><?php echo dipt_enlace( $c['tarifa']['enlace'], dipt_url( 'envios' ) ); // phpcs:ignore ?></p>
+			<?php endif; ?>
 		</div>
 		<div class="p-billete" data-revela="der">
 			<div class="p-billete__cuerpo">
@@ -206,7 +221,12 @@ if ( function_exists( 'wc_print_notices' ) ) {
 <!-- P6 · Preguntas en conversación -->
 <section class="p-faq tono-blanco seccion" aria-labelledby="p-faq-t">
 	<div class="envoltura p-faq__in">
-		<h2 class="t-h2" id="p-faq-t" data-revela><?php echo esc_html( $c['faq']['titulo'] ); ?></h2>
+		<div class="p-faq__cabeza texto">
+			<h2 class="t-h2" id="p-faq-t" data-revela><?php echo esc_html( $c['faq']['titulo'] ); ?></h2>
+			<?php if ( ! empty( $c['faq']['empresas'] ) ) : ?>
+				<p data-revela style="--i:1"><?php echo dipt_enlace( $c['faq']['empresas'], dipt_url( 'empresas' ) ); // phpcs:ignore ?></p>
+			<?php endif; ?>
+		</div>
 		<div class="p-chat">
 			<?php foreach ( $c['faq']['lista'] as $i => $f ) : ?>
 				<div class="p-chat__par" data-revela style="--i:<?php echo (int) $i; ?>">

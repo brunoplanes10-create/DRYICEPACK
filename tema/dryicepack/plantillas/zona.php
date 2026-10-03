@@ -30,6 +30,10 @@ foreach ( dipt_zonas() as $k => $o ) {
 }
 asort( $cerca );
 $cerca = array_slice( $cerca, 0, 6, true );
+// Titulares: las palabras cortas (en, el, de, a, sant...) se unen a la siguiente con un espacio de no separación,
+// para que el topónimo no se parta en "El / Prat" ni quede "en" al final de una línea. Solo en los títulos.
+$sin_cortes = static fn( $s ) => preg_replace( "/(?<=^|[\\s>|\x{00A0}])(el|la|els|les|en|a|al|del|de|sant|santa|y|i|in) (?=\\S)/iu", "\$1\u{00A0}", $s ) ?? $s;
+$titulo_h1  = $sin_cortes( $t( $cz['titulo'] ) );
 get_header();
 ?>
 
@@ -38,7 +42,7 @@ get_header();
 	<div class="envoltura z-hero__in">
 		<div>
 			<?php echo dipt_migas( array( array( $cz['migas'][0], dipt_url( 'inicio' ) ), array( $cz['migas'][1], dipt_url( 'zonas' ) ), array( $t( $cz['migas'][2] ), dipt_url( 'zona-' . $clave ) ) ) ); // phpcs:ignore ?>
-			<h1 class="t-hero" id="z-hero-t"><?php dipt_html( str_replace( '|', '<br>', $t( $cz['titulo'] ) ) ); ?></h1>
+			<h1 class="t-hero" id="z-hero-t"><?php dipt_html( '<span class="tramo">' . str_replace( '|', '</span><span class="tramo">', $titulo_h1 ) . '</span>' ); ?></h1>
 			<p class="entrada"><?php echo esc_html( $t( $cz['texto'] ) ); ?></p>
 			<?php echo dipt_boton( $cz['boton'], dipt_url( 'producto' ) ); // phpcs:ignore ?>
 		</div>
@@ -61,7 +65,7 @@ get_header();
 <!-- Z3 · Entrega en la zona -->
 <section class="z-entrega tono-papel seccion" aria-labelledby="z-entrega-t">
 	<div class="envoltura z-entrega__in">
-		<?php echo dipt_titulo( 'h2', $t( $cz['entrega']['titulo'] ), 't-h2', 'z-entrega-t' ); // phpcs:ignore ?>
+		<?php echo dipt_titulo( 'h2', $sin_cortes( $t( $cz['entrega']['titulo'] ) ), 't-h2', 'z-entrega-t' ); // phpcs:ignore ?>
 		<dl class="z-tabla">
 			<?php foreach ( $cz['entrega']['filas'] as $f ) : ?>
 				<div data-revela><dt><?php echo esc_html( $t( $f[0] ) ); ?></dt><dd><?php echo esc_html( $t( $f[1] ) ); ?></dd></div>
@@ -73,7 +77,7 @@ get_header();
 <!-- Z4 · Usos -->
 <section class="z-usos tono-blanco seccion" aria-labelledby="z-usos-t">
 	<div class="envoltura">
-		<h2 class="t-h3" id="z-usos-t"><?php echo esc_html( $t( $cz['usos']['titulo'] ) ); ?></h2>
+		<h2 class="t-h3" id="z-usos-t"><?php echo esc_html( $sin_cortes( $t( $cz['usos']['titulo'] ) ) ); ?></h2>
 		<ul class="z-usos__lista">
 			<?php foreach ( $cz['usos']['lista'] as $u ) : ?><li><a href="<?php echo esc_url( dipt_url( $u[0] ) ); ?>"><?php echo esc_html( $u[1] ); ?><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></a></li><?php endforeach; ?>
 			<li><a href="<?php echo esc_url( dipt_url( 'empresas' ) ); ?>"><?php echo esc_html( dipt_t( 'menu' )['empresas'] ); ?><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></a></li>

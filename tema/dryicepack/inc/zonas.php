@@ -36,19 +36,50 @@ function dipt_zona_nombre( $z, $idioma = null ) {
 	return $n;
 }
 
-function dipt_zona_texto( $plantilla, $z ) {
-	$texto = strtr( (string) $plantilla, array(
-		'{nombre}'  => dipt_zona_nombre( $z ),
-		'{Nombre}'  => ucfirst( dipt_zona_nombre( $z ) ),
+/**
+ * Rellena una plantilla con los datos de la zona. {nombre} es la forma de mitad de frase y {Nombre} la de inicio.
+ * Contracciones solo entre la preposición y {nombre}, aunque haya "|" o "<em>" en medio (se conserva el separador):
+ * - Catalán: el artículo del topónimo va en minúscula a mitad de frase y se contrae siempre:
+ *   "a el Maresme" → "al Maresme", "de El Prat" → "del Prat", "per a el" → "per al", "per el" → "pel",
+ *   "a|<em>L'Hospitalet" → "a|<em>l'Hospitalet".
+ * - Castellano (RAE): se contrae el artículo en minúscula ("al Maresme", "del Vallès"), pero no el que forma parte
+ *   del nombre propio con mayúscula: "a El Prat de Llobregat", "de El Prat de Llobregat", "a L'Hospitalet".
+ * - Inglés: dipt_zona_nombre() ya quita el artículo.
+ * $idioma: por defecto, el de la visita.
+ */
+function dipt_zona_texto( $plantilla, $z, $idioma = null ) {
+	$idioma = $idioma ?: dipt_idioma();
+	$nombre = dipt_zona_nombre( $z, $idioma );
+	$medio  = $nombre;
+	if ( 'ca' === $idioma ) {
+		$medio = preg_replace_callback( "/^(?:El|Els|La|Les)(?= )|^L(?=['’])/u", static fn( $m ) => strtolower( $m[0] ), $nombre );
+	}
+	if ( 'en' !== $idioma && preg_match( '/^(el|els) (.+)$/us', $medio, $art ) ) {
+		$contraccion = array(
+			'a'   => array( 'el' => 'al', 'els' => 'als' ),
+			'de'  => array( 'el' => 'del', 'els' => 'dels' ),
+			'per' => array( 'el' => 'pel', 'els' => 'pels' ),
+		);
+		if ( 'es' === $idioma ) $contraccion = array( 'a' => array( 'el' => 'al' ), 'de' => array( 'el' => 'del' ) );
+		$plantilla = preg_replace_callback(
+			'/(?<![\p{L}\p{N}])(a|A|de|De|per|Per)((?:\s|\||<em>)+)\{nombre\}/u',
+			static function ( $m ) use ( $contraccion, $art ) {
+				$prep = strtolower( $m[1] );
+				if ( empty( $contraccion[ $prep ][ $art[1] ] ) ) return $m[0];
+				$junta = $contraccion[ $prep ][ $art[1] ];
+				if ( $m[1] !== $prep ) $junta = ucfirst( $junta );
+				return $junta . $m[2] . $art[2];
+			},
+			(string) $plantilla
+		);
+	}
+	return strtr( (string) $plantilla, array(
+		'{nombre}'  => $medio,
+		'{Nombre}'  => ucfirst( $nombre ),
 		'{km}'      => (string) $z['km'],
 		'{min}'     => (string) $z['min'],
 		'{comarca}' => $z['comarca'],
 	) );
-	// Contracciones con el artículo del nombre: "a el Maresme" → "al Maresme", "de El Prat" → "del Prat" (castellano y catalán)
-	if ( 'en' !== dipt_idioma() ) {
-		$texto = preg_replace( array( '/\ba [eE]l /u', '/\bde [eE]l /u', '/\bA [eE]l /u', '/\bDe [eE]l /u' ), array( 'al ', 'del ', 'Al ', 'Del ' ), $texto );
-	}
-	return $texto;
 }
 
 function dipt_seo_zona( $clave ) {

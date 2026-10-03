@@ -35,21 +35,25 @@ get_header();
 <section class="gs-cabeza" aria-labelledby="gs-t">
 	<div class="envoltura">
 		<?php echo dipt_migas( array( array( dipt_t( 'inicio' ), dipt_url( 'inicio' ) ), array( $c['titulo_corto'] ?? 'Guías', dipt_url( 'guias' ) ) ) ); // phpcs:ignore ?>
-		<h1 class="t-gigante" id="gs-t"><?php echo esc_html( $c['titulo'] ?? 'Guías' ); ?></h1>
-		<p class="entrada suave"><?php echo esc_html( $c['texto'] ?? '' ); ?></p>
+		<div class="gs-cabeza__in">
+			<h1 class="t-gigante" id="gs-t"><?php echo esc_html( $c['titulo'] ?? 'Guías' ); ?></h1>
+			<p class="entrada suave"><?php echo esc_html( $c['texto'] ?? '' ); ?></p>
+		</div>
 	</div>
 </section>
-<section class="gs-lista tono-blanco seccion" aria-labelledby="gs-t">
+<section class="gs-lista tono-blanco" aria-labelledby="gs-t">
 	<div class="envoltura">
 		<?php if ( $entradas ) : ?>
 			<ol class="gs-entradas">
 				<?php foreach ( $entradas as $n => $e ) : ?>
 					<li data-revela style="--i:<?php echo (int) min( $n + 1, 6 ); ?>">
 						<a href="<?php echo esc_url( $e['url'] ); ?>">
-							<span class="gs-entradas__n"><?php echo esc_html( sprintf( '%02d', $n + 1 ) ); ?></span>
+							<?php /* El número va dos veces: en línea (hueco) y relleno encima, que aparece al pasar el ratón */ ?>
+							<span class="gs-entradas__n" data-n="<?php echo esc_attr( sprintf( '%02d', $n + 1 ) ); ?>" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $n + 1 ) ); ?></span>
 							<span class="gs-entradas__titulo"><?php echo esc_html( $e['titulo'] ); ?></span>
 							<span class="gs-entradas__resumen"><?php echo esc_html( $e['resumen'] ); ?></span>
 							<span class="gs-entradas__meta dato"><?php echo esc_html( $e['meta'] ); ?></span>
+							<span class="gs-entradas__ir" aria-hidden="true"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span>
 						</a>
 					</li>
 				<?php endforeach; ?>

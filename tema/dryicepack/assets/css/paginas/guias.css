@@ -1,11 +1,57 @@
-/* Guías (índice): lista editorial */
-.gs-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2rem, 4vw, 3rem); background: var(--c-papel); }
-.gs-cabeza h1 { margin: 1rem 0 1rem; color: var(--c-marino); }
-.gs-entradas { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--c-tinta); }
-.gs-entradas a { display: grid; grid-template-columns: clamp(4rem, 9vw, 8rem) minmax(0, 1.2fr) minmax(0, 1fr); grid-template-areas: "n titulo resumen" "n meta resumen"; gap: .4rem 2rem; padding: clamp(1.4rem, 3vw, 2.4rem) 0; border-bottom: 1px solid var(--c-linea-fuerte); text-decoration: none; transition: background-color .4s; }
-.gs-entradas a:hover { background: var(--c-escarcha); }
-.gs-entradas__n { grid-area: n; font-family: var(--f-display); font-size: clamp(3rem, 6vw, 5rem); line-height: .85; color: var(--c-hielo); -webkit-text-stroke: 1px var(--c-marino); }
-.gs-entradas__titulo { grid-area: titulo; font-family: var(--f-display); font-size: clamp(1.6rem, 2.8vw, 2.4rem); line-height: 1.08; }
-.gs-entradas__resumen { grid-area: resumen; color: var(--c-acero); align-self: center; }
-.gs-entradas__meta { grid-area: meta; color: var(--c-acero); }
-@media (max-width: 800px) { .gs-entradas a { grid-template-columns: 3.5rem 1fr; grid-template-areas: "n titulo" "n resumen" "n meta"; } }
+/* Guías (índice): lista editorial. Titular gigante contra un texto aireado; cada guía es una fila con número hueco,
+   título compacto y resumen. Al pasar el ratón: fondo que aparece (opacidad), número que se rellena y flecha que gira. */
+.gs-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2.5rem, 5vw, 4.5rem); background: var(--c-papel); }
+.gs-cabeza__in { display: grid; gap: 1rem 3rem; margin-top: 1rem; }
+.gs-cabeza h1 { color: var(--c-marino); line-height: 1; }
+.gs-cabeza .entrada { max-width: 30rem; }
+@media (min-width: 900px) {
+	.gs-cabeza__in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
+	.gs-cabeza .entrada { justify-self: end; padding-bottom: .55em; }
+}
+
+/* Lista: pegada a la cabecera (la cabecera ya da el aire), con un filete grueso arriba como una ficha */
+.gs-lista { padding-block: clamp(1.5rem, 3vw, 2.5rem) var(--seccion); }
+.gs-entradas { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--c-tinta); }
+.gs-entradas a {
+	position: relative; isolation: isolate;
+	display: grid; grid-template-columns: clamp(4.5rem, 9vw, 8.5rem) minmax(0, 1.25fr) minmax(0, 1fr) 2.75rem;
+	grid-template-areas: "n titulo resumen ir" "n meta resumen ir";
+	gap: .55rem clamp(1.25rem, 3vw, 3rem); padding: clamp(1.6rem, 3vw, 2.6rem) 0;
+	border-bottom: 1px solid var(--c-linea-fuerte); color: var(--c-tinta); text-decoration: none;
+}
+/* Fondo al pasar: una capa que aparece con opacidad, sangrando hasta el margen de la envoltura */
+.gs-entradas a::before { content: ""; position: absolute; inset: 0 calc(-1 * min(var(--margen), 1.5rem)); z-index: -1; background: var(--c-escarcha); opacity: 0; transition: opacity var(--d-corta) var(--e-salida); }
+.gs-entradas a:hover, .gs-entradas a:focus-visible { text-decoration: none; }
+.gs-entradas a:hover::before, .gs-entradas a:focus-visible::before { opacity: 1; }
+
+.gs-entradas__n {
+	grid-area: n; position: relative; align-self: start;
+	font-family: var(--f-display); font-weight: 800; font-size: clamp(2.4rem, 5vw, 4.4rem); line-height: 1; letter-spacing: -.04em;
+	font-variant-numeric: tabular-nums; color: var(--c-marino);
+	transition: transform var(--d-media) var(--e-salida);
+}
+@supports (-webkit-text-stroke: 1px black) {
+	.gs-entradas__n { color: transparent; -webkit-text-stroke: 1.5px var(--c-marino); }
+	.gs-entradas__n::after { content: attr(data-n); position: absolute; inset: 0; color: var(--c-marino); -webkit-text-stroke: 0; opacity: 0; transition: opacity var(--d-corta) var(--e-salida); }
+	.gs-entradas a:hover .gs-entradas__n::after, .gs-entradas a:focus-visible .gs-entradas__n::after { opacity: 1; }
+}
+.gs-entradas a:hover .gs-entradas__n, .gs-entradas a:focus-visible .gs-entradas__n { transform: translate3d(6px, 0, 0); }
+
+.gs-entradas__titulo { grid-area: titulo; font-family: var(--f-display); font-weight: 700; font-size: clamp(1.35rem, 2.1vw, 1.95rem); line-height: 1.12; letter-spacing: -.02em; text-wrap: balance; }
+.gs-entradas__resumen { grid-area: resumen; align-self: center; max-width: 34rem; color: var(--c-acero); text-wrap: pretty; }
+.gs-entradas__meta { grid-area: meta; align-self: start; color: var(--c-acero); }
+.gs-entradas__ir {
+	grid-area: ir; align-self: center; justify-self: end;
+	display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+	border: 1px solid var(--c-tinta); background: var(--c-blanco); color: var(--c-tinta);
+	box-shadow: 0 2px 0 var(--c-tinta);
+	transition: transform var(--d-corta) var(--e-salida);
+}
+.gs-entradas__ir svg { width: 18px; height: 18px; }
+.gs-entradas a:hover .gs-entradas__ir, .gs-entradas a:focus-visible .gs-entradas__ir { transform: translate3d(0, -2px, 0) rotate(-45deg); }
+
+@media (max-width: 800px) {
+	.gs-entradas a { grid-template-columns: 3.4rem minmax(0, 1fr); grid-template-areas: "n titulo" "n resumen" "n meta"; column-gap: 1rem; }
+	.gs-entradas__n { font-size: 2.3rem; }
+	.gs-entradas__ir { display: none; }
+}

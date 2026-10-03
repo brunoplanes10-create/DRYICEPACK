@@ -1,62 +1,132 @@
 /* =========================================================================
    Laboratorios · L1 a L5
+   Dirección C "Industrial sobrio": Inter Tight 800/700 en titulares, Inter en el texto,
+   Geist Mono solo en los datos (.dato). Movimiento: solo transform y opacity.
    ========================================================================= */
+/* Titulares con salto ("|" en el texto): cada tramo es un bloque equilibrado por separado, sin palabras sueltas */
+h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
+
+
+/* ---------- L1 · Foto en círculo ---------- */
 .l-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(4rem, 8vw, 6rem); background: var(--c-papel); overflow: hidden; }
 .l-hero__in { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
 .l-hero__foto { position: relative; margin: 0; aspect-ratio: 1; }
-.l-hero__foto img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.l-hero__foto img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 0 0 1px rgba(11, 20, 28, .08), 0 40px 80px -40px rgba(11, 20, 28, .55); }
 .l-hero__orbita { position: absolute; inset: -6%; border: 1px dashed var(--c-marino); border-radius: 50%; }
 .l-hero__orbita::after { content: ""; position: absolute; left: 50%; top: -7px; width: 14px; height: 14px; margin-left: -7px; border-radius: 3px; background: var(--c-marino); transform: rotate(45deg); }
 .anima .l-hero__orbita { animation: orbita 40s linear infinite; }
 @keyframes orbita { to { transform: rotate(360deg); } }
-.l-hero h1 { margin: 1.2rem 0 1.4rem; }
+.l-hero h1 { margin: 1.2rem 0 1.4rem; text-wrap: pretty; }
 .l-hero h1 em { color: var(--c-marino-2); }
 .l-hero .entrada { margin-bottom: 2rem; }
-@media (max-width: 900px) { .l-hero__in { grid-template-columns: 1fr; } .l-hero__foto { max-width: 340px; } }
+@media (max-width: 900px) { .l-hero__in { grid-template-columns: 1fr; } .l-hero__foto { width: calc(100% - 44px); max-width: 340px; margin-inline: 22px; } }
 
+/* ---------- L2 · Corte técnico de la caja: EPS de 40 mm, muestras en el centro, hielo seco alrededor ---------- */
 .l-caja__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
-.l-cenital { aspect-ratio: 1; padding: 22px; border-radius: 10px; background: #D6E0E9; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .8); }
-.l-cenital__pared { position: relative; width: 100%; height: 100%; border-radius: 4px; background: #0F1A23; overflow: hidden; }
-.l-cenital__hielo { position: absolute; inset: 0; display: flex; flex-wrap: wrap; gap: 3px; padding: 6px; align-content: flex-start; }
-.l-cenital__hielo b { width: calc(10% - 3px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #FFFFFF, #BFD0E0); transform: rotate(var(--r)); }
-.l-cenital__rejilla { position: absolute; inset: 24%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px; border-radius: 6px; background: rgba(15, 26, 35, .92); }
-.l-cenital__rejilla i { border-radius: 50%; background: radial-gradient(circle at 40% 40%, #C4404A, #7B1E27); box-shadow: 0 0 0 3px rgba(255, 255, 255, .15); }
+.l-corte { margin: 0; }
+.l-corte__svg { display: block; width: 100%; height: auto; }
+/* Piezas del dibujo (colores del tema; el EPS lleva su textura de bolitas en un patrón) */
+.l-corte .lc-int { fill: var(--c-noche-2); }
+.l-corte .lc-eps { fill: url(#lc-eps); stroke: var(--c-niebla); stroke-width: 1.2; stroke-linejoin: round; }
+.l-corte .lc-eps-fondo { fill: var(--c-hielo-claro); }
+.l-corte .lc-bolas { fill: none; stroke: var(--c-niebla); stroke-width: .7; opacity: .55; }
+/* Los pellets se pintan con <use>: sus clones no heredan selectores con antecesor, por eso van con la clase sola */
+.lc-cuerpo { fill: var(--c-escarcha); stroke: var(--c-acero); stroke-width: .8; }
+.lc-cara { fill: var(--c-hielo); stroke: var(--c-acero); stroke-width: .8; }
+.l-corte .lc-gradilla { fill: var(--c-marino-2); stroke: var(--c-niebla); stroke-width: 1; }
+.l-corte .lc-tubo { fill: var(--c-marino); stroke: var(--c-hielo); stroke-width: 1.1; }
+.l-corte .lc-muestra { fill: var(--c-hielo-claro); opacity: .7; }
+.l-corte .lc-brillo { stroke: var(--c-blanco); stroke-opacity: .3; stroke-width: 1.5; stroke-linecap: round; }
+.l-corte .lc-tapon { fill: var(--c-senal); }
+.l-corte .lc-tapon--b { fill: color-mix(in srgb, var(--c-senal) 82%, var(--c-blanco)); }
+.l-corte .lc-estria { stroke: var(--c-noche); stroke-opacity: .35; stroke-width: 1; }
+/* Salida del CO₂ por la junta de la tapa */
+.l-corte .lc-gas { fill: none; stroke: var(--c-hielo); stroke-width: 1.5; stroke-dasharray: 3 4; stroke-linecap: round; }
+.l-corte .lc-flecha { fill: none; stroke: var(--c-hielo); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+/* Cotas: línea fina con halo oscuro para que se lea sobre el EPS claro y sobre el fondo */
+.l-corte .lc-halo { fill: none; stroke: var(--c-noche); stroke-width: 4; stroke-linecap: round; }
+.l-corte .lc-guia { fill: none; stroke: var(--c-hielo); stroke-width: 1; }
+.l-corte .lc-punto { fill: var(--c-hielo); stroke: var(--c-noche); stroke-width: 1.5; }
+.l-corte .lc-cota { fill: var(--c-hielo-claro); font-family: var(--f-mono); font-size: 14px; letter-spacing: .02em; }
 .l-caja__texto { margin: 1.4rem 0 1.6rem; color: var(--c-hielo-claro); }
-.l-caja__leyenda { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; color: var(--c-hielo-claro); }
+.l-caja__leyenda { list-style: none; margin: 0; padding: 1.2rem 0 0; display: grid; gap: .6rem; color: var(--c-hielo-claro); border-top: 1px solid var(--c-linea-oscura); }
 .l-caja__leyenda li { display: flex; align-items: center; gap: .7rem; }
-.l-caja__leyenda li::before { content: ""; width: 14px; height: 14px; border-radius: 50%; }
-.l-caja__leyenda .l1::before { background: #9B2C36; }
-.l-caja__leyenda .l2::before { background: #E6EEF5; }
-.l-caja__leyenda .l3::before { background: #D6E0E9; border-radius: 3px; }
-@media (max-width: 900px) { .l-caja__in { grid-template-columns: 1fr; } .l-cenital { max-width: 420px; } }
+/* Marcas de la leyenda con la forma de cada pieza del dibujo: tapón, pellet y pared de EPS */
+.l-caja__leyenda li::before { content: ""; flex: none; box-sizing: border-box; width: 16px; }
+.l-caja__leyenda .l1::before { height: 12px; border-radius: 2px; background: var(--c-senal); }
+.l-caja__leyenda .l2::before { height: 9px; border-radius: 3px; background: var(--c-escarcha); box-shadow: inset -4px 0 0 var(--c-hielo); }
+.l-caja__leyenda .l3::before { height: 14px; border-radius: 2px; background: var(--c-hielo-claro); border: 1px solid var(--c-niebla); }
+@media (max-width: 900px) {
+	.l-caja__in { grid-template-columns: 1fr; }
+	.l-corte { max-width: 560px; }
+	/* En móvil el dibujo se reduce: las cotas suben de cuerpo (unidades del dibujo) para quedar en ~12 px */
+	.l-corte .lc-cota { font-size: 19px; }
+}
 
+/* ---------- L3 · Anatomía de un paquete ---------- */
 .l-etiqueta__titulo { margin-bottom: clamp(2rem, 4vw, 3rem); }
 .l-paquete { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
-.l-paquete__caja { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; background: linear-gradient(135deg, #F2EDE3, #E2D9C8); box-shadow: 0 30px 60px -30px rgba(11, 20, 28, .45), inset 0 0 0 1px rgba(0, 0, 0, .06); padding: 8%; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto 1fr; gap: .6rem 1.5rem; color: var(--c-tinta); }
-.l-paquete__un { font: 700 clamp(1.8rem, 3.6vw, 3rem)/1 var(--f-texto); letter-spacing: -.01em; }
-.l-paquete__nombre { grid-column: 1; font: 600 clamp(1rem, 1.8vw, 1.4rem)/1.2 var(--f-texto); text-transform: uppercase; }
+.l-paquete__caja { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; background: linear-gradient(135deg, #F2EDE3, #E2D9C8); padding: 8%; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto 1fr; gap: .6rem 1.5rem; color: var(--c-tinta);
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06), inset 0 1px 0 rgba(255, 255, 255, .7), 0 2px 3px rgba(11, 20, 28, .1), 0 30px 60px -30px rgba(11, 20, 28, .45); }
+.l-paquete__un { font: 800 clamp(1.8rem, 3.6vw, 3rem)/1 var(--f-display); letter-spacing: -.02em; }
+.l-paquete__nombre { grid-column: 1; font: 700 clamp(1rem, 1.8vw, 1.4rem)/1.2 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
 .l-paquete__peso { grid-column: 1; align-self: end; font: 500 1rem var(--f-mono); padding: .4rem .7rem; border: 1.5px solid var(--c-tinta); justify-self: start; }
 .l-paquete__rombo { grid-column: 2; grid-row: 1 / span 3; align-self: center; position: relative; width: clamp(90px, 12vw, 140px); aspect-ratio: 1; transform: rotate(45deg); border: 3px solid var(--c-tinta); border-radius: 6px; background: linear-gradient(0deg, #fff 50%, transparent 50%), repeating-linear-gradient(135deg, var(--c-tinta) 0 6px, #fff 6px 12px); }
-.l-paquete__rombo span { position: absolute; right: 18%; bottom: 18%; transform: rotate(-45deg); font: 700 1.6rem var(--f-texto); }
+.l-paquete__rombo span { position: absolute; right: 18%; bottom: 18%; transform: rotate(-45deg); font: 800 1.6rem var(--f-display); }
 .l-paquete__ranura { position: absolute; top: 10px; left: 30%; right: 30%; height: 6px; border-radius: 3px; background: rgba(0, 0, 0, .12); }
-.l-paquete__marcas { list-style: none; margin: 0; padding: 0; counter-reset: m; display: grid; gap: .2rem; }
-.l-paquete__marcas li { counter-increment: m; display: grid; grid-template-columns: 2.4rem 1fr; gap: .1rem .8rem; padding: .9rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+.l-paquete__marcas { list-style: none; margin: 0; padding: 0; counter-reset: m; display: grid; gap: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
+.l-paquete__marcas li { counter-increment: m; display: grid; grid-template-columns: 2.4rem 1fr; gap: .15rem .8rem; padding: .9rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+.l-paquete__marcas li:first-child { border-top-color: var(--c-tinta); }
 .l-paquete__marcas li::before { content: counter(m); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--c-marino); color: #fff; font: 500 .85rem var(--f-mono); }
-.l-paquete__marcas strong { font-weight: 600; }
+.l-paquete__marcas strong { font-weight: 600; line-height: 1.4; }
 .l-paquete__marcas span { color: var(--c-acero); font-size: .92rem; }
 .l-etiqueta__aviso { margin-top: 2rem; max-width: 50rem; padding: 1rem 1.2rem; border-left: 3px solid var(--c-senal); background: #FFF6E8; border-radius: 0 12px 12px 0; }
 @media (max-width: 900px) { .l-paquete { grid-template-columns: 1fr; } }
 
-.l-columnas { list-style: none; margin: clamp(2.5rem, 5vw, 4rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); }
-.l-columnas li { display: grid; gap: .8rem; padding: 0 clamp(1.2rem, 3vw, 2.4rem); border-left: 1px solid var(--c-linea-fuerte); }
-.l-columnas li:first-child { padding-left: 0; border-left: 0; }
-.l-columnas .ico { width: 36px; height: 36px; color: var(--c-marino); }
-.l-columnas h3 { font-family: var(--f-display); font-weight: 400; font-size: 1.9rem; line-height: 1.05; }
-.l-columnas p { color: var(--c-acero); }
-@media (max-width: 800px) { .l-columnas { grid-template-columns: 1fr; gap: 2rem; } .l-columnas li { padding: 1.4rem 0 0; border-left: 0; border-top: 1px solid var(--c-linea-fuerte); } }
+/* ---------- L4 · Para centros: ficha en filas ----------
+   El título a la izquierda y los servicios como filas de una ficha técnica. El icono va en una cara blanca
+   sobre una placa de hielo: al pasar por la fila, la cara se levanta (solo transform). */
+.l-centros__in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.l-filas { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
+.l-filas li { display: grid; grid-template-columns: 4.6rem minmax(0, .9fr) minmax(0, 1.1fr); gap: .4rem clamp(1rem, 2.4vw, 2rem); align-items: center; padding: clamp(1.4rem, 2.6vw, 2rem) 0; border-top: 1px solid var(--c-linea-fuerte); }
+.l-filas li:first-child { border-top-color: var(--c-tinta); }
+.l-filas__ico { position: relative; width: 56px; height: 56px; margin: 5px 0 0 5px; border-radius: 10px; background: var(--c-hielo); }
+.l-filas__cara { position: absolute; inset: 0; display: grid; place-items: center; border: 1px solid var(--c-tinta); border-radius: 10px; background: #fff; color: var(--c-marino); transform: translate3d(-5px, -5px, 0); transition: transform var(--d-corta) var(--e-salida); }
+.l-filas__cara .ico { width: 26px; height: 26px; }
+.l-filas li:hover .l-filas__cara { transform: translate3d(-8px, -8px, 0); }
+.l-filas h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.35rem, 2vw, 1.7rem); line-height: 1.12; letter-spacing: -.015em; text-wrap: balance; }
+.l-filas p { color: var(--c-acero); }
+@media (max-width: 1100px) { .l-filas li { grid-template-columns: 4.6rem minmax(0, 1fr); align-items: start; } .l-filas__ico { grid-row: span 2; margin-top: .35rem; } }
+@media (max-width: 900px) { .l-centros__in { grid-template-columns: 1fr; } }
 
-.l-faq__lista { list-style: none; margin: 1.6rem 0 2rem; padding: 0; counter-reset: f; }
+/* ---------- L5 · Preguntas numeradas ---------- */
+.l-faq__lista { list-style: none; margin: 1.6rem 0 2rem; padding: 0; counter-reset: f; border-bottom: 1px solid var(--c-linea-fuerte); }
 .l-faq__lista li { counter-increment: f; position: relative; padding: 1.6rem 0 1.6rem clamp(4rem, 8vw, 6rem); border-top: 1px solid var(--c-linea-fuerte); }
-.l-faq__lista li::before { content: counter(f, decimal-leading-zero); position: absolute; left: 0; top: 1.2rem; font: 400 clamp(2.4rem, 4vw, 3.4rem)/1 var(--f-display); color: var(--c-marino-2); }
-.l-faq__lista h3 { font-weight: 600; font-size: 1.15rem; margin-bottom: .4rem; }
+.l-faq__lista li:first-child { border-top-color: var(--c-tinta); }
+.l-faq__lista li::before { content: counter(f, decimal-leading-zero); position: absolute; left: 0; top: 1.35rem; font: 800 clamp(2rem, 3.4vw, 2.9rem)/1 var(--f-display); letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: var(--c-marino-2); }
+.l-faq__lista h3 { font-family: var(--f-display); font-weight: 700; font-size: 1.2rem; line-height: 1.25; margin-bottom: .45rem; }
 .l-faq__lista p { color: var(--c-acero); max-width: 44rem; }
+
+/* ---------- L3b · Cliente (Semillas Fitó) ---------- */
+/* Placa de características: cliente y uso, con remaches en las esquinas */
+.sc-cliente { padding-block: clamp(3.5rem, 7vw, 6rem); }
+.sc-cliente__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 46rem); gap: clamp(1.6rem, 5vw, 5rem); align-items: center; }
+.sc-cliente__titulo em { color: var(--c-marino-2); }
+.sc-placa { --placa-fondo: var(--c-blanco); --placa-linea: #B9C6D2; --placa-remache: var(--c-niebla); --placa-logo: var(--c-marino); --placa-texto: var(--c-tinta); --placa-suave: var(--c-acero); --placa-brillo: rgba(255, 255, 255, .9); --placa-sombra: rgba(11, 20, 28, .4);
+	position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border: 1px solid var(--placa-linea); border-radius: 6px; color: var(--placa-texto);
+	box-shadow: inset 0 1px 0 var(--placa-brillo), 0 1px 2px rgba(11, 20, 28, .08), 0 22px 44px -26px var(--placa-sombra);
+	background: radial-gradient(circle at 14px 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at 14px calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), var(--placa-fondo); }
+.sc-placa__campo { display: grid; align-content: start; gap: 1rem; padding: clamp(1.8rem, 3.4vw, 2.6rem); }
+.sc-placa__campo + .sc-placa__campo { border-left: 1px dashed var(--placa-linea); }
+.sc-placa dt { font-size: .7rem; text-transform: uppercase; letter-spacing: .14em; color: var(--placa-suave); }
+.sc-placa dd { display: grid; justify-items: start; gap: .45rem; margin: 0; }
+.sc-placa .logo-cliente { width: calc(var(--lw) * 1.05rem); max-width: 100%; margin-bottom: .5rem; color: var(--placa-logo); }
+.sc-placa__detalle { font-size: .92rem; color: var(--placa-suave); }
+.sc-placa__uso { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.7rem, 2.8vw, 2.5rem); line-height: 1.08; letter-spacing: -.018em; text-wrap: balance; }
+/* Sobre azul marino: placa oscura y logotipo en hielo */
+.sc-cliente.tono-marino .sc-cliente__titulo em { color: var(--c-hielo); }
+.sc-cliente.tono-marino .sc-placa { --placa-fondo: var(--c-noche-2); --placa-linea: rgba(184, 208, 232, .3); --placa-remache: var(--c-hielo); --placa-logo: var(--c-hielo-claro); --placa-texto: #fff; --placa-suave: var(--c-niebla); --placa-brillo: rgba(184, 208, 232, .14); --placa-sombra: rgba(0, 0, 0, .7); }
+@media (max-width: 760px) {
+	.sc-cliente__in, .sc-placa { grid-template-columns: 1fr; }
+	.sc-placa__campo + .sc-placa__campo { border-left: 0; border-top: 1px dashed var(--placa-linea); }
+}

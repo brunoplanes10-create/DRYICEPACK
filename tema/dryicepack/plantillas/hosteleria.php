@@ -1,7 +1,8 @@
 <?php
 /**
  * Hostelería: H1 foto a sangre con título abajo · H2 doble recipiente con niebla que rebosa ·
- * H3 dos formatos en díptico · H4 un fin de semana en raíl · H5 "reglas de la casa" en carta de bar · H6 preguntas.
+ * H3 dos formatos en díptico · H3b cliente en placa de características · H4 un fin de semana en raíl ·
+ * H5 "reglas de la casa" en carta de bar · H6 preguntas.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -17,7 +18,7 @@ get_header();
 	<div class="h-hero__foto"><?php echo dipt_foto( 'uso-hosteleria', $c['hero']['alt'], array( 'lcp' => true, 'sizes' => '100vw' ) ); // phpcs:ignore ?></div>
 	<div class="envoltura h-hero__in">
 		<?php echo dipt_migas( array( array( $c['migas'][0], dipt_url( 'inicio' ) ), array( $c['migas'][1], dipt_url( 'aplicaciones' ) ), array( $c['migas'][2], dipt_url( 'hosteleria' ) ) ) ); // phpcs:ignore ?>
-		<h1 class="t-h1" id="h-hero-t"><?php dipt_html( str_replace( '|', '<br>', $c['hero']['titulo'] ) ); ?></h1>
+		<h1 class="t-h1" id="h-hero-t"><?php dipt_html( '<span class="tramo">' . str_replace( '|', '</span><span class="tramo">', $c['hero']['titulo'] ) . '</span>' ); ?></h1>
 		<div class="h-hero__pie">
 			<p class="entrada"><?php echo esc_html( $c['hero']['texto'] ); ?></p>
 			<?php echo dipt_boton( $c['hero']['boton'], dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
@@ -64,6 +65,23 @@ get_header();
 			</div>
 		</article>
 	<?php endforeach; ?>
+</section>
+
+<!-- H3b · Cliente: placa de características (cliente · uso) -->
+<section class="sc-cliente tono-papel" aria-labelledby="h-cliente-t">
+	<div class="envoltura sc-cliente__in">
+		<?php echo dipt_titulo( 'h2', $c['cliente']['titulo'], 't-h2 sc-cliente__titulo', 'h-cliente-t' ); // phpcs:ignore ?>
+		<dl class="sc-placa" data-revela>
+			<div class="sc-placa__campo">
+				<dt class="dato"><?php echo esc_html( $c['cliente']['etiquetas'][0] ); ?></dt>
+				<dd><?php echo dipt_logo_cliente( $c['cliente']['id'], $c['cliente']['alt'] ); // phpcs:ignore ?><span class="sc-placa__nombre dato" aria-hidden="true"><?php echo esc_html( dipt_cliente_nombre( $c['cliente']['id'] ) ); ?></span><span class="sc-placa__detalle"><?php echo esc_html( $c['cliente']['detalle'] ); ?></span></dd>
+			</div>
+			<div class="sc-placa__campo">
+				<dt class="dato"><?php echo esc_html( $c['cliente']['etiquetas'][1] ); ?></dt>
+				<dd class="sc-placa__uso"><?php echo esc_html( $c['cliente']['uso'] ); ?></dd>
+			</div>
+		</dl>
+	</div>
 </section>
 
 <!-- H4 · Un fin de semana en raíl -->

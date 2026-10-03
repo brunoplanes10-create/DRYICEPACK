@@ -55,7 +55,7 @@ add_filter( 'script_loader_tag', static function ( $tag, $handle ) {
 
 /* ---------- <head>: fuentes precargadas, color del navegador y clases antes del primer pintado ---------- */
 add_action( 'wp_head', static function () {
-	foreach ( array( 'instrument-serif.woff2', 'geist.woff2' ) as $f ) {
+	foreach ( array( 'inter-tight.woff2', 'inter.woff2' ) as $f ) {
 		printf( '<link rel="preload" as="font" type="font/woff2" href="%s" crossorigin>' . "\n", esc_url( DIPT_URI . '/assets/fonts/' . $f ) );
 	}
 	echo '<meta name="theme-color" content="#0B141C">' . "\n";

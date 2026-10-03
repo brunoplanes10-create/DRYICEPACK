@@ -78,7 +78,7 @@ get_header();
 		<div>
 			<h2 class="t-h2" id="s-fds-t" data-revela><?php echo esc_html( $c['fds']['titulo'] ); ?></h2>
 			<p class="entrada suave" data-revela><?php echo esc_html( $c['fds']['texto'] ); ?></p>
-			<p class="s-fds__accion" data-revela><?php echo dipt_boton( $c['fds']['boton'], home_url( $c['fds']['archivo'] ), '', array( 'target' => '_blank', 'rel' => 'noopener' ) ); // phpcs:ignore ?><span class="dato suave"><?php echo esc_html( $c['fds']['meta'] ); ?></span></p>
+			<p class="s-fds__accion" data-revela><?php echo dipt_boton( $c['fds']['boton'], home_url( $c['fds']['archivo'] ), 'marino', array( 'target' => '_blank', 'rel' => 'noopener' ) ); // phpcs:ignore ?><span class="dato suave"><?php echo esc_html( $c['fds']['meta'] ); ?></span></p>
 		</div>
 	</div>
 </section>

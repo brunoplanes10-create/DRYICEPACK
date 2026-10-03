@@ -108,6 +108,48 @@ function dipt_icono( $nombre, $clase = '' ) {
 	return '<svg class="ico ' . esc_attr( $clase ) . '" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' . $p[ $nombre ] . '</svg>';
 }
 
+/* ---------- Logotipos de clientes (assets/img/clientes): una sola tinta, toman el color del texto ---------- */
+/**
+ * Clientes con logotipo publicado. 'lw' es la anchura relativa de cada logotipo para que se vean del mismo peso
+ * (un logotipo redondo necesita menos anchura que uno alargado); cada hoja la multiplica por su unidad.
+ */
+function dipt_clientes() {
+	return array(
+		'nissan'    => array( 'nombre' => 'Nissan Formula E Team', 'archivo' => 'nissan.svg', 'lw' => 9 ),
+		'italpizza' => array( 'nombre' => 'Italpizza', 'archivo' => 'italpizza.webp', 'w' => 400, 'h' => 63, 'lw' => 8.25 ),
+		'sushitok'  => array( 'nombre' => 'Sushitok', 'archivo' => 'sushitok.svg', 'lw' => 5.2 ),
+		'fito'      => array( 'nombre' => 'Semillas Fitó', 'archivo' => 'semillas-fito.svg', 'lw' => 5.5 ),
+	);
+}
+
+function dipt_cliente_nombre( $id ) {
+	return dipt_clientes()[ $id ]['nombre'] ?? '';
+}
+
+/**
+ * Logotipo de un cliente. SVG: en línea, con fill="currentColor" (sin peticiones). Mapa de bits: máscara CSS
+ * pintada con el color del texto. Los dos reservan su hueco con la proporción del archivo (sin saltos).
+ */
+function dipt_logo_cliente( $id, $alt, $clase = '' ) {
+	static $svg = array();
+	$c = dipt_clientes()[ $id ] ?? null;
+	if ( ! $c ) return '';
+	$clases = trim( 'logo-cliente logo-cliente--' . $id . ' ' . $clase );
+	$estilo = '--lw:' . $c['lw'];
+	if ( '.svg' === substr( $c['archivo'], -4 ) ) {
+		if ( ! isset( $svg[ $id ] ) ) {
+			$archivo    = DIPT_DIR . '/assets/img/clientes/' . $c['archivo'];
+			$svg[ $id ] = file_exists( $archivo ) ? trim( (string) file_get_contents( $archivo ) ) : '';
+		}
+		if ( 0 !== strpos( $svg[ $id ], '<svg ' ) ) return '';
+		return '<svg class="' . esc_attr( $clases ) . '" style="' . esc_attr( $estilo ) . '" role="img" aria-label="' . esc_attr( $alt ) . '" focusable="false"' . substr( $svg[ $id ], 4 );
+	}
+	$url    = DIPT_URI . '/assets/img/clientes/' . $c['archivo'];
+	$mask   = "url('" . $url . "') center / contain no-repeat";
+	$estilo .= ';display:block;height:auto;aspect-ratio:' . (int) $c['w'] . '/' . (int) $c['h'] . ';background-color:currentColor;-webkit-mask:' . $mask . ';mask:' . $mask;
+	return '<span class="' . esc_attr( $clases . ' logo-cliente--mascara' ) . '" role="img" aria-label="' . esc_attr( $alt ) . '" style="' . esc_attr( $estilo ) . '"></span>';
+}
+
 /* ---------- Botones ---------- */
 function dipt_boton( $texto, $url, $variante = '', $extra = array() ) {
 	$attr = '';

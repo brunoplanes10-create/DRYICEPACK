@@ -4,11 +4,12 @@
 .v-hero { position: relative; overflow: hidden; padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(4rem, 8vw, 7rem); background: radial-gradient(ellipse at 80% 0%, #1F3C55 0%, #0B141C 58%); }
 .v-hero__in { position: relative; z-index: 2; }
 .v-hero__titulo { margin: 1.4rem 0 clamp(2rem, 5vw, 3.5rem); color: #fff; }
-.v-hero__titulo em { color: var(--c-hielo); }
+.v-hero__titulo br + em { display: block; } /* segunda parte en su caja: balance sin palabra suelta */
 .v-reloj__etiqueta { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .12em; }
-.v-reloj__cifras { display: flex; align-items: baseline; font-family: var(--f-mono); font-weight: 400; font-size: clamp(4rem, 13vw, 11rem); line-height: 1; letter-spacing: -.06em; color: var(--c-hielo); font-variant-numeric: tabular-nums; }
-.v-reloj__cifras i { font-style: normal; opacity: .35; margin: 0 .05em; }
-.corte-pasado .v-reloj__cifras { color: var(--c-marino-2); }
+/* Cifras grandes en Inter Tight con números tabulares: no bailan al cambiar cada segundo */
+.v-reloj__cifras { display: flex; align-items: baseline; margin-top: .3rem; font-family: var(--f-display); font-weight: 700; font-size: clamp(4rem, 12.5vw, 10.5rem); line-height: 1; letter-spacing: -.045em; color: var(--c-hielo); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+.v-reloj__cifras i { font-style: normal; font-weight: 300; opacity: .35; margin: 0 .04em; transform: translate3d(0, -.06em, 0); }
+.corte-pasado .v-reloj__cifras { color: var(--c-niebla); opacity: .4; }
 .v-hero__llega { margin-top: 1.5rem; color: #fff; }
 .v-hero__texto { margin-top: .6rem; max-width: 40rem; }
 
@@ -16,67 +17,136 @@
 .v-semana__titulo { margin-bottom: clamp(2rem, 4vw, 3rem); }
 .v-calendario { display: grid; gap: .5rem; }
 .v-calendario__cab, .v-calendario__fila { display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem; }
-.v-calendario__cab span { padding: .6rem .4rem; font-family: var(--f-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--c-acero); border-bottom: 1px solid var(--c-tinta); }
-.v-calendario__cab .finde { color: var(--c-niebla); }
-.v-calendario__fila { position: relative; min-height: 64px; align-items: center; }
-.v-calendario__pide, .v-calendario__llega { display: grid; place-items: center; height: 52px; border-radius: 14px; }
-.v-calendario__pide { grid-column: var(--desde); grid-row: 1; background: #fff; border: 1px solid var(--c-linea-fuerte); color: var(--c-marino); }
-.v-calendario__llega { grid-column: var(--hasta); grid-row: 1; background: var(--c-marino); color: #fff; }
+.v-calendario__cab span { padding: .6rem .4rem; font-family: var(--f-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--c-acero); border-bottom: 2px solid var(--c-tinta); }
+/* Sábado y domingo se distinguen por la raya clara; el texto se queda en acero para cumplir el contraste AA (niebla daba 2:1) */
+.v-calendario__cab .finde { border-bottom-color: var(--c-linea-fuerte); }
+.v-calendario__fila { position: relative; min-height: 70px; align-items: center; }
+.v-calendario__pide, .v-calendario__llega { position: relative; z-index: 1; display: grid; place-items: center; height: 52px; border-radius: 8px; }
+.v-calendario__pide { grid-column: var(--desde); grid-row: 1; background: #fff; border: 1px solid var(--c-linea-fuerte); color: var(--c-marino); box-shadow: 0 1px 2px rgba(11, 20, 28, .06); }
+.v-calendario__llega { grid-column: var(--hasta); grid-row: 1; background: var(--c-marino); color: #fff; box-shadow: 0 1px 0 rgba(255, 255, 255, .12) inset, 0 2px 4px rgba(11, 20, 28, .18), 0 12px 22px -12px rgba(11, 20, 28, .55); }
 .v-calendario__llega.es-sabado { background: repeating-linear-gradient(135deg, var(--c-marino) 0 8px, var(--c-marino-2) 8px 16px); }
-.v-calendario__viaje { grid-column: var(--desde) / span 2; grid-row: 1; height: 2px; margin: 0 26px; background: var(--c-marino); transform: scaleX(0); transform-origin: left; transition: transform 1s var(--e-salida) .3s; }
+/* Trazo del viaje: una vía bajo las dos casillas, del centro del pedido al centro de la entrega, con un punto en cada extremo */
+.v-calendario__viaje { position: relative; grid-column: var(--desde) / span 2; grid-row: 1; align-self: end; height: 2px; margin: 0 calc(25% - 2px) -1px; background: var(--c-marino); transform: scaleX(0); transform-origin: left; transition: transform 1s var(--e-salida) .3s; }
+.v-calendario__viaje::before, .v-calendario__viaje::after { content: ""; position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--c-marino); }
+.v-calendario__viaje::before { left: -4px; }
+.v-calendario__viaje::after { right: -4px; }
 .v-calendario__fila.visto .v-calendario__viaje, .quieto .v-calendario__viaje { transform: none; }
 .v-calendario__nota { grid-column: 7; grid-row: 1; font-size: .72rem; color: var(--c-acero); padding-left: .5rem; }
-.v-semana__notas { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; max-width: 60rem; }
-@media (max-width: 700px) { .v-calendario__cab span { font-size: .6rem; padding-inline: 0; text-align: center; } .v-calendario__nota { grid-column: 1 / -1; grid-row: 2; padding: 0; } .v-semana__notas { grid-template-columns: 1fr; } .v-calendario__pide, .v-calendario__llega { height: 44px; border-radius: 10px; } }
+.v-semana__notas { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.4rem; padding-top: 1.6rem; border-top: 1px solid var(--c-linea-fuerte); max-width: 60rem; }
+@media (max-width: 700px) { .v-calendario__cab span { font-size: .6rem; letter-spacing: .02em; padding-inline: 0; text-align: center; } .v-calendario__nota { grid-column: 1 / -1; grid-row: 2; padding: .3rem 0 0; } .v-semana__notas { grid-template-columns: 1fr; } .v-calendario__pide, .v-calendario__llega { height: 44px; border-radius: 6px; } }
 
-/* V3 · Calculadora */
+/* V3 · Calculadora: kilos → cajas como en la tienda → recibo con el desglose del precio */
 .v-tarifa__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
-.v-tarifa__controles { display: grid; gap: .7rem; margin-top: 2rem; max-width: 30rem; }
-.v-tarifa__controles output { font-size: 1.1rem; color: var(--c-tinta); }
-.v-tarifa__controles input[type="range"] { width: 100%; accent-color: var(--c-marino); height: 32px; }
-.v-tarifa__controles input[type="number"] { width: 6rem; min-height: 48px; padding: .5rem .8rem; border: 1px solid var(--c-linea-fuerte); border-radius: 12px; font: 500 1rem var(--f-mono); }
+.v-tarifa__controles { display: grid; gap: .5rem; margin-top: 2rem; max-width: 30rem; }
+.v-tarifa__etiqueta { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.v-tarifa__etiqueta .dato { color: var(--c-acero); text-transform: uppercase; letter-spacing: .1em; }
+/* La cifra crece hacia la izquierda desde el borde derecho: al cambiar no mueve nada más */
+.v-tarifa__kg { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.3rem, 4vw, 3.1rem); line-height: 1; letter-spacing: -.04em; color: var(--c-tinta); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.v-tarifa__controles input[type="range"] { width: 100%; accent-color: var(--c-marino); height: 32px; cursor: pointer; }
+.v-tarifa__escala { display: flex; justify-content: space-between; font-size: .72rem; color: var(--c-acero); }
+/* Pila de cajas: la de 15 y 20 kg es la grande, la de 10 kg mediana y la de 3 kg pequeña */
+.v-envio-cajas { margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1px solid var(--c-linea-fuerte); max-width: 30rem; }
+.v-envio-cajas__titulo { color: var(--c-acero); text-transform: uppercase; letter-spacing: .1em; }
+.v-cajas { display: flex; align-items: flex-end; gap: 8px; height: 4.4rem; margin: .9rem 0 .7rem; padding-left: 3px; }
+.v-caja { position: relative; flex: none; display: grid; place-items: center; width: var(--w); height: var(--h); padding-top: .45rem; border: 1.5px solid var(--c-marino); border-radius: 2px 2px 4px 4px; background: var(--c-escarcha); color: var(--c-marino); font: 600 .72rem/1 var(--f-mono); }
+.v-caja::before { content: ""; position: absolute; left: -3px; right: -3px; top: -1.5px; height: .55rem; border: 1.5px solid var(--c-marino); border-radius: 3px; background: #fff; }
+.v-caja--g { --w: 3.3rem; --h: 3.8rem; }
+.v-caja--m { --w: 2.8rem; --h: 3.1rem; }
+.v-caja--p { --w: 2.2rem; --h: 2.4rem; }
+.v-caja.nueva { animation: v-caja-entra .24s var(--e-salida) backwards; }
+.es-medida .v-caja, .es-medida .v-caja::before { border-style: dashed; }
+.es-medida .v-caja { opacity: .4; }
+@keyframes v-caja-entra { from { opacity: 0; transform: translate3d(0, -10px, 0); } to { opacity: 1; transform: none; } }
+.v-envio-cajas__texto { font-weight: 600; color: var(--c-tinta); min-height: 1.6em; }
 .v-tarifa__nota { margin-top: 1.4rem; font-size: .88rem; max-width: 34rem; }
-.v-tarifa__resultado { padding: clamp(1.6rem, 4vw, 3rem) clamp(1.6rem, 4vw, 3rem) 3.4rem; border-radius: var(--radio-grande); background: var(--c-noche); color: #fff; }
+/* Ticket del envío: hoja oscura con profundidad real. Las dos vistas (precio y "a medida") ocupan la misma celda:
+   la tarjeta mide siempre lo mismo y el cambio es solo de opacidad y desplazamiento */
+.v-tarifa__resultado { display: grid; padding: clamp(1.6rem, 4vw, 3rem); border-radius: var(--radio); border: 1px solid #1B2835; background: var(--c-noche); color: #fff; box-shadow: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 2px 4px rgba(11, 20, 28, .18), 0 24px 40px -20px rgba(11, 20, 28, .55), 0 60px 90px -60px rgba(31, 60, 85, .6); }
+.v-tarifa__vista { grid-area: 1 / 1; min-width: 0; transition: opacity var(--d-corta) var(--e-salida), transform var(--d-corta) var(--e-salida), visibility 0s; }
+.v-tarifa__vista--medida, .es-medida .v-tarifa__vista--precio { opacity: 0; visibility: hidden; transform: translate3d(0, 8px, 0); transition: opacity var(--d-corta), transform var(--d-corta), visibility 0s var(--d-corta); }
+.es-medida .v-tarifa__vista--medida { opacity: 1; visibility: visible; transform: none; transition: opacity var(--d-corta) var(--e-salida), transform var(--d-corta) var(--e-salida), visibility 0s; }
+.v-tarifa__vista--medida { align-self: center; }
 .v-tarifa__coste { display: grid; gap: .3rem; }
 .v-tarifa__coste .dato { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .1em; }
-.v-tarifa__coste strong { font-family: var(--f-display); font-weight: 400; font-size: clamp(3.5rem, 7vw, 6rem); line-height: 1; }
-.v-tarifa__peso { color: var(--c-hielo); margin-top: .6rem; }
-.v-escalera { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; gap: 8px; height: 180px; }
-.v-escalera li { position: relative; height: var(--h); border-radius: 10px 10px 4px 4px; background: rgba(184, 208, 232, .14); transition: background-color .4s; }
-.v-escalera li.activo { background: var(--c-hielo); }
-.v-escalera span { position: absolute; left: 0; right: 0; top: calc(100% + .5rem); font-family: var(--f-mono); font-size: .68rem; color: var(--c-niebla); text-align: center; }
+.v-tarifa__coste strong { font-family: var(--f-display); font-weight: 800; font-size: clamp(3.4rem, 6.6vw, 5.8rem); line-height: 1; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+/* Recibo: de dónde sale el precio, línea a línea */
+.v-recibo { margin: 1.8rem 0 0; border-top: 1px solid var(--c-linea-oscura); font-family: var(--f-mono); font-size: .82rem; font-feature-settings: "tnum" 1; }
+.v-recibo div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: baseline; padding: .72rem 0; border-bottom: 1px dashed rgba(184, 208, 232, .22); }
+.v-recibo dt { color: var(--c-hielo-claro); }
+.v-recibo dt small { display: block; margin-top: .25rem; font-size: .72rem; color: var(--c-niebla); }
+.v-recibo dd { margin: 0; color: #fff; text-align: right; white-space: nowrap; }
+.v-recibo .v-recibo__suma { border-bottom: 1px solid var(--c-linea-oscura); }
+.v-recibo__suma dd { color: var(--c-hielo); font-weight: 600; }
+/* Más de 150 kg */
+.v-medida__etiqueta { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .1em; }
+.v-medida__titulo { margin: .7rem 0 1rem; font-family: var(--f-display); font-weight: 800; font-size: clamp(2.1rem, 3.6vw, 3.3rem); line-height: 1.02; letter-spacing: -.035em; text-wrap: balance; }
+.v-medida__texto { max-width: 28rem; margin-bottom: 1.8rem; color: var(--c-hielo-claro); }
+.v-medida__tel { margin-top: 1.1rem; color: var(--c-niebla); }
+.v-medida__tel a { color: #fff; }
+.quieto .v-caja.nueva { animation: none; }
+.quieto .v-tarifa__vista, .quieto .es-medida .v-tarifa__vista--medida { transition: none; transform: none; }
 @media (max-width: 900px) { .v-tarifa__in { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+	.v-cajas { gap: 7px; height: 3.2rem; }
+	.v-caja { font-size: .62rem; padding-top: .35rem; }
+	.v-caja::before { left: -2.5px; right: -2.5px; height: .45rem; }
+	.v-caja--g { --w: 2.3rem; --h: 2.7rem; }
+	.v-caja--m { --w: 1.95rem; --h: 2.2rem; }
+	.v-caja--p { --w: 1.55rem; --h: 1.75rem; }
+}
 
 /* V4 · Recogida */
 .v-recogida__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
-.v-recogida__foto { margin: 0; border-radius: 50% 50% var(--radio-grande) var(--radio-grande) / 30% 30% var(--radio-grande) var(--radio-grande); overflow: hidden; aspect-ratio: 4 / 5; }
-.v-recogida__foto img { width: 100%; height: 100%; object-fit: cover; }
-.v-ficha { margin: 2rem 0 1.6rem; }
+/* Foto troquelada (esquina cortada, como en Empresas) con un marco de plano desplazado detrás */
+.v-recogida__foto { position: relative; margin: 0 1.1rem 1.1rem 0; aspect-ratio: 4 / 5; isolation: isolate; }
+.v-recogida__foto::before { content: ""; position: absolute; inset: 1.1rem -1.1rem -1.1rem 1.1rem; z-index: -1; border: 1px solid var(--c-marino); }
+.v-recogida__foto img { width: 100%; height: 100%; object-fit: cover; clip-path: polygon(0 0, calc(100% - 64px) 0, 100% 64px, 100% 100%, 0 100%); }
+.v-ficha { margin: 2rem 0 1.6rem; border-bottom: 1px solid var(--c-linea-fuerte); }
 .v-ficha div { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+.v-ficha div:first-child { border-top: 2px solid var(--c-tinta); }
 .v-ficha dt { text-transform: uppercase; letter-spacing: .1em; color: var(--c-acero); padding-top: .2rem; }
 .v-ficha dd { margin: 0; }
-@media (max-width: 900px) { .v-recogida__in { grid-template-columns: 1fr; } .v-ficha div { grid-template-columns: 1fr; gap: .2rem; } }
+@media (max-width: 900px) { .v-recogida__in { grid-template-columns: 1fr; } .v-recogida__foto { max-width: 460px; } .v-recogida__foto img { clip-path: polygon(0 0, calc(100% - 44px) 0, 100% 44px, 100% 100%, 0 100%); } .v-ficha div { grid-template-columns: 1fr; gap: .2rem; } }
 
-/* V5 · Cobertura */
-.v-cobertura__dos { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--hueco); margin: 2.5rem 0 2rem; }
-.v-cobertura__si, .v-cobertura__no { position: relative; padding: clamp(1.6rem, 4vw, 2.8rem); border-radius: var(--radio-grande); }
-.v-cobertura__si { background: var(--c-hielo); color: var(--c-noche); }
-.v-cobertura__no { border: 1px solid var(--c-linea-oscura); }
-.v-cobertura__marca { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 1.4rem; border-radius: 50%; border: 1.5px solid currentColor; font: 400 1.6rem var(--f-display); }
-.v-cobertura__dos h3 { font-family: var(--f-display); font-size: clamp(1.6rem, 2.6vw, 2.3rem); line-height: 1.05; margin-bottom: .7rem; }
-.v-cobertura__no p { color: var(--c-hielo-claro); }
-@media (max-width: 800px) { .v-cobertura__dos { grid-template-columns: 1fr; } }
+/* V5 · Cobertura: el "sí" es la losa grande; la consulta se solapa sobre ella, más abajo */
+.v-cobertura__dos { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; margin: 2.5rem 0 2rem; }
+.v-cobertura__si, .v-cobertura__no { position: relative; padding: clamp(1.6rem, 4vw, 3rem); border-radius: var(--radio); }
+.v-cobertura__si { min-height: clamp(260px, 26vw, 360px); padding-right: clamp(5rem, 9vw, 8rem); background: var(--c-hielo); color: var(--c-noche); box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 2px 4px rgba(11, 20, 28, .12), 0 28px 50px -30px rgba(11, 20, 28, .6); }
+.v-cobertura__no { z-index: 1; margin: clamp(5rem, 9.5vw, 8.5rem) 0 0 calc(-1 * clamp(2rem, 5vw, 4rem)); background: var(--c-noche); border: 1px solid var(--c-linea-oscura); box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 4px 8px rgba(0, 0, 0, .2), 0 34px 60px -26px rgba(0, 0, 0, .65); }
+/* Sello: marca redonda en la esquina de la losa, girada como un tampón */
+.v-cobertura__si .v-cobertura__marca { position: absolute; top: clamp(1.2rem, 2.6vw, 2rem); right: clamp(1.2rem, 2.6vw, 2rem); width: clamp(56px, 6vw, 76px); height: clamp(56px, 6vw, 76px); margin: 0; border-width: 2px; transform: rotate(-10deg); }
+.v-cobertura__si .v-cobertura__marca .ico { width: 45%; height: 45%; }
+.v-cobertura__marca { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid currentColor; font: 700 1.25rem/1 var(--f-display); }
+.v-cobertura__no .v-cobertura__marca { float: left; margin: .1rem .9rem 0 0; color: var(--c-hielo); }
+.v-cobertura__si h3 { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.9rem, 3.4vw, 3.1rem); line-height: 1.05; letter-spacing: -.035em; margin-bottom: 1rem; text-wrap: balance; }
+.v-cobertura__si p { font-size: 1.08rem; max-width: 30rem; }
+.v-cobertura__no h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.4rem, 2vw, 1.8rem); line-height: 1.1; letter-spacing: -.02em; margin: .35rem 0 1.1rem; }
+.v-cobertura__no p { clear: left; color: var(--c-hielo-claro); }
+@media (max-width: 800px) { .v-cobertura__dos { grid-template-columns: 1fr; } .v-cobertura__si { min-height: 0; padding-bottom: 3.4rem; } .v-cobertura__no { margin: -1.6rem 0 0 1.2rem; } }
 
 /* V6 · Preguntas en pestañas */
 .v-pestanas { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(1.5rem, 5vw, 4rem); margin-top: 2rem; align-items: start; }
 .v-pestanas__lista { display: grid; gap: .3rem; }
-.v-pestanas__lista button { display: grid; grid-template-columns: 2.5rem 1fr; gap: .6rem; padding: 1rem 1.1rem; border: 0; border-radius: 14px; background: transparent; text-align: left; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color .3s, color .3s; }
-.v-pestanas__lista button .dato { color: var(--c-acero); }
+.v-pestanas__lista button { display: grid; grid-template-columns: 2.5rem 1fr; gap: .6rem; padding: 1rem 1.1rem; border: 0; border-radius: 8px; background: transparent; text-align: left; font-size: 1rem; font-weight: 500; line-height: 1.4; cursor: pointer; }
+.v-pestanas__lista button .dato { color: var(--c-acero); transition: transform var(--d-corta) var(--e-salida); }
 .v-pestanas__lista button:hover { background: var(--c-escarcha); }
-.v-pestanas__lista button[aria-selected="true"] { background: var(--c-marino); color: #fff; }
+.v-pestanas__lista button:hover .dato { transform: translate3d(3px, 0, 0); }
+.v-pestanas__lista button[aria-selected="true"] { background: var(--c-marino); color: #fff; box-shadow: 0 2px 4px rgba(11, 20, 28, .15), 0 12px 22px -14px rgba(11, 20, 28, .6); }
 .v-pestanas__lista button[aria-selected="true"] .dato { color: var(--c-hielo); }
-.v-pestanas__panel { position: sticky; top: calc(var(--alto-cabecera) + 2rem); padding: clamp(1.6rem, 4vw, 2.8rem); border-radius: var(--radio-grande); background: var(--c-escarcha); animation: aparecer-panel .5s var(--e-salida); }
-.v-pestanas__q { font-family: var(--f-display); font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1.1; margin-bottom: 1rem; }
+.v-pestanas__panel { position: sticky; top: calc(var(--alto-cabecera) + 2rem); padding: clamp(1.6rem, 4vw, 2.8rem); border-radius: var(--radio); border: 1px solid var(--c-linea-fuerte); border-top: 3px solid var(--c-marino); background: var(--c-escarcha); box-shadow: 0 1px 2px rgba(11, 20, 28, .05), 0 18px 34px -24px rgba(11, 20, 28, .35); animation: aparecer-panel .5s var(--e-salida); }
+.v-pestanas__q { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.12; letter-spacing: -.025em; margin-bottom: 1rem; text-wrap: balance; }
 @keyframes aparecer-panel { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 800px) { .v-pestanas { grid-template-columns: 1fr; } .v-pestanas__panel { position: static; } }
 .v-hero .niebla { opacity: .55; }
+
+/* Pedir esta combinación: formato y botón de compra dentro del recibo */
+.v-pedir { margin-top: 1.6rem; padding-top: 1.4rem; border-top: 1px solid var(--c-linea-oscura); display: grid; gap: 1rem; }
+.v-pedir__formato { margin: 0; padding: 0; border: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.v-pedir__formato legend { float: left; margin-right: .6rem; color: var(--c-niebla); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+.v-pedir__formato label { position: relative; cursor: pointer; }
+.v-pedir__formato input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.v-pedir__formato span { display: inline-flex; align-items: center; min-height: 40px; padding: .4rem .95rem; border: 1px solid var(--c-linea-oscura); border-radius: 999px; font-size: .9rem; font-weight: 600; color: var(--c-escarcha); }
+.v-pedir__formato input:checked + span { border-color: var(--c-hielo); background: rgba(184, 208, 232, .14); color: #fff; }
+.v-pedir__formato input:focus-visible + span { outline: 2px solid var(--c-hielo); outline-offset: 2px; }
+.v-pedir__boton { width: 100%; justify-content: space-between; }
+.v-pedir__nota { font-size: .82rem; color: var(--c-niebla); }

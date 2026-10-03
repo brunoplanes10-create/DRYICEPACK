@@ -1,55 +1,90 @@
 /* =========================================================================
    Zona de entrega (plantilla por ciudad o comarca) · Z1 a Z6 + mapa radial
+   Dirección C "Industrial sobrio": Inter Tight 800/700 en titulares, Inter en el texto,
+   Geist Mono solo en los datos (.dato). Movimiento: solo transform y opacity.
    ========================================================================= */
+/* Titulares con salto ("|" en el texto): cada tramo es un bloque equilibrado por separado, sin palabras sueltas */
+h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
+
 .radar { width: 100%; height: auto; display: block; }
 .radar__anillo { fill: none; stroke: rgba(184, 208, 232, .22); stroke-width: 1; stroke-dasharray: 3 5; }
 .radar__km { fill: var(--c-niebla); font: 400 11px var(--f-mono); }
 .radar__punto line { stroke: rgba(184, 208, 232, .18); stroke-width: 1; }
 .radar__punto circle { fill: var(--c-marino-2); stroke: var(--c-hielo); stroke-width: 1.5; }
-.radar__punto text { fill: var(--c-hielo-claro); font: 400 13px var(--f-mono); }
+.radar__punto text { fill: var(--c-hielo-claro); font: 400 13px var(--f-mono); paint-order: stroke; stroke: var(--c-noche); stroke-width: 4px; stroke-linejoin: round; }
 .radar__punto.es-actual line { stroke: var(--c-hielo); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1; }
 .radar__punto.es-actual circle { fill: var(--c-hielo); }
-.radar__punto.es-actual text { fill: #fff; font-size: 16px; }
+.radar__punto.es-actual text { fill: #fff; font-size: 16px; font-weight: 500; }
 .visto .radar__punto.es-actual line, .z-mapa .radar__punto.es-actual line { stroke-dasharray: none; }
 .radar__nave circle { fill: #fff; }
-.radar__nave text { fill: #fff; font: 500 16px var(--f-mono); }
+.radar__nave text { fill: #fff; font: 500 16px var(--f-mono); paint-order: stroke; stroke: var(--c-noche); stroke-width: 4px; stroke-linejoin: round; }
 
-.z-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); background: var(--c-papel); }
+/* ---------- Z1 · Título y cifras ----------
+   Las cifras van en una ficha blanca que se monta sobre la franja oscura del mapa (solape a propósito). */
+.z-hero { position: relative; z-index: 2; padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); background: var(--c-papel); }
 .z-hero__in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: clamp(2rem, 6vw, 6rem); align-items: end; }
-.z-hero h1 { margin: 1.2rem 0 1.4rem; }
+.z-hero h1 { margin: 1.2rem 0 1.4rem; text-wrap: pretty; }
 .z-hero h1 em { color: var(--c-marino-2); }
 .z-hero .entrada { margin-bottom: 2rem; }
-.z-cifras { margin: 0; display: grid; gap: 0; }
-.z-cifras div { padding: 1.1rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+.z-cifras { margin: 0; display: grid; gap: 0; padding: .4rem clamp(1.4rem, 2.4vw, 2rem); border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio); background: #fff;
+	box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(11, 20, 28, .06), 0 30px 60px -34px rgba(11, 20, 28, .45), 0 70px 90px -70px rgba(11, 20, 28, .35); }
+.z-cifras div { padding: 1.1rem 0 1.2rem; border-top: 1px solid var(--c-linea-fuerte); }
+.z-cifras div:first-child { border-top: 0; }
 .z-cifras dt { text-transform: uppercase; letter-spacing: .1em; color: var(--c-acero); }
-.z-cifras dd { margin: .2rem 0 0; font-family: var(--f-display); font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.05; }
+.z-cifras dd { margin: .35rem 0 0; font-family: var(--f-display); font-weight: 800; font-size: clamp(1.7rem, 2.6vw, 2.3rem); line-height: 1.05; letter-spacing: -.03em; }
+@media (min-width: 901px) {
+	.z-cifras { margin-bottom: calc((clamp(3rem, 6vw, 5rem) + 3.5rem) * -1); }
+	.z-hero + .z-mapa { padding-top: calc(clamp(2rem, 5vw, 4rem) + 3.5rem); }
+}
 @media (max-width: 900px) { .z-hero__in { grid-template-columns: 1fr; } }
 
+/* ---------- Z2 · Mapa radial ---------- */
 .z-mapa { padding: clamp(2rem, 5vw, 4rem) 0; }
 .z-mapa .radar { max-width: 900px; margin: 0 auto; }
 .z-mapa__fuente { text-align: center; color: var(--c-niebla); margin-top: .8rem; }
+/* Escritorio: el mapa se pega a la derecha, bajo la ficha de cifras; la fuente, abajo a la izquierda como pie de plano */
+@media (min-width: 901px) {
+	.z-mapa .envoltura { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 900px); align-items: end; gap: var(--hueco); }
+	.z-mapa .radar { grid-column: 2; grid-row: 1; margin: 0; }
+	.z-mapa__fuente { grid-column: 1; grid-row: 1; max-width: 16rem; margin: 0 0 clamp(1rem, 3vw, 2.5rem); padding-top: 1rem; border-top: 1px solid var(--c-linea-oscura); text-align: left; line-height: 1.6; }
+}
+/* En móvil, el mapa se amplía y se recorta a la zona con puntos (todos al oeste de Mataró) */
+@media (max-width: 600px) {
+	.z-mapa .envoltura { overflow: hidden; }
+	.z-mapa .radar { width: 150%; max-width: none; margin-left: -48%; }
+}
 
+/* ---------- Z3 · Entrega en la zona ---------- */
 .z-entrega__in { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
-.z-tabla { margin: 0; }
+.z-tabla { margin: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
 .z-tabla div { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 1.5rem; padding: 1.1rem 0; border-top: 1px solid var(--c-linea-fuerte); }
-.z-tabla dt { font-weight: 600; }
+.z-tabla div:first-child { border-top-color: var(--c-tinta); }
+.z-tabla dt { font-weight: 600; line-height: 1.45; }
 .z-tabla dd { margin: 0; color: var(--c-acero); }
-@media (max-width: 800px) { .z-entrega__in, .z-tabla div { grid-template-columns: 1fr; gap: .3rem; } }
+@media (max-width: 800px) { .z-entrega__in { grid-template-columns: 1fr; gap: 1.8rem; } .z-tabla div { grid-template-columns: 1fr; gap: .3rem; } }
 
+/* ---------- Z4 · Usos ---------- */
 .z-usos__lista { list-style: none; margin: 1.6rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
-.z-usos__lista a { display: inline-flex; align-items: center; gap: .6rem; padding: .8rem 1.2rem; border: 1px solid var(--c-linea-fuerte); border-radius: 999px; text-decoration: none; transition: background-color .3s, color .3s; }
-.z-usos__lista a:hover { background: var(--c-marino); color: #fff; border-color: var(--c-marino); }
-.z-usos__lista .ico { width: 16px; height: 16px; }
+.z-usos__lista a { display: inline-flex; align-items: center; gap: .6rem; min-height: 48px; padding: .7rem 1.2rem; border: 1px solid var(--c-linea-fuerte); border-radius: 999px; background: #fff; box-shadow: 0 1px 0 rgba(11, 20, 28, .05); text-decoration: none; font-weight: 500; transition: transform var(--d-corta) var(--e-salida); }
+.z-usos__lista a:hover { transform: translateY(-2px); border-color: var(--c-marino); text-decoration: none; }
+.z-usos__lista .ico { width: 16px; height: 16px; transition: transform var(--d-corta) var(--e-salida); }
+.z-usos__lista a:hover .ico { transform: translate3d(3px, 0, 0); }
 
+/* ---------- Z5 · Preguntas locales ---------- */
 .z-faq__in { display: grid; grid-template-columns: minmax(0, .6fr) minmax(0, 1.4fr); gap: clamp(2rem, 6vw, 6rem); }
 .z-faq__item { border-top: 1px solid var(--c-linea-fuerte); }
-.z-faq__item summary { padding: 1.2rem 0; font-weight: 600; font-size: 1.1rem; }
+.z-faq__item:first-child { border-top-color: var(--c-tinta); }
+.z-faq__item:last-child { border-bottom: 1px solid var(--c-linea-fuerte); }
+.z-faq__item summary { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 1.2rem 0; font-weight: 600; font-size: 1.08rem; line-height: 1.4; }
+.z-faq__item summary::after { content: "+"; flex: none; font: 400 1.3rem/1 var(--f-texto); transition: transform var(--d-corta) var(--e-salida); }
+.z-faq__item[open] summary::after { transform: rotate(45deg); }
 .z-faq__item p { padding-bottom: 1.2rem; color: var(--c-acero); }
 @media (max-width: 800px) { .z-faq__in { grid-template-columns: 1fr; } }
 
+/* ---------- Z6 · Zonas cercanas ---------- */
 .z-cerca { padding: 1.8rem 0; }
-.z-cerca .envoltura { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; }
-.z-cerca h2 { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; }
-.z-cerca ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; }
-.z-cerca a { color: #fff; text-decoration: none; font-family: var(--f-display); font-size: 1.3rem; }
-.z-cerca a:hover { text-decoration: underline; }
+.z-cerca .envoltura { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem 2rem; }
+.z-cerca h2 { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; font-weight: 400; }
+.z-cerca ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; }
+.z-cerca a { color: #fff; text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.2rem; letter-spacing: 0; }
+.z-cerca a:hover { text-decoration: underline; text-decoration-thickness: 1px; }

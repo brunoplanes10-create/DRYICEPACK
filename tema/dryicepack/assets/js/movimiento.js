@@ -97,7 +97,8 @@
 
 	/* ---------- Contadores: data-cuenta="-78.5" data-decimales="1" ---------- */
 	function formatear(n, dec) {
-		var s = Math.abs(n).toFixed(dec).replace('.', ',');
+		var s = Math.abs(n).toFixed(dec);
+		if (CFG.idioma !== 'en') s = s.replace('.', ','); // −78,5 en castellano y catalán; −78.5 en inglés
 		return (n < 0 ? '−' : '') + s;
 	}
 	var contadores = d.querySelectorAll('[data-cuenta]');
@@ -124,7 +125,8 @@
 	var DIAS = { es: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'], ca: ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte'], en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] };
 	var MESES = { es: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'], ca: ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'], en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] };
 	var idioma = CFG.idioma || 'es';
-	var festivos = CFG.festivos || [];
+	var festivos = CFG.festivos || [];   // lista manual: ni sale ni se entrega
+	var sinSalida = CFG.sinSalida || []; // cierra MRW Mataró: no sale, pero sí se entrega lo que salió el día antes
 	function ahoraMadrid() {
 		var p = {};
 		try {
@@ -135,7 +137,8 @@
 	}
 	function clave(f) { return f.getUTCFullYear() + '-' + ('0' + (f.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + f.getUTCDate()).slice(-2); }
 	function esFestivo(f) { return festivos.indexOf(clave(f)) !== -1; }
-	function saleEseDia(f) { var n = f.getUTCDay(); return n >= 1 && n <= 5 && !esFestivo(f); }
+	function esLaborable(f) { var n = f.getUTCDay(); return n >= 1 && n <= 5 && !esFestivo(f); }
+	function saleEseDia(f) { return esLaborable(f) && sinSalida.indexOf(clave(f)) === -1; }
 	function antesCorte(a) { var c = CFG.corte || { hora: 12, minuto: 0 }; return a.h * 60 + a.mi < c.hora * 60 + c.minuto; }
 	/* Devuelve { entrega: Date, saleHoy: bool } */
 	function proximaEntrega() {
@@ -187,7 +190,7 @@
 	/* Abierto o cerrado ahora (nave: lunes a viernes no festivos, 9:00–18:00 hora de Madrid) */
 	d.querySelectorAll('[data-estado]').forEach(function (el) {
 		var a = ahoraMadrid(), hoy = new Date(Date.UTC(a.y, a.m - 1, a.d));
-		var min = a.h * 60 + a.mi, abierto = saleEseDia(hoy) && min >= 540 && min < 1080;
+		var min = a.h * 60 + a.mi, abierto = esLaborable(hoy) && min >= 540 && min < 1080; // un cierre de MRW no cierra la nave
 		el.textContent = el.getAttribute(abierto ? 'data-t-abierto' : 'data-t-cerrado');
 		el.classList.add(abierto ? 'es-abierto' : 'es-cerrado');
 	});

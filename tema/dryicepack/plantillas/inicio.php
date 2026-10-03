@@ -1,7 +1,7 @@
 <?php
 /**
  * Portada (castellano, catalán e inglés). Orden AIDA:
- * atención (hero) → interés (elegir, cómo llega) → deseo (usos, ficha, empresas, recogida) → objeciones (seguridad, preguntas) → acción.
+ * atención (hero) → interés (elegir, cómo llega) → deseo (usos, clientes, ficha, empresas, recogida) → objeciones (seguridad, preguntas) → acción.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -148,6 +148,25 @@ get_header();
 	</div>
 </section>
 
+<!-- I5b · Clientes: cajetín de plano, un cliente por casilla con su uso; el vapor se aparta al entrar -->
+<section class="i-clientes tono-oscuro seccion" aria-labelledby="i-clientes-t">
+	<div class="envoltura">
+		<div class="i-clientes__cabeza">
+			<?php echo dipt_titulo( 'h2', $c['clientes']['titulo'], 't-h2', 'i-clientes-t' ); // phpcs:ignore ?>
+			<p class="suave" data-revela><?php echo esc_html( $c['clientes']['texto'] ); ?></p>
+		</div>
+		<ol class="i-cajetin">
+			<?php foreach ( $c['clientes']['lista'] as $i => $cl ) : ?>
+				<li class="i-cajetin__celda" data-revela style="--i:<?php echo (int) $i; ?>">
+					<span class="i-cajetin__ref dato" aria-hidden="true"><span><?php echo esc_html( dipt_cliente_nombre( $cl['id'] ) ); ?></span><span>0<?php echo (int) $i + 1; ?></span></span>
+					<span class="i-cajetin__logo"><?php echo dipt_logo_cliente( $cl['id'], $cl['alt'] ); // phpcs:ignore ?></span>
+					<span class="i-cajetin__uso dato"><?php echo esc_html( $cl['uso'] ); ?></span>
+				</li>
+			<?php endforeach; ?>
+		</ol>
+	</div>
+</section>
+
 <!-- I6 · Ficha técnica: −78,5 °C con cotas de plano -->
 <section class="i-ficha tono-escarcha seccion" aria-labelledby="i-ficha-t">
 	<div class="envoltura">
@@ -213,23 +232,27 @@ get_header();
 	</div>
 </section>
 
-<!-- I9 · Seguridad: seis rombos de pictograma -->
+<!-- I9 · Seguridad: hoja de seguridad con cabecera marino que sobresale y seis reglas con su pictograma -->
 <section class="i-seguridad tono-papel seccion" aria-labelledby="i-seguridad-t">
 	<div class="envoltura">
-		<div class="i-seguridad__cabeza">
-			<?php echo dipt_titulo( 'h2', $c['seguridad']['titulo'], 't-h2', 'i-seguridad-t' ); // phpcs:ignore ?>
-			<p class="suave" data-revela><?php echo esc_html( $c['seguridad']['texto'] ); ?></p>
+		<div class="i-seguridad__hoja" data-revela>
+			<div class="i-seguridad__cabeza tono-marino">
+				<div>
+					<?php echo dipt_titulo( 'h2', $c['seguridad']['titulo'], 't-h2', 'i-seguridad-t' ); // phpcs:ignore ?>
+					<p class="suave"><?php echo esc_html( $c['seguridad']['texto'] ); ?></p>
+				</div>
+				<p class="i-seguridad__mas"><?php echo dipt_enlace( dipt_t( 'seguridad_mas' ), dipt_url( 'seguridad' ) ); // phpcs:ignore ?></p>
+			</div>
+			<ul class="i-rombos">
+				<?php foreach ( dipt_avisos_seguridad() as $i => $a ) : ?>
+					<li>
+						<span class="i-rombo" aria-hidden="true"><?php echo dipt_icono( $a[0] ); // phpcs:ignore ?></span>
+						<strong><?php echo esc_html( $a[1] ); ?></strong>
+						<span><?php echo esc_html( $a[2] ); ?></span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
 		</div>
-		<ul class="i-rombos">
-			<?php foreach ( dipt_avisos_seguridad() as $i => $a ) : ?>
-				<li data-revela style="--i:<?php echo (int) $i; ?>">
-					<span class="i-rombo" aria-hidden="true"><?php echo dipt_icono( $a[0] ); // phpcs:ignore ?></span>
-					<strong><?php echo esc_html( $a[1] ); ?></strong>
-					<span><?php echo esc_html( $a[2] ); ?></span>
-				</li>
-			<?php endforeach; ?>
-		</ul>
-		<p class="i-seguridad__mas"><?php echo dipt_enlace( dipt_t( 'seguridad_mas' ), dipt_url( 'seguridad' ) ); // phpcs:ignore ?></p>
 	</div>
 </section>
 
