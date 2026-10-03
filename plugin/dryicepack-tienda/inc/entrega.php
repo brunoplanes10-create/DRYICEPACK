@@ -1,26 +1,93 @@
 <?php
 /**
  * Día de entrega (o de recogida) en el checkout, sin plugins de calendario.
+ * - Los primeros días salen como casillas; "Otra fecha" abre un calendario propio con cualquier día válido
+ *   de los próximos 90 (hay clientes que reservan con un mes de antelación).
  * - Solo se ofrecen días reales: corte de las 12:00, sin domingos ni lunes, sin festivos.
+ * - Festivos de MRW: sin salida si cierra MRW Mataró; sin entrega si cierra MRW en la población del cliente
+ *   (código postal y población del checkout). Si se salta un día por eso, se avisa debajo de las fechas.
  * - El sábado suma 9,70 € + IVA.
  * - La fecha también se guarda en pedidos hechos con Apple Pay / Google Pay (sale de la sesión).
  * - Se ve en el pedido, en los emails, en la página de gracias, en Mi cuenta y en la lista de pedidos.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+// Días que se ven como casillas; el resto (hasta DIP_DIAS_RESERVA días vista) se elige en el calendario "Otra fecha".
+if ( ! defined( 'DIP_FECHAS_CASILLAS' ) ) define( 'DIP_FECHAS_CASILLAS', 6 );
+
 function dip_metodo_elegido() {
 	return dip_eligio_recogida() ? 'recogida' : 'envio';
 }
 
-/** Fecha elegida en esta sesión (validada para el método actual) o la primera disponible. */
-function dip_fecha_elegida( $metodo = null ) {
-	$metodo = $metodo ?: dip_metodo_elegido();
-	$fecha  = WC()->session ? (string) WC()->session->get( 'dip_fecha' ) : '';
-	if ( $fecha && dip_fecha_es_valida( $fecha, $metodo ) ) return $fecha;
-	foreach ( dip_fechas_disponibles( $metodo, 8 ) as $f ) {
+/** Destino a partir de los datos enviados en el checkout clásico (shipping_* o billing_*); si no hay CP, el de la sesión. */
+function dip_destino_de_datos( $datos ) {
+	$datos   = (array) $datos;
+	$destino = array(
+		'cp'        => (string) ( ( $datos['shipping_postcode'] ?? '' ) ?: ( $datos['billing_postcode'] ?? '' ) ),
+		'poblacion' => (string) ( ( $datos['shipping_city'] ?? '' ) ?: ( $datos['billing_city'] ?? '' ) ),
+	);
+	return '' === preg_replace( '/\D/', '', $destino['cp'] ) && function_exists( 'dip_destino_actual' ) ? dip_destino_actual() : $destino;
+}
+
+/** Destino de un pedido (dirección de envío o, si falta, de facturación); si no tiene CP, el de la sesión. */
+function dip_destino_de_pedido( $pedido ) {
+	if ( ! $pedido instanceof WC_Order ) return function_exists( 'dip_destino_actual' ) ? dip_destino_actual() : null;
+	return dip_destino_de_datos( array(
+		'shipping_postcode' => $pedido->get_shipping_postcode(),
+		'billing_postcode'  => $pedido->get_billing_postcode(),
+		'shipping_city'     => $pedido->get_shipping_city(),
+		'billing_city'      => $pedido->get_billing_city(),
+	) );
+}
+
+/**
+ * Fecha elegida en esta sesión (validada para el método y el destino) o la primera disponible.
+ * $destino null = el del checkout en curso (dip_destino_actual).
+ */
+function dip_fecha_elegida( $metodo = null, $destino = null ) {
+	$metodo  = $metodo ?: dip_metodo_elegido();
+	$destino = null === $destino && function_exists( 'dip_destino_actual' ) ? dip_destino_actual() : $destino;
+	$fecha   = WC()->session ? (string) WC()->session->get( 'dip_fecha' ) : '';
+	if ( $fecha && dip_fecha_es_valida( $fecha, $metodo, $destino ) ) return $fecha;
+	foreach ( dip_fechas_disponibles( $metodo, 8, null, $destino ) as $f ) {
 		if ( ! $f['sabado'] ) return $f['fecha'];
 	}
 	return '';
+}
+
+/**
+ * Mensaje de error de una fecha no válida: festivo de MRW en el destino, fecha pasada o anterior a la primera
+ * disponible (corte de las 12:00), o un día lejano sin reparto o fuera de los 90 días.
+ */
+function dip_error_fecha( $fecha, $metodo, $destino ) {
+	$t = dip_textos_tienda();
+	if ( 'envio' === $metodo && dip_fecha_es_valida( $fecha, $metodo ) && ! dip_fecha_es_valida( $fecha, $metodo, $destino ) ) return $t['fecha_festivo_destino'];
+	$primera = dip_fechas_disponibles( $metodo, 1, null, $destino );
+	return ( ! $primera || (string) $fecha < $primera[0]['fecha'] ) ? $t['fecha_no_valida'] : $t['fecha_no_disponible'];
+}
+
+/**
+ * "Sin reparto el viernes 9 de octubre en Valencia: festivo." para los días que no se ofrecen
+ * porque MRW cierra en el destino. '' si no se ha saltado ninguno.
+ */
+function dip_nota_festivos_destino( array $saltadas, $destino, $idioma = null ) {
+	$saltadas = array_values( array_unique( array_filter( array_map( 'strval', $saltadas ) ) ) );
+	if ( ! $saltadas ) return '';
+	sort( $saltadas );
+	$idioma = $idioma ?: dip_idioma();
+	$t      = dip_textos_tienda( $idioma );
+	$lugar  = trim( (string) ( $destino['poblacion'] ?? '' ) );
+	if ( '' === $lugar ) {
+		// Sin población: la provincia (nombre de WooCommerce si está; si no, el de MRW)
+		$cp    = (string) ( $destino['cp'] ?? '' );
+		$wc    = function_exists( 'WC' ) && WC() && WC()->countries ? (array) WC()->countries->get_states( 'ES' ) : array();
+		$lugar = (string) ( $wc[ dip_provincia_por_cp( $cp ) ] ?? '' );
+		if ( '' === $lugar && function_exists( 'dip_mrw_provincia_por_cp' ) ) $lugar = ucwords( strtolower( dip_mrw_provincia_por_cp( $cp ) ) );
+	}
+	$fechas = array_map( static fn( $f ) => dip_fecha_larga( $f, $idioma ), $saltadas );
+	$ultima = array_pop( $fechas );
+	$lista  = $fechas ? implode( $t['mrw_coma'], $fechas ) . $t['mrw_y'] . $ultima : $ultima;
+	return sprintf( count( $saltadas ) > 1 ? $t['mrw_festivos'] : $t['mrw_festivo'], $lista, $lugar );
 }
 
 /* ---------- Guardar en la sesión lo que el cliente va eligiendo ---------- */
@@ -56,7 +123,8 @@ function dip_html_entrega() {
 	$elegido  = $elegidos[0] ?? '';
 	if ( $rates && ! isset( $rates[ $elegido ] ) ) $elegido = array_key_first( $rates );
 	$metodo   = dip_es_recogida( $elegido ) ? 'recogida' : 'envio';
-	$fecha    = dip_fecha_elegida( $metodo );
+	$destino  = dip_destino_actual();
+	$fecha    = dip_fecha_elegida( $metodo, $destino );
 	$iva      = dip_factor_iva();
 
 	ob_start();
@@ -86,20 +154,54 @@ function dip_html_entrega() {
 	echo '</fieldset>';
 	// Más de 150 kg fuera de la provincia de Barcelona: el envío se prepara a medida (solo queda la recogida)
 	$kg = dip_carrito_kg()['kg'];
-	$cp = WC()->customer ? ( WC()->customer->get_shipping_postcode() ?: WC()->customer->get_billing_postcode() ) : '';
-	if ( dip_envio_a_medida( $kg, $cp ) ) echo dip_html_envio_a_medida(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escapado en la función
+	if ( dip_envio_a_medida( $kg, $destino['cp'] ) ) echo dip_html_envio_a_medida(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escapado en la función
 	if ( 'recogida' === $metodo ) {
 		echo '<p class="dip-aviso dip-aviso--lejos" data-dip-aviso-lejos hidden>' . esc_html( $t['recogida_lejos'] ) . '</p>';
 	}
 
-	$fechas = dip_fechas_disponibles( $metodo, 6 );
-	echo '<fieldset class="dip-fechas"><legend class="dip-leyenda">' . esc_html( 'recogida' === $metodo ? $t['que_dia_recogida'] : $t['que_dia'] ) . '</legend><div class="dip-fechas__lista">';
+	// Días: los primeros como casillas (los más pedidos) y "Otra fecha", que abre un calendario con cualquier día
+	// válido de los próximos DIP_DIAS_RESERVA (assets/checkout.js). La lista completa va en data-dip-cal: el
+	// calendario no hace peticiones. Todo sale del mismo cálculo (dip_calendario_entrega), hecho una vez.
+	$saltadas = array();
+	$fechas   = dip_fechas_disponibles( $metodo, DIP_FECHAS_CASILLAS, null, $destino, $saltadas );
+	$cal      = dip_calendario_entrega( $metodo, null, $destino );
+	if ( $fecha && ! in_array( $fecha, array_column( $fechas, 'fecha' ), true ) && isset( $cal['indice'][ $fecha ] ) ) {
+		// Día elegido en el calendario: se ve como una casilla más, marcada, en el sitio de la última
+		$fechas   = array_slice( $fechas, 0, DIP_FECHAS_CASILLAS - 1 );
+		$fechas[] = $cal['fechas'][ $cal['indice'][ $fecha ] ] + array( 'lejana' => true );
+	}
+	$sab    = html_entity_decode( wp_strip_all_tags( wc_price( DIP_SATURDAY_SURCHARGE_EXCL_TAX * $iva ) ), ENT_QUOTES, 'UTF-8' );
+	$nombre = dip_nombres_fecha( $idioma );
+	$datos  = array(
+		'f'   => array_keys( $cal['indice'] ),                    // días que se pueden elegir
+		'x'   => 'envio' === $metodo ? $cal['saltadas'] : array(), // días que MRW no reparte en el destino
+		'sel' => $fecha,
+		'des' => $cal['desde'],
+		'has' => $cal['hasta'],
+		'sab' => '+' . $sab,
+		'c'   => (int) DIP_FECHAS_CASILLAS,
+		'n'   => array( 'd' => $nombre['dias'], 'dc' => $nombre['dc'], 'm' => $nombre['meses'], 'mc' => $nombre['mc'], 'mde' => $nombre['mde'] ),
+		't'   => array(
+			'cal' => 'recogida' === $metodo ? $t['cal_recogida'] : $t['cal_envio'],
+			'ant' => $t['cal_anterior'],
+			'sig' => $t['cal_siguiente'],
+			'no'  => $t['cal_no_disponible'],
+			'mrw' => $t['cal_festivo_mrw'],
+			'ley' => sprintf( 'recogida' === $metodo ? $t['cal_leyenda_recogida'] : $t['cal_leyenda_envio'], (int) DIP_DIAS_RESERVA ),
+			'ls'  => sprintf( 'recogida' === $metodo ? $t['cal_sabado_recogida'] : $t['cal_sabado_envio'], $sab ),
+		),
+	);
+	printf(
+		'<fieldset class="dip-fechas" data-dip-cal="%1$s"><legend class="dip-leyenda">%2$s</legend><div class="dip-fechas__lista">',
+		esc_attr( wp_json_encode( $datos, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ),
+		esc_html( 'recogida' === $metodo ? $t['que_dia_recogida'] : $t['que_dia'] )
+	);
 	foreach ( $fechas as $f ) {
 		$corta = dip_fecha_corta( $f['fecha'], $idioma );
-		$extra = $f['sabado'] ? '+' . wp_strip_all_tags( wc_price( DIP_SATURDAY_SURCHARGE_EXCL_TAX * $iva ) ) : '';
+		$extra = $f['sabado'] ? '+' . $sab : '';
 		printf(
 			'<label class="dip-fecha%1$s"><input type="radio" name="dip_fecha" value="%2$s"%3$s><span class="dip-fecha__dia" aria-hidden="true">%4$s</span><span class="dip-fecha__num" aria-hidden="true">%5$s</span><span class="dip-fecha__mes" aria-hidden="true">%6$s</span>%7$s<span class="screen-reader-text">%8$s</span></label>',
-			$f['sabado'] ? ' dip-fecha--sabado' : '',
+			( $f['sabado'] ? ' dip-fecha--sabado' : '' ) . ( empty( $f['lejana'] ) ? '' : ' dip-fecha--lejana' ),
 			esc_attr( $f['fecha'] ),
 			checked( $f['fecha'], $fecha, false ),
 			esc_html( $corta[0] ),
@@ -109,7 +211,13 @@ function dip_html_entrega() {
 			esc_html( dip_fecha_larga( $f['fecha'], $idioma ) . ( $extra ? ' (' . $extra . ')' : '' ) )
 		);
 	}
-	echo '</div>';
+	printf(
+		'<button type="button" class="dip-otra-fecha" aria-expanded="false" aria-controls="dip-cal" aria-label="%1$s"><span class="dip-fecha__icono" aria-hidden="true">%2$s</span><span class="dip-fecha__otra" aria-hidden="true">%3$s</span></button>',
+		esc_attr( $t['otra_fecha_aria'] ),
+		dip_svg_calendario(), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG fijo
+		esc_html( $t['otra_fecha'] )
+	);
+	echo '</div><div class="dip-cal" id="dip-cal" hidden></div>';
 	$hay_sabado = (bool) array_filter( $fechas, static fn( $f ) => $f['sabado'] );
 	echo '<p class="dip-fechas__nota">';
 	if ( 'recogida' === $metodo ) {
@@ -117,6 +225,8 @@ function dip_html_entrega() {
 	} else {
 		echo esc_html( $t['corte'] );
 		if ( $hay_sabado ) echo ' ' . esc_html( $t['sabado_nota'] );
+		$nota_mrw = dip_nota_festivos_destino( $saltadas, $destino, $idioma );
+		if ( $nota_mrw ) echo ' ' . esc_html( $nota_mrw );
 	}
 	echo '</p></fieldset></div>';
 	return ob_get_clean();
@@ -138,6 +248,10 @@ function dip_svg_furgoneta() {
 }
 function dip_svg_nave() {
 	return '<svg viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 27V13l12-7 12 7v14z"/><path d="M11 27v-8h10v8M11 23h10"/></svg>';
+}
+/** Calendario de línea (mismo trazo que la furgoneta y la nave), con el día elegido marcado. */
+function dip_svg_calendario() {
+	return '<svg viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" focusable="false"><path d="M5 8h22v19H5zM5 13.5h22M11 5v5M21 5v5"/><path d="M9.5 18h2M15 18h2M20.5 18h2M9.5 22.5h2M15 22.5h2"/><rect x="19.5" y="20.5" width="4" height="4" fill="currentColor" stroke="none"/></svg>';
 }
 
 add_action( 'woocommerce_checkout_after_customer_details', static function () {
@@ -161,19 +275,22 @@ add_action( 'woocommerce_after_checkout_validation', static function ( $datos, $
 		$errores->add( 'dip_fecha', $t['fecha_obligatoria'] );
 		return;
 	}
-	if ( ! dip_fecha_es_valida( $fecha, $metodo ) ) {
-		$errores->add( 'dip_fecha', $t['fecha_no_valida'] );
+	$destino = dip_destino_de_datos( $datos );
+	if ( ! dip_fecha_es_valida( $fecha, $metodo, $destino ) ) {
+		$errores->add( 'dip_fecha', dip_error_fecha( $fecha, $metodo, $destino ) );
 	}
 }, 20, 2 );
 
-/* Checkout por Store API (algunos botones de pago exprés): misma comprobación. */
+/* Checkout por Store API (algunos botones de pago exprés): misma comprobación, con la dirección del pedido. */
 add_action( 'woocommerce_store_api_checkout_update_order_from_request', static function ( $pedido ) {
-	$metodo = dip_metodo_elegido();
-	$fecha  = WC()->session ? (string) WC()->session->get( 'dip_fecha' ) : '';
-	if ( ! $fecha ) $fecha = dip_fecha_elegida( $metodo );
-	if ( ! $fecha || ! dip_fecha_es_valida( $fecha, $metodo ) ) {
+	$metodo  = dip_metodo_elegido();
+	$destino = dip_destino_de_pedido( $pedido );
+	$fecha   = WC()->session ? (string) WC()->session->get( 'dip_fecha' ) : '';
+	if ( ! $fecha ) $fecha = dip_fecha_elegida( $metodo, $destino );
+	if ( ! $fecha || ! dip_fecha_es_valida( $fecha, $metodo, $destino ) ) {
 		if ( class_exists( '\Automattic\WooCommerce\StoreApi\Exceptions\RouteException' ) ) {
-			throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException( 'dip_fecha', esc_html( dip_textos_tienda()['fecha_no_valida'] ), 400 );
+			$mensaje = $fecha ? dip_error_fecha( $fecha, $metodo, $destino ) : dip_textos_tienda()['fecha_no_valida'];
+			throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException( 'dip_fecha', esc_html( $mensaje ), 400 );
 		}
 		return;
 	}
@@ -190,9 +307,10 @@ function dip_guardar_entrega( WC_Order $pedido, $fecha, $metodo ) {
 }
 
 add_action( 'woocommerce_checkout_create_order', static function ( $pedido, $datos ) {
-	$metodo = dip_es_recogida( (string) ( $datos['shipping_method'][0] ?? '' ) ) ? 'recogida' : dip_metodo_elegido();
-	$fecha  = isset( $_POST['dip_fecha'] ) ? sanitize_text_field( wp_unslash( $_POST['dip_fecha'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-	if ( ! $fecha || ! dip_fecha_es_valida( $fecha, $metodo ) ) $fecha = dip_fecha_elegida( $metodo );
+	$metodo  = dip_es_recogida( (string) ( $datos['shipping_method'][0] ?? '' ) ) ? 'recogida' : dip_metodo_elegido();
+	$fecha   = isset( $_POST['dip_fecha'] ) ? sanitize_text_field( wp_unslash( $_POST['dip_fecha'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$destino = dip_destino_de_datos( $datos );
+	if ( ! $fecha || ! dip_fecha_es_valida( $fecha, $metodo, $destino ) ) $fecha = dip_fecha_elegida( $metodo, $destino );
 	if ( $fecha ) dip_guardar_entrega( $pedido, $fecha, $metodo );
 }, 10, 2 );
 
@@ -202,7 +320,7 @@ add_action( 'woocommerce_new_order', static function ( $pedido_id, $pedido = nul
 	if ( ! $pedido || $pedido->get_meta( '_dip_fecha_entrega' ) || is_admin() && ! wp_doing_ajax() ) return;
 	if ( ! function_exists( 'WC' ) || ! WC()->session ) return;
 	$metodo = dip_metodo_elegido();
-	$fecha  = dip_fecha_elegida( $metodo );
+	$fecha  = dip_fecha_elegida( $metodo, dip_destino_de_pedido( $pedido ) );
 	if ( ! $fecha ) return;
 	dip_guardar_entrega( $pedido, $fecha, $metodo );
 	$pedido->save_meta_data();
@@ -265,7 +383,8 @@ function dip_enviar_confirmacion_recogida( WC_Order $pedido ) {
 		. '<p style="font-size:18px"><strong>' . esc_html( $cuando ) . '</strong></p>'
 		. '<p>' . esc_html( $c['direccion'] . ', ' . $c['cp'] . ' ' . $c['localidad'] ) . '<br><a href="' . esc_url( $c['mapa'] ) . '">' . esc_html( $t['recogida_lista_mapa'] ) . '</a></p>'
 		. ( $pago ? '<p>' . esc_html( $pago ) . '</p>' : '' )
-		. '<p>' . esc_html( $t['recogida_lista_seguridad'] ) . '</p>'
+		// La dirección de la página de seguridad ("dryicepack.es/…") se puede pulsar
+		. '<p>' . preg_replace( '#\b(dryicepack\.es/[a-z0-9/-]+)#', '<a href="https://$1">$1</a>', esc_html( $t['recogida_lista_seguridad'] ) ) . '</p>'
 		. '<p>' . esc_html( sprintf( $t['recogida_lista_cambio'], $c['telefono'], $c['whatsapp'] ) ) . '</p>';
 	$mailer = WC()->mailer();
 	$asunto = sprintf( $t['recogida_lista_asunto'], $pedido->get_order_number() );
@@ -321,7 +440,7 @@ function dip_columna_entrega( $columna, $pedido ) {
 	}
 	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', $fecha, dip_zona_horaria() );
 	$recoge = dip_es_pedido_de_recogida( $pedido );
-	echo esc_html( ( $recoge ? 'Recoge ' : '' ) . ( $d ? wp_date( 'D j M', $d->getTimestamp() ) : $fecha ) );
+	echo esc_html( ( $recoge ? 'Recoge ' : '' ) . ( $d ? wp_date( 'D j M', $d->getTimestamp(), dip_zona_horaria() ) : $fecha ) ); // misma zona que la fecha: si WordPress tuviera otra, saldría el día anterior
 	if ( $recoge ) echo '<br><small>' . esc_html( $pedido->get_meta( '_dip_recogida_confirmada' ) ? 'Confirmada' : 'Sin confirmar' ) . '</small>';
 }
 add_action( 'manage_woocommerce_page_wc-orders_custom_column', 'dip_columna_entrega', 10, 2 );

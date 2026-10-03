@@ -1,0 +1,848 @@
+{
+ "generado": "2026-10-02",
+ "criterio": "Por provincia, el máximo de oficinas listadas en un mismo festivo nacional y la unión de los nombres",
+ "dias": [
+  {
+   "dia": "2026-10-12",
+   "oficinas": 386,
+   "fuente": "https://www.mrw.es/oficina_transporte_urgente/MRW_festividades.asp?dia=12&mes=10&any=2026"
+  },
+  {
+   "dia": "2026-12-08",
+   "oficinas": 431,
+   "fuente": "https://www.mrw.es/oficina_transporte_urgente/MRW_festividades.asp?dia=08&mes=12&any=2026"
+  }
+ ],
+ "descartados": [
+  {
+   "dia": "2026-11-01",
+   "motivo": "solo 45 oficinas: no es festivo en toda España"
+  }
+ ],
+ "sin_provincia": [
+  "08002"
+ ],
+ "total": 430,
+ "provincias": {
+  "ALAVA": {
+   "oficinas": 3,
+   "nombres": [
+    "Najera",
+    "Laudio/Llodio",
+    "Vitoria Gasteiz 01015"
+   ]
+  },
+  "ALBACETE": {
+   "oficinas": 6,
+   "nombres": [
+    "Albacete",
+    "Almansa",
+    "Villarrobledo",
+    "Hellin",
+    "La Roda",
+    "Tarazona De La Mancha"
+   ]
+  },
+  "ALICANTE": {
+   "oficinas": 11,
+   "nombres": [
+    "Elche/Elx 03201",
+    "Alcoy/Alcoi",
+    "Denia",
+    "Villena",
+    "Almoradi",
+    "Alicante/Alacant 03004",
+    "Cocentaina",
+    "Alicante/Alacant 03001",
+    "Elx/Elche (Parq.Empresarial)",
+    "Benidorm",
+    "San Vicente Del Raspeig"
+   ]
+  },
+  "ALMERIA": {
+   "oficinas": 8,
+   "nombres": [
+    "Almeria 04006",
+    "Santa Maria Del Aguila",
+    "Huercal Overa",
+    "Vera",
+    "Adra (Berja)",
+    "Parador,El Roquetas De Mar",
+    "Huercal De Almeria",
+    "Campohermoso (S.Isidro N"
+   ]
+  },
+  "ANDORRA": {
+   "oficinas": 1,
+   "nombres": [
+    "Andorra"
+   ]
+  },
+  "ASTURIAS": {
+   "oficinas": 10,
+   "nombres": [
+    "Oviedo 33013",
+    "Aviles 33401",
+    "Siero",
+    "Caudal Nalon",
+    "Oviedo 33006",
+    "Ribadesella",
+    "Gijon 33202",
+    "Oviedo Navia",
+    "Oviedo 33004",
+    "Cangas Del Narcea"
+   ]
+  },
+  "AVEIRO": {
+   "oficinas": 3,
+   "nombres": [
+    "Oliveira De Azemeis",
+    "Aveiro",
+    "Santa Maria Da Feira"
+   ]
+  },
+  "AVILA": {
+   "oficinas": 1,
+   "nombres": [
+    "Avila"
+   ]
+  },
+  "BADAJOZ": {
+   "oficinas": 5,
+   "nombres": [
+    "Badajoz",
+    "Merida",
+    "Don Benito",
+    "Almendralejo",
+    "Zafra"
+   ]
+  },
+  "BARCELONA": {
+   "oficinas": 32,
+   "nombres": [
+    "Cornella De Llobregat",
+    "Manresa",
+    "Palleja",
+    "Mataro",
+    "Sabadell 08205",
+    "Terrassa 08225",
+    "Vilanova I La Geltrú",
+    "Polinya",
+    "Sant Boi De Llobregat08013",
+    "Berga",
+    "Rubi",
+    "Badalona",
+    "Esparreguera",
+    "Sant Celoni",
+    "Torello",
+    "Viladecans",
+    "Sant Cugat Del Valles",
+    "Igualada",
+    "Barcelona 08020",
+    "Barcelona 08022",
+    "Barcelona 08009",
+    "Barcelona 08015",
+    "Barcelona 08007",
+    "Piera",
+    "Sant Feliu De Llobregat",
+    "Santa Coloma De Gramanet",
+    "Sant Joan Despi",
+    "La Garriga",
+    "Hostalric",
+    "Les Franqueses Del V.Alles (Granollers)",
+    "Ripollet",
+    "Logistica (Barcelona)"
+   ]
+  },
+  "BEJA": {
+   "oficinas": 1,
+   "nombres": [
+    "Beja"
+   ]
+  },
+  "BRAGA": {
+   "oficinas": 3,
+   "nombres": [
+    "Braga",
+    "Guimaraes",
+    "Fafe"
+   ]
+  },
+  "BRAGANÇA": {
+   "oficinas": 1,
+   "nombres": [
+    "Bragança"
+   ]
+  },
+  "BURGOS": {
+   "oficinas": 4,
+   "nombres": [
+    "Burgos",
+    "Aranda De Duero",
+    "Miranda De Ebro",
+    "Medina De Pomar"
+   ]
+  },
+  "CACERES": {
+   "oficinas": 4,
+   "nombres": [
+    "Caceres",
+    "Plasencia",
+    "Navalmoral De La Mata",
+    "Coria"
+   ]
+  },
+  "CADIZ": {
+   "oficinas": 7,
+   "nombres": [
+    "Jerez De La Frontera 11405",
+    "Ubrique",
+    "Arcos De La Frontera",
+    "Olvera",
+    "Palmones",
+    "Barbate",
+    "Cadiz"
+   ]
+  },
+  "CANTABRIA": {
+   "oficinas": 4,
+   "nombres": [
+    "Torrelavega",
+    "Reinosa",
+    "Santander 39001",
+    "Gama"
+   ]
+  },
+  "CASTELLON": {
+   "oficinas": 4,
+   "nombres": [
+    "Castellon/Castello 12006",
+    "Vinaros",
+    "Onda",
+    "Villareal/Vila Real"
+   ]
+  },
+  "CEUTA": {
+   "oficinas": 1,
+   "nombres": [
+    "Ceuta"
+   ]
+  },
+  "CIUDAD REAL": {
+   "oficinas": 7,
+   "nombres": [
+    "Ciudad Real",
+    "Puertollano",
+    "Valdepeñas",
+    "Almaden",
+    "Tomelloso",
+    "Alcazar De San Juan",
+    "Bolaños De Calatrava"
+   ]
+  },
+  "COIMBRA": {
+   "oficinas": 1,
+   "nombres": [
+    "Coimbra"
+   ]
+  },
+  "CORDOBA": {
+   "oficinas": 10,
+   "nombres": [
+    "Lucena",
+    "Pozoblanco",
+    "Palma Del Rio",
+    "Montilla",
+    "Priego De Cordoba",
+    "Puente Genil",
+    "Baena",
+    "Peñarroya Pueblonuevo",
+    "Montoro",
+    "Cordoba 14014"
+   ]
+  },
+  "CORUÑA": {
+   "oficinas": 6,
+   "nombres": [
+    "A Coruña 15011",
+    "Ferrol,El",
+    "Santiago De Compostela 15705",
+    "Ribeira (Santa Uxia)",
+    "Betanzos",
+    "Teixeiro"
+   ]
+  },
+  "CUENCA": {
+   "oficinas": 3,
+   "nombres": [
+    "Cuenca",
+    "Motilla Del Palancar",
+    "Mota Del Cuervo"
+   ]
+  },
+  "EL HIERRO (TENERIFE)": {
+   "oficinas": 1,
+   "nombres": [
+    "El Hierro Valverde"
+   ]
+  },
+  "EVORA": {
+   "oficinas": 1,
+   "nombres": [
+    "Evora"
+   ]
+  },
+  "FARO": {
+   "oficinas": 1,
+   "nombres": [
+    "Algarve"
+   ]
+  },
+  "FORMENTERA (BALEARES)": {
+   "oficinas": 1,
+   "nombres": [
+    "Formentera Sant Francesc"
+   ]
+  },
+  "FUERTEVENTURA (LAS PALMAS)": {
+   "oficinas": 1,
+   "nombres": [
+    "Ptº Del Rosario (Fuerteventura"
+   ]
+  },
+  "GIRONA": {
+   "oficinas": 5,
+   "nombres": [
+    "Salt",
+    "Figueres",
+    "Calonge",
+    "Blanes",
+    "Tradeinn"
+   ]
+  },
+  "GRAN CANARIA (LAS PALMAS)": {
+   "oficinas": 4,
+   "nombres": [
+    "Telde",
+    "Las Palmas 35006",
+    "Las Palmas 35002",
+    "Logistica (Las Palmas)"
+   ]
+  },
+  "GRANADA": {
+   "oficinas": 13,
+   "nombres": [
+    "Motril",
+    "Loja",
+    "Baza",
+    "Guadix",
+    "Granada 18004",
+    "Santa Fe",
+    "Lanjaron",
+    "Granada 18002",
+    "Peligros",
+    "Churriana De La Vega",
+    "Almuñecar",
+    "Granada 18008",
+    "Maracena"
+   ]
+  },
+  "GUADALAJARA": {
+   "oficinas": 4,
+   "nombres": [
+    "Guadalajara",
+    "Mondejar",
+    "Molina De Aragon",
+    "Sigüenza"
+   ]
+  },
+  "GUARDA": {
+   "oficinas": 1,
+   "nombres": [
+    "Guarda"
+   ]
+  },
+  "GUIPUZCOA": {
+   "oficinas": 5,
+   "nombres": [
+    "San Sebastian",
+    "Irun",
+    "Arrasate/Mondragon",
+    "Azpeitia",
+    "Irura"
+   ]
+  },
+  "HUELVA": {
+   "oficinas": 6,
+   "nombres": [
+    "Huelva",
+    "Ayamonte",
+    "Bollullos",
+    "Puerto Moral",
+    "Valverde Del Camino",
+    "Punta Umbria"
+   ]
+  },
+  "HUESCA": {
+   "oficinas": 3,
+   "nombres": [
+    "Huesca",
+    "Barbastro",
+    "Benasque"
+   ]
+  },
+  "IBIZA (BALEARES)": {
+   "oficinas": 1,
+   "nombres": [
+    "Eivissa Ibiza"
+   ]
+  },
+  "ILHA DE SÃO MIGUEL": {
+   "oficinas": 1,
+   "nombres": [
+    "Açores"
+   ]
+  },
+  "JAEN": {
+   "oficinas": 6,
+   "nombres": [
+    "Jaen",
+    "Linares",
+    "Ubeda",
+    "Andujar",
+    "Alcala La Real",
+    "Villacarrillo"
+   ]
+  },
+  "LA GOMERA (TENERIFE)": {
+   "oficinas": 1,
+   "nombres": [
+    "La Gomera San Sebastian"
+   ]
+  },
+  "LA PALMA (TENERIFE)": {
+   "oficinas": 1,
+   "nombres": [
+    "Los Llanos De Aridane"
+   ]
+  },
+  "LA RIOJA": {
+   "oficinas": 3,
+   "nombres": [
+    "Calahorra",
+    "Logroño 26009",
+    "Alfaro"
+   ]
+  },
+  "LANZAROTE (LAS PALMAS)": {
+   "oficinas": 1,
+   "nombres": [
+    "Arrecife (Lanzarote)"
+   ]
+  },
+  "LEIRIA": {
+   "oficinas": 1,
+   "nombres": [
+    "Leiria"
+   ]
+  },
+  "LEON": {
+   "oficinas": 7,
+   "nombres": [
+    "Ponferrada",
+    "La Bañeza",
+    "Leon 24009",
+    "Cistierna",
+    "Leon 24007",
+    "Villablino",
+    "Barco De Valdeorras,O"
+   ]
+  },
+  "LISBOA": {
+   "oficinas": 9,
+   "nombres": [
+    "Lisboa 1600",
+    "Lisboa 2685",
+    "Carnaxide (Oeiras)",
+    "Torres Vedras",
+    "Lisboa 1350",
+    "Sintra",
+    "Odivelas",
+    "Sao Domingos De Rana",
+    "Corporate Ibercourier"
+   ]
+  },
+  "LLEIDA": {
+   "oficinas": 4,
+   "nombres": [
+    "Lleida 25001",
+    "Vielha",
+    "Solsona",
+    "La Seu D'urgell"
+   ]
+  },
+  "LUGO": {
+   "oficinas": 2,
+   "nombres": [
+    "Lugo",
+    "Monforte (Monforte De Lemos)"
+   ]
+  },
+  "MADEIRA": {
+   "oficinas": 1,
+   "nombres": [
+    "Madeira"
+   ]
+  },
+  "MADRID": {
+   "oficinas": 63,
+   "nombres": [
+    "Azuqueca De Henares",
+    "Getafe 28906",
+    "Torrejon De Ardoz",
+    "Alcobendas",
+    "Mostoles 28936",
+    "Arganda Del Rey",
+    "Majadahonda",
+    "Tres Cantos",
+    "Pozuelo De Alarcon 28223",
+    "Madrid 28031",
+    "Madrid 28018",
+    "Madrid 28034",
+    "Madrid 28043",
+    "Madrid 28047",
+    "Madrid 28013",
+    "Madrid 28014",
+    "Madrid 28015",
+    "Madrid 28003",
+    "Madrid 28007",
+    "Madrid 28001",
+    "Madrid 28028",
+    "Madrid 28027",
+    "Collado Villalba",
+    "Fuenlabrada",
+    "Aranjuez",
+    "San Agustin De Guadalix",
+    "Madrid 28050",
+    "Alcorcon",
+    "Villaviciosa De Odon",
+    "Madrid 28042",
+    "Pinto",
+    "Madrid 28010",
+    "San Sebastian De Los Reyes",
+    "Las Rozas",
+    "Madrid 28033",
+    "Madrid 28023",
+    "Madrid 28035",
+    "Madrid 28022",
+    "Valdemoro",
+    "Leganes",
+    "Rivas Vaciamadrid",
+    "Mostoles 28935",
+    "Navalcarnero",
+    "Madrid 28044",
+    "Madrid 28032",
+    "Alcala De Henares 28802",
+    "Coslada",
+    "Logistica (02678)",
+    "Corporate (02679)",
+    "Madrid 2680",
+    "Logistica (Madrid)",
+    "Logistica (02682)",
+    "Logistica Esp/Pt",
+    "Logistica (Madrid)",
+    "Burofax",
+    "Logistica Cont.(Madrid)",
+    "Madrid (Servicio Inmediato)",
+    "Logistica (Madrid)",
+    "Corporate (28892)",
+    "Logistica (2693 Distribucion)",
+    "Division Mailing Madrid",
+    "Corporate (02695)",
+    "Logistica Ii Almacen Daganzo"
+   ]
+  },
+  "MALAGA": {
+   "oficinas": 11,
+   "nombres": [
+    "Malaga 29006",
+    "Marbella",
+    "Ronda",
+    "Antequera",
+    "Nerja",
+    "Rincon De La Victoria",
+    "Torremolinos",
+    "San Pedro De Alcantara",
+    "Alhaurin De La Torre",
+    "Malaga 29003",
+    "Malaga 29005"
+   ]
+  },
+  "MALLORCA (BALEARES)": {
+   "oficinas": 1,
+   "nombres": [
+    "Palma De Mallorca 07014"
+   ]
+  },
+  "MELILLA": {
+   "oficinas": 1,
+   "nombres": [
+    "Melilla"
+   ]
+  },
+  "MENORCA (BALEARES)": {
+   "oficinas": 1,
+   "nombres": [
+    "Mao Mahon (Menorca)"
+   ]
+  },
+  "MURCIA": {
+   "oficinas": 7,
+   "nombres": [
+    "Cartagena 30203",
+    "Lorca (Pol.Ind Los Peñones)",
+    "Yecla",
+    "Caravaca De La Cruz",
+    "San Javier",
+    "Alguazas",
+    "Murcia 30011"
+   ]
+  },
+  "NAVARRA": {
+   "oficinas": 5,
+   "nombres": [
+    "Estella/Lizarra",
+    "Altsasu/Alsasua",
+    "Tafalla",
+    "Pamplona/Iruña 31011",
+    "Sanguesa (Aoiz)"
+   ]
+  },
+  "ORENSE": {
+   "oficinas": 3,
+   "nombres": [
+    "Verin",
+    "Xinzo De Limia",
+    "Ourense (San Cibrao Das Viñas)"
+   ]
+  },
+  "PALENCIA": {
+   "oficinas": 1,
+   "nombres": [
+    "Palencia 34004"
+   ]
+  },
+  "PONTEVEDRA": {
+   "oficinas": 9,
+   "nombres": [
+    "Pontevedra",
+    "Vilagarcia De Arousa",
+    "Lalin",
+    "Porriño,O",
+    "Cangas",
+    "Nigran",
+    "Vigo 36208",
+    "O Grove",
+    "Vigo 36201"
+   ]
+  },
+  "PORTO": {
+   "oficinas": 10,
+   "nombres": [
+    "Maia (Porto)",
+    "Porto 4300",
+    "Penafiel",
+    "Vila Nova De Gaia",
+    "Felgueiras",
+    "Vila Do Conde",
+    "Porto 4050",
+    "Trofa",
+    "Valongo",
+    "Corporate Porto (Pt)"
+   ]
+  },
+  "SALAMANCA": {
+   "oficinas": 2,
+   "nombres": [
+    "Villares De La Reina",
+    "Ciudad Rodrigo"
+   ]
+  },
+  "SANTAREM": {
+   "oficinas": 4,
+   "nombres": [
+    "Castelo Branco",
+    "Portalegre",
+    "Santarem",
+    "Torres Novas"
+   ]
+  },
+  "SEGOVIA": {
+   "oficinas": 1,
+   "nombres": [
+    "Segovia"
+   ]
+  },
+  "SETUBAL": {
+   "oficinas": 3,
+   "nombres": [
+    "Setubal",
+    "Sines",
+    "Almada"
+   ]
+  },
+  "SEVILLA": {
+   "oficinas": 20,
+   "nombres": [
+    "Dos Hermanas",
+    "Estepa",
+    "Palacios Y Villafranca,Los",
+    "Ecija",
+    "Moron De La Frontera",
+    "Alcala De Guadaira",
+    "Utrera",
+    "Constantina",
+    "Mitacion",
+    "Camas",
+    "Coria Del Rio",
+    "Mairena Del Aljarafe",
+    "Montequinto (Dos Hermanas)",
+    "Marchena",
+    "Sevilla 41007",
+    "Sevilla 41006",
+    "Sevilla 41013",
+    "Sevilla 41016",
+    "Sevilla 41010",
+    "Sevilla 41015"
+   ]
+  },
+  "SORIA": {
+   "oficinas": 2,
+   "nombres": [
+    "Soria",
+    "El Burgo De Osma"
+   ]
+  },
+  "TARRAGONA": {
+   "oficinas": 8,
+   "nombres": [
+    "Tortosa",
+    "Valls",
+    "Amposta",
+    "Mora D'ebre",
+    "Tarragona 43006",
+    "Ametlla De Mar",
+    "Corporate Tarragona",
+    "84012"
+   ]
+  },
+  "TENERIFE": {
+   "oficinas": 4,
+   "nombres": [
+    "Puerto De La Cruz",
+    "Playa De Las Americas",
+    "Santa Cruz Tenerife 38005",
+    "Taco"
+   ]
+  },
+  "TERUEL": {
+   "oficinas": 2,
+   "nombres": [
+    "Teruel",
+    "Alcañiz"
+   ]
+  },
+  "TOLEDO": {
+   "oficinas": 7,
+   "nombres": [
+    "Toledo 45006",
+    "Madridejos",
+    "Illescas",
+    "Sonseca",
+    "Quintanar De La Orden",
+    "Navahermosa",
+    "Talavera De La Reina"
+   ]
+  },
+  "VALENCIA": {
+   "oficinas": 23,
+   "nombres": [
+    "Valencia 46008",
+    "Alzira",
+    "Gandia 46701",
+    "Sagunto/Sagunt",
+    "Xativa",
+    "Ontinyent",
+    "Paterna",
+    "Aldaia",
+    "Museros",
+    "Chiva",
+    "Torrent",
+    "Catarroja",
+    "Riba Roja Del Turia",
+    "Gandia 46702",
+    "Sueca",
+    "Valencia 46023",
+    "Valencia 46005",
+    "Valencia 46015",
+    "Valencia 46017",
+    "Valencia 46010",
+    "Valencia 46013",
+    "Valencia 46022",
+    "Valencia 46025"
+   ]
+  },
+  "VALLADOLID": {
+   "oficinas": 2,
+   "nombres": [
+    "Tordesillas",
+    "Valladolid 47009"
+   ]
+  },
+  "VILA REAL": {
+   "oficinas": 1,
+   "nombres": [
+    "Vila Real"
+   ]
+  },
+  "VISEU": {
+   "oficinas": 1,
+   "nombres": [
+    "Viseu"
+   ]
+  },
+  "VIZCAYA": {
+   "oficinas": 9,
+   "nombres": [
+    "Erandio",
+    "Bedia",
+    "Barakaldo",
+    "Derio",
+    "Basauri",
+    "Balmaseda",
+    "Bilbao 48008",
+    "Santurce",
+    "Bilbao (Servicio Inmediato)"
+   ]
+  },
+  "ZAMORA": {
+   "oficinas": 3,
+   "nombres": [
+    "Zamora",
+    "Benavente",
+    "Corporate (04691)"
+   ]
+  },
+  "ZARAGOZA": {
+   "oficinas": 6,
+   "nombres": [
+    "Zaragoza 50012",
+    "Ejea De Los Caballeros",
+    "Calatayud",
+    "Zaragoza 50008",
+    "Tarazona",
+    "Zaragoza 50017"
+   ]
+  }
+ }
+}

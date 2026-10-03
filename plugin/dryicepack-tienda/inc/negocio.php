@@ -7,6 +7,8 @@
  * Peso facturable = hielo + 1 kg por caja (medido el 31/08/2026), redondeado al alza.
  * Corte a las 12:00 (Madrid). Sale de lunes a viernes y llega al día siguiente por la mañana.
  * Sin entregas en domingo ni lunes. Sábado según zona con suplemento de 9,70 € + IVA.
+ * Festivos: la lista manual de Ajustes (Mataró, Cataluña, España) y, por encima, los de MRW (inc/festivos-mrw.php):
+ * sin salida si cierra MRW Mataró y sin entrega si cierra MRW en el destino.
  * Recogida en la nave de lunes a sábado, también en festivos (la confirma la empresa). El sábado lleva el mismo suplemento.
  * Más de 150 kg fuera de la provincia de Barcelona: sin envío online, se prepara a medida (el proveedor solo sirve
  * más de 150 kg dentro de la provincia).
@@ -24,6 +26,7 @@ if ( ! defined( 'DIP_TARIFA_HASTA_10' ) )              define( 'DIP_TARIFA_HASTA
 if ( ! defined( 'DIP_TARIFA_KG_EXTRA' ) )              define( 'DIP_TARIFA_KG_EXTRA', 1.12 );
 if ( ! defined( 'DIP_PESO_EMBALAJE' ) )                define( 'DIP_PESO_EMBALAJE', 1.0 );
 if ( ! defined( 'DIP_KG_A_MEDIDA' ) )                  define( 'DIP_KG_A_MEDIDA', 150 );
+if ( ! defined( 'DIP_DIAS_RESERVA' ) )                 define( 'DIP_DIAS_RESERVA', 90 ); // se puede pedir para cualquier día de los próximos 90
 
 /** Datos de contacto y de empresa (los usa también el tema). */
 function dip_contacto() {
@@ -45,8 +48,13 @@ function dip_contacto() {
 	);
 }
 
+/**
+ * Zona horaria del negocio: siempre Europe/Madrid (el corte de las 12:00 es hora de Mataró), aunque en
+ * Ajustes → Generales de WordPress haya otra (UTC o "UTC+2" fijo). Es la misma que usa el JavaScript del tema.
+ */
 function dip_zona_horaria() {
-	return function_exists( 'wp_timezone' ) ? wp_timezone() : new DateTimeZone( 'Europe/Madrid' );
+	static $zona = null;
+	return $zona ?: ( $zona = new DateTimeZone( 'Europe/Madrid' ) );
 }
 
 /* =========================================================
@@ -156,9 +164,42 @@ function dip_es_festivo( DateTimeInterface $dia ) {
 	return isset( dip_festivos()[ $dia->format( 'Y-m-d' ) ] );
 }
 
-/** ¿Sale pedido ese día? De lunes a viernes y no festivo. */
+/**
+ * ¿Sale pedido ese día? De lunes a viernes, no festivo y sin cierre de la oficina de MRW de Mataró.
+ * Si ese día no se ha consultado a MRW (más allá de 21 días o MRW caído), solo cuenta la lista manual.
+ */
 function dip_es_dia_de_salida( DateTimeInterface $dia ) {
-	return (int) $dia->format( 'N' ) <= 5 && ! dip_es_festivo( $dia );
+	if ( (int) $dia->format( 'N' ) > 5 || dip_es_festivo( $dia ) ) return false;
+	return ! ( function_exists( 'dip_mrw_cierra_salida' ) && dip_mrw_cierra_salida( $dia->format( 'Y-m-d' ) ) );
+}
+
+/**
+ * Días sin salida para el JavaScript del tema ("llega el …"): la lista manual más los días en que cierra
+ * MRW Mataró (los próximos 21, los que se han consultado). Lista de 'Y-m-d' ordenada.
+ */
+function dip_festivos_salida() {
+	$lista = array_map( 'strval', array_keys( dip_festivos() ) );
+	if ( function_exists( 'dip_mrw_dias' ) && function_exists( 'dip_mrw_cierra_salida' ) ) {
+		$hoy = ( new DateTimeImmutable( 'today', dip_zona_horaria() ) )->format( 'Y-m-d' );
+		foreach ( array_keys( dip_mrw_dias() ) as $f ) {
+			if ( (string) $f >= $hoy && dip_mrw_cierra_salida( (string) $f ) ) $lista[] = (string) $f;
+		}
+	}
+	$lista = array_values( array_unique( $lista ) );
+	sort( $lista );
+	return $lista;
+}
+
+/**
+ * Destino del envío listo para los festivos de MRW: ['cp', 'poblacion', 'provincia' de MRW].
+ * null si no se sabe (sin código postal de 5 cifras o fuera de la península): entonces no se aplican los festivos del destino.
+ */
+function dip_destino_normalizado( $destino ) {
+	if ( ! is_array( $destino ) || ! function_exists( 'dip_mrw_provincia_por_cp' ) ) return null;
+	$cp        = preg_replace( '/\D/', '', (string) ( $destino['cp'] ?? '' ) );
+	$provincia = 5 === strlen( $cp ) ? dip_mrw_provincia_por_cp( $cp ) : '';
+	if ( '' === $provincia ) return null;
+	return array( 'cp' => $cp, 'poblacion' => trim( (string) ( $destino['poblacion'] ?? '' ) ), 'provincia' => $provincia );
 }
 
 /** ¿Se puede recoger ese día? De lunes a sábado, también en festivos: la nave no cierra y la recogida se confirma antes. */
@@ -167,95 +208,155 @@ function dip_es_dia_de_recogida( DateTimeInterface $dia ) {
 }
 
 function dip_antes_del_corte( ?DateTimeImmutable $ahora = null ) {
-	$ahora = $ahora ?: new DateTimeImmutable( 'now', dip_zona_horaria() );
+	$ahora = ( $ahora ?: new DateTimeImmutable( 'now' ) )->setTimezone( dip_zona_horaria() ); // la hora de Madrid, venga en la zona que venga
 	return ( (int) $ahora->format( 'G' ) * 60 + (int) $ahora->format( 'i' ) ) < ( DIP_CUTOFF_HOUR * 60 + DIP_CUTOFF_MINUTE );
 }
 
 /**
- * Fechas que se pueden elegir.
+ * Todas las fechas que se pueden elegir, de hoy a DIP_DIAS_RESERVA días vista (el cliente puede reservar
+ * para dentro de un mes o más).
  * - Envío: sale un día de salida y llega al día siguiente (martes a sábado). El sábado lleva suplemento.
+ *   Con $destino (['cp' => …, 'poblacion' => …]) tampoco se ofrece un día en que MRW cierra en el destino;
+ *   esos días quedan en 'saltadas' para avisar al cliente. Sin destino, solo las reglas de salida.
+ *   MRW solo se consulta 21 días vista: más allá cuenta la lista manual de festivos.
  * - Recogida: de lunes a sábado (también festivos) desde hoy si es antes del corte. El sábado lleva suplemento.
+ *   No depende de MRW ni del destino.
+ * Nunca llama a MRW: lee lo guardado por la comprobación automática (inc/festivos-mrw.php).
  *
- * @return array[] [ ['fecha' => 'Y-m-d', 'sabado' => bool, 'sale' => 'Y-m-d'], … ]
+ * Se calcula UNA vez por petición para cada combinación de método, día (y antes o después del corte) y destino;
+ * el checkout, el suplemento de sábado, la validación al pagar y el calendario reutilizan el mismo resultado.
+ *
+ * @return array{fechas: array[], saltadas: string[], indice: array<string,int>, desde: string, hasta: string}
+ *         'fechas' = [ ['fecha' => 'Y-m-d', 'sabado' => bool, 'sale' => 'Y-m-d'], … ] en orden.
  */
-function dip_fechas_disponibles( $metodo = 'envio', $cuantas = 8, ?DateTimeImmutable $ahora = null ) {
-	$ahora  = $ahora ?: new DateTimeImmutable( 'now', dip_zona_horaria() );
-	$dia    = $ahora->setTime( 0, 0 );
-	$fechas = array();
+function dip_calendario_entrega( $metodo = 'envio', ?DateTimeImmutable $ahora = null, $destino = null ) {
+	static $memo = array();
+	$ahora   = ( $ahora ?: new DateTimeImmutable( 'now' ) )->setTimezone( dip_zona_horaria() );
+	$metodo  = 'recogida' === $metodo ? 'recogida' : 'envio';
+	$destino = 'envio' === $metodo ? dip_destino_normalizado( $destino ) : null;
+	$clave   = $metodo . '|' . $ahora->format( 'Y-m-d' ) . '|' . ( dip_antes_del_corte( $ahora ) ? '1' : '0' ) . '|' . ( $destino ? implode( '|', $destino ) : '' );
+	if ( ! isset( $memo[ $clave ] ) ) $memo[ $clave ] = dip_calcular_fechas( $metodo, $ahora, $destino );
+	return $memo[ $clave ];
+}
+
+/** Cálculo de dip_calendario_entrega() sin memoria. $destino ya normalizado (o null). */
+function dip_calcular_fechas( $metodo, DateTimeImmutable $ahora, $destino = null ) {
+	$hoy      = $ahora->setTime( 0, 0 );
+	$hasta    = $hoy->modify( '+' . (int) DIP_DIAS_RESERVA . ' day' )->format( 'Y-m-d' );
+	$dia      = $hoy;
+	$fechas   = array();
+	$saltadas = array();
 	if ( 'recogida' === $metodo ) {
 		if ( ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
-		for ( $i = 0; $i < 60 && count( $fechas ) < $cuantas; $i++, $dia = $dia->modify( '+1 day' ) ) {
+		for ( ; $dia->format( 'Y-m-d' ) <= $hasta; $dia = $dia->modify( '+1 day' ) ) {
 			if ( ! dip_es_dia_de_recogida( $dia ) ) continue;
 			$fechas[] = array( 'fecha' => $dia->format( 'Y-m-d' ), 'sabado' => 6 === (int) $dia->format( 'N' ), 'sale' => $dia->format( 'Y-m-d' ) );
 		}
-		return $fechas;
+	} else {
+		if ( ! dip_es_dia_de_salida( $dia ) || ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
+		for ( ; ; $dia = $dia->modify( '+1 day' ) ) {
+			$llega = $dia->modify( '+1 day' );
+			$ymd   = $llega->format( 'Y-m-d' );
+			if ( $ymd > $hasta ) break;
+			if ( ! dip_es_dia_de_salida( $dia ) || dip_es_festivo( $llega ) ) continue;
+			// Festivo de MRW en el destino (población o casi toda la provincia): ese día no se reparte allí
+			if ( $destino && dip_mrw_cierra( $ymd, $destino['provincia'], $destino['poblacion'] ) ) {
+				$saltadas[] = $ymd;
+				continue;
+			}
+			$fechas[] = array( 'fecha' => $ymd, 'sabado' => 6 === (int) $llega->format( 'N' ), 'sale' => $dia->format( 'Y-m-d' ) );
+		}
 	}
-	if ( ! dip_es_dia_de_salida( $dia ) || ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
-	for ( $i = 0; $i < 60 && count( $fechas ) < $cuantas; $i++, $dia = $dia->modify( '+1 day' ) ) {
-		if ( ! dip_es_dia_de_salida( $dia ) ) continue;
-		$llega = $dia->modify( '+1 day' );
-		if ( dip_es_festivo( $llega ) ) continue;
-		$fechas[] = array(
-			'fecha'  => $llega->format( 'Y-m-d' ),
-			'sabado' => 6 === (int) $llega->format( 'N' ),
-			'sale'   => $dia->format( 'Y-m-d' ),
-		);
-	}
+	return array(
+		'fechas'   => $fechas,
+		'saltadas' => $saltadas,
+		'indice'   => array_flip( array_column( $fechas, 'fecha' ) ),
+		'desde'    => $hoy->format( 'Y-m-d' ),
+		'hasta'    => $hasta,
+	);
+}
+
+/**
+ * Las primeras $cuantas fechas que se pueden elegir ($cuantas = 0: todas, hasta DIP_DIAS_RESERVA días vista).
+ * $saltadas: días que MRW no reparte en el destino antes de la última fecha devuelta (para el aviso).
+ *
+ * @return array[] [ ['fecha' => 'Y-m-d', 'sabado' => bool, 'sale' => 'Y-m-d'], … ]
+ */
+function dip_fechas_disponibles( $metodo = 'envio', $cuantas = 8, ?DateTimeImmutable $ahora = null, $destino = null, &$saltadas = null ) {
+	$cal      = dip_calendario_entrega( $metodo, $ahora, $destino );
+	$cuantas  = (int) $cuantas;
+	$fechas   = $cuantas > 0 ? array_slice( $cal['fechas'], 0, $cuantas ) : $cal['fechas'];
+	$ultima   = ( $cuantas > 0 && $fechas && count( $fechas ) >= $cuantas ) ? $fechas[ count( $fechas ) - 1 ]['fecha'] : null;
+	$saltadas = null === $ultima ? $cal['saltadas'] : array_values( array_filter( $cal['saltadas'], static fn( $s ) => $s < $ultima ) );
 	return $fechas;
 }
 
-function dip_fecha_es_valida( $ymd, $metodo = 'envio' ) {
-	foreach ( dip_fechas_disponibles( $metodo, 40 ) as $f ) {
-		if ( $f['fecha'] === $ymd ) return true;
-	}
-	return false;
+/** ¿Se puede elegir ese día? Cualquier fecha válida hasta DIP_DIAS_RESERVA días vista (consulta el cálculo ya hecho). */
+function dip_fecha_es_valida( $ymd, $metodo = 'envio', $destino = null, ?DateTimeImmutable $ahora = null ) {
+	return isset( dip_calendario_entrega( $metodo, $ahora, $destino )['indice'][ (string) $ymd ] );
 }
 
-/** Primera entrega posible por envío (sin contar el sábado, que es opcional y según zona). */
-function dip_primera_entrega( ?DateTimeImmutable $ahora = null ) {
-	foreach ( dip_fechas_disponibles( 'envio', 10, $ahora ) as $f ) {
+/** Primera entrega posible por envío (sin contar el sábado, que es opcional y según zona). Sin destino: solo reglas de salida. */
+function dip_primera_entrega( ?DateTimeImmutable $ahora = null, $destino = null ) {
+	foreach ( dip_fechas_disponibles( 'envio', 10, $ahora, $destino ) as $f ) {
 		if ( ! $f['sabado'] ) return $f;
 	}
 	return null;
+}
+
+/**
+ * Nombres de días y meses (es, ca, en), empezando por el lunes y por enero (índice 0). Los usan las fechas
+ * de PHP y el calendario del checkout (JavaScript), para que digan lo mismo.
+ * 'mde' = el mes como va detrás del número: "de octubre", "d'octubre", "October".
+ */
+function dip_nombres_fecha( $idioma = 'es' ) {
+	static $cache = array();
+	$idioma = in_array( $idioma, array( 'es', 'ca', 'en' ), true ) ? $idioma : 'es';
+	if ( isset( $cache[ $idioma ] ) ) return $cache[ $idioma ];
+	$n = array(
+		'es' => array(
+			'dias'  => array( 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo' ),
+			'meses' => array( 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre' ),
+			'dc'    => array( 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom' ),
+			'mc'    => array( 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic' ),
+		),
+		'ca' => array(
+			'dias'  => array( 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte', 'diumenge' ),
+			'meses' => array( 'gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre' ),
+			'dc'    => array( 'dl.', 'dt.', 'dc.', 'dj.', 'dv.', 'ds.', 'dg.' ),
+			'mc'    => array( 'gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.' ),
+		),
+		'en' => array(
+			'dias'  => array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ),
+			'meses' => array( 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ),
+			'dc'    => array( 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ),
+			'mc'    => array( 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ),
+		),
+	);
+	$r        = $n[ $idioma ];
+	$r['mde'] = array();
+	foreach ( $r['meses'] as $i => $mes ) {
+		if ( 'en' === $idioma ) $r['mde'][] = $mes;
+		elseif ( 'ca' === $idioma ) $r['mde'][] = ( in_array( $i + 1, array( 4, 8, 10 ), true ) ? "d'" : 'de ' ) . $mes;
+		else $r['mde'][] = 'de ' . $mes;
+	}
+	return $cache[ $idioma ] = $r;
 }
 
 /** "jueves 2 de octubre" en el idioma pedido (es, ca, en). */
 function dip_fecha_larga( $ymd, $idioma = 'es' ) {
 	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', (string) $ymd, dip_zona_horaria() );
 	if ( ! $d ) return (string) $ymd;
-	$n = (int) $d->format( 'N' );
-	$j = (int) $d->format( 'j' );
-	$m = (int) $d->format( 'n' );
-	if ( 'ca' === $idioma ) {
-		$dias  = array( 1 => 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte', 'diumenge' );
-		$meses = array( 1 => 'gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre' );
-		$de    = in_array( $m, array( 4, 8, 10 ), true ) ? "d'" : 'de ';
-		return $dias[ $n ] . ' ' . $j . ' ' . $de . $meses[ $m ];
-	}
-	if ( 'en' === $idioma ) {
-		return $d->format( 'l j F' );
-	}
-	$dias  = array( 1 => 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo' );
-	$meses = array( 1 => 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre' );
-	return $dias[ $n ] . ' ' . $j . ' de ' . $meses[ $m ];
+	$n = dip_nombres_fecha( $idioma );
+	return $n['dias'][ (int) $d->format( 'N' ) - 1 ] . ' ' . $d->format( 'j' ) . ' ' . $n['mde'][ (int) $d->format( 'n' ) - 1 ];
 }
 
 /** [ 'jue', '2', 'oct' ] para las casillas de fecha. */
 function dip_fecha_corta( $ymd, $idioma = 'es' ) {
 	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', (string) $ymd, dip_zona_horaria() );
 	if ( ! $d ) return array( '', '', '' );
-	$dias  = array(
-		'es' => array( 1 => 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom' ),
-		'ca' => array( 1 => 'dl.', 'dt.', 'dc.', 'dj.', 'dv.', 'ds.', 'dg.' ),
-		'en' => array( 1 => 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ),
-	);
-	$meses = array(
-		'es' => array( 1 => 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic' ),
-		'ca' => array( 1 => 'gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.' ),
-		'en' => array( 1 => 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ),
-	);
-	$i = isset( $dias[ $idioma ] ) ? $idioma : 'es';
-	return array( $dias[ $i ][ (int) $d->format( 'N' ) ], $d->format( 'j' ), $meses[ $i ][ (int) $d->format( 'n' ) ] );
+	$n = dip_nombres_fecha( $idioma );
+	return array( $n['dc'][ (int) $d->format( 'N' ) - 1 ], $d->format( 'j' ), $n['mc'][ (int) $d->format( 'n' ) - 1 ] );
 }
 
 /** Precio formateado a la española sin depender de WooCommerce: 81,81 € */

@@ -38,6 +38,8 @@ function dip_enviar_email_factura( $pedido_id ) {
 	$pedido = wc_get_order( $pedido_id );
 	if ( ! $pedido || $pedido->get_meta( '_dip_email_factura' ) ) return;
 	if ( dip_pedido_tiene_datos_fiscales( $pedido ) || $pedido->get_meta( '_dip_factura_mensual' ) ) return;
+	// Factura simplificada automática (inc/factura-simplificada.php): su email ya lleva el enlace para pedir la completa
+	if ( function_exists( 'dip_fs_sustituye_email_factura' ) && dip_fs_sustituye_email_factura( $pedido ) ) return;
 	$email = $pedido->get_billing_email();
 	if ( ! is_email( $email ) ) return;
 
@@ -62,11 +64,12 @@ add_action( 'woocommerce_order_status_completed', 'dip_enviar_email_factura', 30
 add_action( 'woocommerce_thankyou', static function ( $pedido_id ) {
 	$pedido = wc_get_order( $pedido_id );
 	if ( ! $pedido || dip_pedido_tiene_datos_fiscales( $pedido ) || $pedido->get_meta( '_dip_factura_mensual' ) ) return;
-	$t = dip_textos_tienda();
+	$t  = dip_textos_tienda();
+	$fs = function_exists( 'dip_fs_texto_gracias' ) ? dip_fs_texto_gracias( $pedido, dip_idioma() ) : ''; // "Ya te hemos enviado la factura simplificada…"
 	printf(
 		'<aside class="dip-factura-cta"><div><h2>%s</h2><p>%s</p></div><a class="button dip-boton" href="%s">%s</a></aside>',
 		esc_html( $t['factura_titulo'] ),
-		esc_html( $t['factura_texto'] ),
+		esc_html( ( $fs ? $fs . ' ' : '' ) . $t['factura_texto'] ),
 		esc_url( dip_url_factura( $pedido ) ),
 		esc_html( $t['factura_boton'] )
 	);
@@ -173,7 +176,10 @@ add_action( 'template_redirect', static function () {
 	$pedido->update_meta_data( '_dip_factura_datos', $datos );
 	foreach ( array( '_billing_nif', '_billing_dni_nie', '_billing_cif', '_billing_vat' ) as $clave ) $pedido->update_meta_data( $clave, $datos['nif'] );
 	$pedido->set_billing_company( $datos['razon'] );
-	$pedido->add_order_note( sprintf( "Datos de factura recibidos por /factura/:\n%s\n%s\n%s, %s %s\nEnviar a: %s", $datos['razon'], $datos['nif'], $datos['direccion'], $datos['cp'], $datos['poblacion'], $datos['email'] ) );
+	// Si ya se le envió la factura simplificada, la completa tiene que sustituirla (y decirlo)
+	$simplificada = (string) $pedido->get_meta( '_dip_fs_numero' );
+	$sustituye    = $simplificada ? sprintf( "\n\nOjo: este pedido ya tiene la factura simplificada %s. La factura completa tiene que indicar que sustituye a la %s.", $simplificada, $simplificada ) : '';
+	$pedido->add_order_note( sprintf( "Datos de factura recibidos por /factura/:\n%s\n%s\n%s, %s %s\nEnviar a: %s", $datos['razon'], $datos['nif'], $datos['direccion'], $datos['cp'], $datos['poblacion'], $datos['email'] ) . $sustituye );
 	$pedido->save();
 
 	$aviso = dip_ajuste( 'email_avisos' );
@@ -184,7 +190,7 @@ add_action( 'template_redirect', static function () {
 	wp_mail(
 		$aviso,
 		sprintf( 'Factura pedida · pedido %s · %s', $pedido->get_order_number(), $datos['razon'] ),
-		sprintf( "El cliente del pedido %s pide factura completa con estos datos:\n\nRazón social: %s\nNIF/CIF: %s\nDirección fiscal: %s, %s %s\nEnviar la factura a: %s\n\nTotal del pedido: %s\nPedido: %s\n", $pedido->get_order_number(), $datos['razon'], $datos['nif'], $datos['direccion'], $datos['cp'], $datos['poblacion'], $datos['email'], wp_strip_all_tags( wc_price( $pedido->get_total() ) ), $admin ),
+		sprintf( "El cliente del pedido %s pide factura completa con estos datos:\n\nRazón social: %s\nNIF/CIF: %s\nDirección fiscal: %s, %s %s\nEnviar la factura a: %s\n\nTotal del pedido: %s\nPedido: %s\n", $pedido->get_order_number(), $datos['razon'], $datos['nif'], $datos['direccion'], $datos['cp'], $datos['poblacion'], $datos['email'], wp_strip_all_tags( wc_price( $pedido->get_total() ) ), $admin ) . $sustituye,
 		array( 'Reply-To: ' . $datos['email'] )
 	);
 

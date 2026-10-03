@@ -110,7 +110,7 @@ const blueprint = {
   landingPage: '/',
   preferredVersions: { php: '8.2', wp: 'latest' },
   steps: [
-    { step: 'defineWpConfigConsts', consts: { WP_DEBUG: true, WP_DEBUG_LOG: '/salida/debug.log', WP_DEBUG_DISPLAY: false } },
+    { step: 'defineWpConfigConsts', consts: { WP_DEBUG: true, WP_DEBUG_LOG: '/salida/debug.log', WP_DEBUG_DISPLAY: false, AUTOMATIC_UPDATER_DISABLED: true, WP_AUTO_UPDATE_CORE: false } },
     { step: 'installPlugin', pluginData: { resource: 'wordpress.org/plugins', slug: 'woocommerce' }, options: { activate: true } },
     { step: 'activateTheme', themeFolderName: 'dryicepack' },
     ...(existsSync('plugin/dryicepack-tienda') ? [{ step: 'runPHP', code: activar }] : []),

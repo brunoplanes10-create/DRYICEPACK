@@ -15,15 +15,52 @@
 .dip-metodo__texto small { display: block; margin-top: .2rem; color: var(--c-acero, #56677A); font-size: .85em; }
 .dip-metodo__precio { font-weight: 600; font-variant-numeric: tabular-nums; }
 
-.dip-fechas__lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: .5rem; }
-.dip-fecha { position: relative; display: grid; justify-items: center; gap: .1rem; padding: .7rem .3rem .6rem; border: 1px solid var(--c-linea-fuerte, #C8D3DD); border-radius: 12px; cursor: pointer; text-align: center; line-height: 1.1; transition: border-color .2s, background-color .2s, transform .2s; }
-.dip-fecha:hover { transform: translateY(-2px); }
+/* 6 días + "Otra fecha": 4 por fila en móvil, una fila en escritorio */
+.dip-fechas__lista { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+@media (min-width: 600px) { .dip-fechas__lista { grid-template-columns: repeat(7, minmax(0, 96px)); } }
+.dip-fecha, .dip-otra-fecha { position: relative; display: grid; justify-items: center; gap: .1rem; padding: .7rem .3rem .6rem; border: 1px solid var(--c-linea-fuerte, #C8D3DD); border-radius: 12px; cursor: pointer; text-align: center; line-height: 1.1; transition: border-color .2s, background-color .2s, transform .2s; }
+.dip-fecha:hover, .dip-otra-fecha:hover { transform: translateY(-2px); }
 .dip-fecha input { position: absolute; opacity: 0; pointer-events: none; }
 .dip-fecha:has(input:checked) { background: var(--c-marino, #1F3C55); border-color: var(--c-marino, #1F3C55); color: #fff; }
 .dip-fecha:has(input:focus-visible) { outline: 2px solid var(--c-marino, #1F3C55); outline-offset: 2px; }
 .dip-fecha__dia, .dip-fecha__mes { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
 .dip-fecha__num { font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .dip-fecha__extra { font-size: .7rem; margin-top: .15rem; opacity: .85; }
+
+/* "Otra fecha": abre el calendario (clase propia, no .dip-fecha: las casillas .dip-fecha siempre llevan su radio) */
+.dip-otra-fecha { width: 100%; margin: 0; align-content: center; gap: .35rem; border-style: dashed; border-color: var(--c-niebla, #9DB2C6); background: transparent; color: inherit; font: inherit; }
+.dip-otra-fecha:focus-visible { outline: 2px solid var(--c-marino, #1F3C55); outline-offset: 2px; }
+.dip-otra-fecha[aria-expanded="true"] { border-style: solid; border-color: var(--c-marino, #1F3C55); background: var(--c-escarcha, #EEF3F7); box-shadow: inset 0 0 0 1px var(--c-marino, #1F3C55); }
+.dip-fecha__icono { display: grid; color: var(--c-marino, #1F3C55); }
+.dip-fecha__otra { font-size: .75rem; line-height: 1.15; }
+
+/* Calendario: cualquier día válido de los próximos 90 */
+.dip-cal { max-width: 380px; margin: .9rem 0 0; padding: 1rem; border: 1px solid var(--c-linea-fuerte, #C8D3DD); border-radius: 14px; background: #fff; }
+.dip-cal[hidden] { display: none; }
+.dip-cal--entra { animation: dip-cal-entra .22s cubic-bezier(.16, 1, .3, 1) both; }
+@keyframes dip-cal-entra { from { opacity: 0; transform: translate3d(0, -6px, 0); } to { opacity: 1; transform: none; } }
+.dip-cal__cabecera { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin: 0 0 .5rem; }
+.dip-cal__mes { font-weight: 700; font-size: 1.05rem; }
+.dip-cal__nav { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; margin: 0; padding: 0; border: 1px solid var(--c-linea-fuerte, #C8D3DD); border-radius: 50%; background: #fff; color: var(--c-marino, #1F3C55); cursor: pointer; transition: transform .2s; }
+.dip-cal__nav--sig svg { transform: scaleX(-1); }
+.dip-cal__nav[aria-disabled="true"] { opacity: .35; cursor: default; }
+.dip-cal__nav:focus-visible, .dip-cal__dia:focus-visible { outline: 2px solid var(--c-marino, #1F3C55); outline-offset: 2px; }
+.dip-cal__tabla { width: 100%; margin: 0; border: 0; border-collapse: collapse; table-layout: fixed; }
+.dip-cal__tabla th { padding: 0 0 .35rem; border: 0; background: none; font-size: .7rem; font-weight: 500; letter-spacing: .04em; text-align: center; text-transform: uppercase; color: var(--c-acero, #52657A); }
+.dip-cal__tabla abbr { border: 0; text-decoration: none; cursor: default; }
+.dip-cal__tabla td { padding: 2px; border: 0; background: none; text-align: center; }
+.dip-cal__dia { position: relative; display: grid; place-items: center; width: 100%; height: 44px; margin: 0; padding: 0; border: 1px solid transparent; border-radius: 10px; background: var(--c-escarcha, #EEF3F7); color: var(--c-tinta, #0F1D29); font: inherit; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; }
+@media (hover: hover) { .dip-cal__dia:not([aria-disabled="true"]):hover { border-color: var(--c-marino, #1F3C55); } }
+.dip-cal__dia[aria-disabled="true"] { background: none; color: var(--c-acero, #52657A); font-weight: 400; opacity: .55; cursor: default; }
+.dip-cal__dia--elegido { background: var(--c-marino, #1F3C55); border-color: var(--c-marino, #1F3C55); color: #fff; }
+.dip-cal__dia--sabado::after, .dip-cal__marca { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--c-senal, #B8741A); }
+.dip-cal__dia--sabado::after { position: absolute; bottom: 5px; left: 50%; margin-left: -2.5px; }
+.dip-cal__dia--elegido::after { background: #fff; }
+.dip-cal__leyenda { margin: .6rem 0 0; font-size: .8rem; line-height: 1.4; color: var(--c-acero, #52657A); }
+.dip-cal__leyenda--sabado { display: flex; align-items: baseline; gap: .45rem; margin-top: .3rem; }
+.dip-cal__marca { flex: none; transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { .dip-cal--entra { animation: none; } .dip-fecha:hover, .dip-otra-fecha:hover { transform: none; } }
+.quieto .dip-cal--entra { animation: none; }
 .dip-fechas__nota, .dip-nota-recogida, .dip-perecedero { font-size: .85rem; color: var(--c-acero, #56677A); margin: .7rem 0 0; }
 .dip-aviso { padding: .8rem 1rem; border-left: 3px solid var(--c-senal, #C27A12); background: #FFF6E8; color: #5A4526; border-radius: 6px; font-size: .9rem; }
 .dip-aviso[hidden] { display: none; }

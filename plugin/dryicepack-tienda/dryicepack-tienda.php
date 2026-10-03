@@ -26,6 +26,28 @@ add_action( 'before_woocommerce_init', static function () {
 	}
 } );
 
+/** Primera tarea diaria: mañana a las 9:00, hora de Madrid. */
+function dip_tienda_programar_tarea_diaria() {
+	if ( wp_next_scheduled( 'dip_tarea_diaria' ) ) return;
+	wp_schedule_event( ( new DateTimeImmutable( 'tomorrow 09:00', new DateTimeZone( 'Europe/Madrid' ) ) )->getTimestamp(), 'daily', 'dip_tarea_diaria' );
+}
+
+/*
+ * Al activar: reglas de URL de /factura/ y tarea diaria de recordatorios. Al desactivar: se quitan las tareas.
+ * Van antes de la pausa: la guía de instalación activa el plugin con el tema hijo de Divi todavía activo,
+ * y si se registraran después del "return" de la pausa, WordPress no las llamaría nunca.
+ */
+register_activation_hook( __FILE__, static function () {
+	update_option( 'dip_tienda_flush', 1 );
+	dip_tienda_programar_tarea_diaria();
+} );
+register_deactivation_hook( __FILE__, static function () {
+	wp_clear_scheduled_hook( 'dip_tarea_diaria' );
+	wp_clear_scheduled_hook( 'dip_mrw_actualizar' );
+	wp_clear_scheduled_hook( 'dip_revisar_entregas' );
+	flush_rewrite_rules();
+} );
+
 /*
  * Mientras el tema hijo antiguo siga activo, su functions.php ya cobra el envío, limita los kilos y filtra los pagos.
  * Si el plugin también lo hiciera, se cobraría dos veces: se queda en pausa y lo avisa.
@@ -40,6 +62,7 @@ if ( 'divi-child-dryicepack' === get_option( 'stylesheet' ) ) {
 
 require_once DIP_TIENDA_DIR . 'inc/ajustes.php';
 require_once DIP_TIENDA_DIR . 'inc/negocio.php';
+require_once DIP_TIENDA_DIR . 'inc/festivos-mrw.php'; // festivos de MRW (salida desde Mataró y destino); el tema también los usa
 require_once DIP_TIENDA_DIR . 'inc/textos.php';
 require_once DIP_TIENDA_DIR . 'inc/formularios.php';
 require_once DIP_TIENDA_DIR . 'inc/cookies.php';
@@ -52,24 +75,17 @@ add_action( 'plugins_loaded', static function () {
 	require_once DIP_TIENDA_DIR . 'inc/checkout.php';
 	require_once DIP_TIENDA_DIR . 'inc/pagos.php';
 	require_once DIP_TIENDA_DIR . 'inc/factura.php';
+	require_once DIP_TIENDA_DIR . 'inc/factura-simplificada.php'; // particulares hasta 400 €: factura simplificada por email (se para el 1/1/2027, VeriFactu)
 	require_once DIP_TIENDA_DIR . 'inc/cuentas.php';
 	require_once DIP_TIENDA_DIR . 'inc/informes.php';
+	require_once DIP_TIENDA_DIR . 'inc/seguimiento-entregas.php'; // revisión diaria: pedidos reservados con antelación que caen en un festivo de MRW
 }, 20 );
 
-/* Al activar: reglas de URL de /factura/ y tarea diaria de recordatorios. */
-register_activation_hook( __FILE__, static function () {
-	update_option( 'dip_tienda_flush', 1 );
-	if ( ! wp_next_scheduled( 'dip_tarea_diaria' ) ) {
-		wp_schedule_event( strtotime( 'tomorrow 09:00' ), 'daily', 'dip_tarea_diaria' );
-	}
-} );
-register_deactivation_hook( __FILE__, static function () {
-	wp_clear_scheduled_hook( 'dip_tarea_diaria' );
-	flush_rewrite_rules();
-} );
 add_action( 'init', static function () {
 	if ( get_option( 'dip_tienda_flush' ) ) {
 		delete_option( 'dip_tienda_flush' );
 		flush_rewrite_rules();
 	}
+	// Si el plugin se activó con una versión anterior en pausa, la tarea diaria no llegó a programarse
+	dip_tienda_programar_tarea_diaria();
 }, 99 );

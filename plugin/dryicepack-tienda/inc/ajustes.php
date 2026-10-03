@@ -26,6 +26,8 @@ function dip_ajustes_por_defecto() {
 		'recordatorios'     => 0,
 		'resenas_url'       => 'https://g.page/r/CTbZyC_fpj4LECE/review',
 		'limite_factura'    => 400,
+		'factura_simplificada' => 1,   // inc/factura-simplificada.php
+		'serie_simplificada'   => 'W', // + año: W2026-00001
 	);
 }
 
@@ -68,15 +70,30 @@ function dip_sanear_ajustes( $entrada ) {
 		'recordatorios'  => empty( $entrada['recordatorios'] ) ? 0 : 1,
 		'resenas_url'    => esc_url_raw( trim( (string) ( $entrada['resenas_url'] ?? '' ) ) ),
 		'limite_factura' => max( 0, (float) str_replace( ',', '.', (string) ( $entrada['limite_factura'] ?? 400 ) ) ),
+		'factura_simplificada' => empty( $entrada['factura_simplificada'] ) ? 0 : 1,
+		'serie_simplificada'   => substr( (string) preg_replace( '/[^A-Z0-9]/', '', strtoupper( (string) ( $entrada['serie_simplificada'] ?? '' ) ) ), 0, 6 ) ?: 'W',
 	);
 }
 
 function dip_pantalla_ajustes() {
 	if ( ! current_user_can( 'manage_woocommerce' ) ) return;
 	$a = wp_parse_args( (array) get_option( 'dip_ajustes', array() ), dip_ajustes_por_defecto() );
+	$mrw_hecho = isset( $_GET['dip_mrw_hecho'] ) ? sanitize_key( wp_unslash( $_GET['dip_mrw_hecho'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo muestra un aviso
 	?>
 	<div class="wrap">
 		<h1>Dryicepack · Ajustes</h1>
+		<?php
+		// Resultado del botón "Comprobar ahora" de los festivos de MRW
+		if ( 'ok' === $mrw_hecho ) {
+			$dias = count( (array) ( ( (array) get_option( 'dip_mrw', array() ) )['dias'] ?? array() ) );
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( 'Festivos de MRW comprobados: ' . $dias . ' días consultados.' ) . '</p></div>';
+		} elseif ( 'error' === $mrw_hecho ) {
+			$error = (string) ( ( (array) get_option( 'dip_mrw', array() ) )['error'] ?? '' );
+			echo '<div class="notice notice-error"><p><strong>No se han podido comprobar los festivos de MRW.</strong> ' . esc_html( $error ) . ' La web sigue usando la lista manual de festivos.</p></div>';
+		} elseif ( 'ocupado' === $mrw_hecho ) {
+			echo '<div class="notice notice-warning"><p>' . esc_html( 'Ya hay una comprobación de festivos de MRW en marcha. Espera unos minutos y vuelve a cargar esta página.' ) . '</p></div>';
+		}
+		?>
 		<form method="post" action="options.php">
 			<?php settings_fields( 'dip_ajustes' ); ?>
 			<table class="form-table" role="presentation">
@@ -88,18 +105,35 @@ function dip_pantalla_ajustes() {
 				<tr>
 					<th scope="row"><label for="dip-email">Correo de avisos</label></th>
 					<td><input id="dip-email" name="dip_ajustes[email_avisos]" type="email" class="regular-text" value="<?php echo esc_attr( $a['email_avisos'] ); ?>">
-						<p class="description">Recibe los formularios, las solicitudes de factura y las altas de cuenta de empresa.</p></td>
+						<p class="description">Recibe los formularios, las solicitudes de factura, las altas de cuenta de empresa y los avisos de la factura simplificada (fallos, rectificativas pendientes y VeriFactu).</p></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="dip-festivos">Festivos sin salida ni entrega</label></th>
 					<td><textarea id="dip-festivos" name="dip_ajustes[festivos]" rows="10" cols="20" class="code"><?php echo esc_textarea( $a['festivos'] ); ?></textarea>
-						<p class="description">Una fecha por línea (AAAA-MM-DD). Vienen cargados los de Cataluña de 2026 y 2027. Añade los locales de Mataró de 2027 cuando se publiquen.</p></td>
+						<p class="description">Una fecha por línea (AAAA-MM-DD). Vienen cargados los de Cataluña de 2026 y 2027. Añade los locales de Mataró de 2027 cuando se publiquen. Esta lista manda siempre; además, la web consulta los festivos de MRW (más abajo).</p></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="dip-limite">Factura completa obligatoria desde</label></th>
 					<td><input id="dip-limite" name="dip_ajustes[limite_factura]" type="number" step="1" min="0" class="small-text" value="<?php echo esc_attr( $a['limite_factura'] ); ?>"> € (IVA incluido)
 						<p class="description">Por encima de este importe el checkout pide razón social y NIF/CIF siempre.</p></td>
 				</tr>
+				<tr>
+					<th scope="row">Factura simplificada automática</th>
+					<td><label><input name="dip_ajustes[factura_simplificada]" type="checkbox" value="1" <?php checked( $a['factura_simplificada'], 1 ); ?>> Emitir la factura simplificada y enviarla por email desde info@dryicepack.es</label>
+						<p class="description">Pedidos de particulares de hasta 400 € (IVA incluido), sin la casilla de empresa, sin NIF ni razón social y sin cuenta de empresa. Con tarjeta sale al pagar; con efectivo al recoger, al marcar el pedido como completado. Sustituye al email «¿Necesitas factura?» y lleva el enlace para pedir la factura completa.<br><strong>Se para sola el 1/1/2027:</strong> desde esa fecha toda factura tiene que salir de un sistema VeriFactu (Real Decreto 1007/2023) y este módulo no lo es.</p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="dip-serie">Serie de la web</label></th>
+					<td><input id="dip-serie" name="dip_ajustes[serie_simplificada]" type="text" class="small-text" maxlength="6" pattern="[A-Za-z0-9]{1,6}" value="<?php echo esc_attr( $a['serie_simplificada'] ); ?>"> + año
+						<p class="description">Letras y números (hasta 6). Se le añade el año: W → W2026-00001. Tiene que ser distinta de las series de la aplicación de la gestoría. Si la cambias, la serie nueva empieza en el 1: no la cambies a mitad de año sin hablarlo con la gestoría.</p></td>
+				</tr>
+				<?php if ( function_exists( 'dip_fs_numero_previsto' ) ) : ?>
+				<tr>
+					<th scope="row"><label for="dip-siguiente">Siguiente factura</label></th>
+					<td><input id="dip-siguiente" type="text" class="regular-text code" value="<?php echo esc_attr( dip_fs_numero_previsto() ); ?>" readonly>
+						<p class="description">Solo lectura. El número se asigna solo, por orden y sin saltos, cuando sale cada factura: no se puede cambiar a mano para que no haya huecos ni repetidos.</p></td>
+				</tr>
+				<?php endif; ?>
 				<tr>
 					<th scope="row">Recordatorio de reposición</th>
 					<td><label><input name="dip_ajustes[recordatorios]" type="checkbox" value="1" <?php checked( $a['recordatorios'], 1 ); ?>> Enviar a las cuentas de empresa que lo aceptaron un aviso cuando les toca repetir el pedido</label></td>
@@ -112,6 +146,18 @@ function dip_pantalla_ajustes() {
 			</table>
 			<?php submit_button( 'Guardar ajustes' ); ?>
 		</form>
+		<?php if ( function_exists( 'dip_fs_libro' ) ) : ?>
+		<h2>Libro de facturas simplificadas</h2>
+		<p>Las facturas de la serie de la web (<?php echo esc_html( dip_fs_prefijo() ); ?> + año) ya están expedidas: <strong>no las vuelvas a facturar en la aplicación de la gestoría</strong>. Cada mes, descarga el libro y pásaselo a la gestoría para el libro registro de facturas expedidas y la declaración del IVA. Lleva base, cuota y total de cada factura, y avisa de las rectificativas pendientes.</p>
+		<form method="get" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="dip_fs_libro">
+			<?php wp_nonce_field( 'dip_fs_libro', '_wpnonce', false ); ?>
+			<label for="dip-libro-mes">Mes</label>
+			<input id="dip-libro-mes" type="month" name="mes" value="<?php echo esc_attr( dip_fs_ahora()->modify( 'first day of last month' )->format( 'Y-m' ) ); ?>">
+			<?php submit_button( 'Descargar CSV', 'secondary', '', false ); ?>
+		</form>
+		<?php endif; ?>
+		<?php if ( function_exists( 'dip_mrw_html_estado' ) ) dip_mrw_html_estado(); ?>
 	</div>
 	<?php
 }

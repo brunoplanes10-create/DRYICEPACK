@@ -67,7 +67,7 @@ add_filter( 'woocommerce_shipping_chosen_method', static function ( $defecto, $r
 add_filter( 'woocommerce_shipping_rate_label', static function ( $label, $rate = null ) {
 	if ( ! is_object( $rate ) ) return $label;
 	$t = function_exists( 'dip_textos_tienda' ) ? dip_textos_tienda() : array();
-	if ( dip_es_recogida( $rate->get_method_id() ) ) return $t['recogida'] ?? 'Recoger en nuestra nave de Mataró · Gratis';
+	if ( dip_es_recogida( $rate->get_method_id() ) ) return $t['recogida'] ?? 'Recoger en nuestra nave de Mataró';
 	return $t['envio'] ?? 'Envío por mensajería · por la mañana';
 }, 10, 2 );
 
