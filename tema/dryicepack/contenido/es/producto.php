@@ -46,7 +46,7 @@ return array(
 	'total'     => 'Total',
 	'iva'       => 'IVA incluido',
 	'boton'     => 'Hacer mi pedido',
-	'recogida'  => 'O recógelo en Mataró, de lunes a sábado: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}, IVA incluido. En efectivo y con el importe exacto.',
+	'recogida'  => 'O recógelo en Mataró, de lunes a sábado: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}, IVA incluido. El sábado, +{sabado_recogida}.{sabado_libre} En efectivo y con el importe exacto.',
 	'max'       => 'Hasta 250 kg por pedido. ¿Necesitas más? Escríbenos y te damos precio y día.',
 	'medida'    => 'Más de 150 kg fuera de la provincia de Barcelona: ese envío se prepara a medida. Escríbenos por',
 	'confianza' => array( 'Tarjeta, Apple Pay o Google Pay', 'Factura para empresas', 'Sin crear cuenta' ),

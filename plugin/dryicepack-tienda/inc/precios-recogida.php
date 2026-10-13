@@ -71,6 +71,7 @@ add_action( 'woocommerce_before_calculate_totals', static function ( $carrito ) 
 	if ( ( is_admin() && ! wp_doing_ajax() ) || ! $carrito || ! function_exists( 'dip_eligio_recogida' ) ) return;
 	$recoge = dip_eligio_recogida();
 	$factor = dip_factor_iva();
+	dip_recogida_aplicada( $recoge );
 	foreach ( $carrito->get_cart() as $linea ) {
 		$producto = $linea['data'] ?? null;
 		if ( ! $producto || ! is_object( $producto ) || dip_kg_producto( $producto ) <= 0 ) continue;
@@ -79,6 +80,31 @@ add_action( 'woocommerce_before_calculate_totals', static function ( $carrito ) 
 		$producto->set_price( $recoge ? dip_precio_recogida_de( $web ) / $factor : $web );
 	}
 }, 20 );
+
+/** Método con el que se pusieron los precios en el último cálculo del carrito (true = recogida; null = ninguno). */
+function dip_recogida_aplicada( $valor = null ) {
+	static $aplicada = null;
+	if ( null !== $valor ) $aplicada = (bool) $valor;
+	return $aplicada;
+}
+
+/*
+ * WooCommerce elige el método DENTRO del cálculo, después de poner los precios: si el elegido deja de estar entre
+ * las tarifas (p. ej. más de 150 kg fuera de la provincia de Barcelona, donde solo queda la recogida), cambia el método
+ * de la sesión y el total saldría con los precios del otro método. En ese caso se calcula otra vez (una sola).
+ */
+add_action( 'woocommerce_after_calculate_totals', static function ( $carrito ) {
+	static $repitiendo = false;
+	if ( $repitiendo || ( is_admin() && ! wp_doing_ajax() ) || ! $carrito || ! function_exists( 'dip_eligio_recogida' ) ) return;
+	$aplicada = dip_recogida_aplicada();
+	if ( null === $aplicada || dip_eligio_recogida() === $aplicada ) return;
+	$repitiendo = true;
+	try {
+		$carrito->calculate_totals();
+	} finally {
+		$repitiendo = false;
+	}
+}, 1 );
 
 /** "3 kg 35,00 € · 10 kg 60,00 € · …" para la pantalla de Ajustes. */
 function dip_texto_precios_recogida_admin() {

@@ -14,3 +14,6 @@ auditorias/**/*.html
 
 # Copias del tema hijo de producción (pueden contener claves): no se suben
 referencia/
+
+# Bocetos de diseño (se ven en el servidor de prueba; no van al tema ni a Git)
+tema/dryicepack/zz-bocetos/

@@ -92,10 +92,16 @@ add_action( 'woocommerce_variation_set_stock_status', static function ( $id, $es
 	}
 }, 10, 3 );
 
-/** ¿Queda 3 kg sin contar una variación? (la que acaba de agotarse puede no estar guardada todavía) */
+/**
+ * ¿Queda 3 kg sin contar una variación? (la que acaba de agotarse puede no estar guardada todavía)
+ * Las demás se leen otra vez de la tienda: las que guarda dip_variaciones_de_kg() pueden ser de antes de esta venta
+ * (si un mismo pedido se lleva las últimas cajas de 3 mm y de 16 mm, la primera seguiría "con stock" y no avisaría).
+ */
 function dip_queda_3kg_sin( $id ) {
 	foreach ( dip_variaciones_de_kg( 3 ) as $v ) {
-		if ( (int) $v->get_id() !== (int) $id && $v->is_in_stock() ) return true;
+		if ( (int) $v->get_id() === (int) $id ) continue;
+		$fresca = wc_get_product( $v->get_id() );
+		if ( $fresca && $fresca->is_in_stock() ) return true;
 	}
 	return false;
 }

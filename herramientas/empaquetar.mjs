@@ -34,7 +34,8 @@ async function minificar(dir) {
 for (const [carpeta, nombre, zip] of [['tema', 'dryicepack', 'dist/dryicepack-tema.zip'], ['plugin', 'dryicepack-tienda', 'dist/dryicepack-tienda.zip']]) {
   rmSync(TMP, { recursive: true, force: true });
   const copia = join(TMP, nombre);
-  cpSync(resolve(carpeta, nombre), copia, { recursive: true, filter: (p) => !/\.min\.(css|js)$/.test(p) || /halloween/.test(p) });
+  // Fuera del .zip: los .min antiguos (se regeneran), los bocetos de diseño (zz-bocetos) y las pruebas temporales (zz-*.php)
+  cpSync(resolve(carpeta, nombre), copia, { recursive: true, filter: (p) => !/[\\/]zz-/.test(p) && (!/\.min\.(css|js)$/.test(p) || /halloween/.test(p)) });
   const resumen = await minificar(join(copia, 'assets'));
   const salida = resolve(zip);
   rmSync(salida, { force: true });

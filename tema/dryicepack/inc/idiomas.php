@@ -79,10 +79,11 @@ function dipt_texto_sabado_libre( $idioma ) {
 	$hoy = ( new DateTimeImmutable( 'today', new DateTimeZone( 'Europe/Madrid' ) ) )->format( 'Y-m-d' );
 	foreach ( dip_sabados_recogida_sin_suplemento() as $f ) {
 		if ( $f < $hoy ) continue;
-		$fecha = dipt_fecha_larga( $f, $idioma );
-		if ( 'en' === $idioma ) return ' No surcharge on ' . $fecha . '.';
-		if ( 'ca' === $idioma ) return ' El ' . $fecha . ', sense suplement.';
-		return ' El ' . $fecha . ', sin suplemento.';
+		// Sin el día de la semana: la frase va justo detrás de "El sábado, +10 €" ("31 de octubre", "31 d'octubre", "31 October")
+		$fecha = preg_replace( '/^\S+\s+/u', '', dipt_fecha_larga( $f, $idioma ) );
+		if ( 'en' === $idioma ) return ' Except ' . $fecha . ': no surcharge.';
+		if ( 'ca' === $idioma ) return ' Excepte el ' . $fecha . ': sense suplement.';
+		return ' Salvo el ' . $fecha . ': sin suplemento.';
 	}
 	return '';
 }

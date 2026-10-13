@@ -64,7 +64,7 @@ return array(
 		'lista'  => array(
 			array( 'Where', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). It’s our own warehouse, not a courier depot.' ),
 			array( 'When', 'Monday to Saturday, including public holidays. Choose the day at checkout and we confirm the time by phone or WhatsApp. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre}' ),
-			array( 'Cost', 'Round prices with VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk}, 10 kg for {recogida:10}, 15 kg for {recogida:15} and 20 kg for {recogida:20}. Cash only, exact amount: we can’t give change.' ),
+			array( 'Cost', 'Whole-euro prices, VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk}, 10 kg for {recogida:10}, 15 kg for {recogida:15} and 20 kg for {recogida:20}. Cash only, exact amount: we can’t give change.' ),
 			array( 'How to carry it', 'Never in the passenger compartment: in the boot, with ventilation.' ),
 		),
 		'alt'    => 'Worker with a scoop of dry ice pellets in the warehouse',

@@ -68,6 +68,10 @@ $hw_euros = static function ( $n ) {
 };
 // Recogida: con el plugin, precio redondo con IVA incluido, el sábado 31/10 sin suplemento y de lunes a sábado
 $hw_recogida = function_exists( 'dip_precios_recogida' ) ? dip_precios_recogida() : array();
+// "El sábado 31, sin suplemento" solo mientras siga en Ajustes → Sábados de recogida sin suplemento y no haya pasado
+$hw_sab_libre = function_exists( 'dip_sabados_recogida_sin_suplemento' )
+	&& in_array( '2026-10-31', dip_sabados_recogida_sin_suplemento(), true )
+	&& wp_date( 'Y-m-d' ) <= '2026-10-31';
 
 $hw_pedir    = static function ( $kg, $formato = '3mm' ) use ( $hw_producto, $hw_packs ) {
 	return add_query_arg(
@@ -115,7 +119,7 @@ $hw_faq = array(
 		'q' => '¿Puedo recogerlo en vuestro almacén?',
 		// Con el plugin de la tienda (tema nuevo): de lunes a sábado, 31/10 sin suplemento, precio redondo y efectivo exacto
 		'a' => $hw_recogida
-			? 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a sábado; el sábado 31 de octubre, sin suplemento. Al recoger pagas en efectivo un precio redondo con IVA incluido: ' . $hw_pk . ' kg ' . $hw_euros( $hw_recogida[ (string) $hw_pk ] ?? 0 ) . ', 10 kg ' . $hw_euros( $hw_recogida['10'] ?? 0 ) . '. Trae el importe exacto: no tenemos cambio. Elige la recogida al finalizar la compra y te confirmamos la hora.'
+			? 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a sábado' . ( $hw_sab_libre ? '; el sábado 31 de octubre, sin suplemento' : '' ) . '. Al recoger pagas en efectivo un precio redondo con IVA incluido: ' . $hw_pk . ' kg ' . $hw_euros( $hw_recogida[ (string) $hw_pk ] ?? 0 ) . ', 10 kg ' . $hw_euros( $hw_recogida['10'] ?? 0 ) . '. Trae el importe exacto: no tenemos cambio. Elige la recogida al finalizar la compra y te confirmamos la hora.'
 			: 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a viernes. Elige la recogida al finalizar la compra y te confirmamos la franja. Está pensada para clientes del Maresme, el Vallès y el área de Barcelona.',
 	),
 );
@@ -466,7 +470,7 @@ get_header();
 				<li>
 					<p class="hw-linea__cuando">Recogida en Mataró</p>
 					<?php if ( $hw_recogida ) : // tema nuevo con el plugin de la tienda ?>
-					<p>De lunes a sábado, con hora confirmada; el sábado 31, sin suplemento. En efectivo y con el importe exacto: <?php echo esc_html( $hw_pk . ' kg ' . $hw_euros( $hw_recogida[ (string) $hw_pk ] ?? 0 ) . ', 10 kg ' . $hw_euros( $hw_recogida['10'] ?? 0 ) ); ?>, IVA incluido.</p>
+					<p>De lunes a sábado, con hora confirmada<?php echo $hw_sab_libre ? '; el sábado 31, sin suplemento' : ''; ?>. En efectivo y con el importe exacto: <?php echo esc_html( $hw_pk . ' kg ' . $hw_euros( $hw_recogida[ (string) $hw_pk ] ?? 0 ) . ', 10 kg ' . $hw_euros( $hw_recogida['10'] ?? 0 ) ); ?>, IVA incluido.</p>
 					<?php else : ?>
 					<p>De lunes a viernes, con franja acordada. Para Maresme, Vallès y área de Barcelona.</p>
 					<?php endif; ?>

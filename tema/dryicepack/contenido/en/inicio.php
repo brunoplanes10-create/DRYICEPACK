@@ -80,7 +80,7 @@ return array(
 	),
 	'recogida' => array(
 		'titulo'  => 'Near Mataró?|Collect it: <em>10 kg for {recogida:10}.</em>',
-		'texto'   => 'No waiting in for the courier. Choose the day when you order, Monday to Saturday, and we confirm the time. Round prices with VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk} and 20 kg for {recogida:20}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You pay in cash, with the exact amount: we can’t give change.',
+		'texto'   => 'No waiting in for the courier. Choose the day when you order, Monday to Saturday, and we confirm the time. Whole-euro prices, VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk} and 20 kg for {recogida:20}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You pay in cash, with the exact amount: we can’t give change.',
 		'ficha'   => 'DryIcePack warehouse',
 		'como'    => 'Get directions',
 		'alt'     => 'Loading a box of dry ice into the delivery van',

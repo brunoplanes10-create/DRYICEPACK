@@ -563,7 +563,9 @@ const escenarios = {
     ) );
     $l = dip_festivos_salida();
     ok( in_array( $en3, $l, true ), 'incluye el día en que cierra MRW Mataró (' . $en3 . ')', $l );
-    ok( ! in_array( $ayer, $l, true ) && ! in_array( $en4, $l, true ), 'no incluye días pasados ni festivos de otras poblaciones' );
+    // Ayer puede ser además un festivo de la lista manual (el 13/10/2026, ayer fue el 12 de octubre): esos sí siguen en la lista
+    $manual = array_map( 'strval', array_keys( dip_festivos() ) );
+    ok( ( ! in_array( $ayer, $l, true ) || in_array( $ayer, $manual, true ) ) && ( ! in_array( $en4, $l, true ) || in_array( $en4, $manual, true ) ), 'no incluye días pasados ni festivos de otras poblaciones (salvo los de la lista manual)', $l );
     ok( in_array( '2026-12-25', $l, true ) && in_array( '2027-01-06', $l, true ), 'mantiene la lista manual' );
     $ordenada = $l; sort( $ordenada );
     ok( $ordenada === $l && count( $l ) === count( array_unique( $l ) ), 'ordenada y sin repetidos' );

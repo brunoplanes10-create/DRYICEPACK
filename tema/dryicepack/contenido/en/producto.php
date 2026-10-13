@@ -46,7 +46,7 @@ return array(
 	'total'     => 'Total',
 	'iva'       => 'VAT included',
 	'boton'     => 'Place my order',
-	'recogida'  => 'Or collect it in Mataró, Monday to Saturday: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}, VAT included. Cash only, exact amount.',
+	'recogida'  => 'Or collect it in Mataró, Monday to Saturday: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}, VAT included. On Saturday, +{sabado_recogida}.{sabado_libre} Cash only, exact amount.',
 	'max'       => 'Up to 250 kg per order. Need more? Message us and we’ll give you a price and a day.',
 	'medida'    => 'Over 150 kg outside the province of Barcelona: that delivery is arranged individually. Message us on',
 	'confianza' => array( 'Card, Apple Pay or Google Pay', 'Invoices for businesses', 'No account needed' ),

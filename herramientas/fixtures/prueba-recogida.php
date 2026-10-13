@@ -158,9 +158,9 @@ try {
 			array( '{sabado_envio}', 'es', '11,74 €' ),
 		);
 		if ( '2026-10-31' >= $hoy && in_array( '2026-10-31', dip_sabados_recogida_sin_suplemento(), true ) ) {
-			$esperados[] = array( 'Recogida en sábado: +{sabado_recogida} (IVA incluido).{sabado_libre}', 'es', 'Recogida en sábado: +10 € (IVA incluido). El sábado 31 de octubre, sin suplemento.' );
-			$esperados[] = array( '{sabado_libre}', 'ca', " El dissabte 31 d'octubre, sense suplement." );
-			$esperados[] = array( '{sabado_libre}', 'en', ' No surcharge on Saturday 31 October.' );
+			$esperados[] = array( 'Recogida en sábado: +{sabado_recogida} (IVA incluido).{sabado_libre}', 'es', 'Recogida en sábado: +10 € (IVA incluido). Salvo el 31 de octubre: sin suplemento.' );
+			$esperados[] = array( '{sabado_libre}', 'ca', " Excepte el 31 d'octubre: sense suplement." );
+			$esperados[] = array( '{sabado_libre}', 'en', ' Except 31 October: no surcharge.' );
 		}
 		foreach ( $esperados as $e ) {
 			$valor = dipt_marcadores( $e[0], $e[1] );
@@ -209,6 +209,34 @@ try {
 	$ok( 3 === dip_pack_pequeno( true ) && false === get_option( 'dip_pack_pequeno_aviso', false ), 'al reponer el 3 kg vuelve el 3 kg y se borra la marca del aviso', dip_pack_pequeno() );
 	$poner( $tres[0], 'outofstock' );
 	$ok( 2 === count( $correos_pack() ) && 5 === dip_pack_pequeno( true ), 'repuesto y acabado otra vez: segundo aviso y otra vez 5 kg', count( $correos_pack() ) );
+
+	// Un mismo pedido se lleva las últimas cajas de 3 mm y de 16 mm. La venta cambia el stock en objetos nuevos
+	// (wc_update_product_stock), así que los que guarda dip_variaciones_de_kg() siguen diciendo "con stock": tiene que avisar igual.
+	$poner( $tres[0], 'instock' );
+	$poner( $tres[1], 'instock' );
+	$antes_venta = array();
+	foreach ( $tres as $v ) {
+		$f = wc_get_product( $v->get_id() );
+		$antes_venta[ $v->get_id() ] = array( $f->get_manage_stock( 'edit' ), $f->get_stock_quantity( 'edit' ), $f->get_stock_status( 'edit' ), $f->get_backorders( 'edit' ) );
+		$f->set_manage_stock( true );
+		$f->set_stock_quantity( 1 );
+		$f->set_backorders( 'no' );
+		$f->save();
+	}
+	$n_avisos = count( $correos_pack() );
+	foreach ( $tres as $v ) wc_update_product_stock( wc_get_product( $v->get_id() ), 1, 'decrease' );
+	$vendidas = array_map( static fn( $v ) => wc_get_product( $v->get_id() )->get_stock_status(), $tres );
+	$ok( array( 'outofstock', 'outofstock' ) === $vendidas, 'venta de las últimas cajas de 3 y 16 mm: las dos quedan sin stock', $vendidas );
+	$ok( $n_avisos + 1 === count( $correos_pack() ), 'venta de las últimas cajas de 3 y 16 mm en un mismo pedido: un aviso', count( $correos_pack() ) - $n_avisos );
+	// Como antes de esta venta, con objetos leídos de la tienda (los de la memoria tienen datos viejos)
+	foreach ( $antes_venta as $id => $o ) {
+		$f = wc_get_product( $id );
+		$f->set_manage_stock( $o[0] );
+		if ( $o[0] ) $f->set_stock_quantity( $o[1] );
+		$f->set_backorders( $o[3] );
+		$f->set_stock_status( $o[2] );
+		$f->save();
+	}
 
 	// Todo como estaba
 	$restaurar_stock();
@@ -330,6 +358,24 @@ try {
 	WC()->session->set( 'chosen_shipping_methods', array( $rate_envio ) );
 	$cart->calculate_totals();
 	$ok( $casi( $cart->get_subtotal(), 98.60 ), 'de recogida a envío: subtotal 98,60 €', $cart->get_subtotal() );
+	// Más de 150 kg y el cliente cambia a un CP de fuera de la provincia de Barcelona con el envío elegido: solo queda la
+	// recogida y WooCommerce cambia el método DENTRO del cálculo, después de poner los precios. El total tiene que salir
+	// ya a precio de recogida (10 × 20 kg = 1.150,00 €), no a precio de la web (1.193,06 €).
+	$cart = $carrito( array( '20' => 10 ), 'envio', $e_semana );
+	$ok( ! dip_eligio_recogida() && $casi( $cart->get_subtotal(), 986 ), '200 kg a Barcelona con envío: precio de la web', $cart->get_subtotal() );
+	foreach ( array( 'billing', 'shipping' ) as $tipo ) {
+		$c->{"set_{$tipo}_postcode"}( '28001' );
+		$c->{"set_{$tipo}_city"}( 'Madrid' );
+		$c->{"set_{$tipo}_state"}( 'M' );
+	}
+	$cart->calculate_totals();
+	$ok( dip_eligio_recogida(), '200 kg a Madrid: WooCommerce deja solo la recogida', WC()->session->get( 'chosen_shipping_methods' ) );
+	$ok( $casi( $cart->get_total( 'edit' ), 1150 ), '200 kg a Madrid: el total sale ya a precio de recogida (1.150,00 €)', $cart->get_total( 'edit' ) );
+	foreach ( array( 'billing', 'shipping' ) as $tipo ) {
+		$c->{"set_{$tipo}_postcode"}( '08013' );
+		$c->{"set_{$tipo}_city"}( 'Barcelona' );
+		$c->{"set_{$tipo}_state"}( 'B' );
+	}
 
 	/* =========================================================
 	 * 3) Factura simplificada de un pedido de recogida (inc/factura-simplificada.php)

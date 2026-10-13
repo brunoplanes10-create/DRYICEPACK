@@ -46,7 +46,7 @@ return array(
 	'total'     => 'Total',
 	'iva'       => 'IVA inclòs',
 	'boton'     => 'Fer la comanda',
-	'recogida'  => 'O recull-lo a Mataró, de dilluns a dissabte: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}, IVA inclòs. En efectiu i amb l\'import exacte.',
+	'recogida'  => 'O recull-lo a Mataró, de dilluns a dissabte: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}, IVA inclòs. El dissabte, +{sabado_recogida}.{sabado_libre} En efectiu i amb l\'import exacte.',
 	'max'       => 'Fins a 250 kg per comanda. En necessites més? Escriu-nos i et donem preu i dia.',
 	'medida'    => 'Més de 150 kg fora de la província de Barcelona: aquest enviament es prepara a mida. Escriu-nos per',
 	'confianza' => array( 'Targeta, Apple Pay o Google Pay', 'Factura per a empreses', 'Sense crear cap compte' ),

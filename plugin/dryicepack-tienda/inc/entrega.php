@@ -197,7 +197,7 @@ function dip_html_entrega() {
 			$es_recogida ? '<small>' . esc_html( dip_contacto()['direccion'] . ' · ' . dip_contacto()['localidad'] . ' · ' . $t['recogida_horario'] ) . '</small>'
 				// Lo que se paga al recoger, a precio de recogida (inc/precios-recogida.php): "En efectivo: 115,00 €, IVA incluido"
 				. ( $total_recogida > 0 ? '<small class="dip-metodo__precios">' . esc_html( sprintf( $t['recogida_precios'], dip_texto_euros( $total_recogida ) ) ) . '</small>' : '' ) : '',
-			$coste > 0 ? wp_kses_post( wc_price( $coste ) ) : esc_html( 'ca' === $idioma ? 'Gratuït' : ( 'en' === $idioma ? 'Free' : 'Gratis' ) )
+			$coste > 0 ? wp_kses_post( wc_price( $coste ) ) : esc_html( 'ca' === $idioma ? 'Sense enviament' : ( 'en' === $idioma ? 'No delivery charge' : 'Sin envío' ) ) // no "Gratis": el sábado lleva +10 €
 		);
 	}
 	echo '</fieldset>';

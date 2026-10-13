@@ -34,7 +34,7 @@ return array(
 			'filas'  => array(
 				array( 'Order before 12:00', 'It’s with you the next morning, Tuesday to Friday. No deliveries on Sunday or Monday.' ),
 				array( 'Saturday', 'If your postcode gets Saturday delivery, there is an €11.74 surcharge (VAT included). Order before 12:00 on Friday.' ),
-				array( 'Collection', 'At our warehouse in Mataró, {km} km away, Monday to Saturday. Round prices with VAT included: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You choose the day and we confirm the time. Cash only, exact amount.' ),
+				array( 'Collection', 'At our warehouse in Mataró, {km} km away, Monday to Saturday. Whole-euro prices, VAT included: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You choose the day and we confirm the time. Cash only, exact amount.' ),
 				array( '10 kg delivery', '€17.32 incl. VAT, the same as anywhere in mainland Spain. You see it in the total before you pay: no surprises at the last step.' ),
 				array( 'For businesses', 'An account with a supply contract, a discount on list prices based on volume, scheduled orders and a single invoice a month, payable within 30 days.' ),
 			),
@@ -45,7 +45,7 @@ return array(
 		),
 		'faq'     => array(
 			array( 'How long does dry ice take to reach {nombre}?', 'If you order before 12:00, Monday to Thursday, you’ll have it in {nombre} the next morning. Order on Friday and it arrives on Saturday (if your postcode gets Saturday delivery, with a surcharge) or on Tuesday. We don’t deliver on Sunday or Monday. At checkout, you only see the days available.' ),
-			array( 'Can I collect it if I’m in {nombre}?', 'Yes. Our warehouse is in Mataró, {km} km away (about {min} min by car without traffic). Choose the day when you order, Monday to Saturday, and we confirm the time by phone or WhatsApp. Round prices with VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You pay in cash, with the exact amount: we can’t give change. In the car, carry it in the boot, with ventilation.' ),
+			array( 'Can I collect it if I’m in {nombre}?', 'Yes. Our warehouse is in Mataró, {km} km away (about {min} min by car without traffic). Choose the day when you order, Monday to Saturday, and we confirm the time by phone or WhatsApp. Whole-euro prices, VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You pay in cash, with the exact amount: we can’t give change. In the car, carry it in the boot, with ventilation.' ),
 			array( 'Do you deliver on Saturday in {nombre}?', 'It depends on the postcode. If your area gets Saturday delivery, you’ll see it as an option at checkout, with an €11.74 surcharge (VAT included). To have it on Saturday, order before 12:00 on Friday.' ),
 		),
 		'cerca'   => 'Nearby areas',
