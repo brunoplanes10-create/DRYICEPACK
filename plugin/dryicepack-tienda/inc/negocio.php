@@ -9,7 +9,8 @@
  * Sin entregas en domingo ni lunes. Sábado según zona con suplemento de 9,70 € + IVA.
  * Festivos: la lista manual de Ajustes (Mataró, Cataluña, España) y, por encima, los de MRW (inc/festivos-mrw.php):
  * sin salida si cierra MRW Mataró y sin entrega si cierra MRW en el destino.
- * Recogida en la nave de lunes a sábado, también en festivos (la confirma la empresa). El sábado lleva el mismo suplemento.
+ * Recogida en la nave de lunes a sábado, también en festivos (la confirma la empresa), solo en efectivo y a precio redondo
+ * con IVA incluido (inc/precios-recogida.php). El sábado, +10 € IVA incluido (sin suplemento el 31/10/2026).
  * Más de 150 kg fuera de la provincia de Barcelona: sin envío online, se prepara a medida (el proveedor solo sirve
  * más de 150 kg dentro de la provincia).
  */
@@ -27,6 +28,9 @@ if ( ! defined( 'DIP_TARIFA_KG_EXTRA' ) )              define( 'DIP_TARIFA_KG_EX
 if ( ! defined( 'DIP_PESO_EMBALAJE' ) )                define( 'DIP_PESO_EMBALAJE', 1.0 );
 if ( ! defined( 'DIP_KG_A_MEDIDA' ) )                  define( 'DIP_KG_A_MEDIDA', 150 );
 if ( ! defined( 'DIP_DIAS_RESERVA' ) )                 define( 'DIP_DIAS_RESERVA', 90 ); // se puede pedir para cualquier día de los próximos 90
+// Recogida en la nave (03/10/2026): precio de la web × IVA redondeado a la baja a múltiplos de 5 €, y sábado +10 € IVA incluido
+if ( ! defined( 'DIP_RECOGIDA_REDONDEO' ) )            define( 'DIP_RECOGIDA_REDONDEO', 5 );
+if ( ! defined( 'DIP_RECOGIDA_SABADO_CON_IVA' ) )      define( 'DIP_RECOGIDA_SABADO_CON_IVA', 10.00 );
 
 /** Datos de contacto y de empresa (los usa también el tema). */
 function dip_contacto() {
@@ -200,6 +204,39 @@ function dip_destino_normalizado( $destino ) {
 	$provincia = 5 === strlen( $cp ) ? dip_mrw_provincia_por_cp( $cp ) : '';
 	if ( '' === $provincia ) return null;
 	return array( 'cp' => $cp, 'poblacion' => trim( (string) ( $destino['poblacion'] ?? '' ) ), 'provincia' => $provincia );
+}
+
+/** Sábados en que la recogida no lleva suplemento (Ajustes; de serie el 31/10/2026, Halloween). El envío en sábado lo lleva siempre. */
+function dip_sabados_recogida_sin_suplemento() {
+	static $lista = null;
+	if ( null === $lista ) {
+		$texto = function_exists( 'dip_ajuste' ) ? (string) dip_ajuste( 'recogida_sabados_sin_suplemento' ) : '';
+		$lista = array_values( array_filter( array_map( 'trim', preg_split( '/[\s,;]+/', $texto ) ), static fn( $f ) => (bool) preg_match( '/^\d{4}-\d{2}-\d{2}$/', $f ) ) );
+	}
+	return $lista;
+}
+
+/**
+ * Suplemento de sábado de un día, o null si no lleva.
+ * - Envío: 9,70 € + IVA (11,74 €).
+ * - Recogida: 10,00 € IVA incluido, partido en base y cuota que suman justo 10,00 € (8,26 € + 1,74 €);
+ *   sin suplemento los sábados de dip_sabados_recogida_sin_suplemento().
+ *
+ * @return array{neto: float, iva: float, con_iva: float}|null
+ */
+function dip_suplemento_sabado( $metodo, $ymd ) {
+	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', (string) $ymd, dip_zona_horaria() );
+	if ( ! $d || 6 !== (int) $d->format( 'N' ) ) return null;
+	$factor = dip_factor_iva();
+	if ( 'recogida' === $metodo ) {
+		if ( in_array( (string) $ymd, dip_sabados_recogida_sin_suplemento(), true ) ) return null;
+		$con_iva = round( (float) DIP_RECOGIDA_SABADO_CON_IVA, 2 );
+		$neto    = round( $con_iva / $factor, 2 );
+	} else {
+		$neto    = round( (float) DIP_SATURDAY_SURCHARGE_EXCL_TAX, 2 );
+		$con_iva = round( $neto * $factor, 2 );
+	}
+	return array( 'neto' => $neto, 'iva' => round( $con_iva - $neto, 2 ), 'con_iva' => $con_iva );
 }
 
 /** ¿Se puede recoger ese día? De lunes a sábado, también en festivos: la nave no cierra y la recogida se confirma antes. */

@@ -66,6 +66,7 @@
 		if (!d || !d.f) return null;
 		d.ok = {}; d.f.forEach(function (f) { d.ok[f] = 1; });
 		d.cierra = {}; (d.x || []).forEach(function (f) { d.cierra[f] = 1; });
+		d.libre = {}; (d.sg || []).forEach(function (f) { d.libre[f] = 1; }); // sábados de recogida sin suplemento
 		d.min = (d.f[0] || d.des).slice(0, 7);
 		d.max = (d.f.length ? d.f[d.f.length - 1] : d.has).slice(0, 7);
 		return (fs.dipCal = d);
@@ -73,7 +74,7 @@
 	function etiqueta(D, f) {
 		var t = utc(f), d = new Date(t), texto = D.n.d[semana(t)] + ' ' + d.getUTCDate() + ' ' + D.n.mde[d.getUTCMonth()];
 		if (!D.ok[f]) return texto + ', ' + (D.cierra[f] ? D.t.mrw : D.t.no);
-		return semana(t) === 5 ? texto + ', ' + D.sab : texto;
+		return semana(t) === 5 && !D.libre[f] ? texto + ', ' + D.sab : texto;
 	}
 	function limitar(D, t) { return ymd(Math.min(Math.max(t, utc(D.min + '-01')), finDeMes(D.max))); }
 
@@ -143,7 +144,7 @@
 		if (!radio) {
 			var casillas = lista.querySelectorAll('label.dip-fecha');
 			var sobra = lista.querySelector('.dip-fecha--lejana') || (casillas.length >= (D.c || 6) ? casillas[casillas.length - 1] : null);
-			var t = utc(f), d = new Date(t), sab = semana(t) === 5, nueva = document.createElement('label');
+			var t = utc(f), d = new Date(t), sab = semana(t) === 5 && !D.libre[f], nueva = document.createElement('label');
 			nueva.className = 'dip-fecha dip-fecha--lejana' + (sab ? ' dip-fecha--sabado' : '');
 			nueva.innerHTML = '<input type="radio" name="dip_fecha" value="' + f + '"><span class="dip-fecha__dia" aria-hidden="true">' + esc(D.n.dc[semana(t)]) + '</span>'
 				+ '<span class="dip-fecha__num" aria-hidden="true">' + d.getUTCDate() + '</span><span class="dip-fecha__mes" aria-hidden="true">' + esc(D.n.mc[d.getUTCMonth()]) + '</span>'
@@ -243,6 +244,8 @@
 		boton.textContent = texto;
 		boton.value = texto;
 		boton.setAttribute('data-value', texto);
+		// WooCommerce repone el texto con .data('value') (caché de jQuery) al pulsar el método ya elegido
+		$(boton).data('value', texto);
 	}
 
 	/* Apple Pay / Google Pay de WooPayments: dentro del bloque de pago, nunca arriba del formulario. */
@@ -281,5 +284,5 @@
 		setTimeout(moverPagoRapido, 3000);
 	});
 	$body.on('updated_checkout payment_method_selected', function () { setTimeout(todo, 0); });
-	$(document).on('change', 'input[name="payment_method"]', function () { setTimeout(textoBoton, 0); });
+	$(document).on('change click', 'input[name="payment_method"]', function () { setTimeout(textoBoton, 0); });
 })(window.jQuery);

@@ -4,7 +4,7 @@ return array(
 	'menu'         => 'Guies',
 	'seo'          => array(
 		'titulo'      => 'Guies de gel sec: com usar-lo i quant demanar | DryIcePack',
-		'descripcion' => 'Guies de gel sec: on comprar-lo, com fer boira i quant en cal demanar. Per a una festa a casa, amb 3 kg en tens prou. Llegeix-les i encerta els quilos.',
+		'descripcion' => 'Guies de gel sec: on comprar-lo, com fer boira i quant en cal demanar. Per a una festa a casa, amb {pk} kg en tens prou. Llegeix-les i encerta els quilos.',
 	),
 	'titulo'       => 'Guies de gel sec',
 	'titulo_corto' => 'Guies',

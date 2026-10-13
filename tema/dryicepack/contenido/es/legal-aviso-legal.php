@@ -6,10 +6,10 @@ return array(
 		'descripcion' => 'Aviso legal de dryicepack.es: datos del titular, INDUNOVA IMS S.L., condiciones de uso de la web, propiedad intelectual y legislación aplicable.',
 	),
 	'titulo'     => 'Aviso legal',
-	'actualizado'=> 'Última actualización: 30 de septiembre de 2026',
+	'actualizado'=> 'Última actualización: 7 de octubre de 2026',
 	'secciones'  => array(
 		array( 'Titular de la web', '<p>En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI-CE), se informa de los datos del titular de www.dryicepack.es:</p>
-<ul><li><strong>Razón social:</strong> INDUNOVA IMS S.L.</li><li><strong>NIF:</strong> B66800103</li><li><strong>Domicilio social:</strong> Ronda Alfonso X El Sabio, 10, 2º 1ª, 08301 Mataró (Barcelona)</li><li><strong>Nave y recogidas:</strong> Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona)</li><li><strong>Email:</strong> info@dryicepack.es</li><li><strong>Teléfono:</strong> 936 73 76 41</li></ul>
+<ul><li><strong>Razón social:</strong> INDUNOVA IMS S.L.</li><li><strong>NIF:</strong> B66800103</li><li><strong>Datos registrales:</strong> Registro Mercantil de Barcelona, tomo 45484, folio 53, sección 8, hoja B-489371, inscripción 1.ª</li><li><strong>Domicilio social:</strong> Ronda Alfonso X El Sabio, 10, 2º 1ª, 08301 Mataró (Barcelona)</li><li><strong>Nave y recogidas:</strong> Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona)</li><li><strong>Email:</strong> info@dryicepack.es</li><li><strong>Teléfono:</strong> 936 73 76 41</li></ul>
 <p>DryIcePack es una marca comercial de INDUNOVA IMS S.L.</p>' ),
 		array( 'Uso de la web', '<p>Quien navega por esta web es usuario y se compromete a usarla de forma correcta y lícita, y a que los datos que facilite en los formularios sean veraces.</p><p>El usuario responde de los daños que cause por un uso contrario a la ley, a estas condiciones o a los derechos de terceros.</p>' ),
 		array( 'Precios', '<p>Los precios se muestran en euros. En la tienda se indica en cada caso si incluyen el IVA y, antes de pagar, se muestra siempre el precio final con impuestos y gastos de envío.</p>' ),

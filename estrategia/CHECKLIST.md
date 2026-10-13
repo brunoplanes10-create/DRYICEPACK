@@ -13,7 +13,7 @@ Para comprobarlo:
 
 | # | Punto | Estado | Qué hay y cómo se ha comprobado |
 |---|---|---|---|
-| 1 | Aviso legal | **Hecho, con un dato pendiente** | /aviso-legal/ en ES, CA y EN: razón social, NIF, domicilio social, nave, email y teléfono de la web. Por decisión del propietario (01/10/2026) se publica sin la inscripción en el Registro Mercantil, que el art. 10 de la LSSI pide a las sociedades: conviene añadirla en cuanto se tenga. |
+| 1 | Aviso legal | **Hecho** | /aviso-legal/ en ES, CA y EN: razón social, NIF, domicilio social, nave, email, teléfono y, desde el 07/10/2026, los datos registrales que pide el art. 10 de la LSSI: Registro Mercantil de Barcelona, tomo 45484, folio 53, sección 8, hoja B-489371, inscripción 1.ª (comprobados en el BORME-A-2016-148-08, asiento 322093). |
 | 2 | Política de privacidad | **Falta un paso** (6) | /politica-de-privacidad/: responsable, finalidades, base legal, plazos, quién más ve los datos (Arsys y Cloudflare, WooPayments/Stripe, la mensajería, la gestoría y Google Analytics solo con consentimiento) y derechos ante la AEPD. Hay que elegirla en Ajustes → Privacidad. |
 | 3 | Cookies | **Falta un paso** (8) | Banner con Aceptar, Rechazar y Elegir, los tres igual de visibles. Google Consent Mode v2 empieza en "denegado" y GA4 se carga solo tras aceptar. Fuera la atribución de pedidos de WooCommerce, que ponía cookies de seguimiento sin pedirlas. Política en /politica-de-cookies/. Hay que quitar el código de Analytics de Site Kit. |
 | 4 | HTTPS | **Hecho** | La web ya va en HTTPS con Cloudflare. El tema construye todas las direcciones con `home_url()`, sin rutas fijas en http, así que no hay contenido mixto. |
@@ -38,10 +38,12 @@ Para comprobarlo:
 
 | Pendiente | Quién | Notas |
 |---|---|---|
-| Inscripción en el Registro Mercantil para el aviso legal | Propietario / gestoría | Tomo, folio, hoja e inscripción. De momento se publica sin ella. |
-| Revisión de los textos legales | Gestoría o abogado | Domicilio social (Ronda Alfonso X El Sabio 10) frente al email y teléfono de contacto de la web |
-| Precio del pack de 20 kg | Propietario | 98,60 € + IVA rompe la escala: por kilo sale más caro que el de 15 kg (68,40 €) |
+| ~~Inscripción en el Registro Mercantil para el aviso legal~~ | Hecho el 07/10/2026 | Tomo 45484, folio 53, sección 8, hoja B-489371, inscripción 1.ª, en los tres idiomas. |
+| Revisión de los textos legales | Gestoría o abogado | Domicilio social (Ronda Alfonso X El Sabio 10) frente al email y teléfono de contacto de la web. Nuevo el 03/10/2026: la recogida se paga a precio redondo con IVA incluido, solo en efectivo y con el importe exacto (condiciones de venta, apartado «Recogida en Mataró»). |
+| ~~Precio del pack de 20 kg~~ | Decidido el 03/10/2026 | El 15 kg sube a 74,90 € + IVA (4,99 €/kg) y el 20 kg se queda en 98,60 € (4,93 €/kg): la escala ya baja con cada pack. Hay que cambiarlo en WooCommerce (INSTALACION.md, paso 6). |
+| Stock del pack de 3 kg | Propietario | Poner en WooCommerce las 29 cajas EPS de 3 kg que quedan, repartidas entre 3 y 16 mm. Cuando se acaben, la web pasa sola al pack de 5 kg (33,90 €). |
+| Cajas de cartón de 20 kg | Propietario | Quedan 8 (packs de 15 y 20 kg) y 24 cajas EPS de 20–30 kg. Pedir cartón antes de Halloween. |
 | Bizum | Propietario | Necesita un TPV de Redsys con el banco. Las cuentas de empresa ya pueden pagar con factura mensual. |
-| Logos de clientes en la web | Propietario | Solo con permiso escrito de cada cliente |
-| Código de descuento de Halloween | Propietario | `[PENDIENTE: código e importe]` |
+| ~~Logos de clientes en la web~~ | Decidido el 01/10/2026 | Permiso confirmado por el propietario en el chat: Nissan Formula E Team, Italpizza, Sushitok y Semillas Fitó (PSG Tech no). |
+| ~~Código de descuento de Halloween~~ | Decidido el 01/10/2026 | Sin descuento. La única ventaja de Halloween es la recogida del sábado 31/10 sin suplemento (no es una rebaja de precio). |
 | Plan de Odoo | Propietario | La exportación CSV ya funciona. La conexión automática necesita el plan Custom de Odoo Online. |

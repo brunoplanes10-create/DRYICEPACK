@@ -92,4 +92,8 @@ return array(
 	'form_enviando'   => 'Enviando…',
 	'form_ok'         => 'Recibido. Te respondemos en horario laboral, normalmente el mismo día.',
 	'form_error'      => 'No se ha podido enviar. Llámanos al 936 73 76 41.',
+	// Formularios de las páginas B2B (empresas, industria): tratamiento de usted
+	'form_privacidad_usted' => 'He leído la <a href="%s">política de privacidad</a>. Usamos sus datos solo para responderle.',
+	'form_ok_usted'         => 'Recibido. Le respondemos en horario laboral, normalmente el mismo día.',
+	'form_error_usted'      => 'No se ha podido enviar. Llámenos al 936 73 76 41.',
 );

@@ -4,17 +4,17 @@ return array(
 	'menu' => 'Inici',
 	'seo'  => array(
 		'titulo'      => 'Gel sec: compra\'l en línia i rep-lo demà | DryIcePack',
-		'descripcion' => 'Gel sec en pèl·lets de 3 mm o nuggets de 16 mm, des de 3 kg. Demana abans de les 12:00 i demà al matí el tens. O recull-lo gratis a la nau de Mataró.',
+		'descripcion' => 'Gel sec en pèl·lets de 3 mm o nuggets de 16 mm, des de {pk} kg. Demana abans de les 12:00 i demà al matí el tens, o recull-lo a Mataró: {pk} kg per {recogida:pk}.',
 	),
 	'hero' => array(
 		'titulo'    => 'Gel sec a la teva porta,|<em>demà al matí.</em>',
-		'texto'     => 'Demana abans de les 12:00 i demà al matí el tens (de dimarts a dissabte), o tria el dia que vulguis. En caixa aïllant, des de 3 kg i sense contractes. A prop de Mataró? Recull-lo gratis.',
+		'texto'     => 'Demana abans de les 12:00 i demà al matí el tens (de dimarts a dissabte), o tria el dia que vulguis. En caixa aïllant, des de {pk} kg i sense contractes. A prop de Mataró? Recull-lo a la nau: {pk} kg per {recogida:pk}, IVA inclòs.',
 		'boton'     => 'Fer la comanda',
 		'o_llama'   => 'o truca al',
 		'alt'       => 'Caixa de gel sec en nuggets de 16 mm, oberta i deixant anar vapor fred',
 		'corte'     => array( 'antes' => 'Demana abans de les 12:00 i el tens el %s al matí', 'quedan' => 'Falten %s', 'despues' => 'Si demanes ara, el tens el %s al matí' ),
 	),
-	'cinta' => array( '−78,5 °C', 'Pèl·lets de 3 mm', 'Nuggets de 16 mm', 'Caixa EPS de 40 mm', 'Hora límit: 12:00', 'Entrega al matí', 'Recollida a Mataró', 'Factura mensual per a empreses', 'De 3 a 250 kg per comanda' ),
+	'cinta' => array( '−78,5 °C', 'Pèl·lets de 3 mm', 'Nuggets de 16 mm', 'Caixa EPS de 40 mm', 'Hora límit: 12:00', 'Entrega al matí', 'Recollida a Mataró', 'Factura mensual per a empreses', 'De {pk} a 250 kg per comanda' ),
 	'elegir' => array(
 		'titulo'   => 'Saps el que pagues|<em>abans de pagar.</em>',
 		'formatos' => array(
@@ -24,7 +24,7 @@ return array(
 		'cuanto'    => 'Quants quilos?',
 		'envio'     => 'Enviament',
 		'total'     => 'Total amb enviament',
-		'recogida'  => 'Si el reculls a Mataró: %s',
+		'recogida'  => 'Si el reculls a Mataró: %s en efectiu', // %s = preu de recollida rodó amb IVA (dipt_precios_recogida)
 		'nota'      => 'IVA inclòs. El total ja inclou l\'enviament: sense sorpreses a l\'últim pas.',
 		'boton'     => 'Demanar %s kg',
 		'mas'       => 'Més de 20 kg? Suma caixes, fins a 250 kg per comanda. Si en són més de 150 i ets fora de la província de Barcelona, escriu-nos.',
@@ -44,7 +44,7 @@ return array(
 		'titulo' => 'Per a què el necessites?|<em>Tria el teu cas.</em>',
 		'lista'  => array(
 			array( 'hosteleria', 'Hostaleria', 'Còctels i plats que surten a la sala amb fum.', 'uso-hosteleria' ),
-			array( 'transporte', 'Transport en fred', 'Congelat i refrigerat que arriba igual que va sortir.', 'uso-transporte' ),
+			array( 'transporte', 'Transport en fred', 'Fred a −78,5 °C durant la ruta i sense aigua a la caixa.', 'uso-transporte' ),
 			array( 'industria', 'Indústria', 'Refredar peces i bateries, assajos i comandes de fins a 250 kg.', 'uso-industria' ),
 			array( 'laboratorios', 'Laboratoris', 'Mostres a −78,5 °C i enviaments UN 1845.', 'uso-laboratorio' ),
 			array( 'eventos', 'Festes i esdeveniments', 'Boira arran de terra en casaments, escenaris i Halloween.', 'uso-eventos' ),
@@ -79,8 +79,8 @@ return array(
 		'enlace'  => 'Obrir un compte',
 	),
 	'recogida' => array(
-		'titulo'  => 'Ets a prop de Mataró?|Recull-lo <em>gratis.</em>',
-		'texto'   => 'Sense esperar la missatgeria. Tries el dia en demanar, et confirmem l\'hora i te\'l tenim preparat a la nau. Gratis de dilluns a divendres; el dissabte, amb un suplement d\'11,74 €. Pagues en efectiu quan el reculls.',
+		'titulo'  => 'Ets a prop de Mataró?|Recull-lo: <em>10 kg per {recogida:10}.</em>',
+		'texto'   => 'Sense esperar la missatgeria. Tries el dia en demanar, de dilluns a dissabte, i et confirmem l\'hora. Preu rodó amb IVA inclòs, el mateix al web i a la nau: {pk} kg per {recogida:pk} i 20 kg per {recogida:20}. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre} Pagues en efectiu i amb l\'import exacte: no tenim canvi.',
 		'ficha'   => 'Nau DryIcePack',
 		'como'    => 'Com arribar-hi',
 		'alt'     => 'Càrrega d\'una caixa de gel sec a la furgoneta de repartiment',
@@ -93,10 +93,10 @@ return array(
 	'faq' => array(
 		'titulo' => 'El que més|ens <em>pregunten.</em>',
 		'lista'  => array(
-			array( 'Quant gel sec necessito?', 'Depèn de l\'ús i de quantes hores el necessitis. Per fer boira, com a referència: a casa 3 kg, en una festa gran 10 kg i en un bar o un esdeveniment de 15 a 20 kg. Per a transport o mostres, digues-nos quantes hores i quin volum, i t\'ho calculem.' ),
+			array( 'Quant gel sec necessito?', 'Depèn de l\'ús i de quantes hores el necessitis. Per fer boira, com a referència: a casa {pk} kg, en una festa gran 10 kg i en un bar o un esdeveniment de 15 a 20 kg. Per a transport o mostres, digues-nos quantes hores i quin volum, i t\'ho calculem.' ),
 			array( 'Quan m\'arriba?', 'Si demanes abans de les 12:00 de dilluns a divendres, surt aquell mateix dia i el tens l\'endemà al matí. No repartim ni diumenge ni dilluns. El dissabte, segons la zona i amb un suplement d\'11,74 € (IVA inclòs).' ),
 			array( 'Puc demanar per a un altre dia?', 'Sí: en pagar tries qualsevol dia dels pròxims 90 amb repartiment a la teva zona, de dimarts a dissabte (el dissabte, segons la zona i amb suplement). Demana\'l per al dia que el faràs servir: el gel sec es va sublimant amb les hores.' ),
-			array( 'El puc recollir en persona?', 'Sí, a la nostra nau de Mataró (Camí Ca La Madrona 19 D), de dilluns a dissabte. De dilluns a divendres és gratis i el dissabte té un suplement d\'11,74 €. Et confirmem l\'hora abans i pagues en efectiu quan el reculls.' ),
+			array( 'El puc recollir en persona?', 'Sí, a la nostra nau de Mataró (Camí Ca La Madrona 19 D), de dilluns a dissabte, també festius. Pagues un preu rodó amb IVA inclòs, el mateix al web i a la nau: {pk} kg per {recogida:pk}, 10 kg per {recogida:10}, 15 kg per {recogida:15} i 20 kg per {recogida:20}. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre} Et confirmem l\'hora abans. Es paga en efectiu i amb l\'import exacte: no tenim canvi.' ),
 			array( 'Quina diferència hi ha entre 3 mm i 16 mm?', 'Els pèl·lets de 3 mm tenen més superfície: refreden més de pressa i fan més boira. Els nuggets de 16 mm tenen més massa per peça i duren més; per això es fan servir en transport i mostres.' ),
 			array( 'Feu factura a particulars i a empreses?', 'Sí. Si ets particular i la comanda és de fins a 400 € (IVA inclòs), la factura simplificada t\'arriba per correu electrònic des d\'info@dryicepack.es. Si compres per a una empresa o com a autònom, marca «Compro per a una empresa o autònom» en pagar i escriu la raó social i el NIF: reps la factura completa. Si ja has pagat sense marcar-ho, t\'enviem un enllaç per demanar-la. Els comptes d\'empresa reben una sola factura al mes, a 30 dies.' ),
 			array( 'Envieu a les Balears o a les Canàries?', 'No. Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla.' ),

@@ -79,7 +79,7 @@ if ( function_exists( 'wc_print_notices' ) ) {
 
 				<fieldset class="p-grupo">
 					<legend class="p-grupo__titulo"><?php echo esc_html( $c['kilos'] ); ?></legend>
-					<div class="p-kilos">
+					<div class="p-kilos<?php echo count( $packs ) > 4 ? ' p-kilos--cinco' : ''; ?>" style="--n:<?php echo (int) max( 1, count( $packs ) ); ?>"><?php // una fila con todos los packs (4 o 5) ?>
 						<?php foreach ( $packs as $kg => $precio ) : ?>
 							<label class="p-kilo">
 								<input type="radio" name="dipt_kg" value="<?php echo esc_attr( $kg ); ?>"<?php checked( (float) $kg, (float) $kg0 ); ?>>

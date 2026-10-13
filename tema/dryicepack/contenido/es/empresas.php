@@ -86,7 +86,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Lo que preguntan las empresas',
 		'lista'  => array(
-			array( '¿Hay pedido mínimo?', 'En la web, desde 3 kg. Con cuenta de empresa, lo ajustamos a lo que usted consume.' ),
+			array( '¿Hay pedido mínimo?', 'En la web, desde {pk} kg. Con cuenta de empresa, lo ajustamos a lo que usted consume.' ),
 			array( '¿Cómo se paga?', 'Con una sola factura al mes, a 30 días, por domiciliación SEPA siempre que se pueda, o por transferencia.' ),
 			array( '¿Hay que firmar un contrato?', 'Para la cuenta de empresa, sí: un contrato de suministro de hielo seco con los kilos, la frecuencia, el descuento sobre tarifa y la forma de pago. Para comprar en la web no hace falta: pida y pague al momento, como cualquier cliente.' ),
 			array( '¿Qué precio tendré?', 'Un descuento sobre la tarifa de la web, según su volumen y su frecuencia. Se acuerda al abrir la cuenta. Complete la frase de arriba y le contestamos, normalmente el mismo día laborable.' ),

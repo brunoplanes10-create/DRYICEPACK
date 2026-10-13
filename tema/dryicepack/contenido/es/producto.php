@@ -3,8 +3,8 @@
 return array(
 	'menu' => 'Comprar hielo seco',
 	'seo'  => array(
-		'titulo'      => 'Comprar hielo seco: 3, 10, 15 y 20 kg | DryIcePack',
-		'descripcion' => 'Compra hielo seco desde 3 kg, en pellets de 3 mm o nuggets de 16 mm. Ves el total con envío antes de pagar. Pide antes de las 12:00 y llega mañana.',
+		'titulo'      => 'Comprar hielo seco: {pk}, 10, 15 y 20 kg | DryIcePack',
+		'descripcion' => 'Compra hielo seco desde {pk} kg, en pellets de 3 mm o nuggets de 16 mm. Ves el total con envío antes de pagar. Pide antes de las 12:00 y llega mañana.',
 	),
 	'migas'   => array( 'Inicio', 'Comprar hielo seco' ),
 	'titulo'  => 'Comprar hielo seco sin sorpresas en el envío',
@@ -46,7 +46,7 @@ return array(
 	'total'     => 'Total',
 	'iva'       => 'IVA incluido',
 	'boton'     => 'Hacer mi pedido',
-	'recogida'  => 'O recógelo en Mataró: gratis de lunes a viernes, y pagas en efectivo al recogerlo.',
+	'recogida'  => 'O recógelo en Mataró, de lunes a sábado: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}, IVA incluido. En efectivo y con el importe exacto.',
 	'max'       => 'Hasta 250 kg por pedido. ¿Necesitas más? Escríbenos y te damos precio y día.',
 	'medida'    => 'Más de 150 kg fuera de la provincia de Barcelona: ese envío se prepara a medida. Escríbenos por',
 	'confianza' => array( 'Tarjeta, Apple Pay o Google Pay', 'Factura para empresas', 'Sin crear cuenta' ),
@@ -68,7 +68,7 @@ return array(
 		'titulo' => '¿Cuánto|<em>necesito?</em>',
 		'texto'  => 'Para niebla, estas cantidades sirven de referencia. ¿Es para transporte o muestras? Dinos cuántas horas y qué volumen, y te lo calculamos.',
 		'casos'  => array(
-			array( '3 kg', 'En casa', 'Un caldero, una ponchera con doble recipiente, una fiesta pequeña.' ),
+			array( '{pk} kg', 'En casa', 'Un caldero, una ponchera con doble recipiente, una fiesta pequeña.' ),
 			array( '10 kg', 'Fiesta grande', 'Niebla por el suelo en varias tandas durante la noche.' ),
 			array( '15–20 kg', 'Bar o evento', 'Servicio largo, escenario o varias barras.' ),
 		),
@@ -79,9 +79,9 @@ return array(
 		'titulo' => '¿Cuánto cuesta|<em>el envío?</em>',
 		'texto'  => 'La tarifa de la mensajería, igual en toda la península. Se calcula con el peso del hielo más 1 kg por caja, y la ves antes de pagar.',
 		'filas'  => array( array( 'Hasta 2 kg', 8.53 ), array( 'Hasta 5 kg', 10.32 ), array( 'Hasta 10 kg', 13.19 ), array( 'Cada kg de más', 1.12 ) ),
-		'extra'  => array( array( 'Entrega en sábado (según zona)', 9.70 ), array( 'Recogida en Mataró, de lunes a viernes', 0 ) ),
-		'nota'   => 'Precios con IVA incluido.',
-		'gratis' => 'Gratis',
+		'extra'  => array( array( 'Entrega en sábado (según zona)', 9.70 ), array( 'Recogida en Mataró, sin envío', 0 ) ),
+		'nota'   => 'Precios con IVA incluido. La recogida se paga en efectivo y con el importe exacto.',
+		'gratis' => '0 €', // fila de la recogida en el talón de envío: no hay coste de envío (el hielo se paga a precio de recogida)
 		'enlace' => 'Plazos de entrega, festivos y recogida',
 	),
 	'faq' => array(

@@ -90,6 +90,7 @@ function get_page_by_path( $p ) { return null; }
 function get_permalink( $p ) { return ''; }
 function wp_hash( $s ) { return md5( $s ); }
 function checked( $a, $b = true, $echo = true ) { $r = (string) $a === (string) $b ? ' checked="checked"' : ''; if ( $echo ) echo $r; return $r; }
+function selected( $a, $b = true, $echo = true ) { $r = (string) $a === (string) $b ? ' selected="selected"' : ''; if ( $echo ) echo $r; return $r; }
 function settings_fields( $g ) {}
 function wp_nonce_field( ...$a ) { echo '<input type="hidden" name="_wpnonce" value="prueba">'; }
 function submit_button( $t = '' ) { echo '<button>' . $t . '</button>'; }

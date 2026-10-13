@@ -11,7 +11,7 @@ return array(
 		'titulo'   => 'Envío de hielo seco:|<em>pides hoy, mañana lo tienes.</em>',
 		'reloj'    => array( 'antes' => 'Tiempo para pedir hoy', 'despues' => 'Por hoy ya ha pasado la hora límite' ),
 		'llega'    => array( 'antes' => 'Si pides ahora, lo tienes el %s por la mañana.', 'despues' => 'Si pides ahora, lo tienes el %s por la mañana.' ),
-		'texto'    => 'Lo que entra antes de las 12:00, de lunes a viernes, sale ese mismo día y llega al siguiente por la mañana. El día lo eliges al pagar.',
+		'texto'    => 'Lo que entra antes de las 12:00, de lunes a viernes, sale ese mismo día y llega al siguiente por la mañana, de martes a sábado (el sábado, según zona). O eliges al pagar cualquier día de los próximos 90.',
 	),
 	'semana' => array(
 		'titulo' => '¿Qué día llega?|<em>Depende de cuándo pidas.</em>',
@@ -49,7 +49,7 @@ return array(
 		),
 		'tramo'  => 'tarifa hasta %s kg',
 		'extra'  => '%1$s hasta 10 kg + %2$s kg × %3$s',
-		'nota'   => 'Contamos cajas de 20 kg y el resto en el pack que toque (3, 10 o 15 kg), como si lo pidieras en la tienda. La mensajería cobra el hielo más 1 kg por caja, redondeado al alza: la misma cuenta que se hace al pagar.',
+		'nota'   => 'Contamos cajas de 20 kg y el resto en el pack que toque ({pk}, 10 o 15 kg), como si lo pidieras en la tienda. La mensajería cobra el hielo más 1 kg por caja, redondeado al alza: la misma cuenta que se hace al pagar.',
 		'medida' => array(
 			'cajas'  => 'Cajas a medida del pedido',
 			'titulo' => 'Te preparamos precio y día.',
@@ -63,8 +63,8 @@ return array(
 		'titulo' => 'Recogida en Mataró,|<em>sin esperar a la mensajería.</em>',
 		'lista'  => array(
 			array( 'Dónde', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). Es nuestra nave, no una oficina de la mensajería.' ),
-			array( 'Cuándo', 'De lunes a sábado, también festivos. Elige el día al pagar y te confirmamos la hora por teléfono o WhatsApp. El sábado tiene un suplemento de 11,74 € (IVA incluido).' ),
-			array( 'Cuánto', 'Gratis de lunes a viernes. Pagas solo el hielo, en efectivo al recogerlo.' ),
+			array( 'Cuándo', 'De lunes a sábado, también festivos. Elige el día al pagar y te confirmamos la hora por teléfono o WhatsApp. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre}' ),
+			array( 'Cuánto', 'Precio redondo con IVA incluido, el mismo en la web y en la nave: {pk} kg por {recogida:pk}, 10 kg por {recogida:10}, 15 kg por {recogida:15} y 20 kg por {recogida:20}. En efectivo y con el importe exacto: no tenemos cambio.' ),
 			array( 'Cómo llevarlo', 'Nunca en el habitáculo: en el maletero y ventilando.' ),
 		),
 		'alt'    => 'Operario con un cazo de pellets de hielo seco en el almacén',
@@ -73,7 +73,7 @@ return array(
 	'cobertura' => array(
 		'titulo' => '¿Llega a mi zona?',
 		'si'     => array( 'titulo' => 'Sí, al día siguiente por la mañana', 'texto' => 'Toda la España peninsular: de Girona a Huelva y de A Coruña a Murcia.' ),
-		'no'     => array( 'titulo' => 'Fuera de la península, no', 'texto' => 'Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla, ni fuera de España.' ),
+		'no'     => array( 'titulo' => 'Fuera de la península,&nbsp;no', /* &nbsp;: el "no" no queda solo en móvil */ 'texto' => 'Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla, ni fuera de España.' ),
 		'zonas'  => 'Ver zonas de entrega cerca de Barcelona',
 	),
 	'faq' => array(

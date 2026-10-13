@@ -9,7 +9,7 @@ return array(
 	'migas' => array( 'Inicio', 'Usos', 'Laboratorios' ),
 	'hero'  => array(
 		'titulo' => 'Hielo seco para transporte de muestras,|<em>mañana por la mañana.</em>',
-		'texto'  => 'Pida antes de las 12:00 y lo tiene en su laboratorio al día siguiente por la mañana. Muestras, reactivos y kits a −78,5 °C, sin humedad en la caja.',
+		'texto'  => 'Muestras, reactivos y kits a −78,5 °C, sin humedad en la caja. Pida antes de las 12:00 y lo tiene mañana (de martes a sábado), o elija otro día.',
 		'boton'  => 'Abrir mi cuenta',
 		'alt'    => 'Tubos de muestras rodeados de hielo seco en una caja aislante',
 	),

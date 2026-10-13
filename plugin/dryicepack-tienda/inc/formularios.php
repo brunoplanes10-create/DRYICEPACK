@@ -72,7 +72,8 @@ function dip_procesar_formulario() {
 	$ajax   = ! empty( $_POST['ajax'] );
 	$origen = esc_url_raw( home_url( sanitize_text_field( wp_unslash( $_POST['dip_origen'] ?? '/' ) ) ) );
 	$idioma = dip_idioma_desde_ruta( (string) wp_parse_url( $origen, PHP_URL_PATH ) );
-	$tx     = dip_textos_formularios( $idioma );
+	// Cuenta de empresa y presupuesto de industria son páginas B2B: respuestas con tratamiento de usted
+	$tx     = dip_textos_formularios( $idioma, in_array( $tipo, array( 'cuenta', 'presupuesto' ), true ) );
 
 	$responder = static function ( $ok, $mensaje, $errores = array() ) use ( $ajax, $origen ) {
 		if ( $ajax ) {
@@ -150,13 +151,22 @@ function dip_idioma_desde_ruta( $ruta ) {
 	return preg_match( '#^(ca|en)(/|$)#', $ruta, $m ) ? $m[1] : 'es';
 }
 
-function dip_textos_formularios( $idioma ) {
+function dip_textos_formularios( $idioma, $usted = false ) {
 	$tx = array(
 		'es' => array( 'ok' => 'Recibido. Te respondemos en horario laboral, normalmente el mismo día.', 'error' => 'No se ha podido enviar. Llámanos al 936 73 76 41.', 'caducado' => 'La página llevaba mucho rato abierta. Recárgala y vuelve a enviar.', 'limite' => 'Has enviado varios formularios seguidos. Llámanos al 936 73 76 41 o escríbenos por WhatsApp.', 'falta' => 'Falta este dato.', 'contacto' => 'Déjanos un email o un teléfono.', 'email' => 'Revisa el email.', 'privacidad' => 'Acepta la política de privacidad para enviar.', 'revisa' => 'Revisa los campos marcados.' ),
 		'ca' => array( 'ok' => 'Rebut. Et responem en horari laboral, normalment el mateix dia.', 'error' => "No s'ha pogut enviar. Truca'ns al 936 73 76 41.", 'caducado' => 'La pàgina portava molta estona oberta. Recarrega-la i torna a enviar.', 'limite' => "Has enviat diversos formularis seguits. Truca'ns al 936 73 76 41 o escriu-nos per WhatsApp.", 'falta' => 'Falta aquesta dada.', 'contacto' => "Deixa'ns un correu o un telèfon.", 'email' => 'Revisa el correu.', 'privacidad' => 'Accepta la política de privacitat per enviar.', 'revisa' => 'Revisa els camps marcats.' ),
 		'en' => array( 'ok' => 'Received. We reply during working hours, usually the same day.', 'error' => 'It could not be sent. Call us on +34 936 73 76 41.', 'caducado' => 'This page was open for a long time. Reload it and send again.', 'limite' => 'You have sent several forms in a row. Call +34 936 73 76 41 or message us on WhatsApp.', 'falta' => 'This field is required.', 'contacto' => 'Leave an email or a phone number.', 'email' => 'Please check the email.', 'privacidad' => 'Accept the privacy policy to send.', 'revisa' => 'Please check the highlighted fields.' ),
 	);
-	return $tx[ $idioma ] ?? $tx['es'];
+	$t = $tx[ $idioma ] ?? $tx['es'];
+	if ( $usted ) {
+		// Mismos avisos con "usted" (en inglés no cambia)
+		$u = array(
+			'es' => array( 'ok' => 'Recibido. Le respondemos en horario laboral, normalmente el mismo día.', 'error' => 'No se ha podido enviar. Llámenos al 936 73 76 41.', 'caducado' => 'La página llevaba mucho rato abierta. Recárguela y vuelva a enviar.', 'limite' => 'Ha enviado varios formularios seguidos. Llámenos al 936 73 76 41 o escríbanos por WhatsApp.', 'contacto' => 'Déjenos un email o un teléfono.', 'email' => 'Revise el email.', 'privacidad' => 'Acepte la política de privacidad para enviar.', 'revisa' => 'Revise los campos marcados.' ),
+			'ca' => array( 'ok' => 'Rebut. Li responem en horari laboral, normalment el mateix dia.', 'error' => 'No s\'ha pogut enviar. Truqui\'ns al 936 73 76 41.', 'caducado' => 'La pàgina portava molta estona oberta. Recarregui-la i torni a enviar.', 'limite' => 'Ha enviat diversos formularis seguits. Truqui\'ns al 936 73 76 41 o escrigui\'ns per WhatsApp.', 'contacto' => 'Deixi\'ns un correu o un telèfon.', 'email' => 'Revisi el correu.', 'privacidad' => 'Accepti la política de privacitat per enviar.', 'revisa' => 'Revisi els camps marcats.' ),
+		);
+		if ( isset( $u[ $idioma ] ) ) $t = array_merge( $t, $u[ $idioma ] );
+	}
+	return $t;
 }
 
 /* ---------- Escritorio: columnas y "crear cuenta de empresa" ---------- */

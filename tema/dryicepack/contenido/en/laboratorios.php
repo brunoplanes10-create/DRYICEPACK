@@ -9,7 +9,7 @@ return array(
 	'migas' => array( 'Home', 'Uses', 'Laboratories' ),
 	'hero'  => array(
 		'titulo' => 'Dry ice for sample shipping,|<em>with you tomorrow morning.</em>',
-		'texto'  => 'Order before 12:00 (Spanish time) and it reaches your lab the next morning. Samples, reagents and kits at −78.5 °C, with no moisture in the box.',
+		'texto'  => 'Samples, reagents and kits at −78.5 °C, no moisture in the box. Order by 12:00 (Spanish time) for tomorrow (Tue–Sat), or choose another day.',
 		'boton'  => 'Open my account',
 		'alt'    => 'Sample tubes surrounded by dry ice in an insulated box',
 	),

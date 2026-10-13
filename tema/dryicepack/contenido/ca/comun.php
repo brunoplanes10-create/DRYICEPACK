@@ -92,4 +92,8 @@ return array(
 	'form_enviando'   => 'Enviant…',
 	'form_ok'         => 'Rebut. Et responem en horari laboral, normalment el mateix dia.',
 	'form_error'      => 'No s\'ha pogut enviar. Truca\'ns al 936 73 76 41.',
+	// Formularis de les pàgines B2B (empreses, indústria): tracte de vostè
+	'form_privacidad_usted' => 'He llegit la <a href="%s">política de privacitat</a>. Fem servir les seves dades només per respondre-li.',
+	'form_ok_usted'         => 'Rebut. Li responem en horari laboral, normalment el mateix dia.',
+	'form_error_usted'      => 'No s\'ha pogut enviar. Truqui\'ns al 936 73 76 41.',
 );

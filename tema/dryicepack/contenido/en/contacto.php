@@ -30,7 +30,7 @@ return array(
 	'nave' => array(
 		'titulo'  => 'Our warehouse in Mataró',
 		'horario' => 'Office hours: Monday to Friday, 9:00 to 18:00',
-		'recoger' => 'Collection Monday to Saturday, including public holidays, at the time we confirm with you. Free on weekdays; €11.74 on Saturday. Cash payment.',
+		'recoger' => 'Collection Monday to Saturday, including public holidays, at the time we confirm with you. Round prices with VAT included: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} Cash only, exact amount: we can’t give change.',
 		'como'    => 'Get directions',
 		'empresa' => 'Company details',
 		'alt'     => 'Boxes of dry ice ready next to the delivery van',

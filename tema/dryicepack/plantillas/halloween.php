@@ -64,7 +64,9 @@ $hw_producto = dipt_url( 'producto' );
 $hw_pedir    = static function ( $kg, $formato = '3mm' ) use ( $hw_producto ) {
 	return add_query_arg( array( 'kg' => $kg, 'formato' => $formato ), $hw_producto );
 };
-$hw_tel      = 'tel:+34936737641';
+// Pack de casa: el pequeño que se vende ahora (3 kg mientras queden cajas; después, 5 kg)
+$hw_pk       = dipt_pk();
+$hw_tel     = 'tel:+34936737641';
 $hw_whatsapp = 'https://wa.me/34686980471?text=' . rawurlencode( 'Hola, necesito hielo seco para Halloween. Es para:' );
 
 // Plazos Halloween 2026 (hora de Madrid; el 29/10 ya es horario de invierno, +01:00)
@@ -79,7 +81,7 @@ $hw_faq = array(
 	),
 	array(
 		'q' => '¿Cuánto hielo seco necesito para Halloween?',
-		'a' => 'Orientativamente, 3 kg para una fiesta en casa, 10 kg para una fiesta grande y 15–20 kg para un bar o un evento. Si vas a tener varios puntos de niebla a la vez, sube un escalón.',
+		'a' => 'Orientativamente, ' . $hw_pk . ' kg para una fiesta en casa, 10 kg para una fiesta grande y 15–20 kg para un bar o un evento. Si vas a tener varios puntos de niebla a la vez, sube un escalón.',
 	),
 	array(
 		'q' => '¿Se puede echar hielo seco en una bebida?',
@@ -99,7 +101,8 @@ $hw_faq = array(
 	),
 	array(
 		'q' => '¿Puedo recogerlo en vuestro almacén?',
-		'a' => 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a sábado; el sábado 31 también, con suplemento de 11,74 €. Elige la recogida al finalizar la compra y te confirmamos la hora. Está pensada para clientes del Maresme, el Vallès y el área de Barcelona.',
+		// Marcadores de inc/idiomas.php: precio de recogida con IVA, suplemento del sábado y el sábado 31/10 sin suplemento (desaparece solo después)
+		'a' => dipt_marcadores( 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a sábado, también festivos. Pagas en efectivo un precio redondo con IVA incluido: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. Trae el importe exacto: no tenemos cambio. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Elige la recogida al finalizar la compra y te confirmamos la hora. Está pensada para clientes del Maresme, el Vallès y el área de Barcelona.' ),
 	),
 );
 
@@ -250,7 +253,7 @@ get_header();
 			<span class="hw-subrayado" aria-hidden="true"></span>
 			<p class="hw-entrada">Pellets de hielo seco de 3 mm que hacen niebla densa en cuanto tocan agua caliente. Pide antes de las 12:00 y lo recibes el siguiente día laborable por la mañana, en caja EPS y listo para usar.</p>
 			<div class="hw-botones">
-				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir hielo seco</a>
+				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="#cantidad">Elegir cantidad</a>
 			</div>
 			<ul class="hw-chips">
@@ -340,7 +343,7 @@ get_header();
 							<div><dt>Niebla</dt><dd>Inmediata y densa</dd></div>
 							<div><dt>Ideal para</dt><dd>Calderos, ponchera, suelo</dd></div>
 						</dl>
-						<a class="hw-btn hw-btn--bloque hw-formato__btn" href="<?php echo esc_url( $hw_pedir( 3, '3mm' ) ); ?>">Pedir en 3 mm</a>
+						<a class="hw-btn hw-btn--bloque hw-formato__btn" href="<?php echo esc_url( $hw_pedir( $hw_pk, '3mm' ) ); ?>">Pedir en 3 mm</a>
 					</div>
 				</article>
 				<article class="hw-formato">
@@ -359,7 +362,7 @@ get_header();
 							<div><dt>Niebla</dt><dd>Más constante</dd></div>
 							<div><dt>Ideal para</dt><dd>Fiestas largas, eventos</dd></div>
 						</dl>
-						<a class="hw-btn hw-btn--bloque hw-btn--linea hw-formato__btn" href="<?php echo esc_url( $hw_pedir( 3, '16mm' ) ); ?>">Pedir en 16 mm</a>
+						<a class="hw-btn hw-btn--bloque hw-btn--linea hw-formato__btn" href="<?php echo esc_url( $hw_pedir( $hw_pk, '16mm' ) ); ?>">Pedir en 16 mm</a>
 					</div>
 				</article>
 			</div>
@@ -377,10 +380,10 @@ get_header();
 			<ul class="hw-packs" data-hw-revela="grupo">
 				<li class="hw-pack">
 					<p class="hw-pack__uso">En casa</p>
-					<p class="hw-pack__kg"><span class="hw-pack__num">3</span> kg</p>
+					<p class="hw-pack__kg"><span class="hw-pack__num"><?php echo (int) $hw_pk; ?></span> kg</p>
 					<p class="hw-pack__desc">Un caldero o una ponchera para una fiesta en casa.</p>
-					<p class="hw-pack__precio"><?php echo esc_html( dipt_euros( dipt_precio_pack( 3 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 3 )['sin_iva'] ) ); ?> + IVA</small></p>
-					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir 3 kg</a>
+					<p class="hw-pack__precio"><?php echo esc_html( dipt_euros( dipt_precio_pack( $hw_pk )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( $hw_pk )['sin_iva'] ) ); ?> + IVA</small></p>
+					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir <?php echo (int) $hw_pk; ?> kg</a>
 				</li>
 				<li class="hw-pack">
 					<p class="hw-pack__uso">Fiesta grande</p>
@@ -471,7 +474,7 @@ get_header();
 				<h2 id="hw-fecha-t">¿Hasta cuándo puedo pedir?</h2>
 				<p class="hw-reloj" data-hw-reloj>Jue 29/10 · 12:00</p>
 				<p class="hw-reloj__pie" data-hw-reloj-pie>Último pedido para recibirlo el viernes 30 por la mañana.</p>
-				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir hielo seco</a>
+				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 			</div>
 			<ol class="hw-linea" data-hw-revela="grupo">
 				<li>
@@ -488,7 +491,7 @@ get_header();
 				</li>
 				<li>
 					<p class="hw-linea__cuando">Recogida en Mataró</p>
-					<p>De lunes a sábado, con hora confirmada. Para Maresme, Vallès y área de Barcelona.</p>
+					<p><?php echo esc_html( dipt_marcadores( 'De lunes a sábado, con hora confirmada. Precio redondo con IVA, en efectivo y con el importe exacto: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida}.{sabado_libre}' ) ); ?></p>
 				</li>
 			</ol>
 			<p class="hw-nota hw-fecha__nota">No lo pidas con muchos días de antelación: el hielo seco sublima poco a poco. Lo ideal es recibirlo la víspera de la fiesta. ¿Tu fiesta es el sábado por la noche y lo recibes el viernes? Elige 16 mm, que aguanta más, o entrega en sábado si tu zona la tiene.</p>
@@ -575,7 +578,7 @@ get_header();
 			<h2 id="hw-final-t"><span class="hw-f-v">Niebla de verdad, lista para el viernes 30</span><span class="hw-f-s">Niebla de verdad para tu Halloween</span><span class="hw-f-c">Niebla de verdad para tu próxima fiesta</span></h2>
 			<p><span class="hw-f-v">Pide antes de las 12:00 del jueves 29 de octubre.</span><span class="hw-f-s">Para el sábado 31, pide antes de las 12:00 del viernes 30 (según zona).</span><span class="hw-f-c">Pide antes de las 12:00 y lo recibes el siguiente día laborable.</span> Te llega en caja EPS, listo para usar. Antes de empezar, lee la <a href="<?php echo esc_url( home_url( '/seguridad-del-hielo-seco/' ) ); ?>">guía de seguridad</a>.</p>
 			<div class="hw-botones">
-				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir hielo seco</a>
+				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="<?php echo esc_url( $hw_tel ); ?>">Llamar</a>
 			</div>
 		</div>

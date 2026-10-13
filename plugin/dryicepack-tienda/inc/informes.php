@@ -8,6 +8,8 @@
  * siguen en las dos listas, con su número en la columna "Factura web" y marcados "Ya facturado por la web": no se
  * vuelven a facturar y no suman en "Pendiente de facturar". Si después el cliente pidió factura completa por
  * /factura/, vuelve a estar pendiente: la completa se hace en la gestoría e indica que sustituye a la simplificada.
+ * Tampoco suman los que la web va a facturar al cobrarlos (recogida en efectivo aún sin recoger, pago en espera):
+ * se puede reservar hasta 90 días y una recogida de este mes puede cobrarse el mes que viene.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -39,28 +41,44 @@ function dip_mes_elegido() {
 }
 
 /**
+ * ¿La web hará la factura simplificada de este pedido cuando se cobre? Recogida en efectivo que todavía no se ha
+ * recogido (se emite al marcarla «Completado») o pago en espera (se emite al pasar a «Procesando»), de un cliente al
+ * que le toca (dip_fs_motivo() en modo 'previsto', inc/factura-simplificada.php).
+ */
+function dip_factura_web_prevista( WC_Order $p ) {
+	if ( ! function_exists( 'dip_fs_motivo' ) ) return false;
+	$estado = (string) $p->get_status();
+	$espera = 'on-hold' === $estado || ( 'processing' === $estado && 'cod' === $p->get_payment_method() );
+	return $espera && '' === dip_fs_motivo( $p, 'previsto' );
+}
+
+/**
  * Factura que ya hizo la web y si falta hacerla en la aplicación de la gestoría.
- * - Sin factura simplificada: pendiente de facturar.
- * - Con factura simplificada (W…): ya facturado por la web.
+ * - Sin factura simplificada: pendiente de facturar ('pendiente').
+ * - Con factura simplificada (W…): ya facturado por la web ('web').
  * - Con factura simplificada y factura completa pedida después por /factura/: pendiente (la completa la sustituye).
+ * - Sin factura todavía, pero la web la hará al cobrarlo: no se factura en la gestoría ('prevista').
  *
- * @return array{numero: string, pendiente: bool, estado: string}
+ * @return array{numero: string, pendiente: bool, tipo: string, estado: string}
  */
 function dip_factura_web( WC_Order $p ) {
 	$numero = trim( (string) $p->get_meta( '_dip_fs_numero' ) );
-	if ( '' === $numero ) return array( 'numero' => '', 'pendiente' => true, 'estado' => 'Pendiente de facturar' );
-	if ( $p->get_meta( '_dip_factura_datos' ) ) {
-		return array( 'numero' => $numero, 'pendiente' => true, 'estado' => 'Pendiente: factura completa pedida, sustituye a la ' . $numero );
+	if ( '' === $numero ) {
+		if ( dip_factura_web_prevista( $p ) ) return array( 'numero' => '', 'pendiente' => false, 'tipo' => 'prevista', 'estado' => 'La hará la web al cobrar: no facturar' );
+		return array( 'numero' => '', 'pendiente' => true, 'tipo' => 'pendiente', 'estado' => 'Pendiente de facturar' );
 	}
-	return array( 'numero' => $numero, 'pendiente' => false, 'estado' => 'Ya facturado por la web' );
+	if ( $p->get_meta( '_dip_factura_datos' ) ) {
+		return array( 'numero' => $numero, 'pendiente' => true, 'tipo' => 'pendiente', 'estado' => 'Pendiente: factura completa pedida, sustituye a la ' . $numero );
+	}
+	return array( 'numero' => $numero, 'pendiente' => false, 'tipo' => 'web', 'estado' => 'Ya facturado por la web' );
 }
 
-/** Totales separados: lo que falta facturar ('pendiente') y lo que ya facturó la web ('web'). */
+/** Totales separados: lo que falta facturar ('pendiente'), lo que ya facturó la web ('web') y lo que facturará al cobrar ('prevista'). */
 function dip_totales_facturacion( array $pedidos ) {
 	$vacio = array( 'pedidos' => 0, 'kg' => 0.0, 'base' => 0.0, 'iva' => 0.0, 'total' => 0.0 );
-	$t     = array( 'pendiente' => $vacio, 'web' => $vacio );
+	$t     = array( 'pendiente' => $vacio, 'web' => $vacio, 'prevista' => $vacio );
 	foreach ( $pedidos as $p ) {
-		$k = dip_factura_web( $p )['pendiente'] ? 'pendiente' : 'web';
+		$k = dip_factura_web( $p )['tipo'];
 		$t[ $k ]['pedidos']++;
 		$t[ $k ]['kg']    += (float) $p->get_meta( '_dip_kg' );
 		$t[ $k ]['base']  += round( (float) $p->get_total() - (float) $p->get_total_tax(), 2 );
@@ -74,7 +92,7 @@ function dip_n_pedidos( $n ) {
 	return (int) $n . ( 1 === (int) $n ? ' pedido' : ' pedidos' );
 }
 
-/** Filas del CSV de facturación mensual: una por pedido y, al final, los dos totales por separado. */
+/** Filas del CSV de facturación mensual: una por pedido y, al final, los totales por separado (el de «al cobrar», solo si hay). */
 function dip_filas_facturacion( array $pedidos ) {
 	$dec   = static fn( $n ) => wc_format_localized_decimal( round( (float) $n, 2 ) );
 	$filas = array( array( 'Cliente', 'NIF/CIF', 'Email', 'Pedido', 'Fecha', 'Entrega', 'Kg', 'Formato', 'Base imponible', 'IVA', 'Total', 'Forma de pago', 'Factura mensual', 'Factura web', 'Estado' ) );
@@ -100,12 +118,27 @@ function dip_filas_facturacion( array $pedidos ) {
 	}
 	if ( $pedidos ) {
 		$t = dip_totales_facturacion( $pedidos );
-		foreach ( array( 'pendiente' => 'Total pendiente de facturar', 'web' => 'Total ya facturado por la web (no se vuelve a facturar)' ) as $k => $titulo ) {
-			$x       = $t[ $k ];
+		foreach ( array( 'pendiente' => 'Total pendiente de facturar', 'web' => 'Total ya facturado por la web (no se vuelve a facturar)', 'prevista' => 'Total que facturará la web al cobrar (no facturar)' ) as $k => $titulo ) {
+			$x = $t[ $k ];
+			if ( 'prevista' === $k && ! $x['pedidos'] ) continue;
 			$filas[] = array( $titulo, '', '', dip_n_pedidos( $x['pedidos'] ), '', '', $dec( $x['kg'] ), '', $dec( $x['base'] ), $dec( $x['iva'] ), $dec( $x['total'] ), '', '', '', '' );
 		}
 	}
 	return $filas;
+}
+
+/** Celda de CSV segura: un texto que empieza por =, +, -, @, tabulador o retorno se abriría en Excel como fórmula. Los números no cambian. */
+function dip_csv_celda( $valor ) {
+	$valor = (string) $valor;
+	if ( '' === $valor || false === strpos( "=+-@\t\r", $valor[0] ) || preg_match( '/^-?\d+(?:[.,]\d+)?$/', $valor ) ) return $valor;
+	return "'" . $valor;
+}
+
+/** Nota del pedido para Odoo: lo que ya facturó la web o facturará al cobrar, para no facturarlo otra vez. */
+function dip_nota_factura_web( array $fw ) {
+	if ( 'prevista' === $fw['tipo'] ) return ' · La factura simplificada la hará la web al cobrar: no facturar';
+	if ( '' === $fw['numero'] ) return '';
+	return ' · ' . ( $fw['pendiente'] ? $fw['estado'] : 'Ya facturado por la web: ' . $fw['numero'] . ', no facturar otra vez' );
 }
 
 /** Filas del CSV para Odoo: cabecera del pedido en la primera línea y una línea por producto, transporte y suplemento. */
@@ -122,7 +155,7 @@ function dip_filas_odoo( array $pedidos ) {
 			$p->get_date_created() ? wp_date( 'Y-m-d H:i:s', $p->get_date_created()->getTimestamp() ) : '',
 			(string) $p->get_meta( '_dip_fecha_entrega' ),
 			trim( sprintf( 'Web · %s · %s kg · %s · %s', $p->get_payment_method_title(), wc_format_localized_decimal( (float) $p->get_meta( '_dip_kg' ) ), (string) $p->get_meta( '_billing_nif' ), $p->get_customer_note() ), ' ·' )
-				. ( $fw['numero'] ? ' · ' . ( $fw['pendiente'] ? $fw['estado'] : 'Ya facturado por la web: ' . $fw['numero'] . ', no facturar otra vez' ) : '' ),
+				. dip_nota_factura_web( $fw ),
 			$fw['numero'],
 		);
 		$lineas = array();
@@ -168,7 +201,7 @@ function dip_enviar_csv( $nombre, array $filas ) {
 	header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $nombre ) . '"' );
 	$salida = fopen( 'php://output', 'w' );
 	fwrite( $salida, "\xEF\xBB\xBF" ); // BOM: Excel abre bien los acentos
-	foreach ( $filas as $fila ) fputcsv( $salida, $fila, ';' );
+	foreach ( $filas as $fila ) fputcsv( $salida, array_map( 'dip_csv_celda', $fila ), ';' );
 	fclose( $salida );
 	exit;
 }
@@ -207,6 +240,9 @@ function dip_pintar_facturacion( $mes, array $pedidos ) {
 		</form>
 		<p>Primero las cuentas de empresa con factura mensual. Cada pedido indica si ya pagó (tarjeta, efectivo) o va a la factura del mes.</p>
 		<p class="dip-fw-explica"><strong>«Ya facturado por la web»</strong>: la web ya hizo la factura simplificada (el número W… de la columna «Factura web») y se la envió al cliente; no la vuelvas a hacer en la aplicación de la gestoría y no suma en «Pendiente de facturar».</p>
+		<?php if ( $total['prevista']['pedidos'] ) : ?>
+			<p class="dip-fw-explica-prevista"><strong>«La hará la web al cobrar»</strong>: recogida en efectivo todavía sin recoger o pago en espera; la web hará la factura simplificada al cobrarlo, así que tampoco la hagas en la gestoría.</p>
+		<?php endif; ?>
 		<?php if ( ! $grupos ) : ?>
 			<p>No hay pedidos en este mes.</p>
 		<?php else : ?>
@@ -214,6 +250,9 @@ function dip_pintar_facturacion( $mes, array $pedidos ) {
 				<tbody>
 					<tr><th scope="row"><strong>Pendiente de facturar</strong></th><td><?php echo esc_html( dip_n_pedidos( $total['pendiente']['pedidos'] ) ); ?></td><td><?php echo esc_html( wc_format_localized_decimal( round( $total['pendiente']['kg'], 2 ) ) ); ?> kg</td><td style="text-align:right"><strong><?php echo wp_kses_post( wc_price( $total['pendiente']['total'] ) ); ?></strong></td></tr>
 					<tr style="<?php echo esc_attr( $apagado ); ?>"><th scope="row">Ya facturado por la web</th><td><?php echo esc_html( dip_n_pedidos( $total['web']['pedidos'] ) ); ?></td><td><?php echo esc_html( wc_format_localized_decimal( round( $total['web']['kg'], 2 ) ) ); ?> kg</td><td style="text-align:right"><?php echo wp_kses_post( wc_price( $total['web']['total'] ) ); ?></td></tr>
+					<?php if ( $total['prevista']['pedidos'] ) : ?>
+						<tr style="<?php echo esc_attr( $apagado ); ?>"><th scope="row">La hará la web al cobrar</th><td><?php echo esc_html( dip_n_pedidos( $total['prevista']['pedidos'] ) ); ?></td><td><?php echo esc_html( wc_format_localized_decimal( round( $total['prevista']['kg'], 2 ) ) ); ?> kg</td><td style="text-align:right"><?php echo wp_kses_post( wc_price( $total['prevista']['total'] ) ); ?></td></tr>
+					<?php endif; ?>
 				</tbody>
 			</table>
 		<?php endif; ?>
@@ -226,13 +265,13 @@ function dip_pintar_facturacion( $mes, array $pedidos ) {
 				<tbody>
 				<?php foreach ( $g['pedidos'] as $p ) : ?>
 					<?php $fw = dip_factura_web( $p ); ?>
-					<tr class="<?php echo esc_attr( $fw['pendiente'] ? 'dip-fw-pendiente' : 'dip-fw-web' ); ?>"<?php echo $fw['pendiente'] ? '' : ' style="' . esc_attr( $apagado ) . '"'; ?>>
+					<tr class="<?php echo esc_attr( 'dip-fw-' . $fw['tipo'] ); ?>"<?php echo $fw['pendiente'] ? '' : ' style="' . esc_attr( $apagado ) . '"'; ?>>
 						<td><a href="<?php echo esc_url( $p->get_edit_order_url() ); ?>">#<?php echo esc_html( $p->get_order_number() ); ?></a></td>
 						<td><?php echo esc_html( $p->get_date_created() ? wp_date( 'd/m/Y', $p->get_date_created()->getTimestamp() ) : '' ); ?></td>
 						<td><?php echo esc_html( (string) $p->get_meta( '_dip_fecha_entrega' ) ); ?></td>
 						<td><?php echo esc_html( wc_format_localized_decimal( (float) $p->get_meta( '_dip_kg' ) ) ); ?></td>
 						<td><?php echo esc_html( $p->get_payment_method_title() ); ?></td>
-						<td><?php echo $fw['numero'] ? esc_html( $fw['numero'] ) . '<br><small>' . ( $fw['pendiente'] ? '<strong>' . esc_html( $fw['estado'] ) . '</strong>' : esc_html( $fw['estado'] ) ) . '</small>' : '—'; ?></td>
+						<td><?php echo $fw['numero'] ? esc_html( $fw['numero'] ) . '<br><small>' . ( $fw['pendiente'] ? '<strong>' . esc_html( $fw['estado'] ) . '</strong>' : esc_html( $fw['estado'] ) ) . '</small>' : ( 'prevista' === $fw['tipo'] ? '<small>' . esc_html( 'La hará la web al cobrar' ) . '</small>' : '—' ); ?></td>
 						<td style="text-align:right"><?php echo wp_kses_post( wc_price( $p->get_total() ) ); ?></td>
 					</tr>
 				<?php endforeach; ?>
@@ -241,7 +280,12 @@ function dip_pintar_facturacion( $mes, array $pedidos ) {
 					<tr><th colspan="3">Pendiente de facturar</th><th><?php echo esc_html( wc_format_localized_decimal( round( $t['pendiente']['kg'], 2 ) ) ); ?> kg</th><th colspan="2"></th><th style="text-align:right"><?php echo wp_kses_post( wc_price( $t['pendiente']['total'] ) ); ?></th></tr>
 					<?php if ( $t['web']['pedidos'] ) : ?>
 						<tr style="<?php echo esc_attr( $apagado ); ?>"><th colspan="3">Ya facturado por la web</th><th><?php echo esc_html( wc_format_localized_decimal( round( $t['web']['kg'], 2 ) ) ); ?> kg</th><th colspan="2"></th><th style="text-align:right"><?php echo wp_kses_post( wc_price( $t['web']['total'] ) ); ?></th></tr>
-						<tr><th colspan="3">Total del mes</th><th><?php echo esc_html( wc_format_localized_decimal( round( $t['pendiente']['kg'] + $t['web']['kg'], 2 ) ) ); ?> kg</th><th colspan="2"></th><th style="text-align:right"><?php echo wp_kses_post( wc_price( $t['pendiente']['total'] + $t['web']['total'] ) ); ?></th></tr>
+					<?php endif; ?>
+					<?php if ( $t['prevista']['pedidos'] ) : ?>
+						<tr style="<?php echo esc_attr( $apagado ); ?>"><th colspan="3">La hará la web al cobrar</th><th><?php echo esc_html( wc_format_localized_decimal( round( $t['prevista']['kg'], 2 ) ) ); ?> kg</th><th colspan="2"></th><th style="text-align:right"><?php echo wp_kses_post( wc_price( $t['prevista']['total'] ) ); ?></th></tr>
+					<?php endif; ?>
+					<?php if ( $t['web']['pedidos'] || $t['prevista']['pedidos'] ) : ?>
+						<tr><th colspan="3">Total del mes</th><th><?php echo esc_html( wc_format_localized_decimal( round( $t['pendiente']['kg'] + $t['web']['kg'] + $t['prevista']['kg'], 2 ) ) ); ?> kg</th><th colspan="2"></th><th style="text-align:right"><?php echo wp_kses_post( wc_price( $t['pendiente']['total'] + $t['web']['total'] + $t['prevista']['total'] ) ); ?></th></tr>
 					<?php endif; ?>
 				</tfoot>
 			</table>
@@ -264,7 +308,7 @@ function dip_pantalla_odoo() {
 			<li>En Odoo: Ventas → Pedidos → icono de engranaje → <strong>Importar registros</strong> → sube el archivo.</li>
 			<li>La primera vez, empareja cada producto con el tuyo de Odoo (hielo seco por formato, «Transporte» y «Entrega en sábado»). Odoo recuerda el emparejamiento.</li>
 			<li>Cada pedido lleva un identificador propio (<code>woo_</code> + número): si importas dos veces el mismo, Odoo lo actualiza en lugar de duplicarlo.</li>
-			<li>La columna <strong>«Factura web»</strong> lleva el número de la factura simplificada que ya hizo la web (W…) y no se importa: déjala sin emparejar. Esos pedidos ya están facturados (también lo dice la nota del pedido): no hagas otra factura desde Odoo.</li>
+			<li>La columna <strong>«Factura web»</strong> lleva el número de la factura simplificada que ya hizo la web (W…) y no se importa: déjala sin emparejar. Esos pedidos ya están facturados (también lo dice la nota del pedido): no hagas otra factura desde Odoo. Tampoco de los que la nota dice «la hará la web al cobrar» (recogida en efectivo aún sin recoger o pago en espera).</li>
 		</ol>
 		<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>">
 			<input type="hidden" name="page" value="dryicepack-odoo">

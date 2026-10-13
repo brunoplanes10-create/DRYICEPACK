@@ -20,7 +20,7 @@ foreach ( dipt_guias() as $slug => $rutas ) {
 	);
 }
 if ( 'es' === $idioma ) {
-	$q = new WP_Query( array( 'post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 30, 'ignore_sticky_posts' => true, 'post_name__not_in' => array_keys( dipt_guias() ) ) );
+	$q = new WP_Query( array( 'post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 30, 'ignore_sticky_posts' => true, 'post_name__not_in' => array_merge( array_keys( dipt_guias() ), array( 'hola-mundo', 'hello-world' ) ) ) ); // la entrada de ejemplo de WordPress nunca sale como guía
 	foreach ( $q->posts as $post ) {
 		$entradas[] = array(
 			'url'     => get_permalink( $post ),

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:          Dryicepack · Tienda
  * Plugin URI:           https://dryicepack.es/
- * Description:          Lógica de la tienda de dryicepack.es: envío por peso, máximo de 250 kg, corte de las 12:00, festivos, sábado con suplemento, recogida en Mataró, checkout corto, factura después de la compra, cuentas de empresa, formularios sin spam, aviso de cookies con Google Consent Mode, redirecciones y exportación para Odoo.
+ * Description:          Lógica de la tienda de dryicepack.es: envío por peso, máximo de 250 kg, corte de las 12:00, festivos, sábado con suplemento, recogida en Mataró a precio redondo, pack pequeño de 3 o 5 kg, datos para la app INDUNOVA, checkout corto, factura después de la compra, cuentas de empresa, formularios sin spam, aviso de cookies con Google Consent Mode, redirecciones y exportación para Odoo.
  * Version:              1.0.0
  * Requires at least:    6.5
  * Requires PHP:         8.0
@@ -17,6 +17,14 @@ define( 'DIP_TIENDA_VERSION', '1.0.0' );
 define( 'DIP_TIENDA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DIP_TIENDA_URL', plugin_dir_url( __FILE__ ) );
 define( 'DIP_TIENDA_ARCHIVO', __FILE__ );
+
+/*
+ * Claves de los pedidos que lee la app INDUNOVA Control (03/10/2026). No las renombres sin avisar:
+ * _dip_fecha_entrega, _dip_metodo_entrega, _orddd_lite_timestamp, _dip_idioma, _dip_empresa, _dip_factura_datos,
+ * _dip_factura_mensual, _dip_canal, _dip_fs_numero, _dip_factura_emitida, _dip_kg, _dip_cajas.
+ * Un pedido con _dip_fs_numero ya tiene factura simplificada de la web: la app no lo manda a «Por facturar».
+ * La app también lee GET /wp-json/dip/v1/envio (inc/api-app.php) y copia dip_mrw_nombres() y dip_mrw_mismo_sitio().
+ */
 
 /* Compatible con la tabla de pedidos moderna de WooCommerce (HPOS). El checkout es el clásico (shortcode), no el de bloques. */
 add_action( 'before_woocommerce_init', static function () {
@@ -63,6 +71,7 @@ if ( 'divi-child-dryicepack' === get_option( 'stylesheet' ) ) {
 require_once DIP_TIENDA_DIR . 'inc/ajustes.php';
 require_once DIP_TIENDA_DIR . 'inc/negocio.php';
 require_once DIP_TIENDA_DIR . 'inc/festivos-mrw.php'; // festivos de MRW (salida desde Mataró y destino); el tema también los usa
+require_once DIP_TIENDA_DIR . 'inc/api-app.php';      // GET /wp-json/dip/v1/envio para la app INDUNOVA Control (sin datos personales)
 require_once DIP_TIENDA_DIR . 'inc/textos.php';
 require_once DIP_TIENDA_DIR . 'inc/formularios.php';
 require_once DIP_TIENDA_DIR . 'inc/cookies.php';
@@ -71,6 +80,8 @@ require_once DIP_TIENDA_DIR . 'inc/redirecciones.php';
 add_action( 'plugins_loaded', static function () {
 	if ( ! class_exists( 'WooCommerce' ) ) return;
 	require_once DIP_TIENDA_DIR . 'inc/envio.php';
+	require_once DIP_TIENDA_DIR . 'inc/precios-recogida.php'; // recogida: precio redondo con IVA incluido, en efectivo
+	require_once DIP_TIENDA_DIR . 'inc/pack-pequeno.php';     // 3 kg hasta que se acabe; después 5 kg
 	require_once DIP_TIENDA_DIR . 'inc/entrega.php';
 	require_once DIP_TIENDA_DIR . 'inc/checkout.php';
 	require_once DIP_TIENDA_DIR . 'inc/pagos.php';

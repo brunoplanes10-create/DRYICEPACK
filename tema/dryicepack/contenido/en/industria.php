@@ -28,10 +28,10 @@ return array(
 	'escala' => array(
 		'titulo' => 'How much can we|<em>supply you?</em>',
 		'marcas' => array(
-			array( 3, 'From 3 kg', 'For trials and small orders.' ),
+			array( dipt_pk(), 'From {pk} kg', 'For trials and small orders.' ), // the number only places the mark on the scale (position = kg / 400)
 			array( 150, 'Up to 150 kg', 'Online orders anywhere in mainland Spain. Outside the province of Barcelona, more kilos by message, arranged individually.' ),
-			array( 250, 'Up to 250 kg', 'The maximum per order. Online, in the province of Barcelona. Over 200 kg: ask us, as we sometimes deliver it ourselves.' ),
-			array( 400, 'Scheduled supply', 'Weekly, fortnightly or monthly, at a better price.' ),
+			array( 250, 'Up to 250 kg', 'Online maximum, in the province of Barcelona. Over 200 kg, we sometimes deliver it ourselves. Over 250 kg? Ask us for a price and a day.' ),
+			array( 400, 'Scheduled supply', 'Weekly, fortnightly or monthly, with a discount on list prices.' ),
 		),
 	),
 	'compras' => array(

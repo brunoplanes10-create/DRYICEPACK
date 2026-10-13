@@ -134,7 +134,7 @@ $e_cajas    = (int) max( 1, ceil( $e_kg / $e_por_caja ) );
 	<div class="envoltura">
 		<?php echo dipt_titulo( 'h2', $c['alta']['titulo'], 't-h2', 'e-alta-t' ); // phpcs:ignore ?>
 		<p class="entrada suave e-alta__texto"><?php echo esc_html( $c['alta']['texto'] ); ?></p>
-		<form class="e-frase" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-form-dip data-enviando="<?php echo esc_attr( $c['alta']['enviando'] ); ?>" data-enviar="<?php echo esc_attr( $c['alta']['boton'] ); ?>" data-error="<?php echo esc_attr( dipt_t( 'form_error' ) ); ?>" id="formulario">
+		<form class="e-frase" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-form-dip data-enviando="<?php echo esc_attr( $c['alta']['enviando'] ); ?>" data-enviar="<?php echo esc_attr( $c['alta']['boton'] ); ?>" data-error="<?php echo esc_attr( dipt_t( 'form_error_usted' ) ); ?>" id="formulario">
 			<?php echo function_exists( 'dip_formulario_ocultos' ) ? dip_formulario_ocultos( 'cuenta' ) : ''; // phpcs:ignore ?>
 			<p class="e-frase__texto">
 				<?php
@@ -164,9 +164,9 @@ $e_cajas    = (int) max( 1, ceil( $e_kg / $e_por_caja ) );
 			<div class="e-frase__pie">
 				<p class="campo campo--corto"><label for="e-f-nif"><?php echo esc_html( $c['alta']['nif'] ); ?></label><input id="e-f-nif" name="nif" type="text" autocomplete="off"></p>
 				<label class="casilla"><input type="checkbox" name="recordatorio" value="Sí"> <?php echo esc_html( $c['alta']['recordatorio'] ); ?></label>
-				<label class="casilla"><input type="checkbox" name="privacidad" value="1" required> <span><?php echo wp_kses( sprintf( dipt_t( 'form_privacidad' ), esc_url( dipt_url( 'privacidad' ) ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label>
+				<label class="casilla"><input type="checkbox" name="privacidad" value="1" required> <span><?php echo wp_kses( sprintf( dipt_t( 'form_privacidad_usted' ), esc_url( dipt_url( 'privacidad' ) ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label>
 				<button type="submit" class="boton"><span><?php echo esc_html( $c['alta']['boton'] ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></button>
-				<p class="aviso-form<?php echo $enviado ? ' aviso-form--ok' : ( $error ? ' aviso-form--error' : '' ); ?>" data-form-aviso role="status" tabindex="-1"<?php echo ( $enviado || $error ) ? '' : ' hidden'; ?>><?php echo esc_html( $enviado ? dipt_t( 'form_ok' ) : ( $error ? dipt_t( 'form_error' ) : '' ) ); ?></p>
+				<p class="aviso-form<?php echo $enviado ? ' aviso-form--ok' : ( $error ? ' aviso-form--error' : '' ); ?>" data-form-aviso role="status" tabindex="-1"<?php echo ( $enviado || $error ) ? '' : ' hidden'; ?>><?php echo esc_html( $enviado ? dipt_t( 'form_ok_usted' ) : ( $error ? dipt_t( 'form_error_usted' ) : '' ) ); ?></p>
 			</div>
 		</form>
 	</div>

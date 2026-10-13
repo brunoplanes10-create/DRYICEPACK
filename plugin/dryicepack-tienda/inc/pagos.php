@@ -60,8 +60,10 @@ add_filter( 'woocommerce_available_payment_gateways', static function ( $pasarel
 		$quedan = array();
 		if ( isset( $pasarelas['dip_factura_mensual'] ) ) $quedan['dip_factura_mensual'] = $pasarelas['dip_factura_mensual'];
 		if ( isset( $pasarelas['cod'] ) ) {
+			// "Pago en efectivo al recoger: 60,00 €. Trae el importe exacto: no tenemos cambio." con el total del carrito
+			$total = WC()->cart ? (float) WC()->cart->get_total( 'edit' ) : 0.0;
 			$pasarelas['cod']->title       = $t['efectivo'];
-			$pasarelas['cod']->description = $t['efectivo_desc'];
+			$pasarelas['cod']->description = $total > 0 ? sprintf( $t['efectivo_desc'], dip_texto_euros( $total ) ) : $t['efectivo_corto'];
 			$quedan['cod']                 = $pasarelas['cod'];
 		}
 		return $quedan ?: $pasarelas; // si el efectivo no está activado, no se deja el pedido sin forma de pago

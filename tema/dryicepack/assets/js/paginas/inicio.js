@@ -43,7 +43,9 @@
 		raiz.querySelector('[data-ticket-envio]').textContent = euros(env);
 		raiz.querySelector('[data-ticket-total]').textContent = euros(precio + env);
 		var rec = raiz.querySelector('[data-ticket-recogida]');
-		if (rec) rec.textContent = (rec.getAttribute('data-t-recogida') || '%s').replace('%s', euros(precio));
+		// Recogida en la nave: precio redondo con IVA incluido (plugin: precio de la web × IVA a la baja a 5 €); sin el dato, el de la tienda
+		var recConIva = CFG.recogida && CFG.recogida[String(estado.kg)];
+		if (rec) rec.textContent = (rec.getAttribute('data-t-recogida') || '%s').replace('%s', euros(recConIva || precio));
 		if (boton) {
 			var span = boton.querySelector('span');
 			if (span) span.textContent = (boton.getAttribute('data-t-boton') || '%s').replace('%s', String(estado.kg).replace('.', decimal));

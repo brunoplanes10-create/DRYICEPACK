@@ -75,7 +75,7 @@ get_header();
 
 		<div class="i-regla" data-revela>
 			<p class="i-regla__pregunta"><?php echo esc_html( $c['elegir']['cuanto'] ); ?></p>
-			<div class="i-regla__kilos" role="radiogroup" aria-label="<?php echo esc_attr( $c['elegir']['cuanto'] ); ?>">
+			<div class="i-regla__kilos<?php echo count( $packs ) > 4 ? ' i-regla__kilos--cinco' : ''; ?>" role="radiogroup" aria-label="<?php echo esc_attr( $c['elegir']['cuanto'] ); ?>" style="--n:<?php echo (int) max( 1, count( $packs ) ); ?>;--pos:<?php echo (int) max( 0, array_search( (string) (float) $kg_ini, array_map( static fn( $k ) => (string) (float) $k, array_keys( $packs ) ), true ) ); ?>"><?php // columnas = packs a la venta (4 o 5); --pos: el pack marcado antes de que cargue el JS ?>
 				<?php foreach ( $packs as $kg => $precio ) : $pp = dipt_precio_pack( (float) $kg ); ?>
 					<button type="button" role="radio" class="i-kilo<?php echo (float) $kg === (float) $kg_ini ? ' activo' : ''; ?>" aria-checked="<?php echo (float) $kg === (float) $kg_ini ? 'true' : 'false'; ?>" data-kg="<?php echo esc_attr( $kg ); ?>">
 						<span class="i-kilo__n"><?php echo esc_html( $kg ); ?></span><span class="i-kilo__u">kg</span>
@@ -89,7 +89,7 @@ get_header();
 				<div><dt><?php echo esc_html( $c['elegir']['envio'] ); ?></dt><dd data-ticket-envio><?php echo esc_html( dipt_euros( $p_ini['envio'] ) ); ?></dd></div>
 				<div class="i-ticket__total"><dt><?php echo esc_html( $c['elegir']['total'] ); ?></dt><dd data-ticket-total><?php echo esc_html( dipt_euros( $p_ini['total'] ) ); ?></dd></div>
 			</dl>
-			<p class="i-regla__recogida" data-t-recogida="<?php echo esc_attr( $c['elegir']['recogida'] ); ?>" data-ticket-recogida><?php echo esc_html( sprintf( $c['elegir']['recogida'], dipt_euros( $p_ini['con_iva'] ) ) ); ?></p>
+			<p class="i-regla__recogida" data-t-recogida="<?php echo esc_attr( $c['elegir']['recogida'] ); ?>" data-ticket-recogida><?php echo esc_html( sprintf( $c['elegir']['recogida'], dipt_euros( dipt_precios_recogida()[ (string) $kg_ini ] ?? $p_ini['con_iva'] ) ) ); // precio redondo de recogida con IVA (lo mismo que pinta inicio.js) ?></p>
 			<div class="i-regla__accion">
 				<a class="boton" href="<?php echo esc_url( $url_pedir ); ?>" data-pedir data-t-boton="<?php echo esc_attr( $c['elegir']['boton'] ); ?>"><span><?php echo esc_html( sprintf( $c['elegir']['boton'], $kg_ini ) ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></a>
 				<p class="i-regla__nota suave"><?php echo esc_html( $c['elegir']['nota'] ); ?><br><?php echo esc_html( $c['elegir']['mas'] ); ?></p>

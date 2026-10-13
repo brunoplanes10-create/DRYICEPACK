@@ -53,6 +53,7 @@ function dip_mrw_provincia_por_cp( $cp ) {
  * Nombre de población normalizado y sus variantes: "Elche/Elx 03201" → ['elche', 'elx'];
  * "Les Franqueses Del V.Alles (Granollers)" → ['granollers', 'franqueses del v alles'];
  * "L’Hospitalet de Llobregat" y "Hospitalet De Llobregat" → ['hospitalet de llobregat'].
+ * OJO: la app INDUNOVA Control copia esta función tal cual (03/10/2026). Si la cambias, avisa (herramientas/probar-mrw.mjs lo vigila).
  */
 function dip_mrw_nombres( $texto ) {
 	$texto = str_replace( array( '’', '‘', '´', '`', '·' ), array( "'", "'", "'", "'", '' ), (string) $texto );
@@ -80,6 +81,7 @@ function dip_mrw_nombres( $texto ) {
 /**
  * ¿Son la misma población? Igual, o una es el principio de la otra hasta un espacio:
  * "castello" ↔ "castello de la plana", "sant cugat" ↔ "sant cugat del valles". "barcelona" ≠ "badalona".
+ * OJO: la app INDUNOVA Control copia esta función tal cual (03/10/2026). Si la cambias, avisa (herramientas/probar-mrw.mjs lo vigila).
  */
 function dip_mrw_mismo_sitio( array $a, array $b ) {
 	foreach ( $a as $x ) {

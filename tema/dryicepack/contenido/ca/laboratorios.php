@@ -9,7 +9,7 @@ return array(
 	'migas' => array( 'Inici', 'Usos', 'Laboratoris' ),
 	'hero'  => array(
 		'titulo' => 'Gel sec per al transport de mostres,|<em>demà al matí.</em>',
-		'texto'  => 'Demani abans de les 12:00 i el té al seu laboratori l\'endemà al matí. Mostres, reactius i kits a −78,5 °C, sense humitat a la caixa.',
+		'texto'  => 'Mostres, reactius i kits a −78,5 °C, sense humitat a la caixa. Demani abans de les 12:00 i el té demà (de dimarts a dissabte), o triï un altre dia.',
 		'boton'  => 'Obrir un compte',
 		'alt'    => 'Tubs de mostres envoltats de gel sec en una caixa aïllant',
 	),

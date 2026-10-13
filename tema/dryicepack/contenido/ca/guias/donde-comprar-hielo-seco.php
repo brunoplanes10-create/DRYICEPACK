@@ -6,7 +6,7 @@ return array(
 	'extracto' => 'Has preguntat a la farmàcia i no en tenen? És normal. T\'expliquem per què i on es compra de debò, amb enviament a casa o recollida.',
 	'seo'      => array(
 		'titulo'      => 'Venen gel sec a les farmàcies o al Mercadona? | DryIcePack',
-		'descripcion' => 'Resposta curta: no en solen tenir. Se sublima i viatja com a mercaderia perillosa. Mira on comprar-lo des de 3 kg, amb enviament o recollida a Mataró.',
+		'descripcion' => 'Resposta curta: no en solen tenir. Se sublima i viatja com a mercaderia perillosa. Mira on comprar-lo des de {pk} kg, amb enviament o recollida a Mataró.',
 	),
 	'contenido' => '<p class="resumen"><strong>Resposta curta:</strong> les farmàcies i els supermercats no solen vendre gel sec. Es compra a proveïdors especialitzats, que l\'envien en caixa aïllant o el preparen perquè el recullis.</p>
 
@@ -24,14 +24,14 @@ return array(
 <h3>Botiga en línia amb enviament</h3>
 <p>Tries format i quilos, veus el total amb l\'enviament inclòs i pagues. A DryIcePack, si demanes abans de les 12:00, el tens l\'endemà al matí en caixa aïllant, a tota l\'Espanya peninsular. Repartim de dimarts a dissabte (el dissabte, segons la zona i amb suplement).</p>
 <h3>Recollida al magatzem</h3>
-<p>Si ets a prop, t\'estalvies l\'enviament. La nostra nau és a Mataró (Barcelona) i s\'hi pot recollir de dilluns a dissabte: tries el dia en demanar i et confirmem l\'hora. Entre setmana és gratis i es paga en efectiu quan el reculls.</p>
+<p>Si ets a prop, t\'estalvies l\'enviament. La nostra nau és a Mataró (Barcelona) i s\'hi pot recollir de dilluns a dissabte, també festius: tries el dia en demanar i et confirmem l\'hora. El preu és rodó i amb IVA inclòs, el mateix al web i a la nau: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre} Es paga en efectiu i amb l\'import exacte: no tenim canvi.</p>
 <h3>Proveïdors de gasos industrials</h3>
 <p>Per a quantitats molt grans i subministrament continu en una planta, treballen amb contractes a mida.</p>
 
 <h2>Què has de mirar abans de demanar-lo?</h2>
 <ul>
 <li><strong>Format:</strong> pèl·lets de 3 mm per fer boira i refredar de pressa; nuggets de 16 mm perquè duri més.</li>
-<li><strong>Quantitat mínima:</strong> a DryIcePack, des de 3 kg.</li>
+<li><strong>Quantitat mínima:</strong> a DryIcePack, des de {pk} kg.</li>
 <li><strong>Preu final amb enviament:</strong> que te l\'ensenyin abans de pagar, no a l\'últim pas.</li>
 <li><strong>Dia d\'entrega:</strong> que arribi el dia que el faràs servir o el dia anterior, no abans: se sublima amb les hores.</li>
 <li><strong>Factura:</strong> si compres per a una empresa, que puguis demanar factura completa.</li>

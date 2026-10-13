@@ -11,7 +11,7 @@ return array(
 		'titulo'   => 'Dry ice delivery:|<em>order today, have it tomorrow.</em>',
 		'reloj'    => array( 'antes' => 'Time left to order today', 'despues' => 'Today’s order deadline has passed' ),
 		'llega'    => array( 'antes' => 'Order now and you’ll have it on the morning of %s.', 'despues' => 'Order now and you’ll have it on the morning of %s.' ),
-		'texto'    => 'Orders placed before 12:00 (Spanish time), Monday to Friday, leave the same day and arrive the next morning. You choose the day at checkout.',
+		'texto'    => 'Orders placed before 12:00 (Spanish time), Monday to Friday, leave the same day and arrive the next morning, Tuesday to Saturday (Saturday depending on the area). Or choose any day in the next 90 at checkout.',
 	),
 	'semana' => array(
 		'titulo' => 'Which day will it arrive?|<em>It depends on when you order.</em>',
@@ -49,7 +49,7 @@ return array(
 		),
 		'tramo'  => 'rate up to %s kg',
 		'extra'  => '%1$s up to 10 kg + %2$s kg × %3$s',
-		'nota'   => 'We count 20 kg boxes and put the rest in the pack that covers it (3, 10 or 15 kg), as if you ordered it in the shop. The courier charges the ice plus 1 kg per box, rounded up: the same calculation as at checkout.',
+		'nota'   => 'We count 20 kg boxes and put the rest in the pack that covers it ({pk}, 10 or 15 kg), as if you ordered it in the shop. The courier charges the ice plus 1 kg per box, rounded up: the same calculation as at checkout.',
 		'medida' => array(
 			'cajas'  => 'Boxes made up for your order',
 			'titulo' => 'We’ll give you a price and a day.',
@@ -63,8 +63,8 @@ return array(
 		'titulo' => 'Collection in Mataró,|<em>no waiting in for the courier.</em>',
 		'lista'  => array(
 			array( 'Where', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). It’s our own warehouse, not a courier depot.' ),
-			array( 'When', 'Monday to Saturday, including public holidays. Choose the day at checkout and we confirm the time by phone or WhatsApp. Saturday has an €11.74 surcharge (VAT included).' ),
-			array( 'Cost', 'Free Monday to Friday. You only pay for the ice, in cash on collection.' ),
+			array( 'When', 'Monday to Saturday, including public holidays. Choose the day at checkout and we confirm the time by phone or WhatsApp. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre}' ),
+			array( 'Cost', 'Round prices with VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk}, 10 kg for {recogida:10}, 15 kg for {recogida:15} and 20 kg for {recogida:20}. Cash only, exact amount: we can’t give change.' ),
 			array( 'How to carry it', 'Never in the passenger compartment: in the boot, with ventilation.' ),
 		),
 		'alt'    => 'Worker with a scoop of dry ice pellets in the warehouse',

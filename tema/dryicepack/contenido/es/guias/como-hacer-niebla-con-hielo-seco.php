@@ -6,7 +6,7 @@ return array(
 	'extracto' => 'Agua caliente, un recipiente ancho y pellets de 3 mm: con eso tienes niebla a ras de suelo al momento. Cuántos kilos pedir según la fiesta y cómo hacerlo con seguridad.',
 	'seo'      => array(
 		'titulo'      => 'Cómo hacer niebla con hielo seco en 3 pasos | DryIcePack',
-		'descripcion' => 'Para hacer niebla con hielo seco solo necesitas agua caliente, un recipiente ancho y pellets de 3 mm. Con 3 kg tienes para una fiesta en casa. Así se hace.',
+		'descripcion' => 'Para hacer niebla con hielo seco solo necesitas agua caliente, un recipiente ancho y pellets de 3 mm. Con {pk} kg tienes para una fiesta en casa. Así se hace.',
 	),
 	'contenido' => '<p class="resumen"><strong>En resumen:</strong> echa pellets de hielo seco en agua caliente, en un recipiente ancho y abierto. La niebla sale al momento, pesa más que el aire y se queda a ras de suelo.</p>
 
@@ -22,7 +22,7 @@ return array(
 <table>
 <thead><tr><th>Para</th><th>Cantidad orientativa</th></tr></thead>
 <tbody>
-<tr><td>Una fiesta en casa o una mesa de Halloween</td><td>3 kg</td></tr>
+<tr><td>Una fiesta en casa o una mesa de Halloween</td><td>{pk} kg</td></tr>
 <tr><td>Una fiesta grande, niebla en varias tandas</td><td>10 kg</td></tr>
 <tr><td>Un bar, un escenario o un evento largo</td><td>15–20 kg</td></tr>
 </tbody>

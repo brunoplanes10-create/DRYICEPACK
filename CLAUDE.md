@@ -15,19 +15,22 @@ Antes de cada tarea, di qué especialistas intervienen y aplica sus estándares 
 ## El negocio
 - **DryIcePack** (dryicepack.es), marca de INDUNOVA IMS S.L. (B66800103), Mataró (Barcelona).
 - **Producto:** hielo seco (CO₂ sólido, −78,5 °C) en **pellets de 3 mm y nuggets de 16 mm**. No inventes otros formatos.
-  - Producto WooCommerce variable `hielo-seco` (ID 261). Atributos `pa_peso` (3, 10, 15, 20 kg) y `pa_formato` (3mm, 16mm).
-  - Precios (iguales en 3 y 16 mm, + IVA): 3 kg 29,80 € · 10 kg 53,30 € · 15 kg 75,90 € (subido desde 68,40 € el 01/10/2026; el pack de 15 kg va en la caja grande, la misma que el de 20 kg) · 20 kg 98,60 €. Caja EPS de 40 mm/lado incluida. El precio por kilo baja con cada pack.
+  - Producto WooCommerce variable `hielo-seco` (ID 261). Atributos `pa_peso` (3, 10, 15, 20 kg; 5 kg cuando se acabe el 3 kg) y `pa_formato` (3mm, 16mm).
+  - **Precios (decididos el 03/10/2026, iguales en 3 y 16 mm, + IVA; mandan sobre lo anterior):** 3 kg 29,80 € · 10 kg 53,30 € · **15 kg 74,90 €** (va en la caja grande, la misma que el de 20 kg) · 20 kg 98,60 €. Caja EPS de 40 mm/lado incluida. El precio por kilo baja con cada pack. Detalle de costes y competencia: `PRECIOS_DRYICEPACK_PROPUESTA.xlsx`.
+  - **Pack de 3 kg: se vende hasta que se acaben las 29 cajas EPS de 3 kg.** El stock va en las dos variaciones de 3 kg (Bruno dice cómo repartirlo entre 3 y 16 mm). **El pack de 5 kg (33,90 €) entra solo cuando se acaba el de 3 kg, no antes** (peso facturable 6 kg → envío 13,19 €). El plugin lo hace solo (`inc/pack-pequeno.php`: esconde el 5 kg mientras quede 3 kg y avisa por email; alternativa manual en Ajustes → Pack pequeño). Los textos que recomiendan 3 kg usan el marcador `{pk}` y pasan solos a 5 kg (también «casa 3 kg» de Halloween).
+  - **Recogida en la nave: el mismo precio en la web y en Mataró, redondo y con IVA incluido** = precio de la web × 1,21 redondeado a la baja a múltiplos de 5 €: **3 kg 35 € · 5 kg 40 € · 10 kg 60 € · 15 kg 90 € · 20 kg 115 €** (se calcula solo, `inc/precios-recogida.php`). **Solo efectivo, importe exacto:** «Pago en efectivo al recoger: 60,00 €. Trae el importe exacto: no tenemos cambio.» en el checkout, el email de confirmación y la página de gracias. El total sale exacto al céntimo con cualquier cantidad y la factura simplificada lleva los mismos importes. El IVA se cobra siempre, también en efectivo.
   - Máximo 250 kg por pedido. **Más de 150 kg fuera de la provincia de Barcelona:** sin envío online, el cliente escribe (WhatsApp, teléfono o email) y se prepara a medida, más caro. El proveedor solo sirve más de 150 kg dentro de la provincia. Más de 200 kg: a veces reparto propio (consultar).
   - Cuentas de empresa: **contrato de suministro de hielo seco** firmado y, si puede ser, **domiciliación SEPA**; factura mensual a **30 días**. Nunca decir "sin permanencia" ni "sin contratos" de las cuentas de empresa (la compra online normal sí es sin contrato).
   - Más de 250 kg por pedido: el cliente escribe y se le da precio y día. Los presupuestos de industria se contestan normalmente el mismo día laborable.
-  - **No se envía a Baleares, Canarias, Ceuta ni Melilla** (decidido el 02/10/2026). En pedidos de empresa, **cada caja lleva hasta 30 kg** (la tienda online vende packs de 3, 10, 15 y 20 kg).
+  - **No se envía a Baleares, Canarias, Ceuta ni Melilla** (decidido el 02/10/2026). En pedidos de empresa, **cada caja lleva hasta 30 kg** (la tienda online vende packs de 3 —o 5 cuando se acabe el 3—, 10, 15 y 20 kg).
   - **Reservas:** se puede pedir para cualquier día válido de los próximos 90 días (hay clientes que reservan con un mes de antelación).
   - **Envío (tarifa del 31/08/2026, igual en toda la península, sin IVA):** hasta 2 kg 8,53 € · hasta 5 kg 10,32 € · hasta 10 kg 13,19 € · cada kg de más 1,12 €. Se calcula sobre el peso facturable: hielo + 1 kg por caja, redondeado al alza.
 - **Logística:** MRW, España peninsular. Pedido antes de las **12:00** → entrega el siguiente día laborable por la mañana. Sin entregas en domingo ni lunes.
-  - **Sábado:** según zona, suplemento de **9,70 € + IVA (11,74 € IVA incluido)**.
+  - **Sábado (envío):** según zona, suplemento de **9,70 € + IVA (11,74 € IVA incluido)**, también el 31/10/2026.
   - **Festivos:** no se envía si hay festivo en Mataró, en Cataluña o en toda España, ni se entrega en un día festivo de MRW en el destino (calendario por oficina en mrw.es/oficina_transporte_urgente/mrw_festividades.asp). Toda automatización tiene que avisar por email si falla y tener una alternativa manual.
-  - **Recogida en almacén:** Camí Ca La Madrona 19 D, 08304 Mataró. De lunes a sábado, también festivos (nunca en domingo). Gratis entre semana; el sábado lleva el suplemento de sábado. **La hora la confirma la empresa** (teléfono o WhatsApp, y email "Confirmar recogida" desde el pedido). En el checkout aparece debajo del envío y avisa si el código postal no es de Cataluña. **Recogida = solo pago en efectivo** al recoger (método "contra reembolso" renombrado); el efectivo no se ofrece en pedidos con envío. Es el pedido de mayor margen.
+  - **Recogida en almacén:** Camí Ca La Madrona 19 D, 08304 Mataró. De lunes a sábado, también festivos (nunca en domingo). Sin coste de recogida entre semana; **el sábado, +10 € IVA incluido** (8,26 € + 1,74 € de IVA, no 11,74 €), **salvo el sábado 31/10/2026, sin suplemento** (promoción de Halloween: no es una rebaja de precio, no choca con «sin descuento»; editable en Ajustes → Sábados de recogida sin suplemento). **La hora la confirma la empresa** (teléfono o WhatsApp, y email "Confirmar recogida" desde el pedido). En el checkout aparece debajo del envío y avisa si el código postal no es de Cataluña. **Recogida = solo pago en efectivo** al recoger (método "contra reembolso" renombrado); el efectivo no se ofrece en pedidos con envío. Es el pedido de mayor margen.
   - Suministro programado semanal, quincenal o mensual con mejor precio.
+- **Aviso de stock (03/10/2026):** quedan **8 cajas de cartón de 20 kg** (packs de 15 y 20 kg) y 24 cajas EPS de 20–30 kg. Hay que pedir cartón esta semana: en Halloween, los bares y eventos piden 15–20 kg.
 - **Contacto:** 936 73 76 41 · info@dryicepack.es · L–V 9:00–18:00.
 - **Hosting:** Arsys. Cloudflare delante.
 - **Clientes, por prioridad:**
@@ -54,6 +57,12 @@ Se abandonan **Divi y el tema hijo**. La web pasa a dos piezas propias, instalab
 - Plugins instalados (29/09/2026): WooCommerce, WooPayments, Order Delivery Date Lite, Checkout Field Editor (ThemeHigh), Flexible Shipping, Advanced Shipment Tracking, Contact Form 7 + Flamingo, Rank Math, Site Kit, WP Rocket, Flying Pages, Imagify, WP Mail SMTP, WP File Manager. **No hay plugin de cookies.**
 - **Transición Halloween:** la landing se publica ya dentro del tema hijo actual como plantilla independiente, sin Divi (`landing-halloween/`). Después pasa tal cual al tema nuevo.
 - El cambio de tema se hace cuando esté probado. Si no está listo antes del 20/10, se deja para el 2/11.
+
+## App INDUNOVA Control (03/10/2026)
+- La app (se estrena el 9/11) lee `GET /wp-json/dip/v1/envio` (`inc/api-app.php`): público, solo GET, CORS `*`, `Cache-Control: public, max-age=600`, sin datos personales. Tarifa, sábado, recogida, máximos, corte, días de salida y entrega, `festivos_salida` (lista manual + cierres de MRW Mataró) y `mrw.dias` con todos los días consultados (provincias cerradas enteras con código de 2 cifras y poblaciones con `dip_mrw_nombres()` ya aplicado). Si cambia el formato, se sube `version` y se avisa.
+- La app copia `dip_mrw_nombres()` y `dip_mrw_mismo_sitio()` tal cual: **si cambian, avisar**.
+- **Claves de los pedidos que lee la app (no renombrar sin avisar):** `_dip_fecha_entrega`, `_dip_metodo_entrega`, `_orddd_lite_timestamp`, `_dip_idioma`, `_dip_empresa`, `_dip_factura_datos`, `_dip_factura_mensual`, `_dip_canal`, `_dip_fs_numero`, `_dip_factura_emitida`, `_dip_kg`, `_dip_cajas`. Un pedido con `_dip_fs_numero` ya tiene factura simplificada de la web: la app no lo manda a «Por facturar».
+- Los fallos de lectura de MRW siguen avisando por email, como ya hace el plugin.
 
 ## Funnel de venta (objetivo)
 - **Pocos datos:** email, teléfono, nombre y apellidos (un campo), dirección de entrega, piso (opcional), CP y ciudad. La provincia se rellena por el CP y el país es siempre España.
@@ -191,14 +200,14 @@ Todo contenido que explique un uso incluye estos avisos, o enlaza a /seguridad-d
 - **Secciones:**
   1. Ideas: caldero de bruja, niebla por el suelo, ponchera con doble recipiente, entrada o photocall
   2. Formato: 3 mm recomendado para niebla, 16 mm si tiene que durar
-  3. Cantidad orientativa (validada): casa 3 kg · fiesta grande 10 kg · bar o evento 15–20 kg
+  3. Cantidad orientativa (validada): casa 3 kg (5 kg cuando se acabe el 3 kg) · fiesta grande 10 kg · bar o evento 15–20 kg
   4. Cómo hacer niebla en 3 pasos
   5. Fecha límite con cuenta atrás
   6. Seguridad bien visible
   7. Bloque B2B para bares, discotecas y organizadores
   8. FAQ con schema
   9. CTA final
-- **Fecha límite:** Halloween cae en sábado. Pedido antes de las **12:00 del jueves 29/10** → entrega el viernes 30. Para el sábado 31: pedido antes de las 12:00 del viernes 30, según zona y con suplemento de 11,74 € (IVA incl.). También recogida en Mataró.
+- **Fecha límite:** Halloween cae en sábado. Pedido antes de las **12:00 del jueves 29/10** → entrega el viernes 30. Para el sábado 31: pedido antes de las 12:00 del viernes 30, según zona y con suplemento de 11,74 € (IVA incl.). También recogida en Mataró, el sábado 31 sin suplemento.
 - **Promoción:** sin descuento (decidido el 01/10/2026). Nunca subir el precio para anunciar una rebaja: el precio anterior de una rebaja tiene que ser el más bajo de los últimos 30 días (art. 20 de la Ley de Ordenación del Comercio Minorista). Sin urgencias falsas: la única urgencia es la fecha logística.
 - **Estética:** negro y naranja, niebla animada y fotos reales. Oscuro y elegante, sin gore.
 - **Calendario:**

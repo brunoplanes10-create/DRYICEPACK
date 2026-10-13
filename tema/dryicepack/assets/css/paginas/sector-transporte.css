@@ -130,7 +130,7 @@ h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 .t-final__via { position: relative; height: 56px; overflow: hidden; } /* la caja desplazada de la furgoneta no ensancha la página */
 .t-final__via::before { content: ""; position: absolute; left: 7px; right: 7px; top: 50%; height: 2px; margin-top: -1px; background: repeating-linear-gradient(90deg, var(--c-hielo) 0 10px, transparent 10px 18px); opacity: .7; }
 .t-final__nodo { position: absolute; left: 0; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; border: 2px solid var(--c-hielo); background: var(--c-noche-2); box-sizing: border-box; }
-.t-final__nodo--fin { left: auto; right: 0; border-color: var(--c-accion); background: var(--c-accion); }
+.t-final__nodo--fin { left: auto; right: 0; border-color: var(--c-hielo); background: var(--c-hielo); } /* el cian queda solo para los botones de compra */
 .t-final__vehiculo { position: absolute; inset: 0; display: flex; align-items: center; padding-left: 22px; transform: translateX(calc(100% - 84px)); }
 .t-final__vehiculo .ico { width: 44px; height: 44px; padding: 9px; box-sizing: border-box; border-radius: 50%; border: 1px solid var(--c-hielo); background: var(--c-noche-2); color: var(--c-hielo-claro); }
 .anima .t-final__vehiculo { transition: transform .6s var(--e-salida) .35s; }

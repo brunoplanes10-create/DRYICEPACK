@@ -20,15 +20,15 @@ return array(
 
 <h2>How much dry ice do I need per session?</h2>
 <p>It depends on the cap system, how many caps you use and how long the session lasts. First, check whether the manufacturer gives a quantity.</p>
-<p>As a guide, the orders we have supplied for cold caps were around 5 kg per session. With our 3, 10, 15 and 20 kg packs, that works out like this:</p>
+<p>As a guide, the orders we have supplied for cold caps were around 5 kg per session. With our {pk}, 10, 15 and 20 kg packs, that works out like this:</p>
 <table>
 <thead><tr><th>For</th><th>What to order</th></tr></thead>
 <tbody>
-<tr><td>One session (guide: about 5 kg)</td><td>2 boxes of 3 kg (6 kg) or 1 pack of 10 kg</td></tr>
+<tr><td>One session (guide: about 5 kg)</td><td>' . ( 5 === dipt_pk() ? '1 box of 5 kg or 1 pack of 10 kg' : '2 boxes of 3 kg (6 kg) or 1 pack of 10 kg' ) . '</td></tr>
 <tr><td>Sessions on consecutive days</td><td>Tell us how many sessions and we’ll tell you how much to order</td></tr>
 </tbody>
 </table>
-<p>It’s a guide, not a rule. The price per kilo goes down with each pack: the 10 kg pack costs less than two 3 kg boxes and gives you more margin. For several days in a row, message us before you order and we’ll work it out with you.</p>
+<p>It’s a guide, not a rule. The price per kilo goes down with each pack: ' . ( 5 === dipt_pk() ? 'with 10 kg you pay less per kilo than with 5 kg and have some to spare' : 'the 10 kg pack costs less than two 3 kg boxes and gives you more margin' ) . '. For several days in a row, message us before you order and we’ll work it out with you.</p>
 
 <h3>3 mm or 16 mm?</h3>
 <p>16 mm nuggets have more mass per piece and last longer. 3 mm pellets cool faster and fill gaps better. If your cap instructions specify a format, use that one.</p>
@@ -46,7 +46,7 @@ return array(
 <p>There are no deliveries on Mondays. You have two options:</p>
 <ul>
 <li><strong>Saturday delivery.</strong> Order before 12:00 on Friday, if your area has Saturday delivery (€11.74 surcharge, VAT included). The ice will spend the weekend in its box: message us before you order and we’ll work out the kilos.</li>
-<li><strong>Collection in Mataró on the Monday itself.</strong> From our warehouse (Camí Ca La Madrona 19 D), Monday to Saturday, including public holidays. Choose Monday at checkout and we’ll confirm the time by phone or WhatsApp; if your session is early, tell us when you order. You pay in cash on collection, with no delivery charge.</li>
+<li><strong>Collection in Mataró on the Monday itself.</strong> From our warehouse (Camí Ca La Madrona 19 D), Monday to Saturday, including public holidays. Choose Monday at checkout and we’ll confirm the time by phone or WhatsApp; if your session is early, tell us when you order. There’s no delivery charge and the price is a round figure with VAT included: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. You pay in cash, with the exact amount: we can’t give change.</li>
 </ul>
 
 <h2>How do I handle it safely?</h2>

@@ -30,7 +30,7 @@ return array(
 	'nave' => array(
 		'titulo'  => 'La nostra nau a Mataró',
 		'horario' => 'Atenem de dilluns a divendres, de 9:00 a 18:00',
-		'recoger' => 'Recollida de dilluns a dissabte, també festius, a l\'hora que et confirmem. Gratis entre setmana; el dissabte, 11,74 €. Pagament en efectiu.',
+		'recoger' => 'Recollida de dilluns a dissabte, també festius, a l\'hora que et confirmem. Preu rodó amb IVA inclòs: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre} En efectiu i amb l\'import exacte: no tenim canvi.',
 		'como'    => 'Com arribar-hi',
 		'empresa' => 'Dades de l\'empresa',
 		'alt'     => 'Caixes de gel sec preparades al costat de la furgoneta de repartiment',

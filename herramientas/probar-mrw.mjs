@@ -141,6 +141,76 @@ function http_mrw( callable $fn ) {
 $AHORA = new DateTimeImmutable( '2026-10-05 10:00', wp_timezone() );
 `);
 
+// Pedido de WooCommerce simulado para la revisión diaria (inc/seguimiento-entregas.php).
+// 'antiguo' => true: pedido hecho con el tema antiguo, solo con la marca de Order Delivery Date Lite
+// (medianoche UTC; con 'marca_madrid' => true, medianoche de Madrid, como la guarda este plugin).
+const PEDIDO_SEGUIMIENTO = String.raw`
+    class WC_Order {
+      public $meta; public $notas = array(); public $d;
+      function __construct( $id, $d ) {
+        $this->d = $d + array( 'id' => $id, 'cp' => '08013', 'ciudad' => 'Barcelona', 'estado' => 'processing', 'recoge' => false );
+        if ( empty( $d['antiguo'] ) ) {
+          $this->meta = array( '_dip_fecha_entrega' => $d['fecha'], '_dip_metodo_entrega' => empty( $d['recoge'] ) ? 'envio' : 'recogida' );
+        } else {
+          $zona       = empty( $d['marca_madrid'] ) ? new DateTimeZone( 'UTC' ) : wp_timezone();
+          $this->meta = array( '_orddd_lite_timestamp' => (string) ( new DateTimeImmutable( $d['fecha'] . ' 00:00', $zona ) )->getTimestamp() );
+        }
+      }
+      function get_meta( $k ) { return $this->meta[ $k ] ?? ''; }
+      function update_meta_data( $k, $v ) { $this->meta[ $k ] = $v; }
+      function save_meta_data() {}
+      function add_order_note( $n ) { $this->notas[] = $n; }
+      function get_order_number() { return (string) $this->d['id']; }
+      function get_shipping_postcode() { return ''; } function get_billing_postcode() { return $this->d['cp']; }
+      function get_shipping_city() { return ''; } function get_billing_city() { return $this->d['ciudad']; }
+      function get_billing_first_name() { return 'Marta'; } function get_billing_last_name() { return 'Soler'; } function get_billing_company() { return ''; }
+      function get_billing_phone() { return '600 11 22 33'; } function get_billing_email() { return 'marta@example.com'; }
+      function get_edit_order_url() { return 'http://prueba.local/wp-admin/post.php?post=' . $this->d['id'] . '&action=edit'; }
+      function has_shipping_method( $m ) { return ! empty( $this->d['recoge'] ); }
+    }
+    function wc_get_orders( $args ) {
+      if ( ! empty( $GLOBALS['explota'] ) ) throw new RuntimeException( 'la base de datos no responde' );
+      $GLOBALS['consultas'][] = $args;
+      return array_values( array_filter( $GLOBALS['pedidos'], static fn( $p ) => in_array( 'wc-' . $p->d['estado'], $args['status'], true ) ) );
+    }
+    function wc_get_order( $id ) { return $GLOBALS['pedidos'][ $id ] ?? false; }
+    function sanitize_text_field( $s ) { return trim( strip_tags( (string) $s ) ); }
+    function sanitize_key( $s ) { return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $s ) ); }
+    function wp_unslash( $s ) { return $s; }
+    $GLOBALS['peticiones'] = 0;
+    $GLOBALS['http'] = function ( $url ) { $GLOBALS['peticiones']++; return new WP_Error( 'x', 'no tendría que llamar a MRW' ); };
+    $GLOBALS['pedidos'] = array();
+`;
+
+// Pedido de WooCommerce simulado para «Facturación mensual» y «Exportar a Odoo» (inc/informes.php).
+const PEDIDO_INFORMES = String.raw`
+    require '/p/inc/informes.php';
+    class Fecha { public $t; function __construct( $t ) { $this->t = $t; } function getTimestamp() { return $this->t; } }
+    class Linea {
+      public $n, $q, $s;
+      function __construct( $n, $q, $s ) { $this->n = $n; $this->q = $q; $this->s = $s; }
+      function get_name() { return $this->n; } function get_quantity() { return $this->q; } function get_subtotal() { return $this->s; } function get_total() { return $this->s; }
+    }
+    class WC_Order {
+      public $d;
+      function __construct( $d ) { $this->d = $d + array( 'empresa' => '', 'cliente' => 0, 'meta' => array(), 'pago' => 'Tarjeta', 'nota' => '', 'estado' => 'completed', 'metodo' => 'woocommerce_payments' ); }
+      function get_id() { return $this->d['id']; } function get_order_number() { return (string) $this->d['id']; }
+      function get_meta( $k ) { return $this->d['meta'][ $k ] ?? ''; }
+      function get_status() { return $this->d['estado']; } function get_payment_method() { return $this->d['metodo']; }
+      function get_billing_company() { return $this->d['empresa']; } function get_billing_first_name() { return $this->d['nombre']; } function get_billing_last_name() { return $this->d['apellido']; }
+      function get_billing_email() { return $this->d['email']; } function get_customer_id() { return $this->d['cliente']; }
+      function get_date_created() { return new Fecha( ( new DateTimeImmutable( $this->d['fecha'] . ' 10:00', wp_timezone() ) )->getTimestamp() ); }
+      function get_total() { return $this->d['total']; } function get_total_tax() { return round( $this->d['total'] - $this->d['total'] / 1.21, 2 ); }
+      function get_payment_method_title() { return $this->d['pago']; } function get_customer_note() { return $this->d['nota']; }
+      function get_edit_order_url() { return 'http://prueba.local/wp-admin/post.php?post=' . $this->d['id']; }
+      function get_items( $tipo = 'line_item' ) { return 'line_item' === $tipo ? array( new Linea( 'Hielo seco 10 kg · 3 mm', 1, 53.3 ) ) : ( 'shipping' === $tipo ? array( new Linea( 'Envío', 1, 13.19 ) ) : array() ); }
+    }
+    function wc_format_localized_decimal( $v ) { return str_replace( '.', ',', (string) $v ); }
+    function wc_price( $n ) { return '<span class="amount">' . number_format( (float) $n, 2, ',', '.' ) . '&nbsp;€</span>'; }
+    function wp_kses_post( $s ) { return $s; }
+    function submit_button( $t, $c = '', $n = '', $w = true, $o = array() ) { echo '<button>' . $t . '</button>'; }
+`;
+
 const escenarios = {
   'Nombres de población': String.raw`
     $casa = fn( $a, $b ) => dip_mrw_mismo_sitio( dip_mrw_nombres( $a ), dip_mrw_nombres( $b ) );
@@ -309,7 +379,8 @@ const escenarios = {
     class Cliente { function get_shipping_postcode() { return ''; } function get_billing_postcode() { return '08013'; } function get_shipping_city() { return ''; } function get_billing_city() { return 'Barcelona'; } }
     class Tarifa { public $id; function __construct( $id ) { $this->id = $id; } function get_method_id() { return explode( ':', $this->id )[0]; } function get_cost() { return false !== strpos( $this->id, 'local' ) ? 0 : 13.19; } function get_taxes() { return array(); } }
     class Envios { function get_packages() { return array( array( 'rates' => array( 'flat_rate:1' => new Tarifa( 'flat_rate:1' ), 'local_pickup:2' => new Tarifa( 'local_pickup:2' ) ) ) ); } }
-    class Cesta { public $fees = array(); function get_cart() { return array(); } function add_fee( $n, $i, $t = false ) { $this->fees[] = array( $n, round( $i, 2 ) ); } }
+    class Cuotas { public $cesta; function __construct( $c ) { $this->cesta = $c; } function add_fee( $a ) { $this->cesta->fees[] = array( $a['name'], round( $a['amount'], 2 ) ); $this->cesta->ids[] = $a['id'] ?? ''; } }
+    class Cesta { public $fees = array(); public $ids = array(); function get_cart() { return array(); } function add_fee( $n, $i, $t = false ) { $this->fees[] = array( $n, round( $i, 2 ) ); } function fees_api() { return new Cuotas( $this ); } }
     class Tienda { public $session, $customer, $cart; function __construct() { $this->session = new Sesion(); $this->customer = new Cliente(); $this->cart = new Cesta(); } function shipping() { return new Envios(); } }
     class Errores { public $e = array(); function add( $c, $m ) { $this->e[ $c ] = $m; } }
     class WC_Order {
@@ -413,12 +484,22 @@ const escenarios = {
     foreach ( $r['fechas'] as $f ) {
       if ( $f['fecha'] < $en28 ) continue;
       if ( ! $lunes && '1' === ( new DateTimeImmutable( $f['fecha'] ) )->format( 'N' ) ) $lunes = $f['fecha'];
-      if ( ! $sabado_r && $f['sabado'] ) $sabado_r = $f['fecha'];
+      if ( ! $sabado_r && $f['sabado'] && ! in_array( $f['fecha'], dip_sabados_recogida_sin_suplemento(), true ) ) $sabado_r = $f['fecha'];
     }
     WC()->session->set( 'dip_fecha', $sabado_r );
     $cesta = new Cesta();
     disparar( 'woocommerce_cart_calculate_fees', $cesta );
-    ok( array( array( 'Recogida en sábado', 9.7 ) ) === $cesta->fees, 'recogida el sábado lejano ' . $sabado_r . ': suplemento de recogida', $cesta->fees );
+    ok( array( array( 'Recogida en sábado', 8.26 ) ) === $cesta->fees && array( 'dip-sabado-recogida' ) === $cesta->ids, 'recogida el sábado lejano ' . $sabado_r . ': suplemento de recogida de 10 € IVA incluido (base 8,26 €)', $cesta->fees );
+    $sup = dip_suplemento_sabado( 'recogida', $sabado_r );
+    ok( $sup && 8.26 === $sup['neto'] && 1.74 === $sup['iva'] && 10.0 === $sup['con_iva'], 'suplemento de recogida: 8,26 € + 1,74 € = 10,00 €', $sup );
+    ok( null === dip_suplemento_sabado( 'recogida', '2026-10-31' ) && 11.74 === dip_suplemento_sabado( 'envio', '2026-10-31' )['con_iva'], '31/10/2026: recogida sin suplemento, envío con 11,74 €' );
+    ok( null === dip_suplemento_sabado( 'recogida', '2026-10-14' ) && null === dip_suplemento_sabado( 'envio', '2026-10-14' ), 'entre semana, sin suplemento' );
+    if ( dip_fecha_es_valida( '2026-10-31', 'recogida' ) ) {
+      WC()->session->set( 'dip_fecha', '2026-10-31' );
+      $cesta = new Cesta();
+      disparar( 'woocommerce_cart_calculate_fees', $cesta );
+      ok( ! $cesta->fees, 'recogida el sábado 31/10/2026: sin suplemento', $cesta->fees );
+    }
     $datos_r = array( 'shipping_method' => array( 'local_pickup:2' ), 'billing_postcode' => '28911' );
     ok( $lunes && array() === $valida( $lunes, $datos_r ) && isset( $valida( ( new DateTimeImmutable( $lunes ) )->modify( '-1 day' )->format( 'Y-m-d' ), $datos_r )['dip_fecha'] ), 'recogida: lunes lejano ' . $lunes . ' sí, el domingo anterior no' );
     $_POST['dip_fecha'] = $lunes;
@@ -662,9 +743,14 @@ const escenarios = {
   'Textos de la tienda (ES/CA/EN)': String.raw`
     $es = dip_textos_tienda( 'es' ); $ca = dip_textos_tienda( 'ca' ); $en = dip_textos_tienda( 'en' );
     ok( 'Recoger en nuestra nave de Mataró' === $es['recogida'] && 'Recollir a la nostra nau de Mataró' === $ca['recogida'] && 'Collect from our warehouse in Mataró' === $en['recogida'], 'recogida sin "Gratis" (lo dice la columna del precio y el sábado tiene suplemento)' );
-    ok( str_ends_with( $es['recogida_confirmar'], 'El sábado lleva un suplemento de 11,74 € (IVA incluido).' ), 'ES: ' . $es['recogida_confirmar'] );
-    ok( str_ends_with( $ca['recogida_confirmar'], "El dissabte té un suplement d'11,74 € (IVA inclòs)." ), 'CA: ' . $ca['recogida_confirmar'] );
-    ok( str_ends_with( $en['recogida_confirmar'], 'Saturday has an €11.74 surcharge (VAT included).' ), 'EN: ' . $en['recogida_confirmar'] );
+    // Recogida en sábado: 10 € IVA incluido (03/10/2026); mientras quede, el sábado sin suplemento (31/10/2026)
+    $libre = '2026-10-31' >= ( new DateTimeImmutable( 'today', dip_zona_horaria() ) )->format( 'Y-m-d' );
+    ok( false !== strpos( $es['recogida_confirmar'], 'El sábado lleva un suplemento de 10,00 € (IVA incluido).' ) && ( ! $libre || str_ends_with( $es['recogida_confirmar'], 'El sábado 31 de octubre, sin suplemento.' ) ), 'ES: ' . $es['recogida_confirmar'] );
+    ok( false !== strpos( $ca['recogida_confirmar'], 'El dissabte té un suplement de 10,00 € (IVA inclòs).' ) && ( ! $libre || str_ends_with( $ca['recogida_confirmar'], "El dissabte 31 d'octubre, sense suplement." ) ), 'CA: ' . $ca['recogida_confirmar'] );
+    ok( false !== strpos( $en['recogida_confirmar'], 'Saturday has a €10.00 surcharge (VAT included).' ) && ( ! $libre || str_ends_with( $en['recogida_confirmar'], 'No surcharge on Saturday 31 October.' ) ), 'EN: ' . $en['recogida_confirmar'] );
+    ok( 'Pago en efectivo al recoger: 60,00 €. Trae el importe exacto: no tenemos cambio.' === sprintf( $es['efectivo_desc'], '60,00 €' ), 'ES: efectivo con importe exacto' );
+    ok( "Pagament en efectiu en recollir: 60,00 €. Porta l'import exacte: no tenim canvi." === sprintf( $ca['efectivo_desc'], '60,00 €' ), 'CA: efectiu amb import exacte' );
+    ok( 'Pay in cash on collection: 60,00 €. Please bring the exact amount: we have no change.' === sprintf( $en['efectivo_desc'], '60,00 €' ), 'EN: cash with exact amount' );
     ok( 'Pide antes de las 12:00 para no perder la primera fecha.' === $es['corte'] && 'Demana abans de les 12:00 per no perdre la primera data.' === $ca['corte'] && 'Order before 12:00 to keep the earliest date.' === $en['corte'], 'el corte ya no promete "salen hoy" (falso en fin de semana y festivos)' );
     ok( 0 === strpos( $es['fecha_festivo_destino'], 'MRW no reparte' ) && 0 === strpos( $ca['fecha_festivo_destino'], 'MRW no reparteix' ) && 0 === strpos( $en['fecha_festivo_destino'], 'MRW does not deliver' ), 'el error de festivo en destino dice que es MRW quien no reparte' );
     ok( 'Recogida de tu pedido 1234: día y hora' === sprintf( $es['recogida_lista_asunto'], '1234' ) && 'Hola, Marta. Tu hielo seco estará listo en nuestra nave de Mataró:' === sprintf( $es['recogida_lista_hola'], 'Marta' ), 'email de recogida: asunto con día y hora, saludo con coma' );
@@ -719,7 +805,7 @@ const escenarios = {
     ok( 'Recogida de tu pedido 1234: día y hora' === $m[1], 'ES asunto: ' . $m[1] );
     ok( false !== strpos( $m[2], 'Hola, Marta Soler. Tu hielo seco estará listo' ) && false !== strpos( $m[2], 'sábado 10 de octubre · 10:30' ), 'ES: saludo con coma, día y hora', $m[2] );
     ok( false !== strpos( $m[2], 'Usa guantes térmicos o pinzas. Todas las normas: <a href="https://dryicepack.es/seguridad-del-hielo-seco/">dryicepack.es/seguridad-del-hielo-seco/</a>' ), 'ES: guantes y enlace a la página de seguridad que se puede pulsar', $m[2] );
-    ok( false !== strpos( $m[2], 'Se paga en efectivo al recogerlo: 81,81 €.' ) && $p->get_meta( '_dip_recogida_confirmada' ), 'ES: importe en efectivo y recogida anotada como confirmada' );
+    ok( false !== strpos( $m[2], 'Pago en efectivo al recoger: 81,81 €. Trae el importe exacto: no tenemos cambio.' ) && $p->get_meta( '_dip_recogida_confirmada' ), 'ES: importe exacto en efectivo y recogida anotada como confirmada', $m[2] );
     list( $m ) = $envia( 'ca' );
     ok( 'Recollida de la teva comanda 1234: dia i hora' === $m[1] && false !== strpos( $m[2], 'Hola, Marta Soler. El teu gel sec' ) && false !== strpos( $m[2], 'href="https://dryicepack.es/ca/seguretat-del-gel-sec/"' ), 'CA: asunto, saludo y enlace', array( $m[1], $m[2] ) );
     list( $m ) = $envia( 'en' );
@@ -742,35 +828,7 @@ const escenarios = {
 
   'Pedidos reservados con antelación: revisión diaria de festivos de MRW': String.raw`
     require '/p/inc/seguimiento-entregas.php';
-    class WC_Order {
-      public $meta; public $notas = array(); public $d;
-      function __construct( $id, $d ) {
-        $this->d    = $d + array( 'id' => $id, 'cp' => '08013', 'ciudad' => 'Barcelona', 'estado' => 'processing', 'recoge' => false );
-        $this->meta = array( '_dip_fecha_entrega' => $d['fecha'], '_dip_metodo_entrega' => empty( $d['recoge'] ) ? 'envio' : 'recogida' );
-      }
-      function get_meta( $k ) { return $this->meta[ $k ] ?? ''; }
-      function update_meta_data( $k, $v ) { $this->meta[ $k ] = $v; }
-      function save_meta_data() {}
-      function add_order_note( $n ) { $this->notas[] = $n; }
-      function get_order_number() { return (string) $this->d['id']; }
-      function get_shipping_postcode() { return ''; } function get_billing_postcode() { return $this->d['cp']; }
-      function get_shipping_city() { return ''; } function get_billing_city() { return $this->d['ciudad']; }
-      function get_billing_first_name() { return 'Marta'; } function get_billing_last_name() { return 'Soler'; } function get_billing_company() { return ''; }
-      function get_billing_phone() { return '600 11 22 33'; } function get_billing_email() { return 'marta@example.com'; }
-      function get_edit_order_url() { return 'http://prueba.local/wp-admin/post.php?post=' . $this->d['id'] . '&action=edit'; }
-      function has_shipping_method( $m ) { return ! empty( $this->d['recoge'] ); }
-    }
-    function wc_get_orders( $args ) {
-      if ( ! empty( $GLOBALS['explota'] ) ) throw new RuntimeException( 'la base de datos no responde' );
-      $GLOBALS['consultas'][] = $args;
-      return array_values( array_filter( $GLOBALS['pedidos'], static fn( $p ) => in_array( 'wc-' . $p->d['estado'], $args['status'], true ) ) );
-    }
-    function wc_get_order( $id ) { return $GLOBALS['pedidos'][ $id ] ?? false; }
-    function sanitize_text_field( $s ) { return trim( strip_tags( (string) $s ) ); }
-    function sanitize_key( $s ) { return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $s ) ); }
-    function wp_unslash( $s ) { return $s; }
-    $GLOBALS['peticiones'] = 0;
-    $GLOBALS['http'] = function ( $url ) { $GLOBALS['peticiones']++; return new WP_Error( 'x', 'no tendría que llamar a MRW' ); };
+    ${PEDIDO_SEGUIMIENTO}
     $dias = array(
       '2026-10-09' => dip_mrw_analizar( file_get_contents( '/f/d0910.html' ), '2026-10-09' )['cerradas'], // viernes: Comunidad Valenciana
       '2026-10-21' => array( array( 'MADRID', 'Leganes' ) ),   // miércoles: festivo local en Leganés
@@ -926,30 +984,7 @@ const escenarios = {
   `,
 
   'Facturación mensual y Odoo: pedidos ya facturados por la web': String.raw`
-    require '/p/inc/informes.php';
-    class Fecha { public $t; function __construct( $t ) { $this->t = $t; } function getTimestamp() { return $this->t; } }
-    class Linea {
-      public $n, $q, $s;
-      function __construct( $n, $q, $s ) { $this->n = $n; $this->q = $q; $this->s = $s; }
-      function get_name() { return $this->n; } function get_quantity() { return $this->q; } function get_subtotal() { return $this->s; } function get_total() { return $this->s; }
-    }
-    class WC_Order {
-      public $d;
-      function __construct( $d ) { $this->d = $d + array( 'empresa' => '', 'cliente' => 0, 'meta' => array(), 'pago' => 'Tarjeta', 'nota' => '' ); }
-      function get_id() { return $this->d['id']; } function get_order_number() { return (string) $this->d['id']; }
-      function get_meta( $k ) { return $this->d['meta'][ $k ] ?? ''; }
-      function get_billing_company() { return $this->d['empresa']; } function get_billing_first_name() { return $this->d['nombre']; } function get_billing_last_name() { return $this->d['apellido']; }
-      function get_billing_email() { return $this->d['email']; } function get_customer_id() { return $this->d['cliente']; }
-      function get_date_created() { return new Fecha( ( new DateTimeImmutable( $this->d['fecha'] . ' 10:00', wp_timezone() ) )->getTimestamp() ); }
-      function get_total() { return $this->d['total']; } function get_total_tax() { return round( $this->d['total'] - $this->d['total'] / 1.21, 2 ); }
-      function get_payment_method_title() { return $this->d['pago']; } function get_customer_note() { return $this->d['nota']; }
-      function get_edit_order_url() { return 'http://prueba.local/wp-admin/post.php?post=' . $this->d['id']; }
-      function get_items( $tipo = 'line_item' ) { return 'line_item' === $tipo ? array( new Linea( 'Hielo seco 10 kg · 3 mm', 1, 53.3 ) ) : ( 'shipping' === $tipo ? array( new Linea( 'Envío', 1, 13.19 ) ) : array() ); }
-    }
-    function wc_format_localized_decimal( $v ) { return str_replace( '.', ',', (string) $v ); }
-    function wc_price( $n ) { return '<span class="amount">' . number_format( (float) $n, 2, ',', '.' ) . '&nbsp;€</span>'; }
-    function wp_kses_post( $s ) { return $s; }
-    function submit_button( $t, $c = '', $n = '', $w = true, $o = array() ) { echo '<button>' . $t . '</button>'; }
+    ${PEDIDO_INFORMES}
     $pedidos = array(
       new WC_Order( array( 'id' => 201, 'nombre' => 'Marta', 'apellido' => 'Soler', 'email' => 'marta@example.com', 'cliente' => 7, 'fecha' => '2026-10-03', 'total' => 80.62, 'meta' => array( '_dip_fs_numero' => 'W2026-00001', '_dip_kg' => 10 ) ) ),
       new WC_Order( array( 'id' => 202, 'nombre' => 'Jordi', 'apellido' => 'Puig', 'empresa' => 'Frío Rápido S.L.', 'email' => 'compras@friorapido.es', 'cliente' => 9, 'fecha' => '2026-10-05', 'total' => 129.03, 'pago' => 'Factura mensual', 'meta' => array( '_billing_nif' => 'B12345678', '_dip_factura_mensual' => 1, '_dip_kg' => 20 ) ) ),
@@ -983,6 +1018,97 @@ const escenarios = {
     ok( 'Factura web' === $o[0][6] && 11 === count( $o ) && ! array_filter( $o, static fn( $x ) => 11 !== count( $x ) ), 'Odoo: columna «Factura web» y todas las filas con las mismas columnas', $o[0] );
     ok( '__import__.woo_201' === $o[1][0] && 'W2026-00001' === $o[1][6] && false !== strpos( $o[1][5], 'Ya facturado por la web: W2026-00001, no facturar otra vez' ) && '' === $o[2][6], 'Odoo: el número W… en la primera línea del pedido y aviso en la nota', array( $o[1], $o[2] ) );
     ok( '' === $o[3][6] && false === strpos( $o[3][5], 'facturado' ) && 'W2026-00002' === $o[5][6] && false !== strpos( $o[5][5], 'Pendiente: factura completa pedida' ), 'Odoo: el pedido sin factura web va limpio; el de factura completa pedida dice que está pendiente', array( $o[3], $o[5] ) );
+  `,
+
+  'Facturación mensual: lo que la web facturará al cobrar tampoco se factura en la gestoría': String.raw`
+    ${PEDIDO_INFORMES}
+    // Simula dip_fs_motivo() de inc/factura-simplificada.php: '' si al pedido le toca la factura simplificada
+    function dip_fs_motivo( $p, $modo = 'auto' ) { $GLOBALS['modos'][] = $modo; return empty( $p->d['fs_no'] ) ? '' : 'Compra para empresa o autónomo (casilla marcada): factura completa.'; }
+    $GLOBALS['modos'] = array();
+    $pedidos = array(
+      // Recogida en efectivo reservada para noviembre: la web hará la factura al marcarla «Completado»
+      new WC_Order( array( 'id' => 301, 'nombre' => 'Laia', 'apellido' => 'Mas', 'email' => 'laia@example.com', 'fecha' => '2026-10-28', 'total' => 36.06, 'pago' => 'Efectivo al recoger', 'estado' => 'processing', 'metodo' => 'cod', 'meta' => array( '_dip_kg' => 3, '_dip_fecha_entrega' => '2026-11-20' ) ) ),
+      // Pago con tarjeta en espera: la web hará la factura al pasar a «Procesando»
+      new WC_Order( array( 'id' => 302, 'nombre' => 'Joan', 'apellido' => 'Riera', 'email' => 'joan@example.com', 'fecha' => '2026-10-29', 'total' => 80.62, 'estado' => 'on-hold', 'meta' => array( '_dip_kg' => 10 ) ) ),
+      // Recogida en efectivo de una empresa: factura completa en la gestoría
+      new WC_Order( array( 'id' => 303, 'nombre' => 'Eva', 'apellido' => 'Gil', 'email' => 'eva@example.com', 'fecha' => '2026-10-30', 'total' => 36.06, 'pago' => 'Efectivo al recoger', 'estado' => 'processing', 'metodo' => 'cod', 'fs_no' => true, 'meta' => array( '_dip_kg' => 3 ) ) ),
+      // Recogida ya cobrada sin factura web (p. ej., anterior al módulo): pendiente
+      new WC_Order( array( 'id' => 304, 'nombre' => 'Rosa', 'apellido' => 'Font', 'email' => 'rosa@example.com', 'fecha' => '2026-10-10', 'total' => 36.06, 'pago' => 'Efectivo al recoger', 'estado' => 'completed', 'metodo' => 'cod', 'meta' => array( '_dip_kg' => 3 ) ) ),
+      new WC_Order( array( 'id' => 305, 'nombre' => 'Marc', 'apellido' => 'Pons', 'email' => 'marc@example.com', 'fecha' => '2026-10-12', 'total' => 48.32, 'estado' => 'processing', 'meta' => array( '_dip_fs_numero' => 'W2026-00009', '_dip_kg' => 3 ) ) ),
+      // Pagado con tarjeta y sin factura web: pendiente (la web ya no la hará sola)
+      new WC_Order( array( 'id' => 306, 'nombre' => 'Nil', 'apellido' => 'Sala', 'email' => 'nil@example.com', 'fecha' => '2026-10-14', 'total' => 129.03, 'estado' => 'processing', 'meta' => array( '_dip_kg' => 20 ) ) ),
+    );
+    $tipos = array_map( static fn( $p ) => dip_factura_web( $p )['tipo'], $pedidos );
+    ok( array( 'prevista', 'prevista', 'pendiente', 'pendiente', 'web', 'pendiente' ) === $tipos, 'recogida en efectivo sin recoger y pago en espera: «la hará la web al cobrar»; empresa, ya cobrado sin factura web o pagado: pendiente', $tipos );
+    ok( array( 'previsto' ) === array_values( array_unique( $GLOBALS['modos'] ) ) && 3 === count( $GLOBALS['modos'] ), 'solo pregunta a la factura simplificada (modo previsto) por los pedidos que aún no se han cobrado', $GLOBALS['modos'] );
+    $fw = dip_factura_web( $pedidos[0] );
+    ok( false === $fw['pendiente'] && '' === $fw['numero'] && 'La hará la web al cobrar: no facturar' === $fw['estado'], 'el estado dice que no se factura', $fw );
+
+    // CSV
+    $f = dip_filas_facturacion( $pedidos );
+    ok( 'La hará la web al cobrar: no facturar' === $f[1][14] && 'Pendiente de facturar' === $f[3][14], 'CSV: estado de cada pedido', array( $f[1], $f[3] ) );
+    ok( 10 === count( $f ) && 'Total pendiente de facturar' === $f[7][0] && '3 pedidos' === $f[7][3] && '201,15' === $f[7][10] && '26' === $f[7][6], 'CSV: el pendiente de facturar no incluye lo que la web facturará al cobrar (3 pedidos, 201,15 €, 26 kg)', $f[7] ?? null );
+    ok( 'Total que facturará la web al cobrar (no facturar)' === $f[9][0] && '2 pedidos' === $f[9][3] && '116,68' === $f[9][10] && '13' === $f[9][6], 'CSV: total aparte de lo que la web facturará al cobrar (2 pedidos, 116,68 €)', $f[9] ?? null );
+
+    // Pantalla
+    ob_start(); dip_pintar_facturacion( '2026-10', $pedidos ); $h = ob_get_clean();
+    ok( 2 === substr_count( $h, 'class="dip-fw-prevista"' ) && 3 === substr_count( $h, 'class="dip-fw-pendiente"' ) && 1 === substr_count( $h, 'class="dip-fw-web"' ), 'pantalla: 2 filas «la hará la web al cobrar», 3 pendientes y 1 ya facturada' );
+    ok( 1 === preg_match( '#<p class="dip-fw-explica-prevista">.*«La hará la web al cobrar».*tampoco la hagas en la gestoría.*</p>#u', $h ), 'pantalla: una línea explica «La hará la web al cobrar»' );
+    ok( 1 === preg_match( '#Pendiente de facturar</strong></th><td>3 pedidos</td><td>26 kg</td><td[^>]*><strong><span class="amount">201,15&nbsp;€#u', $h ) && 1 === preg_match( '#La hará la web al cobrar</th><td>2 pedidos</td><td>13 kg</td><td[^>]*><span class="amount">116,68&nbsp;€#u', $h ), 'pantalla: resumen con el pendiente de facturar separado de lo que la web facturará al cobrar' );
+    ok( 3 === substr_count( $h, 'Total del mes' ), 'pantalla: «Total del mes» solo en los clientes con pedidos que factura la web, ya o al cobrar (Laia Mas, Joan Riera y Marc Pons)' );
+    ob_start(); dip_pintar_facturacion( '2026-10', array( $pedidos[4] ) ); $h2 = ob_get_clean();
+    ok( false === strpos( $h2, 'dip-fw-explica-prevista' ) && false === strpos( $h2, 'La hará la web al cobrar</th>' ), 'pantalla: sin pedidos por cobrar, ni la línea ni la fila de «al cobrar»' );
+
+    // Odoo
+    $o = dip_filas_odoo( $pedidos );
+    ok( 13 === count( $o ) && '' === $o[1][6] && false !== strpos( $o[1][5], 'La factura simplificada la hará la web al cobrar: no facturar' ) && false !== strpos( $o[3][5], 'la hará la web al cobrar' ), 'Odoo: la nota de los pedidos por cobrar dice que la factura la hará la web', array( $o[1], $o[3] ) );
+    ok( false === strpos( $o[5][5], 'facturar' ) && false === strpos( $o[11][5], 'facturar' ), 'Odoo: los pendientes van sin aviso', array( $o[5][5], $o[11][5] ) );
+
+    // CSV sin fórmulas: Excel no ejecuta lo que escriba un cliente en su nombre
+    $c = array_map( 'dip_csv_celda', array( '=HYPERLINK("http://x")', '+34 600', '@SUMA(A1)', "\t=1", '-5,00', '-5.5', 53.3, 'Marta Soler', '' ) );
+    ok( array( "'=HYPERLINK(\"http://x\")", "'+34 600", "'@SUMA(A1)", "'\t=1", '-5,00', '-5.5', '53.3', 'Marta Soler', '' ) === $c, 'CSV: un texto que empieza por =, +, @ o tabulador lleva un apóstrofo delante; los números no cambian', $c );
+  `,
+
+  'Revisión diaria: pedidos del tema antiguo (Order Delivery Date Lite) también se revisan': String.raw`
+    require '/p/inc/seguimiento-entregas.php';
+    ${PEDIDO_SEGUIMIENTO}
+    poner_dias( array(
+      '2026-10-21' => array( array( 'MADRID', 'Leganes' ) ),   // miércoles: festivo local en Leganés
+      '2026-10-26' => array( array( 'BARCELONA', 'Mataro' ) ), // lunes: cierra MRW Mataró
+    ) );
+    $nuevo = static function ( $id, $d ) { return $GLOBALS['pedidos'][ $id ] = new WC_Order( $id, $d ); };
+    $p301 = $nuevo( 301, array( 'fecha' => '2026-10-21', 'cp' => '28911', 'ciudad' => 'Leganés', 'antiguo' => true ) );
+    $p302 = $nuevo( 302, array( 'fecha' => '2026-10-21', 'cp' => '28911', 'ciudad' => 'Leganés', 'antiguo' => true, 'recoge' => true ) );
+    $p303 = $nuevo( 303, array( 'fecha' => '2026-10-27', 'antiguo' => true, 'marca_madrid' => true ) ); // sale el lunes 26: cierra MRW Mataró
+    $p304 = $nuevo( 304, array( 'fecha' => '2026-10-21', 'cp' => '28901', 'ciudad' => 'Getafe', 'antiguo' => true ) );
+    $p305 = $nuevo( 305, array( 'fecha' => '2026-10-21', 'cp' => '28911', 'ciudad' => 'Leganés', 'antiguo' => true ) );
+    $p305->meta = array(); // sin ninguna fecha
+    ok( '2026-10-21' === dip_seg_fecha_pedido( $p301 ) && '2026-10-27' === dip_seg_fecha_pedido( $p303 ) && '' === dip_seg_fecha_pedido( $p305 ), 'fecha de Order Delivery Date Lite leída en hora de Madrid (medianoche UTC o de Madrid: el mismo día)' );
+    ok( dip_seg_es_recogida( $p302 ) && ! dip_seg_es_recogida( $p301 ), 'sin método guardado, la recogida se reconoce por el método de envío' );
+
+    $r = dip_seg_revisar( $AHORA );
+    ok( is_array( $r ) && 3 === $r['revisados'] && 2 === $r['avisos'], 'revisa los 3 envíos del tema antiguo con fecha (sin la recogida ni el pedido sin fecha) y avisa de 2', $r );
+    $email = $GLOBALS['correos'][0][2] ?? '';
+    ok( 1 === count( $GLOBALS['correos'] ) && false !== strpos( $email, "\nPedido 301 " ) && false !== strpos( $email, 'Motivo: MRW no reparte el miércoles 21 de octubre en Leganés' ) && false !== strpos( $email, "\nPedido 303 " ) && false !== strpos( $email, 'cierra MRW Mataró' ), 'un email con los dos pedidos del tema antiguo afectados', $email );
+    ok( false === strpos( $email, "\nPedido 302 " ) && false === strpos( $email, "\nPedido 304 " ) && false === strpos( $email, "\nPedido 305 " ) && ! $p302->notas && ! $p304->notas && 1 === count( $p301->notas ), 'sin aviso para la recogida, Getafe (abierto) ni el pedido sin fecha; nota en el 301' );
+
+    // La pantalla del pedido enseña el día de Order Delivery Date y guardar sin tocarlo no cambia nada
+    ob_start(); disparar( 'woocommerce_admin_order_data_after_shipping_address', $p301 ); $html = ob_get_clean();
+    ok( false !== strpos( $html, 'name="dip_cambiar_fecha" value="2026-10-21">' ) && false !== strpos( $html, 'Aviso: MRW no reparte el miércoles 21 de octubre en Leganés' ), '«Cambiar el día» con la fecha de Order Delivery Date y el aviso', $html );
+    ob_start(); disparar( 'woocommerce_admin_order_data_after_shipping_address', $p302 ); $html = ob_get_clean();
+    ok( false !== strpos( $html, 'Cambiar el día de recogida' ) && false !== strpos( $html, 'value="2026-10-21"' ), 'en la recogida del tema antiguo: «Cambiar el día de recogida» con su fecha', $html );
+    $_POST['dip_cambiar_fecha'] = '2026-10-21';
+    disparar( 'woocommerce_process_shop_order_meta', 301 );
+    unset( $_POST['dip_cambiar_fecha'] );
+    ok( 1 === count( $p301->notas ) && '' === $p301->get_meta( '_dip_fecha_entrega' ), 'guardar el pedido sin tocar el día no deja notas ni cambia nada', $p301->meta );
+
+    // Cambiar el día: se guarda con el método de entrega
+    ok( dip_seg_cambiar_fecha( $p301, '2026-10-22', $AHORA ) && '2026-10-22' === $p301->get_meta( '_dip_fecha_entrega' ) && 'envio' === $p301->get_meta( '_dip_metodo_entrega' ), 'cambiar el día de un pedido del tema antiguo guarda la fecha y el método', $p301->meta );
+    ok( 'Día de entrega cambiado en el escritorio: miércoles 21 de octubre → jueves 22 de octubre. El cliente no recibe ningún aviso automático.' === end( $p301->notas ), 'la nota dice el día de antes (el de Order Delivery Date) y el nuevo', end( $p301->notas ) );
+    dip_seg_cambiar_fecha( $p302, '2026-10-24', $AHORA );
+    ok( 'recogida' === $p302->get_meta( '_dip_metodo_entrega' ) && 'Día de recogida cambiado en el escritorio: miércoles 21 de octubre → sábado 24 de octubre. El cliente no recibe ningún aviso automático.' === end( $p302->notas ), 'en la recogida del tema antiguo, «Día de recogida» y método recogida', array( $p302->meta, end( $p302->notas ) ) );
+    $r = dip_seg_revisar( $AHORA );
+    ok( is_array( $r ) && 3 === $r['revisados'] && 0 === $r['avisos'] && 1 === count( $GLOBALS['correos'] ), 'en la siguiente revisión, sin avisos nuevos (el 301 ya va el 22 y el 303 ya se avisó)', $r );
   `,
 };
 
@@ -1057,6 +1183,19 @@ for (const c of casosJs) {
     lineas.push(`${viejo !== d.php ? 'OK   ' : 'FALLO'} con la lista mezclada de antes, el JS habría dicho ${viejo} en vez de ${d.php}`);
   }
   contar(lineas.join('\n'));
+}
+
+// La app INDUNOVA Control copia dip_mrw_nombres() y dip_mrw_mismo_sitio() tal cual (03/10/2026): si cambian, hay que avisar.
+// Si el cambio es a propósito: avisa a Bruno para la app y pon aquí la huella nueva.
+{
+  const { createHash } = await import('node:crypto');
+  const fuente = readFileSync('plugin/dryicepack-tienda/inc/festivos-mrw.php', 'utf8').replace(/\r/g, '');
+  const esperadas = {"dip_mrw_nombres":"c9b7ba34e4e93d22","dip_mrw_mismo_sitio":"97f02d33ead90a81"};
+  for (const [n, esperada] of Object.entries(esperadas)) {
+    const m = fuente.match(new RegExp('\\nfunction ' + n + '\\([\\s\\S]*?\\n}\\n'));
+    const ahora = m ? createHash('sha256').update(m[0]).digest('hex').slice(0, 16) : 'no encontrada';
+    contar(`${ahora === esperada ? 'OK   ' : 'FALLO'} ${n}() sin cambios (la copia la app INDUNOVA Control)${ahora === esperada ? '' : ': ha cambiado; avisa para actualizar la app y pon la huella ' + ahora}`);
+  }
 }
 
 console.log(`\n${total - fallos} de ${total} comprobaciones correctas${fallos ? ` · ${fallos} con fallo` : ''}`);

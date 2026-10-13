@@ -1,11 +1,12 @@
-// Comprueba la sintaxis de todos los .php del tema y del plugin con PHP 8.3 (WebAssembly, sin instalar PHP).
+// Comprueba la sintaxis de todos los .php del tema, del plugin y de las pruebas (herramientas/fixtures) con PHP 8.3
+// (WebAssembly, sin instalar PHP).
 // Uso: node herramientas/lint-php.mjs
 import { loadNodeRuntime } from '@php-wasm/node';
 import { PHP } from '@php-wasm/universal';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const raices = ['tema/dryicepack', 'plugin/dryicepack-tienda'];
+const raices = ['tema/dryicepack', 'plugin/dryicepack-tienda', 'herramientas/fixtures'];
 const archivos = [];
 const recorrer = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) recorrer(p); else if (p.endsWith('.php')) archivos.push(p); } };
 raices.forEach(recorrer);

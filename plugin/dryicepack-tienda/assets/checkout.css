@@ -13,6 +13,7 @@
 .dip-metodo:has(input:focus-visible) { outline: 2px solid var(--c-marino, #1F3C55); outline-offset: 2px; }
 .dip-metodo__icono { color: var(--c-marino, #1F3C55); display: grid; }
 .dip-metodo__texto small { display: block; margin-top: .2rem; color: var(--c-acero, #56677A); font-size: .85em; }
+.dip-metodo__texto .dip-metodo__precios { font-weight: 600; color: var(--c-marino, #1F3C55); }
 .dip-metodo__precio { font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* 6 días + "Otra fecha": 4 por fila en móvil, una fila en escritorio */

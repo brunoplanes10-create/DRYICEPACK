@@ -83,7 +83,7 @@ const leer = (p) => p.evaluate(() => ({
 
 // 3. Precio de 15 kg y guías
 const ficha = await (await fetch(BASE + '/hielo-seco-halloween/')).text();
-ok(/15 kg<\/b> 91,84/.test(ficha), 'Halloween muestra 15 kg a 91,84 € IVA incl.');
+ok(/15 kg<\/b> 90,63/.test(ficha), 'Halloween muestra 15 kg a 90,63 € IVA incl. (74,90 € + IVA desde el 03/10/2026)');
 for (const u of ['/guias/', '/ca/guies/', '/en/guides/', '/guias/como-hacer-niebla-con-hielo-seco/', '/ca/guies/com-fer-boira-amb-gel-sec/', '/en/guides/how-to-make-fog-with-dry-ice/', '/guias/donde-comprar-hielo-seco/', '/ca/guies/on-comprar-gel-sec/', '/en/guides/where-to-buy-dry-ice/']) {
   const r = await fetch(BASE + u); const h = await r.text();
   const t = (h.match(/<title>([^<]*)/) || [])[1] || '';

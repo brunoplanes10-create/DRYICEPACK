@@ -30,7 +30,7 @@ return array(
 	'nave' => array(
 		'titulo'  => 'Nuestra nave en Mataró',
 		'horario' => 'Atendemos de lunes a viernes, de 9:00 a 18:00',
-		'recoger' => 'Recogida de lunes a sábado, también festivos, a la hora que te confirmamos. Gratis entre semana; el sábado, 11,74 €. Pago en efectivo.',
+		'recoger' => 'Recogida de lunes a sábado, también festivos, a la hora que te confirmamos. Precio redondo con IVA incluido: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} En efectivo y con el importe exacto: no tenemos cambio.',
 		'como'    => 'Cómo llegar',
 		'empresa' => 'Datos de la empresa',
 		'alt'     => 'Cajas de hielo seco preparadas junto a la furgoneta de reparto',

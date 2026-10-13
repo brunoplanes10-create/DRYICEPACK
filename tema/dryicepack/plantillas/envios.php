@@ -173,7 +173,7 @@ $v_json = wp_json_encode( $v_paradas, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | J
 							<label><input type="radio" name="v-formato" value="<?php echo esc_attr( $v_f ); ?>"<?php checked( 0, $v_i ); ?> data-calc-formato><span><?php echo esc_html( $t['pedir'][ 'f' . $v_f ] ); ?></span></label>
 						<?php endforeach; ?>
 					</fieldset>
-					<a class="boton v-pedir__boton" href="<?php echo esc_url( dipt_url_pedido( $v_p['cajas'], '3mm' ) ); ?>" data-calc-pedir data-t-boton="<?php echo esc_attr( $t['pedir']['boton'] ); ?>" data-base="<?php echo esc_url( home_url( '/' ) ); ?>"><span data-calc-pedir-texto><?php echo esc_html( sprintf( $t['pedir']['boton'], $v_num( $v_p['kg'] ) ) ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></a>
+					<a class="boton v-pedir__boton" href="<?php echo esc_url( dipt_url_pedido( $v_p['cajas'], '3mm' ) ); ?>" rel="nofollow" data-calc-pedir data-t-boton="<?php echo esc_attr( $t['pedir']['boton'] ); ?>" data-base="<?php echo esc_url( home_url( '/' ) ); ?>"><span data-calc-pedir-texto><?php echo esc_html( sprintf( $t['pedir']['boton'], $v_num( $v_p['kg'] ) ) ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></a>
 					<p class="v-pedir__nota"><?php echo esc_html( $t['pedir']['nota'] ); ?></p>
 				</div>
 			</div>

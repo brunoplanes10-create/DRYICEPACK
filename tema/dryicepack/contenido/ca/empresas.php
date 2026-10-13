@@ -86,7 +86,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'El que pregunten les empreses',
 		'lista'  => array(
-			array( 'Hi ha comanda mínima?', 'Al web, des de 3 kg. Amb compte d\'empresa, l\'ajustem al que vostè consumeix.' ),
+			array( 'Hi ha comanda mínima?', 'Al web, des de {pk} kg. Amb compte d\'empresa, l\'ajustem al que vostè consumeix.' ),
 			array( 'Com es paga?', 'Amb una sola factura al mes, a 30 dies, per domiciliació SEPA sempre que es pugui, o per transferència.' ),
 			array( 'Cal signar un contracte?', 'Per al compte d\'empresa, sí: un contracte de subministrament de gel sec amb els quilos, la freqüència, el descompte sobre tarifa i la forma de pagament. Per comprar al web no cal: demani i pagui al moment, com qualsevol client.' ),
 			array( 'Quin preu tindré?', 'Un descompte sobre la tarifa del web, segons el seu volum i la seva freqüència. S\'acorda en obrir el compte. Completi la frase de més amunt i li responem, normalment el mateix dia feiner.' ),

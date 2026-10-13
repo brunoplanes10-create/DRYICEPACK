@@ -20,15 +20,15 @@ return array(
 
 <h2>Quant gel sec necessito per sessió?</h2>
 <p>Depèn del sistema de casquets, de quants casquets facis servir i de quant duri la sessió. Mira primer si el fabricant indica una quantitat.</p>
-<p>Com a referència, les comandes que hem servit per a casquets freds rondaven els 5 kg per sessió. Amb les nostres caixes de 3, 10, 15 i 20 kg, queda així:</p>
+<p>Com a referència, les comandes que hem servit per a casquets freds rondaven els 5 kg per sessió. Amb les nostres caixes de {pk}, 10, 15 i 20 kg, queda així:</p>
 <table>
 <thead><tr><th>Per a</th><th>Què cal demanar</th></tr></thead>
 <tbody>
-<tr><td>Una sessió (referència: uns 5 kg)</td><td>2 caixes de 3 kg (6 kg) o 1 caixa de 10 kg</td></tr>
+<tr><td>Una sessió (referència: uns 5 kg)</td><td>' . ( 5 === dipt_pk() ? '1 caixa de 5 kg o 1 caixa de 10 kg' : '2 caixes de 3 kg (6 kg) o 1 caixa de 10 kg' ) . '</td></tr>
 <tr><td>Sessions en dies seguits</td><td>Digues-nos quantes sessions i et direm quant cal demanar</td></tr>
 </tbody>
 </table>
-<p>És una referència, no una regla. El preu per quilo baixa com més gran és la caixa: la de 10 kg costa menys que dues caixes de 3 kg i et deixa més marge. Per a diversos dies seguits, escriu-nos abans de demanar-lo i ho calculem amb tu.</p>
+<p>És una referència, no una regla. El preu per quilo baixa com més gran és la caixa: ' . ( 5 === dipt_pk() ? 'amb 10 kg pagues menys per quilo que amb 5 kg i et queda marge' : 'la de 10 kg costa menys que dues caixes de 3 kg i et deixa més marge' ) . '. Per a diversos dies seguits, escriu-nos abans de demanar-lo i ho calculem amb tu.</p>
 
 <h3>3 mm o 16 mm?</h3>
 <p>Els nuggets de 16 mm tenen més massa per peça i duren més hores. Els pèl·lets de 3 mm refreden més de pressa i omplen millor els buits. Si les instruccions dels teus casquets demanen un format, fes servir aquest.</p>
@@ -46,7 +46,7 @@ return array(
 <p>Dilluns no hi ha repartiment. Tens dues opcions:</p>
 <ul>
 <li><strong>Entrega el dissabte.</strong> Demana\'l abans de les 12:00 de divendres, si la teva zona té repartiment el dissabte (suplement d\'11,74 €, IVA inclòs). El gel passarà el cap de setmana a la caixa: escriu-nos abans de demanar-lo i calculem els quilos.</li>
-<li><strong>Recollida a Mataró el mateix dilluns.</strong> A la nostra nau (Camí Ca La Madrona 19 D), de dilluns a dissabte, també festius. Tries el dilluns en pagar i et confirmem l\'hora per telèfon o WhatsApp; si la sessió és d\'hora, digues-nos-ho en fer la comanda. Es paga en efectiu en recollir-lo i no té despeses d\'enviament.</li>
+<li><strong>Recollida a Mataró el mateix dilluns.</strong> A la nostra nau (Camí Ca La Madrona 19 D), de dilluns a dissabte, també festius. Tries el dilluns en pagar i et confirmem l\'hora per telèfon o WhatsApp; si la sessió és d\'hora, digues-nos-ho en fer la comanda. No hi ha despeses d\'enviament i el preu és rodó, amb IVA inclòs: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}. Es paga en efectiu i amb l\'import exacte: no tenim canvi.</li>
 </ul>
 
 <h2>Com es manipula sense risc?</h2>

@@ -6,10 +6,10 @@ return array(
 		'descripcion' => 'Legal notice for dryicepack.es: details of the owner, INDUNOVA IMS S.L., terms of use of the website, intellectual property and applicable law.',
 	),
 	'titulo'     => 'Legal notice',
-	'actualizado'=> 'Last updated: 30 September 2026',
+	'actualizado'=> 'Last updated: 7 October 2026',
 	'secciones'  => array(
 		array( 'Website owner', '<p>In accordance with article 10 of Spanish Law 34/2002 on information society services and electronic commerce (LSSI-CE), these are the details of the owner of www.dryicepack.es:</p>
-<ul><li><strong>Company name:</strong> INDUNOVA IMS S.L.</li><li><strong>Tax ID (NIF):</strong> B66800103</li><li><strong>Registered office:</strong> Ronda Alfonso X El Sabio, 10, 2º 1ª, 08301 Mataró (Barcelona)</li><li><strong>Warehouse and collections:</strong> Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona)</li><li><strong>Email:</strong> info@dryicepack.es</li><li><strong>Phone:</strong> +34 936 73 76 41</li></ul>
+<ul><li><strong>Company name:</strong> INDUNOVA IMS S.L.</li><li><strong>Tax ID (NIF):</strong> B66800103</li><li><strong>Company registration:</strong> Barcelona Companies Register (Registro Mercantil), volume 45484, folio 53, section 8, sheet B-489371, entry 1</li><li><strong>Registered office:</strong> Ronda Alfonso X El Sabio, 10, 2º 1ª, 08301 Mataró (Barcelona)</li><li><strong>Warehouse and collections:</strong> Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona)</li><li><strong>Email:</strong> info@dryicepack.es</li><li><strong>Phone:</strong> +34 936 73 76 41</li></ul>
 <p>DryIcePack is a trade name of INDUNOVA IMS S.L.</p>' ),
 		array( 'Use of the website', '<p>Anyone browsing this website is a user and agrees to use it properly and lawfully, and to provide truthful information in the forms.</p><p>Users are liable for any damage caused by use that breaches the law, these terms or the rights of third parties.</p>' ),
 		array( 'Prices', '<p>Prices are shown in euros. The shop states in each case whether VAT is included and, before payment, always shows the final price including taxes and delivery costs.</p>' ),

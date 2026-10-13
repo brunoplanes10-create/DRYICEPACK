@@ -97,6 +97,7 @@ h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 .n-faq__lista div:first-child { border-top-color: var(--c-tinta); }
 .n-faq__lista dt { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.2rem, 1.8vw, 1.45rem); line-height: 1.22; letter-spacing: -.008em; text-wrap: balance; }
 .n-faq__lista dd { margin: 0; color: var(--c-acero); }
+.n-faq__seg { margin: 1.6rem 0 0; }
 @media (max-width: 800px) { .n-faq__lista div { grid-template-columns: 1fr; gap: .6rem; } }
 
 /* ---------- N3b · Cliente (Nissan Formula E Team) ---------- */

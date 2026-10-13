@@ -24,10 +24,55 @@ $hw_ver = static function ( $rel ) use ( $hw_dir ) {
    Datos (precios y enlaces reales de la tienda)
 --------------------------------------------------------- */
 $hw_producto = home_url( '/producto/hielo-seco/' );
-$hw_pedir    = static function ( $kg, $formato = '3mm' ) use ( $hw_producto ) {
+
+/*
+ * Packs leídos de WooCommerce (precio sin y con IVA, stock y slug del atributo), para que la página diga
+ * siempre lo mismo que cobra la tienda. Sin WooCommerce, los precios del 03/10/2026.
+ * Pack pequeño: 3 kg mientras quede alguna caja de 3 kg; cuando se acaba, el de 5 kg (decidido el 03/10/2026).
+ */
+$hw_packs = array(
+	3  => array( 'sin' => 29.80, 'con' => 36.06, 'stock' => true, 'slug' => '3kg-de-hielo-seco' ),
+	10 => array( 'sin' => 53.30, 'con' => 64.49, 'stock' => true, 'slug' => '10kg-de-hielo-seco' ),
+	15 => array( 'sin' => 74.90, 'con' => 90.63, 'stock' => true, 'slug' => '15kg-de-hielo-seco' ),
+	20 => array( 'sin' => 98.60, 'con' => 119.31, 'stock' => true, 'slug' => '20kg-de-hielo-seco' ),
+);
+$hw_post  = function_exists( 'wc_get_product' ) ? get_page_by_path( 'hielo-seco', OBJECT, 'product' ) : null;
+$hw_padre = $hw_post ? wc_get_product( $hw_post->ID ) : null;
+if ( $hw_padre && $hw_padre->is_type( 'variable' ) ) {
+	$hw_leidos = array();
+	foreach ( $hw_padre->get_children() as $hw_id ) {
+		$hw_v = wc_get_product( $hw_id );
+		if ( ! $hw_v || ! $hw_v->is_purchasable() || '' === (string) $hw_v->get_price() ) continue;
+		$hw_slug = (string) ( $hw_v->get_attributes()['pa_peso'] ?? '' );
+		if ( ! preg_match( '/(\d+)\s*kg/i', $hw_slug . ' ' . $hw_v->get_attribute( 'pa_peso' ), $hw_m ) ) continue;
+		$hw_kg = (int) $hw_m[1];
+		$hw_leidos[ $hw_kg ] = array(
+			'sin'   => (float) wc_get_price_excluding_tax( $hw_v ),
+			'con'   => round( (float) wc_get_price_including_tax( $hw_v ), 2 ),
+			'stock' => ! empty( $hw_leidos[ $hw_kg ]['stock'] ) || $hw_v->is_in_stock(),
+			'slug'  => $hw_slug ?: $hw_kg . 'kg-de-hielo-seco',
+		);
+	}
+	// Lo leído manda; el respaldo solo completa 10, 15 y 20 kg si faltaran (el de 3 kg no: puede haberse acabado)
+	if ( $hw_leidos ) $hw_packs = $hw_leidos + array_diff_key( $hw_packs, array( 3 => true ) );
+}
+// Con el plugin de la tienda (tema nuevo) manda su regla; con el tema antiguo, el stock de WooCommerce
+if ( function_exists( 'dip_pack_pequeno' ) ) {
+	$hw_pk = (int) dip_pack_pequeno();
+} else {
+	$hw_pk = ( empty( $hw_packs[3]['stock'] ) && ! empty( $hw_packs[5]['stock'] ) ) ? 5 : 3;
+}
+if ( ! isset( $hw_packs[ $hw_pk ] ) ) $hw_pk = isset( $hw_packs[3] ) ? 3 : ( isset( $hw_packs[5] ) ? 5 : 10 );
+$hw_euros = static function ( $n ) {
+	return number_format( (float) $n, 2, ',', '.' ) . ' €';
+};
+// Recogida: con el plugin, precio redondo con IVA incluido, el sábado 31/10 sin suplemento y de lunes a sábado
+$hw_recogida = function_exists( 'dip_precios_recogida' ) ? dip_precios_recogida() : array();
+
+$hw_pedir    = static function ( $kg, $formato = '3mm' ) use ( $hw_producto, $hw_packs ) {
 	return add_query_arg(
 		array(
-			'attribute_pa_peso'    => $kg . 'kg-de-hielo-seco',
+			'attribute_pa_peso'    => $hw_packs[ $kg ]['slug'] ?? $kg . 'kg-de-hielo-seco',
 			'attribute_pa_formato' => $formato,
 		),
 		$hw_producto
@@ -48,7 +93,7 @@ $hw_faq = array(
 	),
 	array(
 		'q' => '¿Cuánto hielo seco necesito para Halloween?',
-		'a' => 'Orientativamente, 3 kg para una fiesta en casa, 10 kg para una fiesta grande y 15–20 kg para un bar o un evento. Si vas a tener varios puntos de niebla a la vez, sube un escalón.',
+		'a' => 'Orientativamente, ' . $hw_pk . ' kg para una fiesta en casa, 10 kg para una fiesta grande y 15–20 kg para un bar o un evento. Si vas a tener varios puntos de niebla a la vez, sube un escalón.',
 	),
 	array(
 		'q' => '¿Se puede echar hielo seco en una bebida?',
@@ -68,7 +113,10 @@ $hw_faq = array(
 	),
 	array(
 		'q' => '¿Puedo recogerlo en vuestro almacén?',
-		'a' => 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a viernes. Elige la recogida al finalizar la compra y te confirmamos la franja. Está pensada para clientes del Maresme, el Vallès y el área de Barcelona.',
+		// Con el plugin de la tienda (tema nuevo): de lunes a sábado, 31/10 sin suplemento, precio redondo y efectivo exacto
+		'a' => $hw_recogida
+			? 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a sábado; el sábado 31 de octubre, sin suplemento. Al recoger pagas en efectivo un precio redondo con IVA incluido: ' . $hw_pk . ' kg ' . $hw_euros( $hw_recogida[ (string) $hw_pk ] ?? 0 ) . ', 10 kg ' . $hw_euros( $hw_recogida['10'] ?? 0 ) . '. Trae el importe exacto: no tenemos cambio. Elige la recogida al finalizar la compra y te confirmamos la hora.'
+			: 'Sí, en Mataró (Camí Ca La Madrona 19 D), de lunes a viernes. Elige la recogida al finalizar la compra y te confirmamos la franja. Está pensada para clientes del Maresme, el Vallès y el área de Barcelona.',
 	),
 );
 
@@ -220,7 +268,7 @@ get_header();
 			<span class="hw-subrayado" aria-hidden="true"></span>
 			<p class="hw-entrada">Pellets de hielo seco de 3 mm que hacen niebla densa en cuanto tocan agua caliente. Pide antes de las 12:00 y lo recibes el siguiente día laborable por la mañana, en caja EPS y listo para usar.</p>
 			<div class="hw-botones">
-				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir hielo seco</a>
+				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="#cantidad">Elegir cantidad</a>
 			</div>
 			<ul class="hw-chips">
@@ -292,7 +340,7 @@ get_header();
 							<div><dt>Niebla</dt><dd>Inmediata y densa</dd></div>
 							<div><dt>Ideal para</dt><dd>Calderos, ponchera, suelo</dd></div>
 						</dl>
-						<a class="hw-btn hw-btn--bloque hw-formato__btn" href="<?php echo esc_url( $hw_pedir( 3, '3mm' ) ); ?>">Pedir en 3 mm</a>
+						<a class="hw-btn hw-btn--bloque hw-formato__btn" href="<?php echo esc_url( $hw_pedir( $hw_pk, '3mm' ) ); ?>">Pedir en 3 mm</a>
 					</div>
 				</article>
 				<article class="hw-formato">
@@ -311,7 +359,7 @@ get_header();
 							<div><dt>Niebla</dt><dd>Más constante</dd></div>
 							<div><dt>Ideal para</dt><dd>Fiestas largas, eventos</dd></div>
 						</dl>
-						<a class="hw-btn hw-btn--bloque hw-btn--linea hw-formato__btn" href="<?php echo esc_url( $hw_pedir( 3, '16mm' ) ); ?>">Pedir en 16 mm</a>
+						<a class="hw-btn hw-btn--bloque hw-btn--linea hw-formato__btn" href="<?php echo esc_url( $hw_pedir( $hw_pk, '16mm' ) ); ?>">Pedir en 16 mm</a>
 					</div>
 				</article>
 			</div>
@@ -329,16 +377,16 @@ get_header();
 			<ul class="hw-packs" data-hw-revela="grupo">
 				<li class="hw-pack">
 					<p class="hw-pack__uso">En casa</p>
-					<p class="hw-pack__kg"><span class="hw-pack__num">3</span> kg</p>
+					<p class="hw-pack__kg"><span class="hw-pack__num"><?php echo (int) $hw_pk; ?></span> kg</p>
 					<p class="hw-pack__desc">Un caldero o una ponchera para una fiesta en casa.</p>
-					<p class="hw-pack__precio">36,06 € <small>IVA incl. · 29,80 € + IVA</small></p>
-					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir 3 kg</a>
+					<p class="hw-pack__precio"><?php echo esc_html( $hw_euros( $hw_packs[ $hw_pk ]['con'] ) ); ?> <small>IVA incl. · <?php echo esc_html( $hw_euros( $hw_packs[ $hw_pk ]['sin'] ) ); ?> + IVA</small></p>
+					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir <?php echo (int) $hw_pk; ?> kg</a>
 				</li>
 				<li class="hw-pack">
 					<p class="hw-pack__uso">Fiesta grande</p>
 					<p class="hw-pack__kg"><span class="hw-pack__num">10</span> kg</p>
 					<p class="hw-pack__desc">Varios puntos de niebla o una fiesta de varias horas.</p>
-					<p class="hw-pack__precio">64,49 € <small>IVA incl. · 53,30 € + IVA</small></p>
+					<p class="hw-pack__precio"><?php echo esc_html( $hw_euros( $hw_packs[10]['con'] ) ); ?> <small>IVA incl. · <?php echo esc_html( $hw_euros( $hw_packs[10]['sin'] ) ); ?> + IVA</small></p>
 					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 10 ) ); ?>">Pedir 10 kg</a>
 				</li>
 				<li class="hw-pack hw-pack--doble">
@@ -347,11 +395,11 @@ get_header();
 					<p class="hw-pack__desc">Para un local o un evento con varios puntos de niebla.</p>
 					<div class="hw-pack__opciones">
 						<div>
-							<p class="hw-pack__precio"><b>15 kg</b> 91,84 € <small>IVA incl. · 75,90 € + IVA</small></p>
+							<p class="hw-pack__precio"><b>15 kg</b> <?php echo esc_html( $hw_euros( $hw_packs[15]['con'] ) ); ?> <small>IVA incl. · <?php echo esc_html( $hw_euros( $hw_packs[15]['sin'] ) ); ?> + IVA</small></p>
 							<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 15 ) ); ?>">Pedir 15 kg</a>
 						</div>
 						<div>
-							<p class="hw-pack__precio"><b>20 kg</b> 119,31 € <small>IVA incl. · 98,60 € + IVA</small></p>
+							<p class="hw-pack__precio"><b>20 kg</b> <?php echo esc_html( $hw_euros( $hw_packs[20]['con'] ) ); ?> <small>IVA incl. · <?php echo esc_html( $hw_euros( $hw_packs[20]['sin'] ) ); ?> + IVA</small></p>
 							<a class="hw-btn hw-btn--bloque hw-btn--linea" href="<?php echo esc_url( $hw_pedir( 20 ) ); ?>">Pedir 20 kg</a>
 						</div>
 					</div>
@@ -400,7 +448,7 @@ get_header();
 				<h2 id="hw-fecha-t">¿Hasta cuándo puedo pedir?</h2>
 				<p class="hw-reloj" data-hw-reloj>Jue 29/10 · 12:00</p>
 				<p class="hw-reloj__pie" data-hw-reloj-pie>Último pedido para recibirlo el viernes 30 por la mañana.</p>
-				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir hielo seco</a>
+				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 			</div>
 			<ol class="hw-linea" data-hw-revela="grupo">
 				<li>
@@ -417,7 +465,11 @@ get_header();
 				</li>
 				<li>
 					<p class="hw-linea__cuando">Recogida en Mataró</p>
+					<?php if ( $hw_recogida ) : // tema nuevo con el plugin de la tienda ?>
+					<p>De lunes a sábado, con hora confirmada; el sábado 31, sin suplemento. En efectivo y con el importe exacto: <?php echo esc_html( $hw_pk . ' kg ' . $hw_euros( $hw_recogida[ (string) $hw_pk ] ?? 0 ) . ', 10 kg ' . $hw_euros( $hw_recogida['10'] ?? 0 ) ); ?>, IVA incluido.</p>
+					<?php else : ?>
 					<p>De lunes a viernes, con franja acordada. Para Maresme, Vallès y área de Barcelona.</p>
+					<?php endif; ?>
 				</li>
 			</ol>
 			<p class="hw-nota hw-fecha__nota">No lo pidas con muchos días de antelación: el hielo seco sublima poco a poco. Lo ideal es recibirlo la víspera de la fiesta. ¿Tu fiesta es el sábado por la noche y lo recibes el viernes? Elige 16 mm, que aguanta más, o entrega en sábado si tu zona la tiene.</p>
@@ -504,7 +556,7 @@ get_header();
 			<h2 id="hw-final-t"><span class="hw-f-v">Niebla de verdad, lista para el viernes 30</span><span class="hw-f-s">Niebla de verdad para tu Halloween</span><span class="hw-f-c">Niebla de verdad para tu próxima fiesta</span></h2>
 			<p><span class="hw-f-v">Pide antes de las 12:00 del jueves 29 de octubre.</span><span class="hw-f-s">Para el sábado 31, pide antes de las 12:00 del viernes 30 (según zona).</span><span class="hw-f-c">Pide antes de las 12:00 y lo recibes el siguiente día laborable.</span> Te llega en caja EPS, listo para usar. Antes de empezar, lee la <a href="<?php echo esc_url( home_url( '/seguridad-del-hielo-seco/' ) ); ?>">guía de seguridad</a>.</p>
 			<div class="hw-botones">
-				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( 3 ) ); ?>">Pedir hielo seco</a>
+				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="<?php echo esc_url( $hw_tel ); ?>">Llamar</a>
 			</div>
 		</div>

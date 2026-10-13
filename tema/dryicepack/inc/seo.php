@@ -62,6 +62,10 @@ add_action( 'wp_head', static function () {
 }, 5 );
 
 /* ---------- Datos estructurados ---------- */
+// BreadcrumbList: lo genera el tema con las mismas migas que se ven (las zonas y las guías no siguen la jerarquía de
+// páginas de WordPress, que es la que usaría Rank Math).
+add_filter( 'rank_math/json_ld/breadcrumbs_enabled', '__return_false' );
+
 function dipt_jsonld( $datos ) {
 	echo '<script type="application/ld+json">' . wp_json_encode( $datos, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 }
@@ -75,7 +79,7 @@ function dipt_schema_negocio() {
 		'name'        => 'DryIcePack',
 		'legalName'   => $c['empresa'],
 		'taxID'       => $c['cif'],
-		'description' => 'Venta de hielo seco en pellets de 3 mm y nuggets de 16 mm. Envío por mensajería a la península con entrega al día siguiente por la mañana si se pide antes de las 12:00, y recogida gratis en la nave de Mataró.',
+		'description' => 'Venta de hielo seco en pellets de 3 mm y nuggets de 16 mm. Envío por mensajería a la península con entrega al día siguiente por la mañana si se pide antes de las 12:00, y recogida en la nave de Mataró de lunes a sábado, con pago en efectivo.',
 		'url'         => home_url( '/' ),
 		'telephone'   => '+34936737641',
 		'email'       => $c['email'],
@@ -120,8 +124,10 @@ add_action( 'wp_footer', static function () {
 		) );
 	}
 
+	// Siempre el del tema, que coincide con las migas visibles. Rank Math en producción tiene las migas desactivadas
+	// (no genera BreadcrumbList) y, si alguien las activa, su lista queda apagada con el filtro de arriba para no duplicarla.
 	$migas = $GLOBALS['dipt_migas'] ?? array();
-	if ( count( $migas ) >= 2 && ! defined( 'RANK_MATH_VERSION' ) ) {
+	if ( count( $migas ) >= 2 ) {
 		dipt_jsonld( array(
 			'@context'        => 'https://schema.org',
 			'@type'           => 'BreadcrumbList',

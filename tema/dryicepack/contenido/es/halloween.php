@@ -3,6 +3,6 @@
 return array(
 	'seo' => array(
 		'titulo'      => 'Hielo seco para Halloween: niebla de verdad | DryIcePack',
-		'descripcion' => 'Hielo seco para Halloween: niebla a ras de suelo. 3 kg para casa, 10 kg para una fiesta grande. Para el viernes 30, pídelo antes de las 12:00 del jueves.',
+		'descripcion' => 'Hielo seco para Halloween: niebla a ras de suelo. {pk} kg para casa, 10 kg para una fiesta grande. Para el viernes 30, pídelo antes de las 12:00 del jueves.',
 	),
 );

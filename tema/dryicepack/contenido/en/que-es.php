@@ -58,7 +58,7 @@ return array(
 			array( 'How do I store it when it arrives?', 'In its EPS box, with the lid on but not taped shut, somewhere cool and ventilated, out of reach of children and pets. The container must never be airtight.' ),
 			array( 'Can I put it in the freezer?', 'No. At −78.5 °C it’s far colder than a home freezer (−18 °C): it can damage the thermostat and the seals, and it will keep sublimating anyway.' ),
 			array( 'Is it the same as liquid nitrogen?', 'No. Liquid nitrogen is a different substance: it’s a liquid, at about −196 °C. Dry ice is solid CO₂.' ),
-			array( 'How much do I need?', 'It depends on the use, the hours and the insulation. For fog, as a guide: 3 kg at home, 10 kg for a big party and 15 to 20 kg for a bar or an event. For transport or samples, tell us the hours and the volume and we’ll work it out.' ),
+			array( 'How much do I need?', 'It depends on the use, the hours and the insulation. For fog, as a guide: {pk} kg at home, 10 kg for a big party and 15 to 20 kg for a bar or an event. For transport or samples, tell us the hours and the volume and we’ll work it out.' ),
 		),
 	),
 	'final' => array( 'titulo' => 'Now you know what it is. Order before 12:00 and have it tomorrow.', 'boton' => 'Buy dry ice' ),

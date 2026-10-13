@@ -47,7 +47,7 @@ if ( class_exists( 'WooCommerce' ) ) {
     if ( ! wc_attribute_taxonomy_id_by_name( 'pa_' . $slug ) ) wc_create_attribute( array( 'name' => $nombre, 'slug' => $slug, 'type' => 'select' ) );
     register_taxonomy( 'pa_' . $slug, 'product', array( 'hierarchical' => false ) );
   }
-  $pesos = array( '3kg-de-hielo-seco' => array( '3kg de Hielo Seco', 3, '29.80' ), '10kg-de-hielo-seco' => array( '10kg de Hielo Seco', 10, '53.30' ), '15kg-de-hielo-seco' => array( '15kg de Hielo Seco', 15, '75.90' ), '20kg-de-hielo-seco' => array( '20kg de Hielo Seco', 20, '98.60' ) );
+  $pesos = array( '3kg-de-hielo-seco' => array( '3kg de Hielo Seco', 3, '29.80' ), '5kg-de-hielo-seco' => array( '5kg de Hielo Seco', 5, '33.90' ), '10kg-de-hielo-seco' => array( '10kg de Hielo Seco', 10, '53.30' ), '15kg-de-hielo-seco' => array( '15kg de Hielo Seco', 15, '74.90' ), '20kg-de-hielo-seco' => array( '20kg de Hielo Seco', 20, '98.60' ) );
   foreach ( $pesos as $s => $v ) if ( ! term_exists( $s, 'pa_peso' ) ) wp_insert_term( $v[0], 'pa_peso', array( 'slug' => $s ) );
   foreach ( array( '3mm', '16mm' ) as $f ) if ( ! term_exists( $f, 'pa_formato' ) ) wp_insert_term( $f, 'pa_formato', array( 'slug' => $f ) );
   if ( ! get_page_by_path( 'hielo-seco', OBJECT, 'product' ) ) {

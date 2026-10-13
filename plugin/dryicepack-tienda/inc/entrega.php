@@ -99,19 +99,61 @@ add_action( 'woocommerce_checkout_update_order_review', static function ( $post_
 	}
 } );
 
-/* ---------- Suplemento de sábado ---------- */
+/* ---------- Suplemento de sábado ----------
+ * Envío: 9,70 € + IVA. Recogida: 10,00 € IVA incluido (sin suplemento los sábados de Ajustes, de serie el 31/10/2026).
+ * El de la recogida se paga en efectivo y tiene que dar 10,00 € justos: base 8,26 € y la cuota se fija en 1,74 €
+ * (WooCommerce calcularía 8,26 × 21 % = 1,73 € y saldrían 9,99 €). */
+if ( ! defined( 'DIP_FEE_SABADO_RECOGIDA' ) ) define( 'DIP_FEE_SABADO_RECOGIDA', 'dip-sabado-recogida' );
+
 add_action( 'woocommerce_cart_calculate_fees', static function ( $carrito ) {
 	if ( is_admin() && ! wp_doing_ajax() ) return;
 	if ( ! is_checkout() && ! wp_doing_ajax() ) return;
-	// Entrega en sábado y también recogida en sábado
 	$metodo = dip_metodo_elegido();
 	$fecha  = dip_fecha_elegida( $metodo );
-	if ( ! $fecha ) return;
-	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', $fecha, dip_zona_horaria() );
-	if ( ! $d || 6 !== (int) $d->format( 'N' ) ) return;
+	$sup    = $fecha ? dip_suplemento_sabado( $metodo, $fecha ) : null;
+	if ( ! $sup ) return;
 	$t = dip_textos_tienda();
-	$carrito->add_fee( 'recogida' === $metodo ? $t['suplemento_sabado_recogida'] : $t['suplemento_sabado'], (float) DIP_SATURDAY_SURCHARGE_EXCL_TAX, true );
+	$carrito->fees_api()->add_fee( array(
+		'id'      => 'recogida' === $metodo ? DIP_FEE_SABADO_RECOGIDA : 'dip-sabado-envio',
+		'name'    => 'recogida' === $metodo ? $t['suplemento_sabado_recogida'] : $t['suplemento_sabado'],
+		'amount'  => $sup['neto'],
+		'taxable' => true,
+	) );
 }, 20 );
+
+/** Reparte una cuota fija (en céntimos) entre los tipos de IVA calculados, sin perder ni sumar un céntimo. */
+function dip_cuota_fija( array $impuestos, $cuota ) {
+	$suma = array_sum( $impuestos );
+	if ( ! $impuestos || $suma <= 0 ) return $impuestos;
+	$quedan = $cuota;
+	$ultimo = array_key_last( $impuestos );
+	foreach ( $impuestos as $tipo => $importe ) {
+		$parte               = $tipo === $ultimo ? $quedan : round( $cuota * $importe / $suma );
+		$impuestos[ $tipo ]  = $parte;
+		$quedan             -= $parte;
+	}
+	return $impuestos;
+}
+
+add_filter( 'woocommerce_cart_totals_get_fees_from_cart_taxes', static function ( $impuestos, $fee ) {
+	if ( DIP_FEE_SABADO_RECOGIDA !== ( $fee->object->id ?? '' ) || ! is_array( $impuestos ) ) return $impuestos;
+	$con_iva = round( (float) DIP_RECOGIDA_SABADO_CON_IVA, 2 );
+	$neto    = round( $con_iva / dip_factor_iva(), 2 );
+	return dip_cuota_fija( $impuestos, wc_add_number_precision( $con_iva - $neto ) ); // en céntimos, como los calcula WooCommerce
+}, 10, 2 );
+
+/* En el pedido, el suplemento de la recogida se marca para que "Recalcular" en el escritorio deje también 10,00 €. */
+add_action( 'woocommerce_checkout_create_order_fee_item', static function ( $item, $clave, $fee ) {
+	if ( DIP_FEE_SABADO_RECOGIDA === ( $fee->id ?? '' ) ) $item->add_meta_data( '_dip_con_iva', wc_format_decimal( DIP_RECOGIDA_SABADO_CON_IVA, 2 ), true );
+}, 10, 3 );
+
+add_action( 'woocommerce_order_item_after_calculate_taxes', static function ( $item ) {
+	if ( ! $item instanceof WC_Order_Item_Fee || '' === (string) $item->get_meta( '_dip_con_iva' ) ) return;
+	$impuestos = (array) ( $item->get_taxes()['total'] ?? array() );
+	if ( ! $impuestos ) return;
+	$cuota = round( (float) $item->get_meta( '_dip_con_iva' ) - (float) $item->get_total(), 2 );
+	$item->set_taxes( array( 'total' => array_map( 'wc_remove_number_precision', dip_cuota_fija( array_map( 'wc_add_number_precision', $impuestos ), wc_add_number_precision( $cuota ) ) ) ) );
+} );
 
 /* ---------- Bloque "Entrega": método + día. Se repinta con cada actualización del checkout. ---------- */
 function dip_html_entrega() {
@@ -136,6 +178,11 @@ function dip_html_entrega() {
 		return ob_get_clean();
 	}
 
+	// Total en efectivo de la recogida: packs a precio de recogida y, si ya está elegida y es sábado con suplemento, los 10 €
+	$total_recogida = function_exists( 'dip_total_recogida_carrito' ) ? dip_total_recogida_carrito() : 0.0;
+	$sup_recogida   = 'recogida' === $metodo && $fecha ? dip_suplemento_sabado( 'recogida', $fecha ) : null;
+	if ( $total_recogida > 0 && $sup_recogida ) $total_recogida += $sup_recogida['con_iva'];
+
 	echo '<fieldset class="dip-metodos"><legend class="dip-leyenda">' . esc_html( $t['como_recibes'] ) . '</legend>';
 	foreach ( $rates as $id => $rate ) {
 		$es_recogida = dip_es_recogida( $rate->get_method_id() );
@@ -147,7 +194,9 @@ function dip_html_entrega() {
 			checked( $id, $elegido, false ),
 			$es_recogida ? dip_svg_nave() : dip_svg_furgoneta(),
 			esc_html( $es_recogida ? $t['recogida'] : $t['envio'] ),
-			$es_recogida ? '<small>' . esc_html( dip_contacto()['direccion'] . ' · ' . dip_contacto()['localidad'] . ' · ' . $t['recogida_horario'] ) . '</small>' : '',
+			$es_recogida ? '<small>' . esc_html( dip_contacto()['direccion'] . ' · ' . dip_contacto()['localidad'] . ' · ' . $t['recogida_horario'] ) . '</small>'
+				// Lo que se paga al recoger, a precio de recogida (inc/precios-recogida.php): "En efectivo: 115,00 €, IVA incluido"
+				. ( $total_recogida > 0 ? '<small class="dip-metodo__precios">' . esc_html( sprintf( $t['recogida_precios'], dip_texto_euros( $total_recogida ) ) ) . '</small>' : '' ) : '',
 			$coste > 0 ? wp_kses_post( wc_price( $coste ) ) : esc_html( 'ca' === $idioma ? 'Gratuït' : ( 'en' === $idioma ? 'Free' : 'Gratis' ) )
 		);
 	}
@@ -170,7 +219,9 @@ function dip_html_entrega() {
 		$fechas   = array_slice( $fechas, 0, DIP_FECHAS_CASILLAS - 1 );
 		$fechas[] = $cal['fechas'][ $cal['indice'][ $fecha ] ] + array( 'lejana' => true );
 	}
-	$sab    = html_entity_decode( wp_strip_all_tags( wc_price( DIP_SATURDAY_SURCHARGE_EXCL_TAX * $iva ) ), ENT_QUOTES, 'UTF-8' );
+	// Suplemento de sábado con IVA del método elegido (envío 11,74 €, recogida 10,00 €) y sábados de recogida sin suplemento
+	$sab    = dip_texto_euros( 'recogida' === $metodo ? DIP_RECOGIDA_SABADO_CON_IVA : round( DIP_SATURDAY_SURCHARGE_EXCL_TAX * $iva, 2 ) );
+	$sin    = 'recogida' === $metodo ? dip_sabados_recogida_sin_suplemento() : array();
 	$nombre = dip_nombres_fecha( $idioma );
 	$datos  = array(
 		'f'   => array_keys( $cal['indice'] ),                    // días que se pueden elegir
@@ -179,6 +230,7 @@ function dip_html_entrega() {
 		'des' => $cal['desde'],
 		'has' => $cal['hasta'],
 		'sab' => '+' . $sab,
+		'sg'  => $sin,                                              // sábados sin suplemento (recogida del 31/10/2026)
 		'c'   => (int) DIP_FECHAS_CASILLAS,
 		'n'   => array( 'd' => $nombre['dias'], 'dc' => $nombre['dc'], 'm' => $nombre['meses'], 'mc' => $nombre['mc'], 'mde' => $nombre['mde'] ),
 		't'   => array(
@@ -198,10 +250,10 @@ function dip_html_entrega() {
 	);
 	foreach ( $fechas as $f ) {
 		$corta = dip_fecha_corta( $f['fecha'], $idioma );
-		$extra = $f['sabado'] ? '+' . $sab : '';
+		$extra = $f['sabado'] && ! in_array( $f['fecha'], $sin, true ) ? '+' . $sab : '';
 		printf(
 			'<label class="dip-fecha%1$s"><input type="radio" name="dip_fecha" value="%2$s"%3$s><span class="dip-fecha__dia" aria-hidden="true">%4$s</span><span class="dip-fecha__num" aria-hidden="true">%5$s</span><span class="dip-fecha__mes" aria-hidden="true">%6$s</span>%7$s<span class="screen-reader-text">%8$s</span></label>',
-			( $f['sabado'] ? ' dip-fecha--sabado' : '' ) . ( empty( $f['lejana'] ) ? '' : ' dip-fecha--lejana' ),
+			( $extra ? ' dip-fecha--sabado' : '' ) . ( empty( $f['lejana'] ) ? '' : ' dip-fecha--lejana' ),
 			esc_attr( $f['fecha'] ),
 			checked( $f['fecha'], $fecha, false ),
 			esc_html( $corta[0] ),
@@ -340,6 +392,21 @@ function dip_es_pedido_de_recogida( WC_Order $pedido ) {
 	return 'recogida' === $pedido->get_meta( '_dip_metodo_entrega' );
 }
 
+/** Importe como texto plano con el formato de la tienda: "60,00 €". */
+function dip_texto_euros( $importe ) {
+	return html_entity_decode( wp_strip_all_tags( wc_price( (float) $importe ) ), ENT_QUOTES, 'UTF-8' );
+}
+
+/**
+ * "Pago en efectivo al recoger: 60,00 €. Trae el importe exacto: no tenemos cambio." para un pedido de recogida
+ * pagado en efectivo (checkout, email de confirmación, página de gracias y email de recogida). '' si no lo es.
+ */
+function dip_texto_pago_efectivo( WC_Order $pedido, $idioma = null ) {
+	if ( ! dip_es_pedido_de_recogida( $pedido ) || 'cod' !== $pedido->get_payment_method() ) return '';
+	$idioma = $idioma ?: ( (string) $pedido->get_meta( '_dip_idioma' ) ?: 'es' );
+	return sprintf( dip_textos_tienda( $idioma )['efectivo_desc'], dip_texto_euros( $pedido->get_total() ) );
+}
+
 add_action( 'woocommerce_admin_order_data_after_shipping_address', static function ( $pedido ) {
 	$texto = dip_texto_entrega( $pedido, 'es' );
 	if ( $texto ) echo '<p><strong>' . esc_html( $texto ) . '</strong></p>';
@@ -378,7 +445,7 @@ function dip_enviar_confirmacion_recogida( WC_Order $pedido ) {
 	$fecha  = (string) $pedido->get_meta( '_dip_fecha_entrega' );
 	$hora   = trim( (string) $pedido->get_meta( '_dip_hora_recogida' ) );
 	$cuando = ( $fecha ? dip_fecha_larga( $fecha, $idioma ) : '' ) . ( $hora ? ' · ' . $hora : '' );
-	$pago   = 'cod' === $pedido->get_payment_method() ? sprintf( $t['recogida_lista_pago'], wp_strip_all_tags( wc_price( $pedido->get_total(), array( 'currency' => $pedido->get_currency() ) ) ) ) : '';
+	$pago   = dip_texto_pago_efectivo( $pedido, $idioma );
 	$cuerpo = '<p>' . esc_html( sprintf( $t['recogida_lista_hola'], $pedido->get_billing_first_name() ) ) . '</p>'
 		. '<p style="font-size:18px"><strong>' . esc_html( $cuando ) . '</strong></p>'
 		. '<p>' . esc_html( $c['direccion'] . ', ' . $c['cp'] . ' ' . $c['localidad'] ) . '<br><a href="' . esc_url( $c['mapa'] ) . '">' . esc_html( $t['recogida_lista_mapa'] ) . '</a></p>'
@@ -401,8 +468,8 @@ add_action( 'woocommerce_email_after_order_table', static function ( $pedido, $a
 	if ( ! $pedido instanceof WC_Order ) return;
 	$texto = dip_texto_entrega( $pedido, $a_admin ? 'es' : null );
 	if ( ! $texto ) return;
-	// Al cliente que recoge: se le avisa de que confirmamos la hora antes
-	$nota = ( ! $a_admin && dip_es_pedido_de_recogida( $pedido ) ) ? dip_textos_tienda( (string) $pedido->get_meta( '_dip_idioma' ) ?: 'es' )['recogida_confirmar'] : '';
+	// Al cliente que recoge: se le avisa de que confirmamos la hora antes y de cuánto trae en efectivo (importe exacto)
+	$nota = ( ! $a_admin && dip_es_pedido_de_recogida( $pedido ) ) ? trim( dip_texto_pago_efectivo( $pedido ) . ' ' . dip_textos_tienda( (string) $pedido->get_meta( '_dip_idioma' ) ?: 'es' )['recogida_confirmar'] ) : '';
 	if ( $texto_plano ) {
 		echo "\n" . esc_html( $texto ) . "\n" . ( $nota ? esc_html( $nota ) . "\n" : '' );
 		return;
@@ -414,7 +481,11 @@ add_action( 'woocommerce_order_details_after_order_table', static function ( $pe
 	$texto = dip_texto_entrega( $pedido );
 	if ( ! $texto ) return;
 	echo '<p class="dip-entrega-pedido">' . esc_html( $texto );
-	if ( dip_es_pedido_de_recogida( $pedido ) ) echo '<br><small>' . esc_html( dip_textos_tienda()['recogida_confirmar'] ) . '</small>';
+	if ( dip_es_pedido_de_recogida( $pedido ) ) {
+		$pago = dip_texto_pago_efectivo( $pedido, dip_idioma() );
+		if ( $pago ) echo '<br><strong class="dip-pago-efectivo">' . esc_html( $pago ) . '</strong>';
+		echo '<br><small>' . esc_html( dip_textos_tienda()['recogida_confirmar'] ) . '</small>';
+	}
 	echo '</p>';
 }, 5 );
 

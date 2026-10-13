@@ -72,7 +72,7 @@ function dipt_guia( $slug, $idioma = null, $respaldo = true ) {
 	$archivo = DIPT_DIR . '/contenido/' . $idioma . '/guias/' . $slug . '.php';
 	if ( ! file_exists( $archivo ) && $respaldo ) $archivo = DIPT_DIR . '/contenido/es/guias/' . $slug . '.php';
 	$datos = file_exists( $archivo ) ? include $archivo : null;
-	return $cache[ $clave ] = is_array( $datos ) ? $datos : null;
+	return $cache[ $clave ] = is_array( $datos ) ? dipt_marcadores( $datos, $idioma ) : null; // {pk}, {recogida:10}… (inc/idiomas.php)
 }
 
 /** Dirección de una página en un idioma (o la de castellano si no está traducida). */

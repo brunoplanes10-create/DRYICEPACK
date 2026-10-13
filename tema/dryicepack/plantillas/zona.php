@@ -97,6 +97,7 @@ get_header();
 	</div>
 </section>
 
+<?php if ( $cerca ) : // En inglés solo existe Barcelona: sin zonas traducidas cerca, no se pinta un bloque vacío ?>
 <!-- Z6 · Zonas cercanas -->
 <nav class="z-cerca tono-marino" aria-labelledby="z-cerca-t">
 	<div class="envoltura">
@@ -104,6 +105,7 @@ get_header();
 		<ul><?php foreach ( $cerca as $k => $d ) : $o = dipt_zonas()[ $k ]; ?><li><a href="<?php echo esc_url( dipt_url( 'zona-' . $k ) ); ?>"><?php echo esc_html( ucfirst( dipt_zona_nombre( $o ) ) ); ?></a></li><?php endforeach; ?></ul>
 	</div>
 </nav>
+<?php endif; ?>
 
 <?php
 get_footer();

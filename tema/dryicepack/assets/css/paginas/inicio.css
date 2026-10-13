@@ -84,7 +84,7 @@
 	background: #fff; border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio-grande);
 	box-shadow: 0 1px 0 rgba(255, 255, 255, .9) inset, 0 1px 2px rgba(11, 20, 28, .06), 0 12px 24px -16px rgba(11, 20, 28, .18), 0 48px 80px -50px rgba(31, 60, 85, .45); }
 .i-regla__pregunta { grid-area: preg; font-family: var(--f-display); font-weight: 700; font-size: var(--t-h3); line-height: 1.2; letter-spacing: -.015em; }
-.i-regla__kilos { grid-area: kilos; position: relative; display: grid; grid-template-columns: repeat(4, 1fr); align-self: start; border: 1px solid var(--c-linea-fuerte); border-radius: 18px; padding: .35rem; background: var(--c-papel); box-shadow: inset 0 1px 2px rgba(11, 20, 28, .06); }
+.i-regla__kilos { grid-area: kilos; position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); align-self: start; border: 1px solid var(--c-linea-fuerte); border-radius: 18px; padding: .35rem; background: var(--c-papel); box-shadow: inset 0 1px 2px rgba(11, 20, 28, .06); }
 .i-kilo { position: relative; z-index: 1; display: grid; justify-items: center; gap: .15rem; padding: .95rem .4rem .85rem; border: 0; border-radius: 14px; background: none; cursor: pointer; }
 .i-kilo__n { font-family: var(--f-display); font-weight: 800; font-size: clamp(2rem, 3vw, 2.7rem); line-height: 1; letter-spacing: -.035em; font-variant-numeric: tabular-nums; transition: transform var(--d-corta) var(--e-salida); }
 .i-kilo__u { font-size: .8rem; font-weight: 600; margin-top: -.1rem; }
@@ -93,7 +93,7 @@
 .i-kilo.activo .i-kilo__precio { color: var(--c-hielo); }
 .i-kilo:not(.activo):hover .i-kilo__n { transform: translate3d(0, -2px, 0); }
 .i-kilo:focus-visible { outline: 2px solid var(--c-marino); outline-offset: 2px; }
-.i-regla__barra { position: absolute; z-index: 0; top: .35rem; bottom: .35rem; left: .35rem; width: calc((100% - .7rem) / 4); border-radius: 14px; background: var(--c-marino); box-shadow: 0 1px 0 rgba(255, 255, 255, .12) inset, 0 8px 18px -8px rgba(11, 20, 28, .55); transform: translate3d(calc(var(--pos, 1) * 100%), 0, 0); transition: transform .45s var(--e-salida); }
+.i-regla__barra { position: absolute; z-index: 0; top: .35rem; bottom: .35rem; left: .35rem; width: calc((100% - .7rem) / var(--n, 4)); border-radius: 14px; background: var(--c-marino); box-shadow: 0 1px 0 rgba(255, 255, 255, .12) inset, 0 8px 18px -8px rgba(11, 20, 28, .55); transform: translate3d(calc(var(--pos, 1) * 100%), 0, 0); transition: transform .45s var(--e-salida); }
 .i-ticket { grid-area: ticket; position: relative; align-self: start; margin: calc(-1 * clamp(1.4rem, 3vw, 2.6rem) - 2.6rem) 0 0; padding: 1.5rem 1.5rem 1.3rem; border-radius: 18px; background: var(--c-escarcha); border: 1px solid var(--c-linea-fuerte); font-variant-numeric: tabular-nums;
 	box-shadow: 0 1px 0 #fff inset, 0 2px 4px rgba(11, 20, 28, .06), 0 20px 36px -22px rgba(11, 20, 28, .35); }
 /* Muescas laterales a la altura del total, con el borde del ticket */
@@ -119,6 +119,7 @@
 	.i-kilo { padding-inline: .15rem; }
 	.i-kilo__precio { font-size: .72rem; letter-spacing: 0; white-space: nowrap; }
 }
+@media (max-width: 480px) { .i-regla__kilos--cinco .i-kilo { padding-inline: 0; } .i-regla__kilos--cinco .i-kilo__n { font-size: 1.6rem; } .i-regla__kilos--cinco .i-kilo__precio { font-size: .68rem; letter-spacing: -.03em; } } /* 5 packs en una fila a 390 px */
 
 /* ---------- I4 · Cómo llega: mapa y tres horas ---------- */
 .i-llega__in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }

@@ -6,7 +6,7 @@ return array(
 	'extracto' => 'Asked at the pharmacy and they don’t have it? That’s normal. Here’s why, and where you can actually buy it, with home delivery or collection.',
 	'seo'      => array(
 		'titulo'      => 'Where to buy dry ice: pharmacy or supermarket? | DryIcePack',
-		'descripcion' => 'Short answer: they rarely stock it, as it sublimates and travels as dangerous goods. See where to buy it from 3 kg, delivered or collected in Mataró.',
+		'descripcion' => 'Short answer: they rarely stock it, as it sublimates and travels as dangerous goods. See where to buy it from {pk} kg, delivered or collected in Mataró.',
 	),
 	'contenido' => '<p class="resumen"><strong>Short answer:</strong> pharmacies and supermarkets don’t usually sell dry ice. You buy it from specialist suppliers, who ship it in an insulated box or have it ready for collection.</p>
 
@@ -24,14 +24,14 @@ return array(
 <h3>Online shop with delivery</h3>
 <p>You choose the format and the kilos, see the total with delivery included, and pay. At DryIcePack, if you order before 12:00 (Spanish time), you have it the next morning in an insulated box, anywhere in mainland Spain. We deliver Tuesday to Saturday (Saturday depending on the area, with a surcharge).</p>
 <h3>Collection from the warehouse</h3>
-<p>If you’re nearby, you save on delivery. Our warehouse is in Mataró (Barcelona) and you can collect Monday to Saturday: you choose the day when ordering and we confirm the time. It’s free on weekdays and you pay in cash on collection.</p>
+<p>If you’re nearby, you save on delivery. Our warehouse is in Mataró (Barcelona) and you can collect Monday to Saturday, including public holidays: you choose the day when ordering and we confirm the time. Prices are round figures with VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You pay in cash, with the exact amount: we can’t give change.</p>
 <h3>Industrial gas suppliers</h3>
 <p>For very large quantities and continuous supply to a plant, they work with tailored contracts.</p>
 
 <h2>What should you check before you order?</h2>
 <ul>
 <li><strong>Format:</strong> 3 mm pellets for fog and fast cooling; 16 mm nuggets to make it last longer.</li>
-<li><strong>Minimum quantity:</strong> at DryIcePack, from 3 kg.</li>
+<li><strong>Minimum quantity:</strong> at DryIcePack, from {pk} kg.</li>
 <li><strong>Final price with delivery:</strong> you should see it before you pay, not at the last step.</li>
 <li><strong>Delivery day:</strong> have it arrive on the day you’ll use it or the day before, not earlier: it sublimates over time.</li>
 <li><strong>Invoice:</strong> if you’re buying for a company, make sure you can get a full invoice.</li>

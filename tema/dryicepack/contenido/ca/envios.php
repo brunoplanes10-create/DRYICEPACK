@@ -11,7 +11,7 @@ return array(
 		'titulo'   => 'Enviament de gel sec:|<em>demanes avui, demà el tens.</em>',
 		'reloj'    => array( 'antes' => 'Temps per demanar avui', 'despues' => 'Per avui ja ha passat l\'hora límit' ),
 		'llega'    => array( 'antes' => 'Si demanes ara, el tens el %s al matí.', 'despues' => 'Si demanes ara, el tens el %s al matí.' ),
-		'texto'    => 'El que entra abans de les 12:00, de dilluns a divendres, surt aquell mateix dia i arriba l\'endemà al matí. El dia el tries en pagar.',
+		'texto'    => 'El que entra abans de les 12:00, de dilluns a divendres, surt aquell mateix dia i arriba l\'endemà al matí, de dimarts a dissabte (el dissabte, segons la zona). O tries en pagar qualsevol dia dels pròxims 90.',
 	),
 	'semana' => array(
 		'titulo' => 'Quin dia arriba?|<em>Depèn de quan demanis.</em>',
@@ -49,7 +49,7 @@ return array(
 		),
 		'tramo'  => 'tarifa fins a %s kg',
 		'extra'  => '%1$s fins a 10 kg + %2$s kg × %3$s',
-		'nota'   => 'Comptem caixes de 20 kg i la resta en el pack que toqui (3, 10 o 15 kg), com si ho demanessis a la botiga. La missatgeria cobra el gel més 1 kg per caixa, arrodonit a l\'alça: el mateix càlcul que es fa en pagar.',
+		'nota'   => 'Comptem caixes de 20 kg i la resta en el pack que toqui ({pk}, 10 o 15 kg), com si ho demanessis a la botiga. La missatgeria cobra el gel més 1 kg per caixa, arrodonit a l\'alça: el mateix càlcul que es fa en pagar.',
 		'medida' => array(
 			'cajas'  => 'Caixes a mida de la comanda',
 			'titulo' => 'Et preparem preu i dia.',
@@ -63,8 +63,8 @@ return array(
 		'titulo' => 'Recollida a Mataró,|<em>sense esperar la missatgeria.</em>',
 		'lista'  => array(
 			array( 'On', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). És la nostra nau, no una oficina de la missatgeria.' ),
-			array( 'Quan', 'De dilluns a dissabte, també festius. Tria el dia en pagar i et confirmem l\'hora per telèfon o WhatsApp. El dissabte té un suplement d\'11,74 € (IVA inclòs).' ),
-			array( 'Quant', 'Gratis de dilluns a divendres. Només pagues el gel, en efectiu quan el reculls.' ),
+			array( 'Quan', 'De dilluns a dissabte, també festius. Tria el dia en pagar i et confirmem l\'hora per telèfon o WhatsApp. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre}' ),
+			array( 'Quant', 'Preu rodó amb IVA inclòs, el mateix al web i a la nau: {pk} kg per {recogida:pk}, 10 kg per {recogida:10}, 15 kg per {recogida:15} i 20 kg per {recogida:20}. En efectiu i amb l\'import exacte: no tenim canvi.' ),
 			array( 'Com portar-lo', 'Mai a l\'habitacle: al maleter i ventilant.' ),
 		),
 		'alt'    => 'Operari amb un cassó de pèl·lets de gel sec al magatzem',
@@ -73,7 +73,7 @@ return array(
 	'cobertura' => array(
 		'titulo' => 'Arriba a la meva zona?',
 		'si'     => array( 'titulo' => 'Sí, l\'endemà al matí', 'texto' => 'Tota l\'Espanya peninsular: de Girona a Huelva i de la Corunya a Múrcia.' ),
-		'no'     => array( 'titulo' => 'Fora de la península, no', 'texto' => 'Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla, ni fora d\'Espanya.' ),
+		'no'     => array( 'titulo' => 'Fora de la península,&nbsp;no','texto' => 'Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla, ni fora d\'Espanya.' ),
 		'zonas'  => 'Veure les zones d\'entrega a prop de Barcelona',
 	),
 	'faq' => array(

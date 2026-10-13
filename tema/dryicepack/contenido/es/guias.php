@@ -4,7 +4,7 @@ return array(
 	'menu'         => 'Guías',
 	'seo'          => array(
 		'titulo'      => 'Guías de hielo seco: cómo usarlo, cuánto pedir | DryIcePack',
-		'descripcion' => 'Guías de hielo seco: dónde comprarlo, cómo hacer niebla y cuánto pedir. Para una fiesta en casa bastan 3 kg. Léelas antes de pedir y acierta con los kilos.',
+		'descripcion' => 'Guías de hielo seco: dónde comprarlo, cómo hacer niebla y cuánto pedir. Para una fiesta en casa bastan {pk} kg. Léelas antes de pedir y acierta con los kilos.',
 	),
 	'titulo'       => 'Guías de hielo seco',
 	'titulo_corto' => 'Guías',

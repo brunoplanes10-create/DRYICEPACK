@@ -4,19 +4,19 @@ return array(
 	'menu' => 'Dry ice for parties and events',
 	'seo'  => array(
 		'titulo'      => 'Dry ice for parties and events: low-lying fog | DryIcePack',
-		'descripcion' => 'Dry ice for parties, weddings and Halloween: fog that covers the floor, from 3 kg. Order before 12:00 and have it at home tomorrow, ready to use.',
+		'descripcion' => 'Dry ice for parties, weddings and Halloween: fog that covers the floor, from {pk} kg. Order before 12:00 and have it at home tomorrow, ready to use.',
 	),
 	'migas' => array( 'Home', 'Uses', 'Parties and events' ),
 	'hero'  => array(
 		'titulo' => 'Dry ice for parties:|fog across the floor, <em>at your door tomorrow.</em>',
-		'texto'  => 'Want that fog that covers the floor for the first dance, on stage or at Halloween? All it takes is hot water and dry ice. Order before 12:00 (Spanish time) and you’ll have it tomorrow morning (Tuesday to Saturday), or pick any day you like. From 3 kg.',
+		'texto'  => 'Want that fog that covers the floor for the first dance, on stage or at Halloween? All it takes is hot water and dry ice. Order before 12:00 (Spanish time) and you’ll have it tomorrow morning (Tuesday to Saturday), or pick any day you like. From {pk} kg.',
 		'boton'  => 'Place my order',
 		'alt'    => 'Couple dancing at a wedding on a layer of low-lying dry ice fog',
 	),
 	'recetas' => array(
 		'titulo' => 'How much dry ice|<em>do you need?</em>',
 		'lista'  => array(
-			array( 'At home', '3 kg', array( 'A cauldron or punch bowl with a double container', 'Hot water', '3 mm pellets' ), 'A small party or a Halloween table.' ),
+			array( 'At home', '{pk} kg', array( 'A cauldron or punch bowl with a double container', 'Hot water', '3 mm pellets' ), 'A small party or a Halloween table.' ),
 			array( 'Big party', '10 kg', array( 'Two or three wide containers', 'Hot water to change as you go', '3 mm pellets' ), 'Fog across the floor in several rounds through the night.' ),
 			array( 'Bar or event', '15–20 kg', array( 'Containers in several spots', 'Hot water to hand', '3 mm pellets' ), 'A long service, a stage or several bars.' ),
 		),

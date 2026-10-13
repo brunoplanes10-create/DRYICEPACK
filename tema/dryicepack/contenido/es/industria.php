@@ -28,10 +28,10 @@ return array(
 	'escala' => array(
 		'titulo' => '¿Cuánto le podemos|<em>servir?</em>',
 		'marcas' => array(
-			array( 3, 'Desde 3 kg', 'Para pruebas y pedidos pequeños.' ),
+			array( dipt_pk(), 'Desde {pk} kg', 'Para pruebas y pedidos pequeños.' ), // el número coloca la marca en la regla (posición = kg / 400)
 			array( 150, 'Hasta 150 kg', 'Pedido online a toda la península. Fuera de la provincia de Barcelona, más kilos por mensaje y a medida.' ),
-			array( 250, 'Hasta 250 kg', 'El máximo por pedido. Online, en la provincia de Barcelona. Más de 200 kg: consúltenos, a veces lo llevamos nosotros.' ),
-			array( 400, 'Suministro programado', 'Cada semana, cada 15 días o cada mes, con mejor precio.' ),
+			array( 250, 'Hasta 250 kg', 'Máximo online, en la provincia de Barcelona. Con más de 200 kg, a veces lo llevamos nosotros. ¿Más de 250 kg? Pídanos precio y día.' ),
+			array( 400, 'Suministro programado', 'Cada semana, cada 15 días o cada mes, con descuento sobre tarifa.' ),
 		),
 	),
 	'compras' => array(

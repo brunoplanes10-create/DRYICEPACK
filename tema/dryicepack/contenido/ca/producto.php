@@ -3,8 +3,8 @@
 return array(
 	'menu' => 'Comprar gel sec',
 	'seo'  => array(
-		'titulo'      => 'Comprar gel sec: 3, 10, 15 i 20 kg | DryIcePack',
-		'descripcion' => 'Compra gel sec des de 3 kg, en pèl·lets de 3 mm o nuggets de 16 mm. Veus el total amb enviament abans de pagar. Demana abans de les 12:00 i arriba demà.',
+		'titulo'      => 'Comprar gel sec: {pk}, 10, 15 i 20 kg | DryIcePack',
+		'descripcion' => 'Compra gel sec des de {pk} kg, en pèl·lets de 3 mm o nuggets de 16 mm. Veus el total amb enviament abans de pagar. Demana abans de les 12:00 i arriba demà.',
 	),
 	'migas'   => array( 'Inici', 'Comprar gel sec' ),
 	'titulo'  => 'Comprar gel sec sense sorpreses amb l\'enviament',
@@ -46,7 +46,7 @@ return array(
 	'total'     => 'Total',
 	'iva'       => 'IVA inclòs',
 	'boton'     => 'Fer la comanda',
-	'recogida'  => 'O recull-lo a Mataró: gratis de dilluns a divendres, i pagues en efectiu quan el reculls.',
+	'recogida'  => 'O recull-lo a Mataró, de dilluns a dissabte: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}, IVA inclòs. En efectiu i amb l\'import exacte.',
 	'max'       => 'Fins a 250 kg per comanda. En necessites més? Escriu-nos i et donem preu i dia.',
 	'medida'    => 'Més de 150 kg fora de la província de Barcelona: aquest enviament es prepara a mida. Escriu-nos per',
 	'confianza' => array( 'Targeta, Apple Pay o Google Pay', 'Factura per a empreses', 'Sense crear cap compte' ),
@@ -68,7 +68,7 @@ return array(
 		'titulo' => 'Quant|<em>en necessito?</em>',
 		'texto'  => 'Per fer boira, aquestes quantitats et serviran de referència. És per a transport o mostres? Digues-nos quantes hores i quin volum, i t\'ho calculem.',
 		'casos'  => array(
-			array( '3 kg', 'A casa', 'Un calder, una ponxera amb doble recipient, una festa petita.' ),
+			array( '{pk} kg', 'A casa', 'Un calder, una ponxera amb doble recipient, una festa petita.' ),
 			array( '10 kg', 'Festa gran', 'Boira arran de terra en diverses tandes durant la nit.' ),
 			array( '15–20 kg', 'Bar o esdeveniment', 'Servei llarg, escenari o diverses barres.' ),
 		),
@@ -79,9 +79,9 @@ return array(
 		'titulo' => 'Quant costa|<em>l\'enviament?</em>',
 		'texto'  => 'La tarifa de la missatgeria, igual a tota la península. Es calcula amb el pes del gel més 1 kg per caixa, i la veus abans de pagar.',
 		'filas'  => array( array( 'Fins a 2 kg', 8.53 ), array( 'Fins a 5 kg', 10.32 ), array( 'Fins a 10 kg', 13.19 ), array( 'Cada kg de més', 1.12 ) ),
-		'extra'  => array( array( 'Entrega en dissabte (segons la zona)', 9.70 ), array( 'Recollida a Mataró, de dilluns a divendres', 0 ) ),
-		'nota'   => 'Preus amb IVA inclòs.',
-		'gratis' => 'Gratis',
+		'extra'  => array( array( 'Entrega en dissabte (segons la zona)', 9.70 ), array( 'Recollida a Mataró, sense enviament', 0 ) ),
+		'nota'   => 'Preus amb IVA inclòs. La recollida es paga en efectiu i amb l\'import exacte.',
+		'gratis' => '0 €', // fila de la recollida al taló d'enviament: no hi ha cost d'enviament (el gel es paga a preu de recollida)
 		'enlace' => 'Terminis d\'entrega, festius i recollida',
 	),
 	'faq' => array(

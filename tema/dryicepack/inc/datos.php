@@ -30,10 +30,11 @@ function dipt_variaciones() {
 	$respaldo = array(
 		array( 'id' => 1662, 'kg' => 3, 'formato' => '3mm', 'precio' => 29.80 ),
 		array( 'id' => 1658, 'kg' => 3, 'formato' => '16mm', 'precio' => 29.80 ),
+		// El pack de 5 kg (33,90 €) entra cuando se acaba el de 3 kg: sale de WooCommerce (plugin, inc/pack-pequeno.php), no del respaldo
 		array( 'id' => 1659, 'kg' => 10, 'formato' => '3mm', 'precio' => 53.30 ),
 		array( 'id' => 1655, 'kg' => 10, 'formato' => '16mm', 'precio' => 53.30 ),
-		array( 'id' => 1660, 'kg' => 15, 'formato' => '3mm', 'precio' => 75.90 ),
-		array( 'id' => 1656, 'kg' => 15, 'formato' => '16mm', 'precio' => 75.90 ),
+		array( 'id' => 1660, 'kg' => 15, 'formato' => '3mm', 'precio' => 74.90 ),
+		array( 'id' => 1656, 'kg' => 15, 'formato' => '16mm', 'precio' => 74.90 ),
 		array( 'id' => 1661, 'kg' => 20, 'formato' => '3mm', 'precio' => 98.60 ),
 		array( 'id' => 1657, 'kg' => 20, 'formato' => '16mm', 'precio' => 98.60 ),
 	);
@@ -44,7 +45,8 @@ function dipt_variaciones() {
 	$lista = array();
 	foreach ( $padre->get_children() as $id ) {
 		$v = wc_get_product( $id );
-		if ( ! $v || ! $v->is_purchasable() ) continue;
+		// Sin stock no se ofrece (las cajas de 3 kg se acaban); el pack que no toca (3 o 5 kg) no es comprable (plugin)
+		if ( ! $v || ! $v->is_purchasable() || ! $v->is_in_stock() ) continue;
 		$formato = (string) $v->get_attribute( 'pa_formato' );
 		$kg      = function_exists( 'dip_kg_producto' ) ? dip_kg_producto( $v ) : (float) $v->get_weight();
 		if ( $kg <= 0 || '' === $formato ) continue;
@@ -69,6 +71,19 @@ function dipt_packs() {
 	foreach ( dipt_variaciones() as $v ) $packs[ (string) $v['kg'] ] = $v['precio'];
 	ksort( $packs, SORT_NUMERIC );
 	return $packs;
+}
+
+/**
+ * Kilos del pack pequeño que se vende ahora: 3 mientras queden cajas de 3 kg, 5 después (plugin, inc/pack-pequeno.php).
+ * Los textos lo usan con el marcador {pk} ("desde {pk} kg") para cambiar solos ese día.
+ */
+function dipt_pk() {
+	return function_exists( 'dip_pack_pequeno' ) ? (int) dip_pack_pequeno() : 3;
+}
+
+/** Precios de recogida en la nave, con IVA incluido, por kilos: ['3' => 35, '10' => 60, …] (plugin, inc/precios-recogida.php). */
+function dipt_precios_recogida() {
+	return function_exists( 'dip_precios_recogida' ) ? dip_precios_recogida() : array();
 }
 
 function dipt_factor_iva() {
@@ -151,6 +166,10 @@ function dipt_config_js() {
 			'sabado'   => defined( 'DIP_SATURDAY_SURCHARGE_EXCL_TAX' ) ? DIP_SATURDAY_SURCHARGE_EXCL_TAX : 9.70,
 		),
 		'iva'         => dipt_factor_iva(),
+		// Recogida en la nave: precio redondo con IVA incluido por kilos (3 kg 35 €, 10 kg 60 €…) y suplemento de sábado con IVA
+		'recogida'    => dipt_precios_recogida(),
+		'recogidaSabado' => defined( 'DIP_RECOGIDA_SABADO_CON_IVA' ) ? (float) DIP_RECOGIDA_SABADO_CON_IVA : 10.0,
+		'pk'          => dipt_pk(),
 		'corte'       => array( 'hora' => defined( 'DIP_CUTOFF_HOUR' ) ? DIP_CUTOFF_HOUR : 12, 'minuto' => defined( 'DIP_CUTOFF_MINUTE' ) ? DIP_CUTOFF_MINUTE : 0 ),
 		'entrega'     => dipt_primera_entrega(),
 		// Lista manual (ni sale ni se entrega) y cierres de MRW Mataró (solo no sale): misma regla que el checkout

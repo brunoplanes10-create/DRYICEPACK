@@ -58,7 +58,7 @@ return array(
 			array( 'Com el guardo quan arriba?', 'A la seva caixa d\'EPS, amb la tapa posada però sense precintar, en un lloc fresc i ventilat, fora de l\'abast de nens i mascotes. L\'envàs no ha de ser mai hermètic.' ),
 			array( 'El puc posar al congelador?', 'No. És a −78,5 °C, molt més fred que un congelador domèstic (−18 °C): pot fer malbé el termòstat i les juntes, i se seguirà sublimant igual.' ),
 			array( 'És el mateix que el nitrogen líquid?', 'No. El nitrogen líquid és un altre gas, és a uns −196 °C i és líquid. El gel sec és CO₂ sòlid.' ),
-			array( 'Quant en necessito?', 'Depèn de l\'ús, de les hores i de l\'aïllament. Per fer boira, com a referència: a casa 3 kg, en una festa gran 10 kg i en un bar o un esdeveniment de 15 a 20 kg. Per a transport o mostres, digues-nos quantes hores i quin volum i t\'ho calculem.' ),
+			array( 'Quant en necessito?', 'Depèn de l\'ús, de les hores i de l\'aïllament. Per fer boira, com a referència: a casa {pk} kg, en una festa gran 10 kg i en un bar o un esdeveniment de 15 a 20 kg. Per a transport o mostres, digues-nos quantes hores i quin volum i t\'ho calculem.' ),
 		),
 	),
 	'final' => array( 'titulo' => 'Ja saps què és. Demana\'l abans de les 12:00 i demà el tens.', 'boton' => 'Comprar gel sec' ),

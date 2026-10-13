@@ -6,7 +6,7 @@ return array(
 	'extracto' => '¿Has preguntado en la farmacia y no lo tienen? Es lo normal. Te contamos por qué y dónde se compra de verdad, con envío a casa o recogida.',
 	'seo'      => array(
 		'titulo'      => '¿Venden hielo seco en farmacias o Mercadona? | DryIcePack',
-		'descripcion' => 'Respuesta corta: no suelen tenerlo, porque se sublima y viaja como mercancía peligrosa. Mira dónde comprarlo desde 3 kg, con envío o recogida en Mataró.',
+		'descripcion' => 'Respuesta corta: no suelen tenerlo, porque se sublima y viaja como mercancía peligrosa. Mira dónde comprarlo desde {pk} kg, con envío o recogida en Mataró.',
 	),
 	'contenido' => '<p class="resumen"><strong>Respuesta corta:</strong> las farmacias y los supermercados no suelen vender hielo seco. Se compra a proveedores especializados, que lo envían en caja aislante o lo preparan para recoger.</p>
 
@@ -24,14 +24,14 @@ return array(
 <h3>Tienda online con envío</h3>
 <p>Eliges formato y kilos, ves el total con el envío incluido y pagas. En DryIcePack, si pides antes de las 12:00, lo tienes al día siguiente por la mañana en caja aislante, en toda la España peninsular. Repartimos de martes a sábado (el sábado, según zona y con suplemento).</p>
 <h3>Recogida en el almacén</h3>
-<p>Si estás cerca, te ahorras el envío. Nuestra nave está en Mataró (Barcelona) y se recoge de lunes a sábado: eliges el día al pedir y te confirmamos la hora. Entre semana es gratis y se paga en efectivo al recogerlo.</p>
+<p>Si estás cerca, te ahorras el envío. Nuestra nave está en Mataró (Barcelona) y se recoge de lunes a sábado, también festivos: eliges el día al pedir y te confirmamos la hora. El precio es redondo y con IVA incluido, el mismo en la web y en la nave: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Se paga en efectivo y con el importe exacto: no tenemos cambio.</p>
 <h3>Proveedores de gases industriales</h3>
 <p>Para cantidades muy grandes y suministro continuo en una planta, trabajan con contratos a medida.</p>
 
 <h2>¿Qué tienes que mirar antes de pedir?</h2>
 <ul>
 <li><strong>Formato:</strong> pellets de 3 mm para niebla y enfriar rápido; nuggets de 16 mm para que dure más.</li>
-<li><strong>Cantidad mínima:</strong> en DryIcePack, desde 3 kg.</li>
+<li><strong>Cantidad mínima:</strong> en DryIcePack, desde {pk} kg.</li>
 <li><strong>Precio final con envío:</strong> que te lo enseñen antes de pagar, no en el último paso.</li>
 <li><strong>Día de entrega:</strong> que llegue el día que lo vas a usar o el anterior, no antes: se sublima con las horas.</li>
 <li><strong>Factura:</strong> si compras para una empresa, que puedas pedir factura completa.</li>

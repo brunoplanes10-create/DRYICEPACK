@@ -17,6 +17,12 @@ Guía paso a paso para pasar de Divi al tema `dryicepack` y al plugin `dryicepac
 
 **Marcha atrás:** se activa otra vez el tema hijo de Divi (paso 12). El plugin se pausa solo y todo vuelve a como estaba.
 
+**Ya, antes del cambio (con el tema antiguo):**
+- En WooCommerce, el **15 kg a 74,90 €** y el **stock de las cajas de 3 kg** (29 entre las dos variaciones). Funciona igual con el tema antiguo y con el nuevo. La landing de Halloween lee los precios de la tienda, así que dice siempre lo mismo que se cobra.
+- **No crees todavía las variaciones de 5 kg:** con el tema antiguo se verían enseguida. Si el 3 kg se acaba antes del cambio de tema, créalas ese día. La landing de Halloween pasará sola a 5 kg.
+- Hasta el cambio de tema, la recogida sigue como hoy: el precio de la tienda + IVA, y el sábado con 11,74 €. **Los precios redondos de recogida, el sábado a 10 € y el 31/10 sin suplemento empiezan con el tema y el plugin nuevos.** Si el cambio se deja para el 2/11, el 31/10 la recogida llevará los 11,74 € del tema antiguo.
+- **Stock de cartón (03/10/2026):** quedan 8 cajas de cartón de 20 kg (packs de 15 y 20 kg) y 24 cajas EPS de 20–30 kg. Pide cartón esta semana.
+
 ---
 
 ## Antes de empezar
@@ -66,7 +72,15 @@ Ve a Ajustes → Enlaces permanentes:
 - Pulsa **Guardar cambios** aunque no cambies nada: así se regeneran las reglas de direcciones del tema nuevo.
 
 ### 6. Ajustes de WooCommerce
-- **Precio del pack de 15 kg:** Productos → Hielo seco → Variaciones. En las dos de 15 kg (3 mm y 16 mm), precio **75,90** (sin IVA). Las páginas y la de Halloween leen el precio de WooCommerce y se actualizan solas.
+- **Precios (decididos el 03/10/2026)** en Productos → Hielo seco. Los pasos 1 y 2 se pueden hacer ya, con el tema antiguo (ver "Ya, antes del cambio"):
+  1. En las dos variaciones de **15 kg**, precio **74,90**.
+  2. En las dos de **3 kg**, activa "Gestionar inventario" y pon las cajas EPS de 3 kg que quedan (29 entre las dos, como decidas repartirlas entre 3 y 16 mm). Al llegar a 0 dejan de venderse solas.
+  3. **Pack de 5 kg** (después de activar el tema nuevo, nunca antes):
+     - **Atributos → Peso:** añade el término **"5kg de Hielo Seco"** (slug `5kg-de-hielo-seco`) y márcalo en el producto. Guarda.
+     - **Variaciones:** crea las dos de **5 kg** (3 mm y 16 mm): precio **33,90**, peso **5** (kg), activadas y en stock.
+     - El plugin las **esconde mientras quede alguna caja de 3 kg** y las pone a la venta solo cuando se acaban las dos de 3 kg. Ese día, los textos de la web que recomiendan 3 kg pasan a 5 kg y te llega un email al correo de avisos. Si quieres forzarlo, Dryicepack → Ajustes → **Pack pequeño**.
+     - Con el tema antiguo, el plugin está en pausa y no las escondería: por eso se crean después del cambio.
+  4. **Recogida en Mataró:** no hay que poner nada. El precio sale solo (precio de la web × 1,21, redondeado a la baja a múltiplos de 5 €, IVA incluido): **3 kg 35 € · 5 kg 40 € · 10 kg 60 € · 15 kg 90 € · 20 kg 115 €**. Se ve en Dryicepack → Ajustes → "Precios de recogida". Si cambias un precio de la web, cambia también el de recogida.
 - **WooCommerce → Ajustes → Avanzado → Página de términos y condiciones:** "Condiciones de venta".
 - **Ajustes → Privacidad** (de WordPress) → Página de política de privacidad: "Política de privacidad".
 - **WooCommerce → Ajustes → Envío → zona España:**
@@ -88,6 +102,9 @@ Ve a menú **Dryicepack → Ajustes**:
 | Festivos sin salida ni entrega | Vienen cargados los de Cataluña de 2026 y 2027. Añade los locales de Mataró, uno por línea (AAAA-MM-DD) |
 | Enlace para reseñas de Google | Viene puesto (tu enlace de g.page). Va en el email de pedido completado |
 | Factura completa obligatoria desde | 400 € (lo acordado con la gestoría) |
+| Precios de recogida | Solo lectura: comprueba que dice 3 kg 35 € · 10 kg 60 € · 15 kg 90 € · 20 kg 115 € (IVA incluido) |
+| Sábados de recogida sin suplemento | Viene puesto `2026-10-31` (Halloween). Esos sábados la recogida no lleva los 10 €; el envío en sábado sí lleva sus 11,74 € |
+| Pack pequeño | «Automático» (3 kg mientras quede; después 5 kg) |
 | Recordatorio de reposición | Actívalo cuando quieras. Avisa a las cuentas de empresa que lo aceptaron cuando les toca repetir el pedido, con un enlace para darse de baja |
 
 ### 8. Site Kit (Google Analytics)
@@ -123,12 +140,15 @@ Desactívalos **después** de las pruebas del paso 11 (y con la tienda funcionan
    - El total debe ser 81,81 € (64,49 € + envío 17,32 €, IVA incluido).
    - Elige fecha y paga con tarjeta. Usa WooPayments en modo prueba o un pedido real que después reembolsas.
 3. **Pedido con recogida:**
-   - Tiene que aparecer solo "Efectivo al recoger", sin coste de envío de lunes a viernes. El sábado suma 11,74 €.
+   - Tiene que aparecer solo "Efectivo al recoger", con el texto «Pago en efectivo al recoger: 60,00 €. Trae el importe exacto: no tenemos cambio.» (10 kg). El total es redondo: 10 kg 60,00 €, 2 × 20 kg 230,00 €.
+   - Un sábado suma 10,00 € (IVA incluido). El sábado 31/10/2026, nada.
+   - El mismo texto del efectivo sale en la página de gracias y en el email del pedido.
    - Se puede elegir de lunes a sábado, también los festivos.
    - Con un código postal de fuera de Cataluña sale un aviso.
    - En el pedido (WooCommerce → Pedidos), escribe la hora en "Hora de recogida" y elige **Acciones del pedido → Confirmar recogida al cliente (email)**. Al cliente le llega el día, la hora, la dirección, el importe en efectivo y los avisos para el coche. La lista de pedidos marca "Confirmada" o "Sin confirmar".
 4. **Más de 150 kg fuera de la provincia de Barcelona:** con un código postal de Madrid (28001) y 160 kg, el envío desaparece y sale el aviso con WhatsApp, teléfono y email. Con un código postal 08… se puede comprar hasta 250 kg.
-5. **Sábado:** elige un sábado como fecha de entrega. Debe sumar 11,74 € (IVA incluido).
+5. **Sábado:** elige un sábado como fecha de entrega con envío. Debe sumar 11,74 € (IVA incluido), también el 31/10.
+5b. **App INDUNOVA:** abre `https://dryicepack.es/wp-json/dip/v1/envio`. Tiene que salir un JSON con la tarifa, la recogida y los días de MRW (sin datos de clientes).
 6. **Más de 400 €:** sin razón social ni NIF no deja pagar. Con B66800103 sí.
 7. **Factura:** en la página de gracias, el botón "¿Necesitas factura?" abre /factura/. Rellénalo y comprueba que llega el aviso a info@ y que queda la nota en el pedido.
 8. **Cookies:** el banner tiene Aceptar, Rechazar y Elegir. Con "Rechazar", Analytics no se carga (en el navegador: F12 → Red → filtrar "gtag").

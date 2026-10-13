@@ -12,6 +12,8 @@
  * se deja una nota en el pedido y se envía un solo email al correo de avisos con todos los pedidos afectados.
  * Un aviso por pedido y fecha: no se repite cada día. Si se cambia el día del pedido, el día nuevo se vuelve a revisar.
  * Solo cuentan los días que MRW ya ha publicado: más allá no se bloquea nada (igual que en el checkout).
+ * También se revisan los pedidos hechos con el tema antiguo antes del cambio de tema: solo tienen la fecha de
+ * Order Delivery Date Lite ('_orddd_lite_timestamp') y se eligieron sin mirar los festivos de MRW del destino.
  *
  * Alternativa manual (la explica el email): llamar al cliente, acordar otro día y cambiarlo en el pedido, en el campo
  * «Cambiar el día» que este archivo añade a la pantalla del pedido. Botón «Revisar pedidos ahora» en Dryicepack → Ajustes.
@@ -41,6 +43,28 @@ function dip_seg_programar() {
 }
 add_action( 'init', 'dip_seg_programar' );
 add_action( 'dip_revisar_entregas', 'dip_seg_revisar' );
+
+/* =========================================================
+ * Fecha y tipo de entrega del pedido (también los del tema antiguo)
+ * ========================================================= */
+
+/**
+ * Día de entrega o de recogida del pedido ('Y-m-d' o ''). Los pedidos hechos con el tema antiguo solo tienen la marca
+ * de Order Delivery Date Lite ('_orddd_lite_timestamp', medianoche UTC o de Madrid): leída en hora de Madrid da el mismo día.
+ */
+function dip_seg_fecha_pedido( WC_Order $pedido ) {
+	$fecha = (string) $pedido->get_meta( '_dip_fecha_entrega' );
+	if ( '' !== $fecha ) return $fecha;
+	$marca = $pedido->get_meta( '_orddd_lite_timestamp' );
+	if ( ! is_numeric( $marca ) || (int) $marca <= 0 ) return '';
+	return ( new DateTimeImmutable( '@' . (int) $marca ) )->setTimezone( dip_zona_horaria() )->format( 'Y-m-d' );
+}
+
+/** ¿Se recoge en Mataró? Sin el método guardado por este plugin (pedido del tema antiguo), por el método de envío. */
+function dip_seg_es_recogida( WC_Order $pedido ) {
+	$metodo = (string) $pedido->get_meta( '_dip_metodo_entrega' );
+	return '' !== $metodo ? 'recogida' === $metodo : (bool) $pedido->has_shipping_method( 'local_pickup' );
+}
 
 /* =========================================================
  * Qué falla en un día de entrega
@@ -179,8 +203,8 @@ function dip_seg_revisar_pedidos( DateTimeImmutable $ahora ) {
 	$nuevos    = array();
 	$revisados = 0;
 	foreach ( (array) $pedidos as $pedido ) {
-		if ( ! $pedido instanceof WC_Order || dip_es_pedido_de_recogida( $pedido ) ) continue; // la recogida no depende de MRW
-		$fecha = (string) $pedido->get_meta( '_dip_fecha_entrega' );
+		if ( ! $pedido instanceof WC_Order || dip_seg_es_recogida( $pedido ) ) continue; // la recogida no depende de MRW
+		$fecha = dip_seg_fecha_pedido( $pedido );
 		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $fecha ) || $fecha < $hoy ) continue;
 		$revisados++;
 		$hechos = dip_seg_avisos_pedido( $pedido );
@@ -372,10 +396,10 @@ add_action( 'admin_init', static function () {
 /** Cambia el día de entrega (o de recogida) desde el escritorio y lo anota en el pedido. true si lo cambia. */
 function dip_seg_cambiar_fecha( WC_Order $pedido, $nueva, ?DateTimeImmutable $ahora = null ) {
 	$nueva = trim( (string) $nueva );
-	$antes = (string) $pedido->get_meta( '_dip_fecha_entrega' );
+	$antes = dip_seg_fecha_pedido( $pedido ); // en un pedido del tema antiguo, la de Order Delivery Date: guardar sin tocarla no cambia nada
 	$d     = DateTimeImmutable::createFromFormat( '!Y-m-d', $nueva, dip_zona_horaria() );
 	if ( '' === $nueva || $nueva === $antes || ! $d || $d->format( 'Y-m-d' ) !== $nueva ) return false;
-	$metodo = (string) $pedido->get_meta( '_dip_metodo_entrega' ) ?: ( $pedido->has_shipping_method( 'local_pickup' ) ? 'recogida' : 'envio' );
+	$metodo = dip_seg_es_recogida( $pedido ) ? 'recogida' : 'envio';
 	dip_guardar_entrega( $pedido, $nueva, $metodo );
 	$pedido->save_meta_data();
 	$nota    = sprintf( '%s cambiado en el escritorio: %s → %s.', 'recogida' === $metodo ? 'Día de recogida' : 'Día de entrega', $antes ? dip_fecha_larga( $antes ) : 'sin día', dip_fecha_larga( $nueva ) );
@@ -392,8 +416,8 @@ function dip_seg_cambiar_fecha( WC_Order $pedido, $nueva, ?DateTimeImmutable $ah
 
 add_action( 'woocommerce_admin_order_data_after_shipping_address', static function ( $pedido ) {
 	if ( ! $pedido instanceof WC_Order ) return;
-	$fecha  = (string) $pedido->get_meta( '_dip_fecha_entrega' );
-	$recoge = dip_es_pedido_de_recogida( $pedido );
+	$fecha  = dip_seg_fecha_pedido( $pedido );
+	$recoge = dip_seg_es_recogida( $pedido );
 	$aviso  = $fecha ? (string) ( dip_seg_avisos_pedido( $pedido )[ $fecha ]['motivo'] ?? '' ) : '';
 	printf(
 		'<p class="form-field form-field-wide"><label for="dip_cambiar_fecha">%s</label><input type="date" id="dip_cambiar_fecha" name="dip_cambiar_fecha" value="%s"></p>',

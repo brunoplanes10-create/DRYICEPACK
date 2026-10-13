@@ -4,7 +4,7 @@ return array(
 	'menu'         => 'Guides',
 	'seo'          => array(
 		'titulo'      => 'Dry ice guides: uses, quantities and safety | DryIcePack',
-		'descripcion' => 'Dry ice guides: where to buy it, how to make fog and how much to order. 3 kg is enough for a party at home. Read them first and get the kilos right.',
+		'descripcion' => 'Dry ice guides: where to buy it, how to make fog and how much to order. {pk} kg is enough for a party at home. Read them first and get the kilos right.',
 	),
 	'titulo'       => 'Dry ice guides',
 	'titulo_corto' => 'Guides',

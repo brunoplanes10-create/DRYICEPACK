@@ -6,7 +6,7 @@ return array(
 	'extracto' => 'Aigua calenta, un recipient ample i pèl·lets de 3 mm: amb això tens boira arran de terra a l\'instant. Quants quilos cal demanar segons la festa i com fer-ho amb seguretat.',
 	'seo'      => array(
 		'titulo'      => 'Com fer boira amb gel sec en 3 passos | DryIcePack',
-		'descripcion' => 'Per fer boira amb gel sec només necessites aigua calenta, un recipient ample i pèl·lets de 3 mm. Amb 3 kg en tens prou per a una festa a casa. Així es fa.',
+		'descripcion' => 'Per fer boira amb gel sec només necessites aigua calenta, un recipient ample i pèl·lets de 3 mm. Amb {pk} kg en tens prou per a una festa a casa. Així es fa.',
 	),
 	'contenido' => '<p class="resumen"><strong>En resum:</strong> tira pèl·lets de gel sec en aigua calenta, en un recipient ample i obert. La boira surt a l\'instant, pesa més que l\'aire i es queda arran de terra.</p>
 
@@ -22,7 +22,7 @@ return array(
 <table>
 <thead><tr><th>Per a</th><th>Quantitat orientativa</th></tr></thead>
 <tbody>
-<tr><td>Una festa a casa o una taula de Halloween</td><td>3 kg</td></tr>
+<tr><td>Una festa a casa o una taula de Halloween</td><td>{pk} kg</td></tr>
 <tr><td>Una festa gran, boira en diverses tandes</td><td>10 kg</td></tr>
 <tr><td>Un bar, un escenari o un esdeveniment llarg</td><td>15–20 kg</td></tr>
 </tbody>

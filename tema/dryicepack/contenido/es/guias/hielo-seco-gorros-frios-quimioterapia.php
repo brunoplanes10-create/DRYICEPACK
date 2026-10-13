@@ -20,15 +20,15 @@ return array(
 
 <h2>¿Cuánto hielo seco necesito por sesión?</h2>
 <p>Depende del sistema de gorros, de cuántos gorros uses y de cuánto dure la sesión. Mira primero si el fabricante indica una cantidad.</p>
-<p>Como referencia, los pedidos que hemos servido para gorros fríos rondaban los 5 kg por sesión. Con nuestros packs de 3, 10, 15 y 20 kg, eso queda así:</p>
+<p>Como referencia, los pedidos que hemos servido para gorros fríos rondaban los 5 kg por sesión. Con nuestros packs de {pk}, 10, 15 y 20 kg, eso queda así:</p>
 <table>
 <thead><tr><th>Para</th><th>Qué pedir</th></tr></thead>
 <tbody>
-<tr><td>Una sesión (referencia: unos 5 kg)</td><td>2 cajas de 3 kg (6 kg) o 1 pack de 10 kg</td></tr>
+<tr><td>Una sesión (referencia: unos 5 kg)</td><td>' . ( 5 === dipt_pk() ? '1 caja de 5 kg o 1 pack de 10 kg' : '2 cajas de 3 kg (6 kg) o 1 pack de 10 kg' ) . '</td></tr>
 <tr><td>Sesiones en días seguidos</td><td>Dinos cuántas sesiones y te decimos cuánto pedir</td></tr>
 </tbody>
 </table>
-<p>Es una referencia, no una regla. El precio por kilo baja con cada pack: el de 10 kg cuesta menos que dos cajas de 3 kg y te deja más margen. Para varios días seguidos, escríbenos antes de pedir y lo calculamos contigo.</p>
+<p>Es una referencia, no una regla. El precio por kilo baja con cada pack: ' . ( 5 === dipt_pk() ? 'con 10 kg pagas menos por kilo que con 5 kg y te queda margen' : 'el de 10 kg cuesta menos que dos cajas de 3 kg y te deja más margen' ) . '. Para varios días seguidos, escríbenos antes de pedir y lo calculamos contigo.</p>
 
 <h3>¿3 mm o 16 mm?</h3>
 <p>Los nuggets de 16 mm tienen más masa por pieza y duran más horas. Los pellets de 3 mm enfrían más rápido y rellenan mejor los huecos. Si las instrucciones de tus gorros piden un formato, usa ese.</p>
@@ -46,7 +46,7 @@ return array(
 <p>El lunes no hay reparto. Tienes dos opciones:</p>
 <ul>
 <li><strong>Entrega el sábado.</strong> Pídelo antes de las 12:00 del viernes, si tu zona tiene reparto en sábado (suplemento de 11,74 €, IVA incluido). El hielo pasará el fin de semana en su caja: escríbenos antes de pedir y calculamos los kilos.</li>
-<li><strong>Recogida en Mataró el mismo lunes.</strong> En nuestra nave (Camí Ca La Madrona 19 D), de lunes a sábado, también en festivos. Eliges el lunes al pagar y te confirmamos la hora por teléfono o WhatsApp; si tu sesión es temprano, dínoslo al hacer el pedido. Se paga en efectivo al recogerlo y no tiene gastos de envío.</li>
+<li><strong>Recogida en Mataró el mismo lunes.</strong> En nuestra nave (Camí Ca La Madrona 19 D), de lunes a sábado, también en festivos. Eliges el lunes al pagar y te confirmamos la hora por teléfono o WhatsApp; si tu sesión es temprano, dínoslo al hacer el pedido. No hay gastos de envío y el precio es redondo, con IVA incluido: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. Se paga en efectivo y con el importe exacto: no tenemos cambio.</li>
 </ul>
 
 <h2>¿Cómo se manipula sin riesgo?</h2>

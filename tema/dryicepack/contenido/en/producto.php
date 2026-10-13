@@ -3,8 +3,8 @@
 return array(
 	'menu' => 'Buy dry ice',
 	'seo'  => array(
-		'titulo'      => 'Buy dry ice online: 3, 10, 15 and 20 kg | DryIcePack',
-		'descripcion' => 'Buy dry ice from 3 kg, as 3 mm pellets or 16 mm nuggets. See the total with delivery before you pay. Order before 12:00 and it arrives tomorrow.',
+		'titulo'      => 'Buy dry ice online: {pk}, 10, 15 and 20 kg | DryIcePack',
+		'descripcion' => 'Buy dry ice from {pk} kg, as 3 mm pellets or 16 mm nuggets. See the total with delivery before you pay. Order before 12:00 and it arrives tomorrow.',
 	),
 	'migas'   => array( 'Home', 'Buy dry ice' ),
 	'titulo'  => 'Buy dry ice with no surprise delivery costs',
@@ -46,7 +46,7 @@ return array(
 	'total'     => 'Total',
 	'iva'       => 'VAT included',
 	'boton'     => 'Place my order',
-	'recogida'  => 'Or collect it in Mataró: free Monday to Friday, and you pay in cash on collection.',
+	'recogida'  => 'Or collect it in Mataró, Monday to Saturday: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}, VAT included. Cash only, exact amount.',
 	'max'       => 'Up to 250 kg per order. Need more? Message us and we’ll give you a price and a day.',
 	'medida'    => 'Over 150 kg outside the province of Barcelona: that delivery is arranged individually. Message us on',
 	'confianza' => array( 'Card, Apple Pay or Google Pay', 'Invoices for businesses', 'No account needed' ),
@@ -68,7 +68,7 @@ return array(
 		'titulo' => 'How much|<em>do I need?</em>',
 		'texto'  => 'For fog, use these quantities as a guide. Is it for transport or samples? Tell us how many hours and what volume, and we’ll work it out for you.',
 		'casos'  => array(
-			array( '3 kg', 'At home', 'A cauldron, a punch bowl with a double container, a small party.' ),
+			array( '{pk} kg', 'At home', 'A cauldron, a punch bowl with a double container, a small party.' ),
 			array( '10 kg', 'Big party', 'Fog across the floor in several rounds through the night.' ),
 			array( '15–20 kg', 'Bar or event', 'A long service, a stage or several bars.' ),
 		),
@@ -79,9 +79,9 @@ return array(
 		'titulo' => 'What does|<em>delivery cost?</em>',
 		'texto'  => 'The courier’s rate, the same across mainland Spain. It’s based on the weight of the ice plus 1 kg per box, and you see it before you pay.',
 		'filas'  => array( array( 'Up to 2 kg', 8.53 ), array( 'Up to 5 kg', 10.32 ), array( 'Up to 10 kg', 13.19 ), array( 'Each extra kg', 1.12 ) ),
-		'extra'  => array( array( 'Saturday delivery (depending on area)', 9.70 ), array( 'Collection in Mataró, Monday to Friday', 0 ) ),
-		'nota'   => 'Prices include VAT.',
-		'gratis' => 'Free',
+		'extra'  => array( array( 'Saturday delivery (depending on area)', 9.70 ), array( 'Collection in Mataró, no courier', 0 ) ),
+		'nota'   => 'Prices include VAT. Collection is paid in cash, with the exact amount.',
+		'gratis' => '€0', // collection row of the delivery table: no delivery cost (the ice is paid at the collection price)
 		'enlace' => 'Delivery times, holidays and collection',
 	),
 	'faq' => array(

@@ -4,19 +4,19 @@ return array(
 	'menu' => 'Gel sec per a festes i esdeveniments',
 	'seo'  => array(
 		'titulo'      => 'Gel sec per a festes i esdeveniments: boira baixa',
-		'descripcion' => 'Gel sec per a festes, casaments i Halloween: boira arran de terra des de 3 kg. Demana abans de les 12:00 i demà el tens a casa, a punt per fer servir.',
+		'descripcion' => 'Gel sec per a festes, casaments i Halloween: boira arran de terra des de {pk} kg. Demana abans de les 12:00 i demà el tens a casa, a punt per fer servir.',
 	),
 	'migas' => array( 'Inici', 'Usos', 'Festes i esdeveniments' ),
 	'hero'  => array(
 		'titulo' => 'Gel sec per a festes:|boira arran de terra, <em>demà a la teva porta.</em>',
-		'texto'  => 'Vols aquella boira que cobreix el terra en el primer ball, a l\'escenari o a Halloween? Es fa amb aigua calenta i gel sec. Demana abans de les 12:00 i demà al matí el tens (de dimarts a dissabte), o tria el dia que vulguis. Des de 3 kg.',
+		'texto'  => 'Vols aquella boira que cobreix el terra en el primer ball, a l\'escenari o a Halloween? Es fa amb aigua calenta i gel sec. Demana abans de les 12:00 i demà al matí el tens (de dimarts a dissabte), o tria el dia que vulguis. Des de {pk} kg.',
 		'boton'  => 'Fer la comanda',
 		'alt'    => 'Parella ballant en un casament sobre una capa de boira baixa de gel sec',
 	),
 	'recetas' => array(
 		'titulo' => 'Quant gel sec|<em>necessites?</em>',
 		'lista'  => array(
-			array( 'A casa', '3 kg', array( 'Un calder o una ponxera amb doble recipient', 'Aigua calenta', 'Pèl·lets de 3 mm' ), 'Una nit de festa petita o una taula de Halloween.' ),
+			array( 'A casa', '{pk} kg', array( 'Un calder o una ponxera amb doble recipient', 'Aigua calenta', 'Pèl·lets de 3 mm' ), 'Una nit de festa petita o una taula de Halloween.' ),
 			array( 'Festa gran', '10 kg', array( 'Dos o tres recipients amples', 'Aigua calenta per anar canviant', 'Pèl·lets de 3 mm' ), 'Boira arran de terra en diverses tandes durant la nit.' ),
 			array( 'Bar o esdeveniment', '15–20 kg', array( 'Recipients en diversos punts', 'Aigua calenta a mà', 'Pèl·lets de 3 mm' ), 'Un servei llarg, un escenari o diverses barres.' ),
 		),

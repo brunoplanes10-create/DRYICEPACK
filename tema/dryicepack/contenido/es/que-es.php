@@ -58,7 +58,7 @@ return array(
 			array( '¿Cómo lo guardo cuando llega?', 'En su caja de EPS, con la tapa puesta pero sin precintar, en un sitio fresco y ventilado, fuera del alcance de niños y mascotas. El envase nunca debe ser hermético.' ),
 			array( '¿Puedo meterlo en el congelador?', 'No. Está a −78,5 °C, mucho más frío que un congelador doméstico (−18 °C): puede dañar el termostato y las juntas, y seguirá sublimándose igual.' ),
 			array( '¿Es lo mismo que el nitrógeno líquido?', 'No. El nitrógeno líquido es otro gas, está a unos −196 °C y es líquido. El hielo seco es CO₂ sólido.' ),
-			array( '¿Cuánto necesito?', 'Depende del uso, de las horas y del aislamiento. Para niebla, como referencia: en casa 3 kg, en una fiesta grande 10 kg y en un bar o un evento de 15 a 20 kg. Para transporte o muestras, dinos cuántas horas y qué volumen y te lo calculamos.' ),
+			array( '¿Cuánto necesito?', 'Depende del uso, de las horas y del aislamiento. Para niebla, como referencia: en casa {pk} kg, en una fiesta grande 10 kg y en un bar o un evento de 15 a 20 kg. Para transporte o muestras, dinos cuántas horas y qué volumen y te lo calculamos.' ),
 		),
 	),
 	'final' => array( 'titulo' => 'Ya sabes qué es. Pídelo antes de las 12:00 y mañana lo tienes.', 'boton' => 'Comprar hielo seco' ),

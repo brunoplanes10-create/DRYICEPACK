@@ -4,19 +4,19 @@ return array(
 	'menu' => 'Hielo seco para fiestas y eventos',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco para fiestas y eventos: niebla baja | DryIcePack',
-		'descripcion' => 'Hielo seco para fiestas, bodas y Halloween: niebla por el suelo desde 3 kg. Pide antes de las 12:00 y mañana lo tienes en casa, listo para usar.',
+		'descripcion' => 'Hielo seco para fiestas, bodas y Halloween: niebla por el suelo desde {pk} kg. Pide antes de las 12:00 y mañana lo tienes en casa, listo para usar.',
 	),
 	'migas' => array( 'Inicio', 'Usos', 'Fiestas y eventos' ),
 	'hero'  => array(
 		'titulo' => 'Hielo seco para fiestas:|niebla por el suelo, <em>mañana en tu puerta.</em>',
-		'texto'  => '¿Quieres esa niebla que cubre el suelo en el primer baile, en el escenario o en Halloween? Se hace con agua caliente y hielo seco. Pide antes de las 12:00 y mañana por la mañana lo tienes (de martes a sábado), o elige el día que quieras. Desde 3 kg.',
+		'texto'  => '¿Quieres esa niebla que cubre el suelo en el primer baile, en el escenario o en Halloween? Se hace con agua caliente y hielo seco. Pide antes de las 12:00 y mañana por la mañana lo tienes (de martes a sábado), o elige el día que quieras. Desde {pk} kg.',
 		'boton'  => 'Hacer mi pedido',
 		'alt'    => 'Pareja bailando en una boda sobre una capa de niebla baja de hielo seco',
 	),
 	'recetas' => array(
 		'titulo' => '¿Cuánto hielo seco|<em>necesitas?</em>',
 		'lista'  => array(
-			array( 'En casa', '3 kg', array( 'Un caldero o una ponchera con doble recipiente', 'Agua caliente', 'Pellets de 3 mm' ), 'Una noche de fiesta pequeña o una mesa de Halloween.' ),
+			array( 'En casa', '{pk} kg', array( 'Un caldero o una ponchera con doble recipiente', 'Agua caliente', 'Pellets de 3 mm' ), 'Una noche de fiesta pequeña o una mesa de Halloween.' ),
 			array( 'Fiesta grande', '10 kg', array( 'Dos o tres recipientes anchos', 'Agua caliente para ir cambiando', 'Pellets de 3 mm' ), 'Niebla por el suelo en varias tandas durante la noche.' ),
 			array( 'Bar o evento', '15–20 kg', array( 'Recipientes en varios puntos', 'Agua caliente a mano', 'Pellets de 3 mm' ), 'Un servicio largo, un escenario o varias barras.' ),
 		),

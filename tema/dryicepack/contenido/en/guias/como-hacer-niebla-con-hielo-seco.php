@@ -6,7 +6,7 @@ return array(
 	'extracto' => 'Hot water, a wide container and 3 mm pellets: that’s all you need for fog at floor level, straight away. How many kilos to order for your party and how to do it safely.',
 	'seo'      => array(
 		'titulo'      => 'How to make fog with dry ice in 3 steps | DryIcePack',
-		'descripcion' => 'To make fog with dry ice, all you need is hot water, a wide container and 3 mm pellets. 3 kg is enough for a party at home. Here’s how to do it.',
+		'descripcion' => 'To make fog with dry ice, all you need is hot water, a wide container and 3 mm pellets. {pk} kg is enough for a party at home. Here’s how to do it.',
 	),
 	'contenido' => '<p class="resumen"><strong>In short:</strong> drop dry ice pellets into hot water in a wide, open container. The fog appears straight away, is heavier than air and stays at floor level.</p>
 
@@ -22,7 +22,7 @@ return array(
 <table>
 <thead><tr><th>For</th><th>Guide quantity</th></tr></thead>
 <tbody>
-<tr><td>A party at home or a Halloween table</td><td>3 kg</td></tr>
+<tr><td>A party at home or a Halloween table</td><td>{pk} kg</td></tr>
 <tr><td>A big party, fog in several rounds</td><td>10 kg</td></tr>
 <tr><td>A bar, a stage or a long event</td><td>15–20 kg</td></tr>
 </tbody>

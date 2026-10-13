@@ -86,7 +86,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'What businesses ask us',
 		'lista'  => array(
-			array( 'Is there a minimum order?', 'Online, from 3 kg. With a business account, we adjust it to what you use.' ),
+			array( 'Is there a minimum order?', 'Online, from {pk} kg. With a business account, we adjust it to what you use.' ),
 			array( 'How do we pay?', 'With a single invoice a month, payable within 30 days, by SEPA direct debit where possible or by bank transfer.' ),
 			array( 'Do we need to sign a contract?', 'For a business account, yes: a dry ice supply contract setting out the kilos, the frequency, the discount on list prices and the payment method. To buy online you don’t need one: order and pay there and then, like any customer.' ),
 			array( 'What price will we get?', 'A discount on the online list prices, based on your volume and frequency. It’s agreed when you open the account. Fill in the sentence above and we’ll reply, usually the same working day.' ),

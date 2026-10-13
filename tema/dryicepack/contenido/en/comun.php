@@ -92,4 +92,8 @@ return array(
 	'form_enviando'   => 'Sending…',
 	'form_ok'         => 'Received. We reply during office hours, usually the same day.',
 	'form_error'      => 'Your message could not be sent. Call us on +34 936 73 76 41.',
+	// B2B forms (business, industry): same wording, English has no formal "you"
+	'form_privacidad_usted' => 'I have read the <a href="%s">privacy policy</a>. We only use your details to reply to you.',
+	'form_ok_usted'         => 'Received. We reply during office hours, usually the same day.',
+	'form_error_usted'      => 'Your message could not be sent. Call us on +34 936 73 76 41.',
 );

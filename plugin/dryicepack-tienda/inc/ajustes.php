@@ -28,6 +28,8 @@ function dip_ajustes_por_defecto() {
 		'limite_factura'    => 400,
 		'factura_simplificada' => 1,   // inc/factura-simplificada.php
 		'serie_simplificada'   => 'W', // + año: W2026-00001
+		'recogida_sabados_sin_suplemento' => '2026-10-31', // sábados de recogida sin los 10 € (Halloween 2026); el envío en sábado lo paga siempre
+		'pack_pequeno'         => 'auto', // inc/pack-pequeno.php: 3 kg mientras quede, después 5 kg (03/10/2026)
 	);
 }
 
@@ -55,24 +57,34 @@ add_action( 'admin_init', static function () {
 
 function dip_sanear_ajustes( $entrada ) {
 	$entrada = (array) $entrada;
-	$fechas  = array();
-	foreach ( preg_split( '/[\s,;]+/', (string) ( $entrada['festivos'] ?? '' ) ) as $f ) {
-		$f = trim( $f );
-		if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $f ) && strtotime( $f ) ) $fechas[] = $f;
-	}
-	$fechas = array_values( array_unique( $fechas ) );
-	sort( $fechas );
-	$ga4 = strtoupper( trim( (string) ( $entrada['ga4'] ?? '' ) ) );
+	$ga4     = strtoupper( trim( (string) ( $entrada['ga4'] ?? '' ) ) );
 	return array(
 		'ga4'            => preg_match( '/^G-[A-Z0-9]{4,}$/', $ga4 ) ? $ga4 : '',
 		'email_avisos'   => sanitize_email( $entrada['email_avisos'] ?? '' ) ?: 'info@dryicepack.es',
-		'festivos'       => implode( "\n", $fechas ),
+		'festivos'       => dip_sanear_fechas( (string) ( $entrada['festivos'] ?? '' ) ),
 		'recordatorios'  => empty( $entrada['recordatorios'] ) ? 0 : 1,
 		'resenas_url'    => esc_url_raw( trim( (string) ( $entrada['resenas_url'] ?? '' ) ) ),
 		'limite_factura' => max( 0, (float) str_replace( ',', '.', (string) ( $entrada['limite_factura'] ?? 400 ) ) ),
 		'factura_simplificada' => empty( $entrada['factura_simplificada'] ) ? 0 : 1,
 		'serie_simplificada'   => substr( (string) preg_replace( '/[^A-Z0-9]/', '', strtoupper( (string) ( $entrada['serie_simplificada'] ?? '' ) ) ), 0, 6 ) ?: 'W',
+		'recogida_sabados_sin_suplemento' => dip_sanear_fechas( (string) ( $entrada['recogida_sabados_sin_suplemento'] ?? '' ), true ),
+		'pack_pequeno'         => in_array( (string) ( $entrada['pack_pequeno'] ?? '' ), array( 'auto', '3', '5' ), true ) ? (string) $entrada['pack_pequeno'] : 'auto',
 	);
+}
+
+/** Fechas AAAA-MM-DD válidas, sin repetir y ordenadas, una por línea. $solo_sabados: descarta los demás días. */
+function dip_sanear_fechas( $texto, $solo_sabados = false ) {
+	$fechas = array();
+	foreach ( preg_split( '/[\s,;]+/', (string) $texto ) as $f ) {
+		$f = trim( $f );
+		$d = preg_match( '/^\d{4}-\d{2}-\d{2}$/', $f ) ? DateTimeImmutable::createFromFormat( '!Y-m-d', $f ) : false;
+		if ( ! $d || $d->format( 'Y-m-d' ) !== $f ) continue;
+		if ( $solo_sabados && 6 !== (int) $d->format( 'N' ) ) continue;
+		$fechas[] = $f;
+	}
+	$fechas = array_values( array_unique( $fechas ) );
+	sort( $fechas );
+	return implode( "\n", $fechas );
 }
 
 function dip_pantalla_ajustes() {
@@ -116,6 +128,26 @@ function dip_pantalla_ajustes() {
 					<th scope="row"><label for="dip-limite">Factura completa obligatoria desde</label></th>
 					<td><input id="dip-limite" name="dip_ajustes[limite_factura]" type="number" step="1" min="0" class="small-text" value="<?php echo esc_attr( $a['limite_factura'] ); ?>"> € (IVA incluido)
 						<p class="description">Por encima de este importe el checkout pide razón social y NIF/CIF siempre.</p></td>
+				</tr>
+				<tr>
+					<th scope="row">Precios de recogida</th>
+					<td><p><strong><?php echo esc_html( function_exists( 'dip_texto_precios_recogida_admin' ) ? dip_texto_precios_recogida_admin() : '—' ); ?></strong></p>
+						<p class="description">Se calculan solos: precio de la web × IVA, redondeado a la baja a múltiplos de <?php echo (int) DIP_RECOGIDA_REDONDEO; ?> €, IVA incluido. Son los mismos en la web y en la nave, en efectivo y con el importe exacto. Si cambias el precio de un pack en WooCommerce, cambia también el de recogida.</p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="dip-sabados-libres">Sábados de recogida sin suplemento</label></th>
+					<td><textarea id="dip-sabados-libres" name="dip_ajustes[recogida_sabados_sin_suplemento]" rows="3" cols="20" class="code"><?php echo esc_textarea( $a['recogida_sabados_sin_suplemento'] ); ?></textarea>
+						<p class="description">Una fecha por línea (AAAA-MM-DD), solo sábados. Esos días la recogida no lleva los <?php echo esc_html( dip_euros( DIP_RECOGIDA_SABADO_CON_IVA ) ); ?> (IVA incluido). El envío en sábado sigue con su suplemento. De serie: el 31/10/2026 (Halloween).</p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="dip-pack-pequeno">Pack pequeño</label></th>
+					<td><select id="dip-pack-pequeno" name="dip_ajustes[pack_pequeno]">
+							<option value="auto" <?php selected( $a['pack_pequeno'], 'auto' ); ?>>Automático: 3 kg mientras haya stock, después 5 kg</option>
+							<option value="3" <?php selected( $a['pack_pequeno'], '3' ); ?>>Siempre 3 kg</option>
+							<option value="5" <?php selected( $a['pack_pequeno'], '5' ); ?>>Siempre 5 kg</option>
+						</select>
+						<p class="description"><?php echo esc_html( function_exists( 'dip_pack_pequeno_estado' ) ? dip_pack_pequeno_estado() : '' ); ?></p>
+						<p class="description">Las cajas de 3 kg se acaban: pon el stock en las dos variaciones de 3 kg. Mientras quede alguna, la web no vende el de 5 kg. Cuando se acaban las dos, entra solo el de 5 kg y los textos que recomiendan 3 kg pasan a 5 kg. Te llega un email al correo de avisos. Para forzarlo a mano, elige 3 o 5 kg aquí.</p></td>
 				</tr>
 				<tr>
 					<th scope="row">Factura simplificada automática</th>

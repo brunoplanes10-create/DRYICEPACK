@@ -97,7 +97,7 @@ get_header();
 <!-- N5 · Presupuesto -->
 <section class="n-form tono-blanco seccion" aria-labelledby="n-form-t" id="presupuesto">
 	<div class="envoltura">
-		<form class="n-tarjeta tono-oscuro" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-form-dip data-enviando="<?php echo esc_attr( $c['form']['enviando'] ); ?>" data-enviar="<?php echo esc_attr( $c['form']['boton'] ); ?>" data-error="<?php echo esc_attr( dipt_t( 'form_error' ) ); ?>" id="formulario">
+		<form class="n-tarjeta tono-oscuro" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-form-dip data-enviando="<?php echo esc_attr( $c['form']['enviando'] ); ?>" data-enviar="<?php echo esc_attr( $c['form']['boton'] ); ?>" data-error="<?php echo esc_attr( dipt_t( 'form_error_usted' ) ); ?>" id="formulario">
 			<?php echo function_exists( 'dip_formulario_ocultos' ) ? dip_formulario_ocultos( 'presupuesto' ) : ''; // phpcs:ignore ?>
 			<div class="n-tarjeta__cabeza">
 				<h2 class="t-h2" id="n-form-t"><?php echo esc_html( $c['form']['titulo'] ); ?></h2>
@@ -112,9 +112,9 @@ get_header();
 					<p class="campo"><label for="n-<?php echo esc_attr( $nombre ); ?>"><?php echo esc_html( $etq ); ?></label><input id="n-<?php echo esc_attr( $nombre ); ?>" name="<?php echo esc_attr( $nombre ); ?>" type="<?php echo esc_attr( $tipos[ $nombre ] ?? 'text' ); ?>"<?php echo $req; // phpcs:ignore ?>></p>
 				<?php endforeach; ?>
 			</div>
-			<label class="casilla"><input type="checkbox" name="privacidad" value="1" required> <span><?php echo wp_kses( sprintf( dipt_t( 'form_privacidad' ), esc_url( dipt_url( 'privacidad' ) ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label>
+			<label class="casilla"><input type="checkbox" name="privacidad" value="1" required> <span><?php echo wp_kses( sprintf( dipt_t( 'form_privacidad_usted' ), esc_url( dipt_url( 'privacidad' ) ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label>
 			<button type="submit" class="boton boton--hielo"><span><?php echo esc_html( $c['form']['boton'] ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></button>
-			<p class="aviso-form<?php echo $enviado ? ' aviso-form--ok' : ( $error ? ' aviso-form--error' : '' ); ?>" data-form-aviso role="status" tabindex="-1"<?php echo ( $enviado || $error ) ? '' : ' hidden'; ?>><?php echo esc_html( $enviado ? dipt_t( 'form_ok' ) : ( $error ? dipt_t( 'form_error' ) : '' ) ); ?></p>
+			<p class="aviso-form<?php echo $enviado ? ' aviso-form--ok' : ( $error ? ' aviso-form--error' : '' ); ?>" data-form-aviso role="status" tabindex="-1"<?php echo ( $enviado || $error ) ? '' : ' hidden'; ?>><?php echo esc_html( $enviado ? dipt_t( 'form_ok_usted' ) : ( $error ? dipt_t( 'form_error_usted' ) : '' ) ); ?></p>
 		</form>
 	</div>
 </section>
@@ -128,6 +128,8 @@ get_header();
 				<div data-revela><dt><?php echo esc_html( $f[0] ); ?></dt><dd><?php echo esc_html( $f[1] ); ?></dd></div>
 			<?php endforeach; ?>
 		</dl>
+		<?php /* Toda página que explica un uso enlaza a la guía de seguridad (como transporte, laboratorios y eventos) */ ?>
+		<p class="n-faq__seg"><?php echo dipt_enlace( dipt_t( 'seguridad_mas' ), dipt_url( 'seguridad' ) ); // phpcs:ignore ?></p>
 	</div>
 </section>
 

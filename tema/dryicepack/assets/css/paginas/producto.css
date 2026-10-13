@@ -33,7 +33,8 @@
 .p-formato:has(input:checked) .p-formato__icono { background: var(--c-marino); color: #fff; }
 .p-formato__nombre { grid-area: nombre; font-weight: 600; letter-spacing: -.005em; }
 .p-formato__texto { grid-area: texto; font-size: .85rem; color: var(--c-acero); }
-.p-kilos { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+.p-kilos { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: .5rem; }
+@media (max-width: 480px) { .p-kilos--cinco { gap: .35rem; } .p-kilos--cinco .p-kilo { padding-inline: .1rem; } .p-kilos--cinco .p-kilo__precio { font-size: .7rem; letter-spacing: -.02em; } } /* 5 packs en una fila a 390 px */
 .p-kilo { position: relative; display: grid; justify-items: center; gap: .2rem; padding: .8rem .3rem; border: 1px solid var(--c-linea-fuerte); border-radius: 14px; background: #fff; cursor: pointer; box-shadow: 0 1px 2px rgba(11, 20, 28, .05); transition: transform var(--d-corta) var(--e-salida); }
 .p-kilo:not(:has(input:checked)):hover { transform: translate3d(0, -2px, 0); }
 .p-kilo__n { font-family: var(--f-display); font-weight: 800; font-size: 1.85rem; line-height: 1; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }

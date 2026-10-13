@@ -139,16 +139,18 @@ Los picos de julio y septiembre son los pedidos grandes de Nissan y PSG.
 
 ### 1.3 Oferta y precio
 
-**Precio final por pack** (con IVA; el envío incluye el kilo de caja):
+**Precio final por pack** (con IVA; el envío incluye el kilo de caja). Precios decididos el 03/10/2026 (el 15 kg pasa de 68,40 € a 74,90 € + IVA):
 
-| Pack | Recogida en Mataró | Con envío MRW | €/kg con envío |
-|---|---|---|---|
-| 3 kg | 36,06 € | 48,55 € | 16,18 € |
-| 10 kg | 64,49 € | 81,81 € | 8,18 € |
-| 15 kg | 82,76 € | 106,86 € | 7,12 € |
-| 20 kg | 119,31 € | 150,17 € | 7,51 € |
+| Pack | Precio web (con IVA) | Recogida en Mataró (redondo, con IVA, en efectivo) | Con envío MRW | €/kg sin envío |
+|---|---|---|---|---|
+| 3 kg (hasta agotar 29 cajas) | 36,06 € | 35 € | 48,55 € | 9,93 € |
+| 5 kg (entra cuando se acabe el 3 kg) | 41,02 € | 40 € | 56,98 € | 6,78 € |
+| 10 kg | 64,49 € | 60 € | 81,81 € | 5,33 € |
+| 15 kg | 90,63 € | 90 € | 114,72 € | 4,99 € |
+| 20 kg | 119,31 € | 115 € | 150,17 € | 4,93 € |
 
-- **Anomalía:** el pack de 20 kg sale **más caro por kilo** que el de 15 kg, tanto sin envío (4,93 €/kg frente a 4,56 €/kg) como con envío. Esto frena justo el cambio que se busca: que compren más.
+- **Escala corregida (03/10/2026):** con el 15 kg a 74,90 € + IVA, cada pack es más barato por kilo que el anterior. Antes, el de 20 kg salía más caro por kilo que el de 15 kg (4,93 frente a 4,56 €/kg) y frenaba justo el cambio que se busca: que compren más.
+- **Recogida (03/10/2026):** el mismo precio en la web y en la nave: precio web × 1,21 redondeado a la baja a múltiplos de 5 €. Solo efectivo y con el importe exacto. Sábado +10 € IVA incluido, salvo el 31/10/2026.
 - **Coste del envío:** se cobra por kilo, así que se nota más cuanto más grande es el pedido.
 
 ### 1.4 Operación
@@ -562,22 +564,23 @@ Todas enlazadas desde `/zonas/` y desde su comarca: ninguna huérfana.
 
 Cada una lleva la opción por defecto. Si no dices nada, se aplica esa.
 
-1. **Escalera de precios:** que cada pack sea más barato por kilo que el anterior (hoy 20 kg está por encima de 15 kg).
+1. **Escalera de precios:** DECIDIDO el 03/10/2026 (chat de INDUNOVA Control, `PARA-EL-CHAT-DE-LA-WEB.md`). 15 kg a 74,90 € + IVA; el 3 kg se vende hasta agotar las 29 cajas EPS y después entra el 5 kg a 33,90 €; recogida a precio redondo con IVA incluido (35/40/60/90/115 €), en efectivo y con el importe exacto; sábado de recogida +10 € IVA incluido, salvo el 31/10/2026. Ver apartado 1.3.
    - *Por defecto:* mostrar el precio por kilo y no tocar precios hasta que decidas.
 2. **Bizum:** ¿tenéis TPV virtual Redsys con el banco?
    - *Por defecto:* el checkout queda preparado y Bizum se activa cuando lo tengáis.
 3. **Odoo:** ¿qué plan usáis (Uno gratis, Standard o Custom)?
    - *Por defecto:* exportación para importar (opción A).
-4. **Más de 150 kg en la provincia de Barcelona:** plazo mínimo y días de entrega del proveedor.
+4. **Más de 150 kg en la provincia de Barcelona:** plazo mínimo y días de entrega del proveedor. DECIDIDO en parte el 02/10/2026: fuera de la provincia de Barcelona, más de 150 kg no se vende online (el cliente escribe y se prepara a medida, más caro); más de 250 kg por pedido, el cliente escribe y se le da precio y día.
    - *Por defecto:* la web dice "más de 150 kg: consulta plazo" sin prometer fecha.
 5. **Casos y logos:** DECIDIDO el 01/10/2026. El propietario confirma en el chat que todos los clientes dan permiso ("Tots, pots agafar els seus logos i ficarlos"). Se publican Nissan Formula E Team, Italpizza, Sushitok y Semillas Fitó; PSG Tech NO.
    - *Por defecto:* sección preparada y oculta hasta tener el permiso por escrito.
 6. **Gorros fríos en la quimioterapia:** DECIDIDO el 01/10/2026. Sí era ese uso (5 kg por sesión). Se publica una guía prudente en ES/CA/EN, sin afirmaciones médicas ni datos de la clienta.
    - *Por defecto:* no se hace.
-7. **Reparto propio en la zona:** ¿repartís vosotros alguna vez en el Maresme o Barcelona, o siempre MRW?
+7. **Reparto propio en la zona:** DECIDIDO el 02/10/2026. Siempre MRW o recogida; con más de 200 kg, a veces reparto propio (consultar). La web no promete reparto propio.
    - *Por defecto:* solo MRW y recogida.
-8. **Condiciones de cuenta de empresa:** plazo de pago (¿30 días?), domiciliación y pedido mínimo.
+8. **Condiciones de cuenta de empresa:** DECIDIDO el 02/10/2026. Contrato de suministro de hielo seco firmado y, si puede ser, domiciliación SEPA; factura mensual a 30 días. Nunca "sin permanencia" ni "sin contratos" para las cuentas de empresa.
    - *Por defecto:* la web dice "según acuerdo" sin cifras.
+9. **App INDUNOVA Control (03/10/2026):** la app lee `GET /wp-json/dip/v1/envio` y las claves de los pedidos listadas en CLAUDE.md. Se estrena el 9/11; no hace falta antes del cambio de tema.
 
 ---
 
