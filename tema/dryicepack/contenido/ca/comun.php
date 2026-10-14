@@ -81,6 +81,7 @@ return array(
 	),
 	'seguridad_mas'   => 'Seguretat completa i fitxa de dades',
 	'faq'             => 'Preguntes freqüents',
+	'faq_otra'        => 'Una altra pregunta?',
 	'volver_arriba'   => 'Tornar a dalt',
 	'ver_mas'         => 'Veure\'n més',
 	'kg'              => 'kg',

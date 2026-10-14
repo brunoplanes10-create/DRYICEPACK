@@ -1,8 +1,8 @@
 // Prepara las imágenes del tema (WebP en varios anchos) a partir de las fotos originales,
 // que no se suben a Git: FOTOS Y VIDEOS HALLOWEEN DRYICEPACK/ y .tmp/fuentes/ (descargadas de dryicepack.es).
-// Uso: node herramientas/preparar-imagenes.mjs
+// Uso: node herramientas/preparar-imagenes.mjs [nombre1,nombre2]
 import sharp from 'sharp';
-import { mkdirSync, existsSync, writeFileSync } from 'node:fs';
+import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'node:fs';
 
 const OUT = 'tema/dryicepack/assets/img/fotos';
 mkdirSync(OUT, { recursive: true });
@@ -20,16 +20,18 @@ const lista = [
   ['cenital-3mm', F + '3MM-ARRIBA.jpeg', [480, 900, 1400], null, 'oscura'],
   ['cenital-caja-nuggets', H + 'IMG_3593 (1).jpeg', [480, 900, 1400], null, 'oscura'],
   // Imágenes de sector que ya usa la web
-  ['uso-hosteleria', F + 'ChatGPT-Image-25-nov-2025-10_50_52-1.png', [480, 900, 1400]],
-  ['uso-eventos', F + 'ChatGPT-Image-25-nov-2025-10_02_21-1.png', [480, 900, 1400]],
+  // Las cinco con la marca de agua horneada abajo a la derecha se recortan por debajo de la marca (13/10/2026),
+  // con la proporción 3:2 del original (el recorte lateral va centrado; uso-eventos, 1400 × 890 para conservar el ancho de 1400).
+  ['uso-hosteleria', F + 'ChatGPT-Image-25-nov-2025-10_50_52-1.png', [480, 900, 1400], { left: 63, top: 0, width: 1410, height: 940 }],
+  ['uso-eventos', F + 'ChatGPT-Image-25-nov-2025-10_02_21-1.png', [480, 900, 1400], { left: 68, top: 0, width: 1400, height: 890 }],
   ['uso-transporte', F + 'ChatGPT-Image-21-nov-2025-13_08_51-1.png', [480, 900, 1400]],
   ['uso-laboratorio', F + 'ChatGPT-Image-23-nov-2025-14_51_32-1.png', [480, 900]],
-  ['uso-laboratorio-entrega', F + 'ChatGPT-Image-23-nov-2025-13_27_35-1.png', [480, 900, 1400]],
+  ['uso-laboratorio-entrega', F + 'ChatGPT-Image-23-nov-2025-13_27_35-1.png', [480, 900, 1400], { left: 59, top: 0, width: 1418, height: 945 }],
   ['uso-laboratorio-pinzas', F + 'ChatGPT-Image-24-nov-2025-09_11_36-1-1.png', [480, 900, 1400]],
   ['uso-industria', F + 'ChatGPT-Image-24-nov-2025-11_02_45-2.png', [480, 900, 1400]],
   ['uso-industria-pala', F + 'ChatGPT-Image-2-dic-2025-10_56_12-1-1.png', [480, 900, 1400]],
-  ['uso-agricultura', F + 'ChatGPT-Image-24-nov-2025-12_35_14-1.png', [480, 900, 1400]],
-  ['uso-vino', F + 'ChatGPT-Image-24-nov-2025-12_58_50-1.png', [480, 900, 1400]],
+  ['uso-agricultura', F + 'ChatGPT-Image-24-nov-2025-12_35_14-1.png', [480, 900, 1400], { left: 63, top: 0, width: 1410, height: 940 }],
+  ['uso-vino', F + 'ChatGPT-Image-24-nov-2025-12_58_50-1.png', [480, 900, 1400], { left: 63, top: 0, width: 1410, height: 940 }],
   ['uso-docencia', F + 'ChatGPT-Image-25-nov-2025-15_03_04-1.png', [480, 900, 1400]],
   ['reparto-furgoneta', F + 'ChatGPT-Image-21-nov-2025-13_05_22-1.png', [480, 900, 1400]],
   ['cajas-furgoneta', F + 'ChatGPT-Image-7-nov-2025-13_48_11-1.png', [480, 900, 1400]],
@@ -41,8 +43,12 @@ const lista = [
   ['nuggets-ia', F + 'ChatGPT-Image-1-dic-2025-13_15_17-1.png', [480, 900, 1400]],
 ];
 
-const manifiesto = {};
+// Con nombres como argumento (uso-vino,uso-eventos) solo se rehacen esas y se conserva el resto del manifiesto.
+const solo = (process.argv[2] || '').split(',').filter(Boolean);
+const MANIFIESTO = OUT + '/fotos.json';
+const manifiesto = solo.length && existsSync(MANIFIESTO) ? JSON.parse(readFileSync(MANIFIESTO, 'utf8')) : {};
 for (const [nombre, origen, anchos, recorte, ajuste] of lista) {
+  if (solo.length && !solo.includes(nombre)) continue;
   if (!existsSync(origen)) { console.log('Falta', origen); continue; }
   let base = sharp(origen).rotate();
   if (recorte) base = sharp(await base.toBuffer()).extract(recorte);
@@ -58,5 +64,5 @@ for (const [nombre, origen, anchos, recorte, ajuste] of lista) {
     console.log(salida, Math.round(info.size / 1024) + ' KB');
   }
 }
-writeFileSync('tema/dryicepack/assets/img/fotos/fotos.json', JSON.stringify(manifiesto, null, 1));
+writeFileSync(MANIFIESTO, JSON.stringify(manifiesto, null, 1));
 console.log('Listo:', Object.keys(manifiesto).length, 'imágenes');

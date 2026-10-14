@@ -9,7 +9,7 @@
   var d = document, w = window;
   var raiz = d.getElementById("hw");
   if (!raiz) return;
-  var reducido = w.matchMedia && w.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var reducido = (w.matchMedia && w.matchMedia("(prefers-reduced-motion: reduce)").matches) || d.documentElement.classList.contains("quieto");
   var io = "IntersectionObserver" in w;
 
   /* ---- La ambientación arranca con la página ya cargada y el navegador libre ----
@@ -26,10 +26,12 @@
 
   /* ---- Aparición al hacer scroll ----
      La primera respuesta del observador dice qué está fuera de pantalla: solo eso se oculta
-     y aparece al llegar. Lo que ya se ve no se toca (nada parpadea al cargar). */
+     y aparece al llegar. Lo que ya se ve no se toca (nada parpadea al cargar).
+     [data-hw-revela]: sube y aparece · [data-hw-cortina]: la foto se descubre tras una lámina que se retira. */
   if (io && !reducido) {
     var visto = typeof WeakSet !== "undefined" ? new WeakSet() : null;
     var piezasDe = function (el) { return el.getAttribute("data-hw-revela") === "grupo" ? el.children : [el]; };
+    var claseDe = function (el) { return el.hasAttribute("data-hw-cortina") ? "hw-tapado" : "hw-pendiente"; };
     var obsRevela = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (e) {
         var el = e.target, primera = visto && !visto.has(el);
@@ -38,7 +40,7 @@
           obsRevela.unobserve(el);
           if (primera) return; // ya estaba en pantalla al cargar
           Array.prototype.forEach.call(piezasDe(el), function (p) {
-            p.classList.remove("hw-pendiente");
+            p.classList.remove(claseDe(el));
             // Quita el retardo escalonado al terminar, para que el hover responda al momento
             setTimeout(function () { p.style.removeProperty("--hw-d"); }, 1200);
           });
@@ -46,12 +48,12 @@
           var grupo = el.getAttribute("data-hw-revela") === "grupo";
           Array.prototype.forEach.call(piezasDe(el), function (p, i) {
             if (grupo) p.style.setProperty("--hw-d", (i * 90) + "ms");
-            p.classList.add("hw-pendiente");
+            p.classList.add(claseDe(el));
           });
         }
       });
     }, { rootMargin: "0px 0px -12% 0px", threshold: 0.08 });
-    if (visto) Array.prototype.forEach.call(raiz.querySelectorAll("[data-hw-revela]"), function (el) { obsRevela.observe(el); });
+    if (visto) Array.prototype.forEach.call(raiz.querySelectorAll("[data-hw-revela], [data-hw-cortina]"), function (el) { obsRevela.observe(el); });
   }
 
   /* ---- Ambientación solo en la sección que está en pantalla ---- */

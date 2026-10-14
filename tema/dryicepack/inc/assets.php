@@ -34,8 +34,17 @@ add_action( 'wp_enqueue_scripts', static function () {
 	wp_enqueue_style( 'dipt-base', DIPT_URI . '/' . $base, array(), dipt_ver( $base ) );
 
 	$hoja = dipt_hoja_pagina();
-	$css  = dipt_asset( "assets/css/paginas/{$hoja}.css" );
-	if ( file_exists( DIPT_DIR . '/' . $css ) ) wp_enqueue_style( 'dipt-pagina', DIPT_URI . '/' . $css, array( 'dipt-base' ), dipt_ver( $css ) );
+	$deps = array( 'dipt-base' );
+	// Piezas comunes de las cuatro páginas B2B (placa de cliente a caballo): antes de la hoja del sector, que puede afinar.
+	if ( in_array( $hoja, array( 'sector-hosteleria', 'sector-transporte', 'sector-industria', 'sector-laboratorios' ), true ) ) {
+		$sec = dipt_asset( 'assets/css/paginas/sectores.css' );
+		if ( file_exists( DIPT_DIR . '/' . $sec ) ) {
+			wp_enqueue_style( 'dipt-sectores', DIPT_URI . '/' . $sec, array( 'dipt-base' ), dipt_ver( $sec ) );
+			$deps[] = 'dipt-sectores';
+		}
+	}
+	$css = dipt_asset( "assets/css/paginas/{$hoja}.css" );
+	if ( file_exists( DIPT_DIR . '/' . $css ) ) wp_enqueue_style( 'dipt-pagina', DIPT_URI . '/' . $css, $deps, dipt_ver( $css ) );
 
 	$js = dipt_asset( 'assets/js/movimiento.js' );
 	wp_enqueue_script( 'dipt-movimiento', DIPT_URI . '/' . $js, array(), dipt_ver( $js ), array( 'in_footer' => true, 'strategy' => 'defer' ) );

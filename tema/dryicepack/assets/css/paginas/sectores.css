@@ -1,0 +1,91 @@
+/* =========================================================================
+   Piezas comunes de las páginas B2B (hostelería, transporte, industria, laboratorios).
+   Se encola antes de la hoja propia de cada sector (inc/assets.php): la hoja del sector puede afinar.
+   Hoy: la placa de cliente «a caballo».
+   ========================================================================= */
+
+/* ---------- Placa a caballo ----------
+   Sin sección propia: se monta sobre la frontera entre dos secciones. Su alto está en el flujo (CLS 0) y
+   solo invade el relleno de las dos vecinas (--placa-solape), nunca su contenido. Las dos mitades del fondo
+   repiten el tono de cada vecina (clases arriba-* y abajo-*), así la frontera pasa por detrás de la placa.
+   Lo normal es pintarla con PHP: echo dipt_placa_cliente( $c['cliente'], array( 'id' => 'h-cliente-t', 'arriba' => 'papel', 'abajo' => 'noche' ) );
+   que genera este marcado:
+
+   <section class="placa-caballo arriba-papel abajo-noche" aria-labelledby="h-cliente-t">
+     <div class="envoltura">
+       <div class="placa" data-revela>
+         <span class="placa__remaches" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+         <h2 class="placa__titulo" id="h-cliente-t"><span class="tramo">…</span> <span class="tramo"><em>…</em></span></h2>
+         <dl class="placa__datos">
+           <div class="placa__campo"><dt>Cliente</dt><dd>LOGO<span class="placa__nombre" aria-hidden="true">Nombre</span><span class="placa__detalle">…</span></dd></div>
+           <div class="placa__campo"><dt>Uso</dt><dd class="placa__uso">…</dd></div>
+         </dl>
+       </div>
+     </div>
+   </section> */
+.placa-caballo {
+	--placa-arriba: var(--c-papel); --placa-abajo: var(--c-blanco);
+	--placa-solape: calc(var(--seccion) * .45);
+	position: relative; z-index: 2; margin-block: calc(-1 * var(--placa-solape));
+}
+.placa-caballo::before, .placa-caballo::after { content: ""; position: absolute; left: 0; right: 0; z-index: -1; pointer-events: none; }
+.placa-caballo::before { top: 0; bottom: 50%; background: var(--placa-arriba); }
+.placa-caballo::after { top: 50%; bottom: 0; background: var(--placa-abajo); }
+/* Vecinas sin relleno (una foto a sangre, por ejemplo): sin solape */
+.placa-caballo--sin-solape { margin-block: 0; }
+.arriba-papel { --placa-arriba: var(--c-papel); } .abajo-papel { --placa-abajo: var(--c-papel); }
+.arriba-blanco { --placa-arriba: var(--c-blanco); } .abajo-blanco { --placa-abajo: var(--c-blanco); }
+.arriba-escarcha { --placa-arriba: var(--c-escarcha); } .abajo-escarcha { --placa-abajo: var(--c-escarcha); }
+.arriba-noche { --placa-arriba: var(--c-noche); } .abajo-noche { --placa-abajo: var(--c-noche); }
+.arriba-marino { --placa-arriba: var(--c-marino); } .abajo-marino { --placa-abajo: var(--c-marino); }
+
+.placa {
+	--placa-fondo: var(--c-blanco); --placa-borde: var(--c-tinta); --placa-filete: var(--c-linea-fuerte);
+	--placa-texto: var(--c-tinta); --placa-suave: var(--c-acero); --placa-logo: var(--c-marino);
+	position: relative; display: grid; max-width: 62rem; margin-left: auto;
+	background: var(--placa-fondo); color: var(--placa-texto); border: 1px solid var(--placa-borde); border-radius: var(--radio);
+	box-shadow: var(--sombra-3);
+}
+/* A la izquierda, para alternar con la composición de la página */
+.placa-caballo--izq .placa { margin-left: 0; margin-right: auto; }
+.placa__titulo {
+	padding: clamp(1.3rem, 2.6vw, 2rem) clamp(1.8rem, 3.4vw, 2.6rem) clamp(1rem, 2vw, 1.4rem);
+	border-bottom: 1px solid var(--placa-filete);
+	font-family: var(--f-display); font-weight: 700; font-size: var(--t-h3); line-height: 1.25; letter-spacing: -.01em; text-wrap: balance;
+}
+.placa__datos { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); margin: 0; }
+.placa__campo { display: grid; align-content: start; gap: .9rem; padding: clamp(1.6rem, 3.2vw, 2.6rem); }
+.placa__campo + .placa__campo { border-left: 1px solid var(--placa-filete); }
+.placa dt { font: 600 .8rem/1.3 var(--f-texto); letter-spacing: 0; text-transform: none; color: var(--placa-suave); }
+.placa dd { display: grid; justify-items: start; gap: .5rem; margin: 0; }
+/* Logotipo a 2× (la anchura relativa --lw viene de dipt_clientes()) */
+.placa .logo-cliente { width: calc(var(--lw) * 2.1rem); max-width: 100%; margin-bottom: .4rem; color: var(--placa-logo); }
+.placa--grande .logo-cliente { width: calc(var(--lw) * 2.6rem); }
+.placa__nombre { font-family: var(--f-mono); font-size: var(--t-dato); letter-spacing: .02em; color: var(--placa-suave); }
+.placa__detalle { font-size: .95rem; color: var(--placa-suave); }
+.placa__uso { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.6rem, 2.6vw, 2.4rem); line-height: 1.08; letter-spacing: -.02em; text-wrap: balance; }
+
+/* Remaches: cuatro, uno a uno al entrar */
+.placa__remaches i { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--c-escarcha); border: 1px solid var(--c-acero); }
+.placa__remaches i:nth-child(1) { top: 12px; left: 12px; }
+.placa__remaches i:nth-child(2) { top: 12px; right: 12px; }
+.placa__remaches i:nth-child(3) { bottom: 12px; right: 12px; }
+.placa__remaches i:nth-child(4) { bottom: 12px; left: 12px; }
+.js .placa[data-revela] .placa__remaches i { opacity: 0; transform: scale(.3); transition: opacity var(--d-corta) var(--e-salida), transform var(--d-corta) var(--e-salida); }
+.js .placa[data-revela].visto .placa__remaches i { opacity: 1; transform: none; }
+.js .placa.visto .placa__remaches i:nth-child(1) { transition-delay: 420ms; }
+.js .placa.visto .placa__remaches i:nth-child(2) { transition-delay: 510ms; }
+.js .placa.visto .placa__remaches i:nth-child(3) { transition-delay: 600ms; }
+.js .placa.visto .placa__remaches i:nth-child(4) { transition-delay: 690ms; }
+
+/* Placa sobre fondos oscuros */
+.placa--oscura { --placa-fondo: var(--c-noche-2); --placa-borde: rgba(184, 208, 232, .45); --placa-filete: var(--c-linea-oscura); --placa-texto: var(--c-escarcha); --placa-suave: var(--c-niebla); --placa-logo: var(--c-hielo-claro); }
+.placa--oscura .placa__remaches i { background: var(--c-marino); border-color: var(--c-niebla); }
+
+@media (max-width: 760px) {
+	.placa__datos { grid-template-columns: 1fr; }
+	.placa__campo + .placa__campo { border-left: 0; border-top: 1px solid var(--placa-filete); }
+}
+
+.quieto .placa__remaches i { opacity: 1 !important; transform: none !important; }
+@media (prefers-reduced-motion: reduce) { .placa__remaches i { opacity: 1 !important; transform: none !important; } }

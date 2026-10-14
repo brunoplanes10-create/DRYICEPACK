@@ -1,7 +1,8 @@
 /* Dryicepack · movimiento e interfaz comunes a toda la web.
-   Aparición al entrar en pantalla, cabecera, menús, parallax, contadores, reloj del corte de las 12:00,
-   imagen que sigue al cursor, tarjeta que se inclina, carrito y formularios sin recargar.
-   Solo transform y opacity. Con "reducir movimiento" (clase .quieto) no se anima nada. */
+   Aparición al entrar en pantalla (.visto), activo al centro (data-activa → .activo), bucles de niebla que se
+   pausan fuera de pantalla, cabecera, menús, WhatsApp flotante, parallax, contadores, regla de rango, reloj del
+   corte de las 12:00, carrito y formularios sin recargar.
+   Solo transform y opacity. Con "reducir movimiento" (clase .quieto) no se anima nada y todo queda en su estado final. */
 (function () {
 	'use strict';
 	var d = document, h = d.documentElement, w = window;
@@ -14,7 +15,7 @@
 	if (d.readyState === 'complete') setTimeout(activar, 200); else w.addEventListener('load', function () { setTimeout(activar, 200); }, { once: true });
 
 	/* ---------- Aparición al entrar en pantalla ---------- */
-	var aparecen = d.querySelectorAll('[data-revela], [data-lineas], [data-cortina], [data-vivo]');
+	var aparecen = d.querySelectorAll('[data-revela], [data-lineas], [data-cortina], [data-vivo], [data-activa], .cota');
 	if ('IntersectionObserver' in w && !quieto) {
 		var io = new IntersectionObserver(function (entradas) {
 			entradas.forEach(function (e) {
@@ -47,13 +48,20 @@
 	/* ---------- Menú móvil ---------- */
 	var botonMenu = d.querySelector('[data-menu-movil]');
 	if (botonMenu) {
-		botonMenu.addEventListener('click', function () {
-			var abierto = h.classList.toggle('menu-abierto');
+		var ponerMenu = function (abierto) {
+			h.classList.toggle('menu-abierto', abierto);
 			botonMenu.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-		});
+			var t = botonMenu.getAttribute(abierto ? 'data-t-cerrar' : 'data-t-abrir');
+			if (t) botonMenu.setAttribute('aria-label', t);
+		};
+		botonMenu.addEventListener('click', function () { ponerMenu(!h.classList.contains('menu-abierto')); });
 		d.addEventListener('keydown', function (e) {
-			if (e.key === 'Escape' && h.classList.contains('menu-abierto')) { h.classList.remove('menu-abierto'); botonMenu.setAttribute('aria-expanded', 'false'); botonMenu.focus(); }
+			if (e.key === 'Escape' && h.classList.contains('menu-abierto')) { ponerMenu(false); botonMenu.focus(); }
 		});
+		// Si se pasa a escritorio con el menú abierto, se cierra (no queda la página bloqueada)
+		var mqEscritorio = w.matchMedia('(min-width: 901px)');
+		var alCambiar = function (m) { if (m.matches && h.classList.contains('menu-abierto')) ponerMenu(false); };
+		if (mqEscritorio.addEventListener) mqEscritorio.addEventListener('change', alCambiar);
 	}
 
 	/* ---------- Submenú "Usos": clic, teclado y paso del ratón en escritorio; la foto cambia con cada uso ---------- */
@@ -95,6 +103,86 @@
 		});
 	}
 
+	/* ---------- Activo al centro: [data-activa] ----------
+	   .activo mientras el elemento cruza la franja central de la pantalla (rootMargin −45 % arriba y abajo):
+	   es el equivalente móvil del hover. .visto llega con el observador de entradas (una vez).
+	   Dentro de [data-activa-grupo] solo hay uno .activo (el último que llegó al centro; el primero al cargar):
+	   el grupo recibe data-activo="n" y --activo:n, y el elemento lanza el evento 'dip:activa' ({ indice, grupo }). */
+	function grupoDe(el) { return el.closest('[data-activa-grupo]'); }
+	function miembros(g) { return Array.prototype.filter.call(g.querySelectorAll('[data-activa]'), function (x) { return grupoDe(x) === g; }); }
+	function marcarGrupo(g, el) {
+		var lista = miembros(g), n = lista.indexOf(el);
+		if (n < 0 || g.getAttribute('data-activo') === String(n)) return;
+		lista.forEach(function (x) { x.classList.toggle('activo', x === el); });
+		g.setAttribute('data-activo', String(n));
+		g.style.setProperty('--activo', String(n));
+		el.dispatchEvent(new CustomEvent('dip:activa', { bubbles: true, detail: { indice: n, grupo: g } }));
+	}
+	var activables = d.querySelectorAll('[data-activa]');
+	d.querySelectorAll('[data-activa-grupo]').forEach(function (g) { var l = miembros(g); if (l.length) marcarGrupo(g, l[0]); });
+	if (activables.length && 'IntersectionObserver' in w) {
+		var ioA = new IntersectionObserver(function (es) {
+			es.forEach(function (e) {
+				var g = grupoDe(e.target);
+				if (g) { if (e.isIntersecting) marcarGrupo(g, e.target); }
+				else e.target.classList.toggle('activo', e.isIntersecting);
+			});
+		}, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+		activables.forEach(function (el) { ioA.observe(el); });
+	}
+	w.dipActiva = { marcar: marcarGrupo };
+
+	/* ---------- Bucles ambientales (.niebla y [data-pausa]): solo se mueven mientras están en pantalla ---------- */
+	var bucles = d.querySelectorAll('.niebla, [data-pausa]');
+	if ('IntersectionObserver' in w) {
+		var ioN = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle('en-pantalla', e.isIntersecting); }); }, { rootMargin: '10% 0px' });
+		bucles.forEach(function (b) { ioN.observe(b); });
+	} else {
+		bucles.forEach(function (b) { b.classList.add('en-pantalla'); });
+	}
+
+	/* ---------- WhatsApp flotante: aparece al dejar atrás el hero; se esconde con el cierre o el pie en pantalla ---------- */
+	var wa = d.querySelector('.flotante-wa');
+	if (wa) {
+		// El hero: la primera sección con alto de verdad (los avisos vacíos de WooCommerce no cuentan)
+		var hero = Array.prototype.find.call(d.querySelectorAll('#contenido > *'), function (x) { return x.offsetHeight > 160; });
+		var tapan = d.querySelectorAll('[data-cierre], .pie');
+		if (!('IntersectionObserver' in w)) { wa.classList.add('wa-visible'); }
+		else {
+			var pasado = !hero, tapado = new Set();
+			var pintarWa = function () { wa.classList.toggle('wa-visible', pasado && tapado.size === 0); };
+			var ioW = new IntersectionObserver(function (es) {
+				es.forEach(function (e) {
+					if (e.target === hero) pasado = !e.isIntersecting && e.boundingClientRect.top < 0;
+					else if (e.isIntersecting) tapado.add(e.target); else tapado.delete(e.target);
+				});
+				pintarWa();
+			}, { threshold: 0 });
+			if (hero) ioW.observe(hero);
+			tapan.forEach(function (t) { ioW.observe(t); });
+		}
+	}
+
+	/* ---------- Regla de rango: .regla-rango > input[type=range] + output.regla-rango__cifra ----------
+	   Pone --p (0–1) en la regla y escribe la cifra (data-sufijo=" kg"; data-propia si la escribe el JS de la página).
+	   Si el JS de la página cambia el valor, que lance un evento 'input' o llame a dipRegla(input). */
+	function numeroTexto(v) { var s = String(Math.round(v * 100) / 100); return idiomaUI() === 'en' ? s : s.replace('.', ','); }
+	function idiomaUI() { return CFG.idioma || 'es'; }
+	function pintarRegla(input) {
+		var r = input.closest('.regla-rango'); if (!r) return;
+		var min = parseFloat(input.min || '0'), max = parseFloat(input.max || '100'), v = parseFloat(input.value);
+		var p = max > min ? Math.min(1, Math.max(0, (v - min) / (max - min))) : 0;
+		r.style.setProperty('--p', p.toFixed(4));
+		var salida = r.querySelector('.regla-rango__cifra');
+		if (salida && !salida.hasAttribute('data-propia')) salida.textContent = numeroTexto(v) + (salida.getAttribute('data-sufijo') || '');
+	}
+	d.querySelectorAll('.regla-rango > input[type="range"]').forEach(function (input) {
+		input.addEventListener('input', function () { pintarRegla(input); });
+		input.addEventListener('change', function () { pintarRegla(input); });
+		pintarRegla(input);
+	});
+	w.dipRegla = pintarRegla;
+
 	/* ---------- Contadores: data-cuenta="-78.5" data-decimales="1" ---------- */
 	function formatear(n, dec) {
 		var s = Math.abs(n).toFixed(dec);
@@ -103,6 +191,13 @@
 	}
 	var contadores = d.querySelectorAll('[data-cuenta]');
 	if (contadores.length && 'IntersectionObserver' in w) {
+		// Sin JS o con .quieto se ve la cifra final (la del HTML). Con movimiento, los que traen data-desde
+		// esperan en su valor de salida para que no se vea el salto de la cifra final al inicio de la cuenta.
+		if (!quieto) contadores.forEach(function (c) {
+			if (!c.hasAttribute('data-desde')) return;
+			var r = c.getBoundingClientRect();
+			if (r.top > w.innerHeight) c.textContent = formatear(parseFloat(c.getAttribute('data-desde')), parseInt(c.getAttribute('data-decimales') || '0', 10));
+		});
 		var ioC = new IntersectionObserver(function (es) {
 			es.forEach(function (e) {
 				if (!e.isIntersecting) return;
@@ -195,7 +290,9 @@
 		el.classList.add(abierto ? 'es-abierto' : 'es-cerrado');
 	});
 
-	/* ---------- Imagen que sigue al cursor en listas índice: [data-sigue] con hijos [data-sigue-foto] ---------- */
+	/* ---------- Imagen que sigue al cursor en listas índice: [data-sigue] con hijos [data-sigue-foto] ----------
+	   RECHAZADO por el propietario (13/10/2026). Se mantiene solo mientras la portada (plantillas/inicio.php, I5)
+	   lo use: se borra cuando el lote 1 publique los usos nuevos. No usarlo en nada nuevo. */
 	d.querySelectorAll('[data-sigue]').forEach(function (lista) {
 		var visor = lista.querySelector('[data-sigue-visor]');
 		if (!visor || quieto || !w.matchMedia('(hover: hover) and (min-width: 901px)').matches) return;
@@ -216,7 +313,8 @@
 		});
 	});
 
-	/* ---------- Tarjeta que se inclina con el cursor: [data-inclina] ---------- */
+	/* ---------- Tarjeta que se inclina con el cursor: [data-inclina] ----------
+	   RECHAZADO por el propietario (13/10/2026). Se mantiene solo mientras la portada (I7) lo use; se borra después. */
 	d.querySelectorAll('[data-inclina]').forEach(function (t) {
 		if (quieto || !w.matchMedia('(hover: hover)').matches) return;
 		var marco = t.parentElement;

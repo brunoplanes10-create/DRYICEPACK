@@ -164,26 +164,146 @@ function dipt_enlace( $texto, $url, $extra = array() ) {
 	return '<a class="enlace-flecha" href="' . esc_url( $url ) . '"' . $attr . '><span>' . esc_html( $texto ) . '</span>' . dipt_icono( 'flecha' ) . '</a>';
 }
 
+/** Texto de nuestros archivos de contenido con el HTML permitido (como dipt_html(), pero devuelve la cadena). */
+function dipt_kses( $texto ) {
+	return wp_kses( (string) $texto, array( 'em' => array(), 'strong' => array(), 'br' => array(), 'span' => array( 'class' => array() ), 'a' => array( 'href' => array(), 'class' => array() ), 'sub' => array(), 'abbr' => array( 'title' => array() ) ) );
+}
+
 /**
- * Título que sube línea a línea. Las líneas se separan con "|" en el texto; admite <em>.
- * dipt_titulo( 'h2', 'Hielo seco,|mañana', 't-h2' )
+ * Título con entrada. Las líneas se separan con "|" en el texto; admite <em>.
+ * dipt_titulo( 'h2', 'Hielo seco,|mañana', 't-h2', 'id-del-titulo', 'lineas' )
+ * $entrada:
+ *   'lineas'  (por defecto) cada línea sube desde su máscara, 0,6 s con 70 ms de escalón. Solo el H1 y un H2 por página.
+ *   'cortina' una capa del color de la sección se recoge de izquierda a derecha (0,6 s).
+ *   'revela'  aparece con el fundido común de [data-revela].
+ *   'ninguna' sin entrada.
+ * En 'cortina', 'revela' y 'ninguna' cada línea va en <span class="tramo"> (bloque) y el texto se lee entero.
  */
-function dipt_titulo( $etiqueta, $texto, $clase = 't-h2', $id = '' ) {
-	$lineas = explode( '|', (string) $texto );
-	$html   = '';
-	foreach ( $lineas as $i => $l ) {
-		$html .= '<span class="linea"><span style="--l:' . (int) $i . '">' . wp_kses( trim( $l ), array( 'em' => array(), 'br' => array(), 'sub' => array(), 'span' => array( 'class' => array() ) ) ) . '</span></span>';
+function dipt_titulo( $etiqueta, $texto, $clase = 't-h2', $id = '', $entrada = 'lineas' ) {
+	$permitido = array( 'em' => array(), 'br' => array(), 'sub' => array(), 'span' => array( 'class' => array() ) );
+	$lineas    = array_map( 'trim', explode( '|', (string) $texto ) );
+	$id_attr   = $id ? ' id="' . esc_attr( $id ) . '"' : '';
+	if ( 'lineas' !== $entrada ) {
+		$tramos = array();
+		foreach ( $lineas as $l ) $tramos[] = '<span class="tramo">' . wp_kses( $l, $permitido ) . '</span>';
+		$extra = array( 'cortina' => ' data-cortina="texto"', 'revela' => ' data-revela' )[ $entrada ] ?? '';
+		return '<' . $etiqueta . ' class="' . esc_attr( $clase ) . '"' . $extra . $id_attr . '>' . implode( ' ', $tramos ) . '</' . $etiqueta . '>';
 	}
-	$id_attr = $id ? ' id="' . esc_attr( $id ) . '"' : '';
+	$html = '';
+	foreach ( $lineas as $i => $l ) {
+		$html .= '<span class="linea"><span style="--l:' . (int) $i . '">' . wp_kses( $l, $permitido ) . '</span></span>';
+	}
 	// Lectores de pantalla: el título entero, sin cortes
 	return '<' . $etiqueta . ' class="' . esc_attr( $clase ) . '" data-lineas' . $id_attr . ' aria-label="' . esc_attr( wp_strip_all_tags( str_replace( '|', ' ', $texto ) ) ) . '">' . $html . '</' . $etiqueta . '>';
 }
 
-/* ---------- Preguntas frecuentes: se registran para el FAQPage de la página ---------- */
+/* ---------- Preguntas frecuentes: se registran para el FAQPage de la página (una vez cada pregunta) ---------- */
 function dipt_registrar_faq( array $preguntas ) {
+	$ya = array_column( $GLOBALS['dipt_faq_schema'] ?? array(), 'q' );
 	foreach ( $preguntas as $f ) {
-		$GLOBALS['dipt_faq_schema'][] = array( 'q' => wp_strip_all_tags( $f[0] ), 'a' => wp_strip_all_tags( $f[1] ) );
+		$q = wp_strip_all_tags( $f[0] );
+		if ( in_array( $q, $ya, true ) ) continue;
+		$GLOBALS['dipt_faq_schema'][] = array( 'q' => $q, 'a' => wp_strip_all_tags( $f[1] ) );
+		$ya[] = $q;
 	}
+}
+
+/**
+ * Preguntas frecuentes (lote 0): título fijo a la izquierda y acordeón details/summary a la derecha.
+ * El texto de cada respuesta sigue en el DOM aunque esté cerrada (FAQPage). Devuelve el bloque .faq;
+ * la plantilla pone la <section> (tono, aria-labelledby) y la .envoltura.
+ *
+ * echo dipt_faq( $c['faq']['lista'], array( 'titulo' => $c['faq']['titulo'], 'id' => 'h-faq-t' ) );
+ *
+ * $preguntas: array( array( pregunta, respuesta ), … ) (respuesta con <em>, <strong> o <a> si hace falta).
+ * $opc:
+ *   titulo        Texto del título (admite "|" y <em>). Sin título, la columna izquierda solo lleva lo de 'lado'.
+ *   id            id del título, para el aria-labelledby de la sección. Por defecto 'faq-t'.
+ *   etiqueta      'h2' (por defecto).
+ *   clase_titulo  't-h2' (por defecto).
+ *   entrada       Entrada del título (dipt_titulo): 'revela' por defecto.
+ *   abierta       Índice de la pregunta abierta al cargar: 0 por defecto, -1 todas cerradas.
+ *   lado          Qué va bajo el título en la columna fija: 'contacto' (por defecto: «¿Otra pregunta?», teléfono y
+ *                 WhatsApp), 'foto', 'nada', una lista como array( 'foto', 'contacto' ) o HTML propio.
+ *   foto          Nombre de la foto (lámina 4:3) si 'lado' incluye 'foto'. foto_alt: su alternativo ('' si decora).
+ *   pie           HTML que va al final de la lista (un botón, un enlace a seguridad…).
+ *   registrar     true (por defecto): registra las preguntas para el FAQPage (sin duplicar si ya se registraron).
+ */
+function dipt_faq( array $preguntas, array $opc = array() ) {
+	$o = wp_parse_args( $opc, array(
+		'titulo' => '', 'id' => 'faq-t', 'etiqueta' => 'h2', 'clase_titulo' => 't-h2', 'entrada' => 'revela',
+		'abierta' => 0, 'lado' => 'contacto', 'foto' => '', 'foto_alt' => '', 'pie' => '', 'registrar' => true,
+	) );
+	if ( $o['registrar'] ) dipt_registrar_faq( $preguntas );
+	$lado = '';
+	if ( '' !== (string) $o['titulo'] ) $lado .= dipt_titulo( $o['etiqueta'], $o['titulo'], $o['clase_titulo'] . ' faq__titulo', $o['id'], $o['entrada'] );
+	$partes = is_array( $o['lado'] ) ? $o['lado'] : ( in_array( $o['lado'], array( 'contacto', 'foto', 'nada' ), true ) ? array( $o['lado'] ) : null );
+	if ( null === $partes ) {
+		$lado .= (string) $o['lado']; // HTML propio de la plantilla
+	} else {
+		foreach ( $partes as $p ) {
+			if ( 'foto' === $p && $o['foto'] ) {
+				$lado .= '<div class="faq__foto foto--lamina foto--4x3" data-cortina>' . dipt_foto( $o['foto'], $o['foto_alt'], array( 'sizes' => '(max-width: 900px) 92vw, 30vw' ) ) . '</div>';
+			} elseif ( 'contacto' === $p ) {
+				$con   = dipt_contacto();
+				$lado .= '<div class="faq__contacto"><p class="faq__otra">' . esc_html( dipt_t( 'faq_otra' ) ) . '</p>'
+					. '<a class="tel-grande" href="' . esc_attr( $con['telefono_href'] ) . '">' . dipt_icono( 'telefono' ) . esc_html( $con['telefono'] ) . '</a>'
+					. '<a class="tel-grande" href="' . esc_url( dipt_whatsapp_url() ) . '" target="_blank" rel="noopener">' . dipt_icono( 'whatsapp' ) . 'WhatsApp ' . esc_html( $con['whatsapp'] ) . '</a></div>';
+			}
+		}
+	}
+	$lista = '';
+	foreach ( array_values( $preguntas ) as $i => $f ) {
+		$lista .= '<details class="faq__item"' . ( (int) $o['abierta'] === $i ? ' open' : '' ) . '>'
+			. '<summary class="faq__pregunta"><span>' . esc_html( wp_strip_all_tags( $f[0] ) ) . '</span><span class="faq__signo" aria-hidden="true"></span></summary>'
+			. '<div class="faq__respuesta"><p>' . dipt_kses( $f[1] ) . '</p></div></details>';
+	}
+	return '<div class="faq"><div class="faq__lado">' . $lado . '</div><div class="faq__lista">' . $lista . ( $o['pie'] ? '<div class="faq__pie">' . $o['pie'] . '</div>' : '' ) . '</div></div>';
+}
+
+/**
+ * Cierre común antes del pie (partes/cierre.php). Ver los parámetros en ese archivo.
+ * dipt_cierre( array( 'titulo' => $c['final']['titulo'], 'foto' => 'caja-3mm' ) );
+ */
+function dipt_cierre( array $args ) {
+	get_template_part( 'partes/cierre', null, $args );
+}
+
+/**
+ * Placa de cliente «a caballo» (lote 0 · estilos en assets/css/paginas/sectores.css, solo en las 4 páginas B2B).
+ * Va ENTRE dos secciones, sin sección de fondo propia: se monta sobre la frontera y reserva su alto (CLS 0).
+ *
+ * echo dipt_placa_cliente( $c['cliente'], array( 'id' => 'h-cliente-t', 'arriba' => 'papel', 'abajo' => 'noche' ) );
+ *
+ * $cliente: el bloque 'cliente' del contenido de la página: titulo, etiquetas (2), id, alt, detalle, uso.
+ * $opc:
+ *   id       id del título (aria-labelledby). Por defecto 'cliente-t'.
+ *   arriba   Tono de la sección de encima: papel · blanco · escarcha · noche · marino. Por defecto 'papel'.
+ *   abajo    Tono de la sección de debajo. Por defecto 'blanco'.
+ *   lado     'der' (por defecto, la placa se apoya a la derecha) o 'izq'.
+ *   grande   true: logo a 2,5× (Industria).
+ *   oscura   true: placa en noche (cuando las dos vecinas son oscuras).
+ *   solape   false: sin solape (si una vecina no tiene relleno, p. ej. termina en una foto a sangre).
+ */
+function dipt_placa_cliente( array $cliente, array $opc = array() ) {
+	$o = wp_parse_args( $opc, array( 'id' => 'cliente-t', 'arriba' => 'papel', 'abajo' => 'blanco', 'lado' => 'der', 'grande' => false, 'oscura' => false, 'solape' => true ) );
+	if ( empty( $cliente['id'] ) ) return '';
+	$tonos  = array( 'papel', 'blanco', 'escarcha', 'noche', 'marino' );
+	$arriba = in_array( $o['arriba'], $tonos, true ) ? $o['arriba'] : 'papel';
+	$abajo  = in_array( $o['abajo'], $tonos, true ) ? $o['abajo'] : 'blanco';
+	$clases = 'placa-caballo arriba-' . $arriba . ' abajo-' . $abajo . ( 'izq' === $o['lado'] ? ' placa-caballo--izq' : '' ) . ( $o['solape'] ? '' : ' placa-caballo--sin-solape' );
+	$placa  = 'placa' . ( $o['grande'] ? ' placa--grande' : '' ) . ( $o['oscura'] ? ' placa--oscura' : '' );
+	$et     = array_pad( (array) ( $cliente['etiquetas'] ?? array() ), 2, '' );
+	return '<section class="' . esc_attr( $clases ) . '" aria-labelledby="' . esc_attr( $o['id'] ) . '"><div class="envoltura">'
+		. '<div class="' . esc_attr( $placa ) . '" data-revela>'
+		. '<span class="placa__remaches" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'
+		. dipt_titulo( 'h2', (string) ( $cliente['titulo'] ?? '' ), 'placa__titulo', $o['id'], 'ninguna' )
+		. '<dl class="placa__datos">'
+		. '<div class="placa__campo"><dt>' . esc_html( $et[0] ) . '</dt><dd>' . dipt_logo_cliente( $cliente['id'], (string) ( $cliente['alt'] ?? '' ) )
+		. '<span class="placa__nombre" aria-hidden="true">' . esc_html( dipt_cliente_nombre( $cliente['id'] ) ) . '</span>'
+		. ( ! empty( $cliente['detalle'] ) ? '<span class="placa__detalle">' . esc_html( $cliente['detalle'] ) . '</span>' : '' ) . '</dd></div>'
+		. '<div class="placa__campo"><dt>' . esc_html( $et[1] ) . '</dt><dd class="placa__uso">' . esc_html( (string) ( $cliente['uso'] ?? '' ) ) . '</dd></div>'
+		. '</dl></div></div></section>';
 }
 
 /* ---------- Cinta de datos (se duplica el contenido para un bucle sin costuras) ---------- */

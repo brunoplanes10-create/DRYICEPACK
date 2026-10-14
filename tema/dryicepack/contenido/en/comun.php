@@ -81,6 +81,7 @@ return array(
 	),
 	'seguridad_mas'   => 'Full safety guide and data sheet',
 	'faq'             => 'Frequently asked questions',
+	'faq_otra'        => 'Another question?',
 	'volver_arriba'   => 'Back to top',
 	'ver_mas'         => 'See more',
 	'kg'              => 'kg',

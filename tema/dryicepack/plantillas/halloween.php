@@ -250,17 +250,18 @@ get_header();
 		<div class="hw-wrap hw-hero__cuerpo">
 			<p class="hw-antetitulo">Halloween 2026 · Efecto niebla</p>
 			<h1 id="hw-h1">Hielo seco para Halloween: niebla de verdad en tu fiesta</h1>
-			<span class="hw-subrayado" aria-hidden="true"></span>
 			<p class="hw-entrada">Pellets de hielo seco de 3 mm que hacen niebla densa en cuanto tocan agua caliente. Pide antes de las 12:00 y lo recibes el siguiente día laborable por la mañana, en caja EPS y listo para usar.</p>
 			<div class="hw-botones">
 				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="#cantidad">Elegir cantidad</a>
 			</div>
-			<ul class="hw-chips">
+			<!-- Línea de ficha técnica: datos en mono separados por filetes verticales -->
+			<ul class="hw-ficha">
 				<li>Entrega en 24 h laborables</li>
 				<li>Pellets 3 mm / nuggets 16 mm</li>
 				<li>Caja EPS incluida</li>
 			</ul>
+			<!-- El único destacado del hero: el último pedido -->
 			<p class="hw-ticket hw-solo-abierto"><span class="hw-ticket__et"><span class="hw-f-v">Último pedido para el viernes 30</span><span class="hw-f-s">Último pedido para el sábado 31 (según zona)</span></span><span class="hw-ticket__fecha"><span class="hw-f-v">Jue 29/10 · 12:00</span><span class="hw-f-s">Vie 30/10 · 12:00</span></span></p>
 		</div>
 	</section>
@@ -271,7 +272,6 @@ get_header();
 		<div class="hw-wrap">
 			<div class="hw-ideas__intro">
 				<header class="hw-cabecera" data-hw-revela>
-					<p class="hw-antetitulo">Ideas</p>
 					<h2 id="hw-ideas-t">4 formas de usar hielo seco en Halloween</h2>
 					<p>El hielo seco pasa de sólido a gas sin derretirse. Con agua caliente suelta una niebla blanca y pesada que cae y se arrastra por el suelo.</p>
 				</header>
@@ -293,8 +293,16 @@ get_header();
 				</figure>
 			</div>
 			<ol class="hw-ideas" data-hw-revela="grupo">
-				<li>
-					<div class="hw-ideas__ilus"><?php echo $hw_ilus( 'caldero' ); // phpcs:ignore ?></div>
+				<li class="hw-ideas__principal">
+					<!-- La idea protagonista con foto real y el caldero de línea como sello encima -->
+					<div class="hw-ideas__foto" data-hw-cortina>
+						<img src="<?php echo esc_url( $hw_img ); ?>/niebla-cenital-800.webp"
+							srcset="<?php echo esc_url( $hw_img ); ?>/niebla-cenital-800.webp 800w, <?php echo esc_url( $hw_img ); ?>/niebla-cenital-1440.webp 1440w"
+							sizes="(min-width: 1100px) 760px, calc(100vw - 32px)" width="1440" height="1080" loading="lazy" decoding="async"
+							alt="Caja EPS vista desde arriba, llena de nuggets de hielo seco y rodeada de vapor">
+						<span class="hw-formato__vaho" aria-hidden="true"></span>
+					</div>
+					<div class="hw-ideas__sello"><?php echo $hw_ilus( 'caldero' ); // phpcs:ignore ?></div>
 					<h3>Caldero de bruja</h3>
 					<p>Un caldero con agua caliente y unos cuantos pellets. La niebla rebosa y cae por los lados. Es decoración: de ese caldero no se sirve nada.</p>
 				</li>
@@ -322,17 +330,15 @@ get_header();
 	<section class="hw-seccion hw-seccion--alt" id="formato" aria-labelledby="hw-formato-t">
 		<div class="hw-wrap">
 			<header class="hw-cabecera" data-hw-revela>
-				<p class="hw-antetitulo">Formato</p>
 				<h2 id="hw-formato-t">¿3 mm o 16 mm? Para niebla, 3 mm</h2>
 				<p>Mismo precio en los dos formatos. Cambia cómo sale la niebla.</p>
 			</header>
+			<!-- Dos macros del producto: la de 3 mm grande y la de 16 mm más pequeña, montada sobre su borde.
+			     Las fotos son decorativas (alt vacío): el h3 de al lado dice qué formato es. -->
 			<div class="hw-formatos" data-hw-revela="grupo">
 				<article class="hw-formato hw-formato--destacado">
 					<div class="hw-formato__foto">
-						<img src="<?php echo esc_url( $hw_img ); ?>/formato-3mm-480.webp"
-							srcset="<?php echo esc_url( $hw_img ); ?>/formato-3mm-480.webp 480w, <?php echo esc_url( $hw_img ); ?>/formato-3mm-800.webp 800w"
-							sizes="(min-width: 1100px) 240px, (min-width: 700px) 45vw, 40vw" width="480" height="599" loading="lazy" decoding="async"
-							alt="Caja EPS abierta llena de pellets de hielo seco de 3 mm soltando vapor">
+						<?php echo dipt_foto( 'pellets-ia', '', array( 'sizes' => '(min-width: 1100px) 640px, calc(100vw - 32px)', 'recorte' => '50% 62%' ) ); // phpcs:ignore ?>
 						<span class="hw-formato__vaho" aria-hidden="true"></span>
 					</div>
 					<div class="hw-formato__txt">
@@ -348,11 +354,7 @@ get_header();
 				</article>
 				<article class="hw-formato">
 					<div class="hw-formato__foto">
-						<img src="<?php echo esc_url( $hw_img ); ?>/formato-16mm-480.webp"
-							srcset="<?php echo esc_url( $hw_img ); ?>/formato-16mm-480.webp 480w, <?php echo esc_url( $hw_img ); ?>/formato-16mm-800.webp 800w"
-							sizes="(min-width: 1100px) 240px, (min-width: 700px) 45vw, 40vw" width="480" height="600" loading="lazy" decoding="async"
-							alt="Caja EPS abierta con nuggets de hielo seco de 16 mm y vapor cayendo por los lados">
-						<span class="hw-formato__vaho" aria-hidden="true"></span>
+						<?php echo dipt_foto( 'nuggets-ia', '', array( 'sizes' => '(min-width: 1100px) 440px, 72vw', 'recorte' => '58% 55%' ) ); // phpcs:ignore ?>
 					</div>
 					<div class="hw-formato__txt">
 						<p class="hw-sello hw-sello--linea">Para que dure</p>
@@ -373,41 +375,46 @@ get_header();
 	<section class="hw-seccion" id="cantidad" aria-labelledby="hw-cantidad-t">
 		<div class="hw-wrap">
 			<header class="hw-cabecera" data-hw-revela>
-				<p class="hw-antetitulo">Cantidad</p>
 				<h2 id="hw-cantidad-t">¿Cuánto hielo seco necesito?</h2>
 				<p>Cantidades orientativas para una noche de niebla. Si vas a tener varios puntos de niebla a la vez, sube un escalón.</p>
 			</header>
-			<ul class="hw-packs" data-hw-revela="grupo">
-				<li class="hw-pack">
-					<p class="hw-pack__uso">En casa</p>
-					<p class="hw-pack__kg"><span class="hw-pack__num"><?php echo (int) $hw_pk; ?></span> kg</p>
-					<p class="hw-pack__desc">Un caldero o una ponchera para una fiesta en casa.</p>
-					<p class="hw-pack__precio"><?php echo esc_html( dipt_euros( dipt_precio_pack( $hw_pk )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( $hw_pk )['sin_iva'] ) ); ?> + IVA</small></p>
-					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir <?php echo (int) $hw_pk; ?> kg</a>
-				</li>
-				<li class="hw-pack">
-					<p class="hw-pack__uso">Fiesta grande</p>
-					<p class="hw-pack__kg"><span class="hw-pack__num">10</span> kg</p>
-					<p class="hw-pack__desc">Varios puntos de niebla o una fiesta de varias horas.</p>
-					<p class="hw-pack__precio"><?php echo esc_html( dipt_euros( dipt_precio_pack( 10 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 10 )['sin_iva'] ) ); ?> + IVA</small></p>
-					<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 10 ) ); ?>">Pedir 10 kg</a>
-				</li>
-				<li class="hw-pack hw-pack--doble">
-					<p class="hw-pack__uso">Bar o evento</p>
-					<p class="hw-pack__kg"><span class="hw-pack__num">15–20</span> kg</p>
-					<p class="hw-pack__desc">Para un local o un evento con varios puntos de niebla.</p>
-					<div class="hw-pack__opciones">
-						<div>
-							<p class="hw-pack__precio"><b>15 kg</b> <?php echo esc_html( dipt_euros( dipt_precio_pack( 15 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 15 )['sin_iva'] ) ); ?> + IVA</small></p>
-							<a class="hw-btn hw-btn--bloque" href="<?php echo esc_url( $hw_pedir( 15 ) ); ?>">Pedir 15 kg</a>
+			<?php
+			/* Escala de tres paradas. Botones de opción de verdad (teclado y lector de pantalla sin JavaScript);
+			   el CSS enseña el panel de la parada elegida con :has() y desliza el indicador.
+			   Los tres paneles están en el HTML: sin :has() se ven los tres seguidos. */
+			$hw_paradas = array(
+				'casa'   => array( 'uso' => 'En casa', 'kg' => (string) (int) $hw_pk, 'desc' => 'Un caldero o una ponchera para una fiesta en casa.', 'packs' => array( (int) $hw_pk ) ),
+				'fiesta' => array( 'uso' => 'Fiesta grande', 'kg' => '10', 'desc' => 'Varios puntos de niebla o una fiesta de varias horas.', 'packs' => array( 10 ) ),
+				'bar'    => array( 'uso' => 'Bar o evento', 'kg' => '15–20', 'desc' => 'Para un local o un evento con varios puntos de niebla.', 'packs' => array( 15, 20 ) ),
+			);
+			?>
+			<div class="hw-escala" data-hw-revela>
+				<div class="hw-escala__paradas" role="radiogroup" aria-labelledby="hw-cantidad-t">
+					<?php $hw_n = 0; foreach ( $hw_paradas as $hw_clave => $hw_p ) : ?>
+						<input class="hw-escala__radio" type="radio" name="hw-cantidad" id="hw-c-<?php echo esc_attr( $hw_clave ); ?>" value="<?php echo esc_attr( $hw_clave ); ?>" aria-controls="hw-c-<?php echo esc_attr( $hw_clave ); ?>-p"<?php checked( 0 === $hw_n ); ?>>
+						<label class="hw-escala__parada" for="hw-c-<?php echo esc_attr( $hw_clave ); ?>">
+							<span class="hw-escala__uso"><?php echo esc_html( $hw_p['uso'] ); ?></span>
+							<span class="hw-escala__kg"><span class="hw-escala__num"><?php echo esc_html( $hw_p['kg'] ); ?></span> kg</span>
+						</label>
+					<?php $hw_n++; endforeach; ?>
+					<span class="hw-escala__indicador" aria-hidden="true"></span>
+				</div>
+				<div class="hw-escala__paneles" aria-live="polite">
+					<?php foreach ( $hw_paradas as $hw_clave => $hw_p ) : ?>
+						<div class="hw-escala__panel hw-escala__panel--<?php echo esc_attr( $hw_clave ); ?>" id="hw-c-<?php echo esc_attr( $hw_clave ); ?>-p">
+							<p class="hw-escala__desc"><?php echo esc_html( $hw_p['desc'] ); ?></p>
+							<div class="hw-escala__opciones">
+								<?php foreach ( $hw_p['packs'] as $hw_i => $hw_kg ) : $hw_precio = dipt_precio_pack( $hw_kg ); ?>
+									<div class="hw-escala__opcion">
+										<p class="hw-escala__precio"><?php if ( count( $hw_p['packs'] ) > 1 ) : ?><b><?php echo (int) $hw_kg; ?> kg</b> <?php endif; ?><?php echo esc_html( dipt_euros( $hw_precio['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( $hw_precio['sin_iva'] ) ); ?> + IVA</small></p>
+										<a class="hw-btn<?php echo $hw_i > 0 ? ' hw-btn--linea' : ''; ?>" href="<?php echo esc_url( $hw_pedir( $hw_kg ) ); ?>">Pedir <?php echo (int) $hw_kg; ?> kg</a>
+									</div>
+								<?php endforeach; ?>
+							</div>
 						</div>
-						<div>
-							<p class="hw-pack__precio"><b>20 kg</b> <?php echo esc_html( dipt_euros( dipt_precio_pack( 20 )['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( dipt_precio_pack( 20 )['sin_iva'] ) ); ?> + IVA</small></p>
-							<a class="hw-btn hw-btn--bloque hw-btn--linea" href="<?php echo esc_url( $hw_pedir( 20 ) ); ?>">Pedir 20 kg</a>
-						</div>
-					</div>
-				</li>
-			</ul>
+					<?php endforeach; ?>
+				</div>
+			</div>
 			<p class="hw-nota">Caja EPS incluida. El envío depende del peso y del destino, y lo ves antes de pagar. Hasta 250 kg por pedido.</p>
 		</div>
 	</section>
@@ -518,17 +525,15 @@ get_header();
 	</section>
 
 	<!-- 8 · NEGOCIOS (B2B, de usted) -->
-	<section class="hw-seccion hw-seccion--alt" id="negocios" aria-labelledby="hw-b2b-t">
+	<section class="hw-seccion hw-seccion--alt hw-seccion--b2b" id="negocios" aria-labelledby="hw-b2b-t">
+		<!-- Foto a sangre por la izquierda (sin radio, opacidad 1); el texto se monta sobre su borde.
+		     Recorte hacia la izquierda: deja fuera la marca de agua de la esquina inferior derecha. -->
+		<div class="hw-b2b__foto" data-hw-cortina>
+			<?php echo dipt_foto( 'uso-hosteleria', 'Camarero sirviendo postres sobre una bandeja con niebla de hielo seco', array( 'sizes' => '(min-width: 1100px) 50vw, 100vw', 'recorte' => '30% 40%' ) ); // phpcs:ignore ?>
+		</div>
 		<div class="hw-wrap hw-b2b">
-			<div class="hw-b2b__foto" data-hw-revela>
-				<img src="<?php echo esc_url( $hw_img ); ?>/caja-cenital-480.webp"
-					srcset="<?php echo esc_url( $hw_img ); ?>/caja-cenital-480.webp 480w, <?php echo esc_url( $hw_img ); ?>/caja-cenital-800.webp 800w"
-					sizes="(min-width: 1100px) 440px, (min-width: 540px) 480px, calc(100vw - 32px)" width="480" height="480" loading="lazy" decoding="async"
-					alt="Caja EPS vista desde arriba, llena de nuggets de hielo seco y rodeada de vapor">
-				<span class="hw-formato__vaho" aria-hidden="true"></span>
-			</div>
 			<div class="hw-b2b__txt" data-hw-revela>
-				<p class="hw-antetitulo">Bares, discotecas y organizadores</p>
+				<p class="hw-b2b__para">Bares, discotecas y organizadores</p>
 				<h2 id="hw-b2b-t">¿Tiene un local o organiza un evento de Halloween?</h2>
 				<p>Díganos cuántos puntos de niebla va a tener y le orientamos sobre la cantidad. Entrega el siguiente día laborable en la península o recogida en nuestro almacén de Mataró (Maresme, Vallès y área de Barcelona).</p>
 				<ul class="hw-lista">

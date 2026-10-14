@@ -47,6 +47,8 @@ $dipt_enfocado = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_en
 					<ul class="submenu__lista">
 						<?php foreach ( dipt_t( 'usos' ) as $dipt_i => $dipt_u ) : ?>
 							<li><a href="<?php echo esc_url( dipt_url( $dipt_u[0] ) ); ?>" data-foto="<?php echo esc_attr( $dipt_u[3] ); ?>">
+								<?php /* Miniatura solo en el menú móvil (tira con scroll-snap); con display:none en escritorio no se descarga */ ?>
+								<img class="submenu__mini" src="<?php echo esc_url( dipt_foto_url( $dipt_u[3], 480 ) ); ?>" alt="" loading="lazy" decoding="async" width="480" height="320">
 								<span class="dato">0<?php echo (int) $dipt_i + 1; ?></span>
 								<strong><?php echo esc_html( $dipt_u[1] ); ?></strong>
 								<small><?php echo esc_html( $dipt_u[2] ); ?></small>
@@ -64,11 +66,16 @@ $dipt_enfocado = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_en
 			<a class="menu__enlace" href="<?php echo esc_url( dipt_url( 'empresas' ) ); ?>"<?php echo 'empresas' === $dipt_clave ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $dipt_menu['empresas'] ); ?></a>
 			<a class="menu__enlace" href="<?php echo esc_url( dipt_url( 'envios' ) ); ?>"<?php echo 'envios' === $dipt_clave ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $dipt_menu['envios'] ); ?></a>
 			<a class="menu__enlace" href="<?php echo esc_url( dipt_url( 'contacto' ) ); ?>"<?php echo 'contacto' === $dipt_clave ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $dipt_menu['contacto'] ); ?></a>
-			<?php echo dipt_boton( dipt_t( 'comprar' ), dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
 			<div class="menu__extra">
 				<a class="tel-grande" href="<?php echo esc_attr( $dipt_c['telefono_href'] ); ?>"><?php echo dipt_icono( 'telefono' ); // phpcs:ignore ?><?php echo esc_html( $dipt_c['telefono'] ); ?></a>
 				<a class="tel-grande" href="<?php echo esc_url( dipt_whatsapp_url() ); ?>" target="_blank" rel="noopener"><?php echo dipt_icono( 'whatsapp' ); // phpcs:ignore ?>WhatsApp <?php echo esc_html( $dipt_c['whatsapp'] ); ?></a>
 				<?php dipt_selector_idioma(); ?>
+			</div>
+			<?php /* Solo en el menú móvil: «Comprar» fijo al pie del panel con la fecha real de entrega (data-corte) */
+			$dipt_ent = dipt_primera_entrega(); ?>
+			<div class="menu__compra">
+				<?php echo dipt_boton( dipt_t( 'comprar' ), dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
+				<p class="dato" data-corte data-t-antes="<?php echo esc_attr( dipt_t( 'corte_antes' ) ); ?>" data-t-despues="<?php echo esc_attr( dipt_t( 'corte_despues' ) ); ?>"><?php echo esc_html( sprintf( dipt_t( 'corte_despues' ), $dipt_ent ? dipt_fecha_larga( $dipt_ent['fecha'] ) : '' ) ); ?></p>
 			</div>
 		</nav>
 
@@ -79,7 +86,7 @@ $dipt_enfocado = function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_en
 				<a class="cabecera__carrito" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php echo esc_attr( dipt_t( 'carrito' ) ); ?>"><?php echo dipt_icono( 'carrito' ); // phpcs:ignore ?><span data-carrito-n="0">0</span></a>
 			<?php endif; ?>
 			<?php echo dipt_boton( dipt_t( 'comprar_corto' ), dipt_url( 'producto' ), $dipt_oscuro ? 'hielo' : '' ); // phpcs:ignore ?>
-			<button class="cabecera__menu-movil" type="button" aria-expanded="false" aria-controls="menu-principal" data-menu-movil aria-label="<?php echo esc_attr( dipt_t( 'menu_abrir' ) ); ?>"><?php echo dipt_icono( 'menu' ); // phpcs:ignore ?></button>
+			<button class="cabecera__menu-movil" type="button" aria-expanded="false" aria-controls="menu-principal" data-menu-movil aria-label="<?php echo esc_attr( dipt_t( 'menu_abrir' ) ); ?>" data-t-abrir="<?php echo esc_attr( dipt_t( 'menu_abrir' ) ); ?>" data-t-cerrar="<?php echo esc_attr( dipt_t( 'menu_cerrar' ) ); ?>"><span class="hamburguesa" aria-hidden="true"><i></i><i></i></span></button>
 		</div>
 	</div>
 </header>

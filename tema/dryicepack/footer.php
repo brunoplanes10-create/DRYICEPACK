@@ -18,7 +18,7 @@ if ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url()
 <?php return; endif; ?>
 </main>
 
-<footer class="pie tono-oscuro">
+<footer class="pie tono-marino">
 	<div class="envoltura">
 		<div class="pie__arriba">
 			<p class="pie__frase" data-revela><?php dipt_html( dipt_t( 'pie_frase' ) ); ?></p>
@@ -51,8 +51,10 @@ if ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url()
 			</div>
 		</div>
 	</div>
-	<?php /* Firma gráfica, no texto: se dibuja con CSS (content) para que no cuente como texto de bajo contraste */ ?>
-	<p class="pie__cifra" aria-hidden="true" data-paralaje="-0.06"><span data-cifra="−78,5"></span><span data-cifra="°C"></span></p>
+	<?php /* Firma: texto aria-hidden que cuenta de 20 a −78,5 al entrar. La cifra final, invisible, reserva el ancho (CLS 0).
+	         Contraste 3,2:1 sobre marino (texto grande). En inglés, punto decimal como en el resto de la web. */
+	$dipt_cifra = 'en' === dipt_idioma() ? '−78.5' : '−78,5'; ?>
+	<p class="pie__cifra" aria-hidden="true"><span class="cifra-fija"><span class="cifra-fija__reserva"><?php echo esc_html( $dipt_cifra ); ?></span><span data-cuenta="-78.5" data-desde="20" data-decimales="1" data-duracion="1800"><?php echo esc_html( $dipt_cifra ); ?></span></span><span class="pie__grados">°C</span></p>
 	<div class="envoltura">
 		<div class="pie__abajo">
 			<span><?php echo esc_html( dipt_t( 'derechos' ) ); ?></span>
