@@ -8,8 +8,40 @@
 	'use strict';
 	var CFG = window.DIPT || {};
 	var raiz = document.querySelector('[data-compra]');
+	// Carrusel de fotos en móvil: el contador «1/3» sigue al deslizar
+	function contar(pista) {
+		var n = pista.parentNode.querySelector('[data-galeria-n]');
+		if (!n || !pista.clientWidth) return;
+		var i = String(Math.round(pista.scrollLeft / pista.clientWidth) + 1);
+		if (n.textContent !== i) n.textContent = i;
+	}
+	document.querySelectorAll('[data-galeria-pista]').forEach(function (pista) {
+		var pendiente = false;
+		pista.addEventListener('scroll', function () {
+			if (pendiente) return;
+			pendiente = true;
+			requestAnimationFrame(function () { pendiente = false; contar(pista); });
+		}, { passive: true });
+	});
+
 	if (raiz && CFG.variaciones) iniciarCompra();
 	iniciarComparador();
+	iniciarCaja();
+
+	// P2: el ratón (o el foco) sobre una capa de la lista enciende su marcador en la foto, igual que el scroll en el móvil
+	function iniciarCaja() {
+		var grupo = document.querySelector('.p-caja__in[data-activa-grupo]');
+		if (!grupo) return;
+		grupo.querySelectorAll('.p-caja__capas [data-activa]').forEach(function (li) {
+			li.addEventListener('mouseenter', function () { if (window.dipActiva) window.dipActiva.marcar(grupo, li); });
+		});
+		// Tras la entrada escalonada de los marcadores, los cambios van sin retraso
+		grupo.querySelectorAll('.p-caja__foto').forEach(function (f) {
+			f.addEventListener('transitionend', function (e) {
+				if (e.propertyName === 'opacity' && e.target.classList.contains('p-marca__n')) f.classList.add('listo');
+			});
+		});
+	}
 
 	function iniciarCompra() {
 		var form = raiz.querySelector('[data-compra-form]');
@@ -46,6 +78,7 @@
 		var llegaExtra = raiz.querySelector('[data-llega-extra]');
 		var aviso = raiz.querySelector('[data-max]');
 		var notaMedida = raiz.querySelector('[data-medida]');
+		var formatoPintado = null;
 
 		function pintar() {
 			var v = variacion(); if (!v) return;
@@ -60,12 +93,21 @@
 			raiz.querySelector('[data-precio-envio]').textContent = euros(env);
 			document.querySelectorAll('[data-precio-total]').forEach(function (el) { el.textContent = euros(pack + env); });
 			campo('padre', v.padre || ''); campo('id', v.id); campo('peso', v.peso || ''); campo('fslug', v.fslug || '');
-			// Galería del formato elegido
+			// Galería y caja de P2 del formato elegido. Al cambiar (no al cargar: es la imagen LCP), fundido de 400 ms.
+			var cambia = formatoPintado !== null && formatoPintado !== estado.formato;
+			formatoPintado = estado.formato;
 			document.querySelectorAll('[data-galeria-formato]').forEach(function (g) {
 				var on = g.getAttribute('data-galeria-formato') === estado.formato;
+				var antes = !g.hidden;
 				g.hidden = !on; g.classList.toggle('activo', on);
 				if (on) g.querySelectorAll('img[loading="lazy"]').forEach(function (img) { img.loading = 'eager'; });
+				if (on && cambia && !antes) {
+					g.classList.remove('entra'); void g.offsetWidth; g.classList.add('entra');
+					var pista = g.querySelector('[data-galeria-pista]');
+					if (pista) { pista.scrollLeft = 0; contar(pista); }
+				}
 			});
+			document.querySelectorAll('[data-caja-formato]').forEach(function (f) { f.hidden = f.getAttribute('data-caja-formato') !== estado.formato; });
 			// Los kilos cambian el aviso de envío a medida: se recalcula sin volver a preguntar al servidor
 			pintarCp();
 		}
@@ -218,11 +260,20 @@
 		// Al volver atrás desde el checkout, el campo vuelve a estar activo
 		window.addEventListener('pageshow', function () { if (cpInput) cpInput.disabled = false; });
 
-		// Barra fija en móvil: aparece cuando el botón principal sale de la pantalla
+		// Barra fija en móvil: aparece al dejar atrás el H1 y se aparta mientras el precio o el botón principal están en pantalla
 		var barra = document.querySelector('[data-barra-compra]');
-		var botonPrincipal = raiz.querySelector('.p-comprar');
-		if (barra && botonPrincipal && 'IntersectionObserver' in window) {
-			new IntersectionObserver(function (es) { barra.classList.toggle('visible', !es[0].isIntersecting && es[0].boundingClientRect.top < 0); }).observe(botonPrincipal);
+		var h1 = raiz.querySelector('h1');
+		var vigilar = [h1, raiz.querySelector('[data-precio]'), raiz.querySelector('.p-comprar')].filter(Boolean);
+		if (barra && h1 && 'IntersectionObserver' in window) {
+			var h1Arriba = false, enPantalla = [];
+			var ioBarra = new IntersectionObserver(function (es) {
+				es.forEach(function (e) {
+					if (e.target === h1) h1Arriba = !e.isIntersecting && e.boundingClientRect.top < 0;
+					else enPantalla[vigilar.indexOf(e.target)] = e.isIntersecting;
+				});
+				barra.classList.toggle('visible', h1Arriba && !enPantalla.some(Boolean));
+			});
+			vigilar.forEach(function (el) { ioBarra.observe(el); });
 			barra.querySelector('[data-barra-comprar]').addEventListener('click', function () { form.requestSubmit ? form.requestSubmit() : form.submit(); });
 		}
 		pintar();

@@ -97,4 +97,14 @@ return array(
 		),
 	),
 	'barra' => 'Total',
+	// Redisseny 14/10/2026 (només presentació)
+	'galeria_t'     => 'Fotos del format triat',
+	'galeria_macro' => array(
+		'3mm'  => array( 'pellets-ia', 'Pèl·lets de gel sec de 3 mm, de prop' ),
+		'16mm' => array( 'nuggets-ia', 'Nuggets de gel sec de 16 mm, de prop' ),
+	),
+	'caja_foto'     => array(
+		'3mm'  => 'Caixa EPS amb pèl·lets de 3 mm i la tapa recolzada',
+		'16mm' => 'Caixa EPS amb nuggets de 16 mm i la tapa recolzada',
+	),
 );

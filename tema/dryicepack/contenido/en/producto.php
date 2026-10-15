@@ -97,4 +97,14 @@ return array(
 		),
 	),
 	'barra' => 'Total',
+	// Redesign 14/10/2026 (presentation only)
+	'galeria_t'     => 'Photos of the chosen size',
+	'galeria_macro' => array(
+		'3mm'  => array( 'pellets-ia', '3 mm dry ice pellets, close up' ),
+		'16mm' => array( 'nuggets-ia', '16 mm dry ice nuggets, close up' ),
+	),
+	'caja_foto'     => array(
+		'3mm'  => 'EPS box of 3 mm pellets with the lid propped against it',
+		'16mm' => 'EPS box of 16 mm nuggets with the lid propped against it',
+	),
 );

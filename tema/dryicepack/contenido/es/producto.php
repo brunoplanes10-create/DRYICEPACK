@@ -97,4 +97,15 @@ return array(
 		),
 	),
 	'barra' => 'Total',
+	// Rediseño 14/10/2026 (solo presentación): nombre del carrusel de fotos, foto de cerca que sustituye en la galería a la de la caja
+	// (la caja lateral pasa a «Así llega») y texto alternativo de la caja lateral de cada formato
+	'galeria_t'     => 'Fotos del formato elegido',
+	'galeria_macro' => array(
+		'3mm'  => array( 'pellets-ia', 'Pellets de hielo seco de 3 mm, de cerca' ),
+		'16mm' => array( 'nuggets-ia', 'Nuggets de hielo seco de 16 mm, de cerca' ),
+	),
+	'caja_foto'     => array(
+		'3mm'  => 'Caja EPS con pellets de 3 mm y la tapa apoyada',
+		'16mm' => 'Caja EPS con nuggets de 16 mm y la tapa apoyada',
+	),
 );

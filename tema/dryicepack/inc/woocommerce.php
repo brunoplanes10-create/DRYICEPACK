@@ -189,6 +189,26 @@ add_filter( 'woocommerce_cart_item_name', static function ( $nombre, $item ) {
 	return $kg ? esc_html( $base . ' · ' . wc_format_localized_decimal( $kg ) . ' kg · ' . str_replace( 'mm', ' mm', strtolower( $f ) ) ) : $nombre;
 }, 20, 2 );
 
+/* Resumen del checkout: miniatura de 72 px del formato junto al nombre (solo dentro de la tabla del resumen; también en
+ * las recargas por AJAX, que definen WOOCOMMERCE_CHECKOUT). Presentación: no cambia el nombre ni el pedido. */
+add_filter( 'woocommerce_cart_item_name', static function ( $nombre, $item ) {
+	if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) return $nombre;
+	if ( did_action( 'woocommerce_review_order_before_cart_contents' ) <= did_action( 'woocommerce_review_order_after_cart_contents' ) ) return $nombre;
+	$p = $item['data'] ?? null;
+	if ( ! $p ) return $nombre;
+	$foto = false !== strpos( strtolower( (string) $p->get_attribute( 'pa_formato' ) ), '16' ) ? 'cenital-16mm' : 'cenital-3mm';
+	$url  = function_exists( 'dipt_foto_url' ) ? dipt_foto_url( $foto, 480 ) : '';
+	if ( ! $url ) return $nombre;
+	return '<span class="dip-miniatura"><img src="' . esc_url( $url ) . '" width="72" height="72" alt="" loading="lazy" decoding="async"></span><span class="dip-nombre">' . $nombre . '</span>';
+}, 30, 2 );
+
+/* Efectivo al recoger: en el aviso del checkout, el importe se marca para verlo en grande y la segunda frase
+ * («Trae el importe exacto…») en negrita. Mismo texto, letra a letra (lo comprueba herramientas/probar-pedido.mjs). */
+add_filter( 'woocommerce_gateway_description', static function ( $texto, $id ) {
+	if ( 'cod' !== $id || ! is_string( $texto ) || false !== strpos( $texto, 'dip-importe' ) ) return $texto;
+	return preg_replace( '/^(.*?)(\d[\d.]*,\d{2}[\s\x{00A0}]?€|€[\s\x{00A0}]?\d[\d,]*\.\d{2})(\.\s+)(.+)$/u', '$1<span class="dip-importe">$2</span>$3<strong class="dip-exacto">$4</strong>', $texto ) ?? $texto;
+}, 20, 2 );
+
 /* Página de la ficha y páginas de tienda: sin barra lateral ni envoltorios por defecto. */
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
