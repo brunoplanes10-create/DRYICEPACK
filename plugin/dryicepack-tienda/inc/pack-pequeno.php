@@ -57,6 +57,23 @@ function dip_pack_pequeno_estado() {
 	return 'Ahora se vende el de ' . dip_pack_pequeno() . ' kg. 3 kg: ' . ( $tres ? implode( ' · ', $tres ) : 'no hay variaciones' ) . '. 5 kg: ' . ( $hay5 ? 'creado' : 'no creado todavía (crea las variaciones de 5 kg a 33,90 €; la web las esconde mientras quede 3 kg)' ) . '.';
 }
 
+/**
+ * Vacía las páginas guardadas por WP Rocket cuando cambia algo que los textos dicen solos: el pack pequeño
+ * (3 → 5 kg) o un sábado de recogida sin suplemento que ya ha pasado. Solo llama a la función pública de
+ * WP Rocket; no toca sus ajustes. Sin WP Rocket no hace nada.
+ */
+function dip_vaciar_cache_paginas() {
+	if ( function_exists( 'rocket_clean_domain' ) ) rocket_clean_domain();
+}
+
+/* Cada mañana (tarea diaria de las 9:00): si ayer fue un sábado de recogida sin suplemento (31/10/2026), las páginas
+ * en caché todavía dicen «Salvo el 31 de octubre: sin suplemento». Se vacían para que deje de salir. */
+add_action( 'dip_tarea_diaria', static function () {
+	if ( ! function_exists( 'dip_sabados_recogida_sin_suplemento' ) ) return;
+	$ayer = ( new DateTimeImmutable( 'yesterday', dip_zona_horaria() ) )->format( 'Y-m-d' );
+	if ( in_array( $ayer, dip_sabados_recogida_sin_suplemento(), true ) ) dip_vaciar_cache_paginas();
+} );
+
 /* La variación que no toca no se puede comprar ni se ve (en el escritorio sí, para pedidos hechos a mano). */
 function dip_variacion_fuera_de_temporada( $variacion ) {
 	if ( is_admin() && ! wp_doing_ajax() ) return false;
@@ -76,10 +93,13 @@ add_action( 'woocommerce_variation_set_stock_status', static function ( $id, $es
 	$variacion = $variacion ?: wc_get_product( $id );
 	if ( ! $variacion || 3.0 !== (float) dip_kg_producto( $variacion ) ) return;
 	if ( 'outofstock' !== $estado ) {
+		// Se repone el 3 kg: si la web estaba en 5 kg, vuelve al 3 kg y las páginas guardadas en caché lo tienen que decir
+		if ( get_option( 'dip_pack_pequeno_aviso' ) ) dip_vaciar_cache_paginas();
 		delete_option( 'dip_pack_pequeno_aviso' );
 		return;
 	}
 	if ( dip_queda_3kg_sin( (int) $id ) || get_option( 'dip_pack_pequeno_aviso' ) ) return;
+	dip_vaciar_cache_paginas(); // los textos {pk} pasan de 3 kg a 5 kg: fuera la copia guardada por WP Rocket
 	$hay5   = (bool) dip_variaciones_de_kg( 5 );
 	$modo   = (string) dip_ajuste( 'pack_pequeno' );
 	$asunto = $hay5 ? 'Dryicepack: se ha acabado el pack de 3 kg, ya se vende el de 5 kg' : 'Dryicepack: se ha acabado el pack de 3 kg y no hay pack de 5 kg';

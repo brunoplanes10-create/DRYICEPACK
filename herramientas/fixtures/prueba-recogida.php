@@ -496,7 +496,11 @@ try {
 	$ok( 'al alza' === ( $d['tarifa']['redondeo'] ?? null ), 'tarifa.redondeo = «al alza»' );
 	$claves( $d['sabado'] ?? null, array( 'suplemento_sin_iva' ), 'sabado' );
 	$ok( is_float( $raw['sabado']['suplemento_sin_iva'] ?? null ) && $casi( $raw['sabado']['suplemento_sin_iva'], 9.70 ), 'sabado.suplemento_sin_iva = 9.70 (envío)' );
-	$claves( $d['recogida'] ?? null, array( 'dias', 'tambien_festivos', 'redondeo_con_iva', 'suplemento_sabado_con_iva', 'pago' ), 'recogida' );
+	$claves( $d['recogida'] ?? null, array( 'dias', 'tambien_festivos', 'redondeo_con_iva', 'suplemento_sabado_con_iva', 'pago', 'sabados_sin_suplemento' ), 'recogida' );
+	$ok( 2 === ( $d['version'] ?? null ), 'version = 2 (desde el 15/10/2026: recogida.sabados_sin_suplemento)', $d['version'] ?? null );
+	$sss = $d['recogida']['sabados_sin_suplemento'] ?? null;
+	$ok( $es_lista( $sss ) && ! array_filter( (array) $sss, static fn( $f ) => ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', (string) $f ) || $f < $hoy ), 'recogida.sabados_sin_suplemento: lista de fechas de hoy en adelante', $sss );
+	if ( '2026-10-31' >= $hoy ) $ok( in_array( '2026-10-31', (array) $sss, true ), 'recogida.sabados_sin_suplemento incluye el 31/10/2026', $sss );
 	$ok( array( 1, 2, 3, 4, 5, 6 ) === ( $d['recogida']['dias'] ?? null ), 'recogida.dias = lunes a sábado [1..6]', $d['recogida']['dias'] ?? null );
 	$ok( true === ( $d['recogida']['tambien_festivos'] ?? null ), 'recogida.tambien_festivos = true' );
 	$ok( 5 === ( $d['recogida']['redondeo_con_iva'] ?? null ), 'recogida.redondeo_con_iva = 5 (entero)' );

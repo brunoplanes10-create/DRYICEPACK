@@ -59,7 +59,7 @@ Se abandonan **Divi y el tema hijo**. La web pasa a dos piezas propias, instalab
 - El cambio de tema se hace cuando esté probado. Si no está listo antes del 20/10, se deja para el 2/11.
 
 ## App INDUNOVA Control (03/10/2026)
-- La app (se estrena el 9/11) lee `GET /wp-json/dip/v1/envio` (`inc/api-app.php`): público, solo GET, CORS `*`, `Cache-Control: public, max-age=600`, sin datos personales. Tarifa, sábado, recogida, máximos, corte, días de salida y entrega, `festivos_salida` (lista manual + cierres de MRW Mataró) y `mrw.dias` con todos los días consultados (provincias cerradas enteras con código de 2 cifras y poblaciones con `dip_mrw_nombres()` ya aplicado). Si cambia el formato, se sube `version` y se avisa.
+- La app (se estrena el 9/11) lee `GET /wp-json/dip/v1/envio` (`inc/api-app.php`): público, solo GET, CORS `*`, `Cache-Control: public, max-age=600`, sin datos personales. Tarifa, sábado, recogida, máximos, corte, días de salida y entrega, `festivos_salida` (lista manual + cierres de MRW Mataró) y `mrw.dias` con todos los días consultados (provincias cerradas enteras con código de 2 cifras y poblaciones con `dip_mrw_nombres()` ya aplicado). Si cambia el formato, se sube `version` y se avisa. **Versión 2 (15/10/2026):** añade `recogida.sabados_sin_suplemento` (fechas de hoy en adelante; de serie `2026-10-31`). Avisar al chat de INDUNOVA Control.
 - La app copia `dip_mrw_nombres()` y `dip_mrw_mismo_sitio()` tal cual: **si cambian, avisar**.
 - **Claves de los pedidos que lee la app (no renombrar sin avisar):** `_dip_fecha_entrega`, `_dip_metodo_entrega`, `_orddd_lite_timestamp`, `_dip_idioma`, `_dip_empresa`, `_dip_factura_datos`, `_dip_factura_mensual`, `_dip_canal`, `_dip_fs_numero`, `_dip_factura_emitida`, `_dip_kg`, `_dip_cajas`. Un pedido con `_dip_fs_numero` ya tiene factura simplificada de la web: la app no lo manda a «Por facturar».
 - Los fallos de lectura de MRW siguen avisando por email, como ya hace el plugin.
@@ -138,6 +138,7 @@ Todo contenido que explique un uso incluye estos avisos, o enlaza a /seguridad-d
 - **Prohibido el look genérico de IA:** degradados morado-azul, blobs, glassmorphism, fotos de stock, iconos de librería mezclados, rejillas de 3 tarjetas idénticas como única solución, radios exagerados.
 - Contraste WCAG AA. Diseño mobile-first.
 - En rediseños, propón **2–3 direcciones visuales** con boceto antes de implementar.
+- **Cada sección de cada página** (decidido el 15/10/2026): antes de diseñarla, 2–3 bocetos reales y animados (`tema/dryicepack/zz-bocetos/`, se ven en el servidor de prueba y no van al .zip), una comparativa a 1440 y 390 px, y el propietario elige. Aunque se tarde más.
 
 ### Animación
 - Solo `transform` y `opacity`. Prioridad: CSS puro → Web Animations API → librería solo si se aprueba.

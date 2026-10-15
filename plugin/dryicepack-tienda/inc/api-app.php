@@ -12,7 +12,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! defined( 'DIP_API_VERSION' ) ) define( 'DIP_API_VERSION', 1 );
+if ( ! defined( 'DIP_API_VERSION' ) ) define( 'DIP_API_VERSION', 2 );
 
 add_action( 'rest_api_init', static function () {
 	register_rest_route( 'dip/v1', '/envio', array(
@@ -93,6 +93,8 @@ function dip_api_datos_envio() {
 			'redondeo_con_iva'          => (int) DIP_RECOGIDA_REDONDEO,
 			'suplemento_sabado_con_iva' => (float) DIP_RECOGIDA_SABADO_CON_IVA,
 			'pago'                      => 'efectivo',
+			// Versión 2 (15/10/2026): sábados de recogida sin los 10 € (de serie el 31/10/2026), los que quedan
+			'sabados_sin_suplemento'    => array_values( array_filter( dip_sabados_recogida_sin_suplemento(), static fn( $f ) => $f >= $hoy ) ),
 		),
 		'max_kg'                 => (int) DIP_MAX_KG,
 		'max_kg_fuera_barcelona' => (int) DIP_KG_A_MEDIDA,
