@@ -62,4 +62,9 @@ return array(
 			array( 'Can I serve a drink with the pellet inside?', 'No. Dry ice must never be eaten or drunk. The effect is always made with a double container, so it never touches the drink.' ),
 		),
 	),
+	// Shared closing section (redesign 13/10/2026): the home page headline and the real delivery date (as in Laboratories)
+	'final' => array(
+		'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>',
+		'corte'  => array( 'Order before 12:00 and you’ll have it on the morning of %s', '%s left to order today', 'Order now and you’ll have it on the morning of %s' ),
+	),
 );

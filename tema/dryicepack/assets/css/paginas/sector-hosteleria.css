@@ -1,11 +1,12 @@
 /* =========================================================================
-   Hostelería · H1 a H6
-   Dirección C "Industrial sobrio": Inter Tight 800/700 en titulares, Inter en el texto,
-   Geist Mono solo en los datos (.dato). Movimiento: solo transform y opacity.
+   Hostelería · rediseño del 13/10/2026 (plan 2.8)
+   Tonos: H1 noche (foto) · H2 papel · H3 noche · placa (sectores.css) · H4 papel · H5 escarcha · H6 marino · cierre noche · pie marino.
+   Firma ambiental (una): la niebla que rebosa del doble recipiente (H2). El resto, entradas al llegar.
+   Movimiento: solo transform y opacity. Con .quieto o reducir movimiento, todo en su estado final.
+   La placa de cliente, la regla de h1/h2 .tramo, las preguntas y el cierre son piezas comunes (sectores.css y base.css).
    ========================================================================= */
-/* Titulares con salto ("|" en el texto): cada tramo es un bloque equilibrado por separado, sin palabras sueltas */
-h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 
+/* ---------- H1 · Foto a sangre (sin cambios) ---------- */
 .h-hero { position: relative; min-height: 92vh; min-height: 92svh; display: grid; align-items: end; overflow: hidden; padding: calc(var(--alto-cabecera) + 2rem) 0 clamp(2.5rem, 6vw, 5rem); }
 .h-hero__foto { position: absolute; inset: 0; }
 .h-hero__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
@@ -16,59 +17,151 @@ h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 .h-hero__pie { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.4rem 3rem; padding-top: 1.6rem; border-top: 1px solid rgba(184, 208, 232, .28); }
 .h-hero__pie .entrada { color: var(--c-hielo-claro); }
 
-/* ---------- H2 · Doble recipiente ---------- */
-.h-copa__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
-.h-copa__texto { margin: 1.4rem 0 2rem; }
-.h-copa__marcas { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
-.h-copa__marcas li { display: grid; grid-template-columns: 3rem 1fr; gap: .15rem .8rem; padding: 1.05rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+/* ---------- H2 · Doble recipiente: corte técnico (lenguaje de L2) ---------- */
+.h-copa__in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+.h-copa__intro { margin: 1.4rem 0 2rem; }
+.h-copa__marcas { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
+.h-copa__marcas li { position: relative; display: grid; grid-template-columns: 3rem 1fr; gap: .15rem .8rem; padding: 1.05rem 0 1.05rem .9rem; border-top: 1px solid var(--c-linea-fuerte); }
 .h-copa__marcas li:first-child { border-top-color: var(--c-tinta); }
-.h-copa__marcas .dato { grid-row: span 2; align-self: start; padding-top: .2rem; color: var(--c-marino); }
+/* El paso activo (al cruzar el centro de la pantalla, o con el ratón encima) lleva una barra marino que crece */
+.h-copa__marcas li::before { content: ""; position: absolute; left: 0; top: -1px; bottom: 0; width: 2px; background: var(--c-marino); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--d-corta) var(--e-salida); }
+.h-copa__marcas .dato { grid-row: span 2; align-self: start; padding-top: .2rem; color: var(--c-acero); transition: transform var(--d-corta) var(--e-salida); }
 .h-copa__marcas strong { font-weight: 600; font-size: 1.05rem; line-height: 1.35; }
 .h-copa__marcas span:last-child { color: var(--c-acero); }
-/* La escena: disco con bisel (borde claro + sombra de dos capas) que se sale un poco de su columna */
-.h-escena { position: relative; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 50% 60%, #1F3C55 0%, #0B141C 70%); overflow: hidden;
-	box-shadow: 0 0 0 1px rgba(11, 20, 28, .9), 0 0 0 9px var(--c-papel), 0 0 0 10px var(--c-linea-fuerte), 0 30px 60px -30px rgba(11, 20, 28, .55), 0 70px 110px -60px rgba(31, 60, 85, .55); }
-.h-escena__dibujo { position: absolute; inset: 8%; width: 84%; height: 84%; }
-.h-escena__cuenco { fill: rgba(230, 238, 245, .08); stroke: var(--c-hielo); stroke-width: 2; }
-.h-escena__agua { fill: rgba(184, 208, 232, .22); }
-.h-escena__pellets circle { fill: #F4F8FB; }
-.h-escena__copa { fill: rgba(255, 255, 255, .06); stroke: #fff; stroke-width: 2; stroke-linejoin: round; }
-.h-escena__bebida { fill: #E8A45A; opacity: .85; }
-.h-escena__rotulo { fill: var(--c-hielo); font: 500 20px var(--f-mono); }
-.h-escena__niebla { position: absolute; left: 12%; right: 12%; top: 50%; height: 40%; z-index: 1; }
-.h-escena__niebla i { position: absolute; left: calc(var(--i) * 8%); top: 20%; width: 34%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(240, 245, 250, .55), rgba(240, 245, 250, 0) 65%); opacity: 0; }
-.anima .h-escena__niebla i { animation: rebosa 5.5s var(--e-suave) infinite; animation-delay: calc(var(--i) * -.46s); }
-@keyframes rebosa { 0% { opacity: 0; transform: translate3d(0, 0, 0) scale(.5); } 30% { opacity: .9; } 100% { opacity: 0; transform: translate3d(calc((var(--i) - 5.5) * 12px), 120px, 0) scale(1.8); } }
-@media (min-width: 901px) { .h-escena { margin-right: calc(var(--margen) * -.5); } }
-@media (max-width: 900px) { .h-copa__in { grid-template-columns: 1fr; } .h-escena { max-width: 420px; margin-inline: auto; width: calc(100% - 20px); } }
+.h-copa__marcas li.activo::before { transform: scaleY(1); }
+.h-copa__marcas li.activo .dato { color: var(--c-marino); transform: translateX(3px); }
+@media (hover: hover) {
+	.h-copa__marcas li:hover::before { transform: scaleY(1); }
+	.h-copa__marcas li:hover .dato { color: var(--c-marino); transform: translateX(3px); }
+}
 
-/* ---------- H3 · Díptico de formatos ---------- */
-.h-formatos { display: grid; grid-template-columns: 1fr 1fr; }
-.h-formatos__hoja { position: relative; min-height: clamp(460px, 56vw, 720px); display: grid; align-items: end; overflow: hidden; background: var(--c-noche); color: #fff; }
-.h-formatos__hoja img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .62; transition: transform .6s var(--e-salida); }
-.h-formatos__hoja:hover img { transform: scale(1.04); }
-.h-formatos__hoja::after { content: ""; position: absolute; inset: auto 0 0; height: 55%; background: linear-gradient(0deg, rgba(11, 20, 28, .78), rgba(11, 20, 28, 0)); pointer-events: none; }
-.h-formatos__hoja + .h-formatos__hoja { box-shadow: inset 1px 0 0 rgba(184, 208, 232, .22); }
-.h-formatos__texto { position: relative; z-index: 1; padding: clamp(2rem, 5vw, 4.5rem); max-width: 34rem; }
-.h-formatos__texto .dato { color: var(--c-hielo); text-transform: uppercase; letter-spacing: .12em; }
-.h-formatos__texto h3 { margin: .6rem 0 1rem; }
-.h-formatos__texto p:last-child { color: var(--c-hielo-claro); }
-.h-formatos__hoja--frio { background: var(--c-marino); }
-@media (max-width: 800px) { .h-formatos { grid-template-columns: 1fr; } .h-formatos__hoja { min-height: 380px; } .h-formatos__hoja + .h-formatos__hoja { box-shadow: inset 0 1px 0 rgba(184, 208, 232, .22); } }
+/* El panel: noche, rectangular, borde fino y el dibujo en línea hielo */
+.h-corte { position: relative; margin: 0; padding: clamp(1rem, 3vw, 2rem); background: var(--c-noche); border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-3); overflow: hidden; }
+.h-corte__svg { position: relative; z-index: 1; display: block; width: 100%; height: auto; }
+.h-corte .hc-suelo { fill: none; stroke: var(--c-niebla); stroke-width: 1; stroke-dasharray: 2 5; }
+.h-corte .hc-pared { fill: var(--c-hielo); fill-opacity: .16; stroke: var(--c-hielo); stroke-width: 1.4; stroke-linejoin: round; }
+.h-corte .hc-agua { fill: var(--c-marino-2); }
+.h-corte .hc-superficie { fill: none; stroke: var(--c-hielo); stroke-width: 1; stroke-dasharray: 6 5; }
+.h-corte .hc-pellets circle { fill: var(--c-escarcha); stroke: var(--c-acero); stroke-width: .8; }
+.h-corte .hc-copa { fill: var(--c-hielo); fill-opacity: .06; stroke: #fff; stroke-width: 1.6; stroke-linejoin: round; }
+.h-corte .hc-bebida { fill: var(--c-hielo-claro); fill-opacity: .45; }
+.h-corte .hc-caida { fill: none; stroke: var(--c-hielo); stroke-width: 1.5; stroke-dasharray: 3 4; stroke-linecap: round; }
+.h-corte .hc-flecha { fill: none; stroke: var(--c-hielo); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.h-corte .hc-halo { fill: none; stroke: var(--c-noche); stroke-width: 4; stroke-linecap: round; }
+.h-corte .hc-guia { fill: none; stroke: var(--c-hielo); stroke-width: 1; }
+.h-corte .hc-punto { fill: var(--c-hielo); stroke: var(--c-noche); stroke-width: 1.5; transform-box: fill-box; transform-origin: 50% 50%; transition: transform var(--d-corta) var(--e-salida); }
+.h-corte .hc-cota { fill: var(--c-hielo-claro); font-family: var(--f-mono); font-size: 15px; letter-spacing: .02em; transition: opacity var(--d-corta) linear; }
+/* Pieza encendida: la del paso activo a opacidad completa, las otras atenuadas; su punto crece */
+.h-corte .hc-pieza { transition: opacity var(--d-corta) linear; }
+[data-activo] > .h-corte .hc-pieza { opacity: .38; }
+[data-activo="0"] > .h-corte .hc-p1, [data-activo="1"] > .h-corte .hc-p2, [data-activo="2"] > .h-corte .hc-p3 { opacity: 1; }
+[data-activo] > .h-corte .hc-cota { opacity: .62; } /* atenuada pero legible: hielo-claro al 62 % sobre noche ≈ 6:1 */
+[data-activo="0"] > .h-corte .hc-cota--1, [data-activo="1"] > .h-corte .hc-cota--2, [data-activo="1"] > .h-corte .hc-cota--mm, [data-activo="2"] > .h-corte .hc-cota--3 { opacity: 1; }
+[data-activo="0"] > .h-corte .hc-punto--1, [data-activo="1"] > .h-corte .hc-punto--2, [data-activo="2"] > .h-corte .hc-punto--3 { transform: scale(1.6); }
+/* Con el ratón encima de un paso, manda ese paso */
+@media (hover: hover) {
+	.h-copa__in:has(.h-copa__marcas li:hover) .hc-pieza { opacity: .38; }
+	.h-copa__in:has(.h-copa__marcas li:hover) .hc-cota { opacity: .62; }
+	.h-copa__in:has(.h-copa__marcas li:hover) .hc-punto { transform: none; }
+	.h-copa__in:has(.h-copa__marcas li:nth-child(1):hover) :is(.hc-p1, .hc-cota--1),
+	.h-copa__in:has(.h-copa__marcas li:nth-child(2):hover) :is(.hc-p2, .hc-cota--2, .hc-cota--mm),
+	.h-copa__in:has(.h-copa__marcas li:nth-child(3):hover) :is(.hc-p3, .hc-cota--3) { opacity: 1; }
+	.h-copa__in:has(.h-copa__marcas li:nth-child(1):hover) .hc-punto--1,
+	.h-copa__in:has(.h-copa__marcas li:nth-child(2):hover) .hc-punto--2,
+	.h-copa__in:has(.h-copa__marcas li:nth-child(3):hover) .hc-punto--3 { transform: scale(1.6); }
+}
 
-/* ---------- H4 · Un fin de semana en raíl ---------- */
-.h-rail { position: relative; list-style: none; margin: clamp(2.5rem, 5vw, 4rem) 0 2.5rem; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--hueco); overflow: hidden; }
-.h-rail::before { content: ""; position: absolute; left: -26px; right: 0; top: 11px; height: 2px; background: repeating-linear-gradient(90deg, var(--c-hielo) 0 18px, transparent 18px 26px); opacity: .5; }
-.anima .h-rail::before { animation: rail 3s linear infinite; }
-@keyframes rail { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(26px, 0, 0); } }
-.h-rail li { position: relative; display: grid; align-content: start; gap: .6rem; padding-top: 2.6rem; }
-.h-rail__marca { position: absolute; top: 0; left: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--c-noche); border: 2px solid var(--c-hielo); box-shadow: 0 0 0 6px var(--c-noche); }
-.h-rail li:last-child .h-rail__marca { background: var(--c-hielo); }
-.h-rail strong { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.25rem, 1.7vw, 1.5rem); line-height: 1.18; letter-spacing: -.005em; color: #fff; text-wrap: balance; }
-.h-rail span:last-child { color: var(--c-hielo-claro); }
-@media (max-width: 900px) { .h-rail { grid-template-columns: 1fr 1fr; row-gap: 2.4rem; } .h-rail::before { display: none; } }
+/* Niebla que rebosa: el lienzo mide lo mismo que el dibujo, así la niebla se coloca en las coordenadas del recipiente
+   (bordes en x 96 y 424 de 520, boca en y 200 de 440) en cualquier ancho. Las volutas nacen sobre los dos bordes
+   (--lado −1 izquierda, 1 derecha; --k las mete hacia dentro) y caen por fuera de la pared. Los desplazamientos van en %
+   de la propia voluta: la caída escala con el dibujo. Cada voluta asoma sobre el borde y baja pegada a la pared durante
+   los primeros 8 s de su bucle de 15 s; con 16 volutas grandes y escalonadas (alternando lado) se solapan en un velo
+   continuo, no en manchas sueltas. */
+.h-corte__lienzo { position: relative; z-index: 1; }
+.h-corte__niebla { position: absolute; z-index: 2; left: 18.5%; right: 18.5%; top: 45.5%; height: 22%; pointer-events: none; }
+/* Volutas ovaladas (2,2:1), centradas sobre cada borde */
+.h-corte__niebla i { position: absolute; left: calc(29% + var(--lado, -1) * 50%); top: -32%; width: 42%; aspect-ratio: 2.2 / 1; border-radius: 50%; background: radial-gradient(closest-side, rgba(240, 245, 250, .55), rgba(240, 245, 250, .22) 55%, rgba(240, 245, 250, 0)); opacity: 0; }
+.anima .h-corte__niebla i { animation: rebosa 15s linear infinite; animation-delay: calc(var(--i) * -.9375s); }
+@keyframes rebosa {
+	0% { opacity: 0; transform: translate3d(calc(var(--lado, -1) * -18%), 12%, 0) scale(.55); }
+	14% { opacity: .55; transform: translate3d(calc(var(--lado, -1) * 4%), -10%, 0) scale(.85, .8); }
+	55% { opacity: 0; transform: translate3d(calc(var(--lado, -1) * (26% + var(--k, 0) * 3%)), 230%, 0) scale(1.5, 1.25); }
+	100% { opacity: 0; transform: translate3d(calc(var(--lado, -1) * (26% + var(--k, 0) * 3%)), 230%, 0) scale(1.5, 1.25); }
+}
+@media (min-width: 901px) { .h-corte { margin-right: calc(var(--margen) * -.5); } }
+@media (max-width: 900px) {
+	/* Móvil: título y frase, después el dibujo fijo arriba y la lista pasando por debajo; cada paso que cruza
+	   el centro de la pantalla enciende su pieza (el dibujo queda a la vista mientras se lee la lista) */
+	.h-copa__in { grid-template-columns: 1fr; gap: 0; }
+	.h-copa__texto { display: contents; }
+	.h-copa__intro { margin-bottom: 1.8rem; }
+	/* El panel ocupa todo el ancho y el dibujo, como mucho 250 px de alto (el panel, ~275 px): el paso activo, que entra
+	   por el centro de la pantalla, siempre se lee entero bajo el dibujo */
+	.h-corte { order: 1; position: sticky; z-index: 3; top: calc(var(--alto-cabecera) + .5rem); align-self: start; padding: .75rem; }
+	.h-corte__svg { width: auto; max-width: 100%; max-height: 250px; margin-inline: auto; }
+	.h-corte__lienzo { width: fit-content; max-width: 100%; margin-inline: auto; }
+	.h-copa__marcas { order: 2; margin-top: 1.8rem; }
+	/* En móvil el dibujo se reduce: las cotas suben de cuerpo (unidades del dibujo) para quedar en ~12 px */
+	.h-corte .hc-cota { font-size: 22px; }
+}
 
-/* ---------- H5 · Reglas de la casa (carta de bar) ---------- */
+/* ---------- H3 · Díptico 7/5: fotos al 100 %, la derecha 80 px más abajo, cifra en contorno sobre la junta ---------- */
+.h-formatos__titulo { margin-bottom: clamp(2rem, 4vw, 3.2rem); }
+.h-diptico { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 12px; align-items: start; }
+.h-diptico__hoja { margin: 0; }
+.h-diptico__hoja--frio { margin-top: 80px; }
+.h-diptico__foto { aspect-ratio: 5 / 4; }
+.h-diptico__hoja--frio .h-diptico__foto { aspect-ratio: 1; }
+.h-diptico__foto > img { transition: transform var(--d-larga) var(--e-salida); }
+.h-diptico__franja { display: grid; gap: .5rem; padding: clamp(1.25rem, 2.6vw, 2.2rem); }
+.h-diptico__para { font-size: .9rem; font-weight: 600; color: var(--c-hielo); }
+.h-diptico__formato { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.6rem, 2.6vw, 2.4rem); line-height: 1.05; letter-spacing: -.03em; color: #fff; }
+.h-diptico__texto { max-width: 34rem; color: var(--c-hielo-claro); }
+@media (hover: hover) { .h-diptico__foto:hover > img { transform: scale(1.03); } }
+/* La cifra «3 → 16 mm» en contorno, montada en la junta: arranca junto al filo de la foto de 3 mm, sobre el hueco
+   oscuro que deja la de 16 mm al bajar 80 px, y se apoya en el borde de esta (decorativa: el texto ya lo dice) */
+.h-diptico__cifra { position: absolute; z-index: 3; top: -.3em; left: calc(700% / 12 + 10px); transform: none; margin: 0; font-family: var(--f-display); font-weight: 800; font-size: clamp(4rem, 10vw, 9.5rem); line-height: .9; letter-spacing: -.04em; white-space: nowrap; color: var(--c-hielo); pointer-events: none; }
+@supports (-webkit-text-stroke: 1px black) {
+	.h-diptico__cifra { color: transparent; -webkit-text-stroke: 1.5px var(--c-hielo); }
+}
+.h-diptico__a { margin-inline: .08em; font-weight: 400; }
+.h-diptico__mm { font-size: .42em; letter-spacing: 0; }
+@media (max-width: 800px) {
+	.h-diptico { grid-template-columns: 1fr; gap: 0; }
+	.h-diptico__foto, .h-diptico__hoja--frio .h-diptico__foto { aspect-ratio: 4 / 5; margin-inline: calc(-1 * var(--margen)); }
+	.h-diptico__hoja--frio { margin-top: 0; }
+	/* En móvil, entre las dos fotos: en el hueco oscuro y apoyada en el borde de la de 16 mm (nunca sobre el texto de la de 3 mm) */
+	.h-diptico__cifra { position: relative; top: auto; left: auto; margin: .3em 0 -.38em; text-align: center; font-size: clamp(3.6rem, 19vw, 5.2rem); }
+}
+
+/* ---------- H4 · Un fin de semana: foto al 58 % con paralaje y panel noche solapado ---------- */
+.h-semana__titulo { margin-bottom: clamp(2rem, 4vw, 3.2rem); }
+.h-semana__escena { display: grid; grid-template-columns: minmax(0, 58fr) minmax(0, 42fr); align-items: start; }
+.h-semana__foto { aspect-ratio: 4 / 3; }
+/* La capa de la foto es un 24 % más alta que el marco: el paralaje (0,04 del desplazamiento) nunca enseña el borde */
+.h-semana__capa { position: absolute; left: 0; right: 0; top: -12%; height: 124%; }
+.h-semana__capa img { width: 100%; height: 100%; object-fit: cover; }
+.h-semana__panel { position: relative; z-index: 2; margin: clamp(3rem, 7vw, 6rem) 0 0 calc(-1 * clamp(4rem, 9vw, 9rem)); padding: clamp(1.6rem, 3.4vw, 2.8rem); border: 1px solid rgba(184, 208, 232, .35); border-radius: var(--radio); box-shadow: var(--sombra-3); }
+.h-dias { position: relative; list-style: none; margin: 0; padding: 0 0 0 1.6rem; display: grid; gap: 1.5rem; }
+/* La vía: una línea vertical que se dibuja una vez al entrar */
+.h-dias::before { content: ""; position: absolute; left: 3px; top: .55rem; bottom: .55rem; width: 1px; background: var(--c-hielo); opacity: .5; transform-origin: 50% 0; }
+.js .h-dias::before { transform: scaleY(0); transition: transform var(--d-larga) var(--e-salida) .15s; }
+.js .h-semana__panel.visto .h-dias::before { transform: none; }
+.h-dias li { position: relative; display: grid; gap: .35rem; }
+.h-dias li::before { content: ""; position: absolute; left: calc(-1.6rem - 1px); top: .45rem; width: 9px; height: 9px; border: 1px solid var(--c-hielo); background: var(--c-noche); }
+.h-dias li:last-child::before { background: var(--c-hielo); }
+.h-dias__n { color: var(--c-niebla); }
+.h-dias strong { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.1; letter-spacing: -.02em; color: #fff; text-wrap: balance; }
+.h-dias__texto { color: var(--c-hielo-claro); }
+.h-semana__cuenta { margin-top: 1.8rem; padding-top: 1.3rem; border-top: 1px solid var(--c-linea-oscura); }
+.h-semana__cuenta .enlace-flecha { color: #fff; }
+@media (max-width: 900px) {
+	.h-semana__escena { grid-template-columns: 1fr; }
+	.h-semana__foto { margin-inline: calc(-1 * var(--margen)); }
+	.h-semana__panel { margin: calc(-1 * var(--solape)) 0 0; }
+}
+
+/* ---------- H5 · Reglas de la casa (carta de bar, sin cambios) ---------- */
 .h-carta { max-width: 720px; margin: 0 auto; padding: clamp(2rem, 6vw, 4.5rem); background: #FDFBF6; color: #2B2118; border: 1px solid #E3DCCD; text-align: center;
 	box-shadow: 0 0 0 10px #FDFBF6, 0 0 0 11px #D9CFBC, 0 2px 3px 10px rgba(43, 33, 24, .06), 0 40px 80px -40px rgba(11, 20, 28, .45), 0 90px 120px -80px rgba(11, 20, 28, .35); }
 .h-carta__titulo { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.2rem, 4.6vw, 3.4rem); line-height: 1.02; letter-spacing: -.035em; text-wrap: balance; }
@@ -82,35 +175,12 @@ h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 .h-carta__pie a { color: #6B5B47; }
 @media (max-width: 520px) { .h-carta { margin-inline: 10px; } }
 
-/* ---------- H6 · Preguntas ---------- */
-.h-faq__in { display: grid; grid-template-columns: minmax(0, .6fr) minmax(0, 1.4fr); gap: clamp(2rem, 6vw, 6rem); }
-.h-faq__item { border-bottom: 1px solid var(--c-linea-fuerte); }
-.h-faq__item:first-child { border-top: 1px solid var(--c-tinta); }
-.h-faq__item summary { display: flex; justify-content: space-between; align-items: baseline; gap: 1.2rem; padding: 1.35rem 0; font-family: var(--f-display); font-weight: 700; font-size: clamp(1.2rem, 1.9vw, 1.55rem); line-height: 1.22; letter-spacing: -.008em; }
-.h-faq__item summary span { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid var(--c-linea-fuerte); border-radius: 50%; font-family: var(--f-texto); font-weight: 400; font-size: 1.2rem; line-height: 1; transition: transform var(--d-corta) var(--e-salida); }
-.h-faq__item summary:hover span { transform: rotate(90deg); }
-.h-faq__item[open] summary span { transform: rotate(45deg); }
-.h-faq__item p { padding-bottom: 1.4rem; color: var(--c-acero); max-width: 42rem; }
-.h-faq__cta { margin-top: 2rem; }
-@media (max-width: 800px) { .h-faq__in { grid-template-columns: 1fr; } }
+/* ---------- H6 · Preguntas (dipt_faq en marino: se adapta solo) ---------- */
+.h-faq .faq__contacto .tel-grande { color: #fff; }
 
-/* ---------- H3b · Cliente (Sushitok) ---------- */
-/* Placa de características: cliente y uso, con remaches en las esquinas */
-.sc-cliente { padding-block: clamp(3.5rem, 7vw, 6rem); }
-.sc-cliente__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 46rem); gap: clamp(1.6rem, 5vw, 5rem); align-items: center; }
-.sc-cliente__titulo em { color: var(--c-marino-2); }
-.sc-placa { --placa-fondo: var(--c-blanco); --placa-linea: #B9C6D2; --placa-remache: var(--c-niebla); --placa-logo: var(--c-marino); --placa-texto: var(--c-tinta); --placa-suave: var(--c-acero); --placa-brillo: rgba(255, 255, 255, .9); --placa-sombra: rgba(11, 20, 28, .4);
-	position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border: 1px solid var(--placa-linea); border-radius: 6px; color: var(--placa-texto);
-	box-shadow: inset 0 1px 0 var(--placa-brillo), 0 1px 2px rgba(11, 20, 28, .08), 0 22px 44px -26px var(--placa-sombra);
-	background: radial-gradient(circle at 14px 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at 14px calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), var(--placa-fondo); }
-.sc-placa__campo { display: grid; align-content: start; gap: 1rem; padding: clamp(1.8rem, 3.4vw, 2.6rem); }
-.sc-placa__campo + .sc-placa__campo { border-left: 1px dashed var(--placa-linea); }
-.sc-placa dt { font-size: .7rem; text-transform: uppercase; letter-spacing: .14em; color: var(--placa-suave); }
-.sc-placa dd { display: grid; justify-items: start; gap: .45rem; margin: 0; }
-.sc-placa .logo-cliente { width: calc(var(--lw) * 1.05rem); max-width: 100%; margin-bottom: .5rem; color: var(--placa-logo); }
-.sc-placa__detalle { font-size: .92rem; color: var(--placa-suave); }
-.sc-placa__uso { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.7rem, 2.8vw, 2.5rem); line-height: 1.08; letter-spacing: -.018em; text-wrap: balance; }
-@media (max-width: 760px) {
-	.sc-cliente__in, .sc-placa { grid-template-columns: 1fr; }
-	.sc-placa__campo + .sc-placa__campo { border-left: 0; border-top: 1px dashed var(--placa-linea); }
-}
+/* ---------- Quieto: todo en su estado final ---------- */
+.quieto .h-dias::before { transform: none; transition: none; }
+/* Niebla quieta: tres volutas de cada lado, una sobre el borde y dos ya bajando por fuera de la pared */
+.quieto .h-corte__niebla i { opacity: 0; }
+.quieto .h-corte__niebla i:nth-child(-n+6) { opacity: .45; transform: translate3d(calc(var(--lado, -1) * (4% + var(--k, 0) * 12%)), calc(-10% + var(--k, 0) * 95%), 0) scale(calc(.85 + var(--k, 0) * .3), calc(.8 + var(--k, 0) * .22)); }
+@media (prefers-reduced-motion: reduce) { .h-dias::before { transform: none !important; } }

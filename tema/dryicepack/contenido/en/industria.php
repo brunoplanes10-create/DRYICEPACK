@@ -67,4 +67,8 @@ return array(
 			array( 'Do you offer dry ice blasting?', 'It’s done by INDUNOVA, the company DryIcePack belongs to. We’ll put you in touch.' ),
 		),
 	),
+	// Shared closing section (redesign 13/10/2026): new headline, pending the owner's approval
+	'final' => array(
+		'titulo' => 'How many kilos, and for which day?|<em>We’ll give you a price and a date.</em>',
+	),
 );

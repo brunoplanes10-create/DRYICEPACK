@@ -62,4 +62,9 @@ return array(
 			array( 'Es pot servir amb el pèl·let dins?', 'No. El gel sec no es menja ni es beu. L\'efecte es fa sempre amb doble recipient, sense que toqui la beguda.' ),
 		),
 	),
+	// Tancament comú (redisseny 13/10/2026): el titular de la portada amb vostè i la data real d'entrega (com Laboratoris)
+	'final' => array(
+		'titulo' => 'El necessita demà?|<em>Demani\'l abans de les 12:00.</em>',
+		'corte'  => array( 'Demani abans de les 12:00 i el té el %s al matí', 'Falten %s per demanar avui', 'Si demana ara, el té el %s al matí' ),
+	),
 );

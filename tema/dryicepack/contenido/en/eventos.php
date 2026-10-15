@@ -34,6 +34,7 @@ return array(
 		'titulo' => 'Halloween falls on a Saturday this year.',
 		'texto'  => 'Order before 12:00 (Spanish time) on Thursday 29 October and you’ll have it on Friday 30. Want it on the Saturday itself? Order before 12:00 on Friday: depending on the area, with an €11.74 surcharge.',
 		'enlace' => 'Dry ice for Halloween',
+		'fecha'  => 'THU 29/10 · 12:00',
 	),
 	'seguridad' => array(
 		'titulo' => 'Is it safe|<em>with guests?</em>',

@@ -1,25 +1,35 @@
 /* =========================================================================
-   Laboratorios · L1 a L5
-   Dirección C "Industrial sobrio": Inter Tight 800/700 en titulares, Inter en el texto,
-   Geist Mono solo en los datos (.dato). Movimiento: solo transform y opacity.
+   Laboratorios · L1 a L5 (rediseño 13/10/2026, plan 2.8)
+   Firma propia: el CO₂ que sale por la junta en el corte técnico (L2, no se toca) y la órbita del hero.
+   Comparte con los otros sectores solo la placa de cliente (sectores.css), las preguntas y el cierre (base.css).
+   Tonos: L1 papel · L2 noche · L3 papel · placa · L4 marino · L5 blanco · cierre noche · pie marino.
+   Movimiento: solo transform y opacity; con .quieto o reducir movimiento, todo en su estado final.
    ========================================================================= */
-/* Titulares con salto ("|" en el texto): cada tramo es un bloque equilibrado por separado, sin palabras sueltas */
-h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 
-
-/* ---------- L1 · Foto en círculo ---------- */
-.l-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(4rem, 8vw, 6rem); background: var(--c-papel); overflow: hidden; }
+/* ---------- L1 · Foto en círculo con órbita ----------
+   La foto es el LCP: no se anima. Solo gira la órbita (40 s), después de cargar y pausada fuera de pantalla (data-pausa). */
+.l-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(4rem, 8vw, 6rem); overflow: hidden; }
 .l-hero__in { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
 .l-hero__foto { position: relative; margin: 0; aspect-ratio: 1; }
-.l-hero__foto img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 0 0 1px rgba(11, 20, 28, .08), 0 40px 80px -40px rgba(11, 20, 28, .55); }
-.l-hero__orbita { position: absolute; inset: -6%; border: 1px dashed var(--c-marino); border-radius: 50%; }
-.l-hero__orbita::after { content: ""; position: absolute; left: 50%; top: -7px; width: 14px; height: 14px; margin-left: -7px; border-radius: 3px; background: var(--c-marino); transform: rotate(45deg); }
+.l-hero__foto img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: var(--sombra-3); }
+.l-hero__orbita { position: absolute; inset: -6%; border: 1px dashed var(--c-marino); border-radius: 50%; pointer-events: none; }
+/* Marca de la órbita: un trazo radial, como la aguja de un dial */
+.l-hero__orbita::after { content: ""; position: absolute; left: 50%; top: -11px; width: 2px; height: 22px; margin-left: -1px; background: var(--c-marino); }
 .anima .l-hero__orbita { animation: orbita 40s linear infinite; }
 @keyframes orbita { to { transform: rotate(360deg); } }
 .l-hero h1 { margin: 1.2rem 0 1.4rem; text-wrap: pretty; }
-.l-hero h1 em { color: var(--c-marino-2); }
 .l-hero .entrada { margin-bottom: 2rem; }
-@media (max-width: 900px) { .l-hero__in { grid-template-columns: 1fr; } .l-hero__foto { width: calc(100% - 44px); max-width: 340px; margin-inline: 22px; } }
+/* Móvil: círculo de 150 px a la derecha; el H1 lo rodea (shape-outside) y el botón cae dentro de los primeros 700 px */
+@media (max-width: 900px) {
+	.l-hero { padding-top: calc(var(--alto-cabecera) + 1.25rem); padding-bottom: clamp(3rem, 10vw, 4rem); }
+	.l-hero__in { display: block; }
+	.l-hero__in::after { content: ""; display: table; clear: both; }
+	/* El círculo sangra 3 rem por la derecha: el H1 solo cede el trozo que queda dentro y no se parte en palabras sueltas */
+	.l-hero__foto { float: right; width: 150px; margin: 1.6rem -3rem .6rem .6rem; shape-outside: circle(50% at 50% 50%) border-box; shape-margin: .9rem; }
+	.l-hero h1 { margin: .9rem 0 1.1rem; font-size: clamp(1.9rem, 8.2vw, 2.5rem); }
+	.l-hero h1 .tramo { text-wrap: wrap; }
+	.l-hero .entrada { margin-bottom: 1.6rem; }
+}
 
 /* ---------- L2 · Corte técnico de la caja: EPS de 40 mm, muestras en el centro, hielo seco alrededor ---------- */
 .l-caja__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
@@ -63,70 +73,89 @@ h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 	.l-corte .lc-cota { font-size: 19px; }
 }
 
-/* ---------- L3 · Anatomía de un paquete ---------- */
+
+/* ---------- L3 · Anatomía de un paquete: pines numerados enlazados con la lista ----------
+   La caja se queda fija (sticky) mientras pasa la lista. La marca que cruza el centro de la pantalla (.activo, data-activo
+   en el grupo) o la que tiene el ratón encima enciende su pin: scale 1,18 y un anillo que aparece (solo transform y opacity). */
 .l-etiqueta__titulo { margin-bottom: clamp(2rem, 4vw, 3rem); }
-.l-paquete { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
-.l-paquete__caja { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; background: linear-gradient(135deg, #F2EDE3, #E2D9C8); padding: 8%; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto 1fr; gap: .6rem 1.5rem; color: var(--c-tinta);
-	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06), inset 0 1px 0 rgba(255, 255, 255, .7), 0 2px 3px rgba(11, 20, 28, .1), 0 30px 60px -30px rgba(11, 20, 28, .45); }
+.l-paquete { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+.l-paquete__escena { position: sticky; top: calc(var(--alto-cabecera) + 2rem); }
+.l-paquete__caja { position: relative; aspect-ratio: 4 / 3; padding: 9% 10%; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto 1fr; gap: .6rem 1.5rem; color: var(--c-tinta);
+	background: #E6DCCB; border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-2); }
 .l-paquete__un { font: 800 clamp(1.8rem, 3.6vw, 3rem)/1 var(--f-display); letter-spacing: -.02em; }
 .l-paquete__nombre { grid-column: 1; font: 700 clamp(1rem, 1.8vw, 1.4rem)/1.2 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
-.l-paquete__peso { grid-column: 1; align-self: end; font: 500 1rem var(--f-mono); padding: .4rem .7rem; border: 1.5px solid var(--c-tinta); justify-self: start; }
-.l-paquete__rombo { grid-column: 2; grid-row: 1 / span 3; align-self: center; position: relative; width: clamp(90px, 12vw, 140px); aspect-ratio: 1; transform: rotate(45deg); border: 3px solid var(--c-tinta); border-radius: 6px; background: linear-gradient(0deg, #fff 50%, transparent 50%), repeating-linear-gradient(135deg, var(--c-tinta) 0 6px, #fff 6px 12px); }
-.l-paquete__rombo span { position: absolute; right: 18%; bottom: 18%; transform: rotate(-45deg); font: 800 1.6rem var(--f-display); }
-.l-paquete__ranura { position: absolute; top: 10px; left: 30%; right: 30%; height: 6px; border-radius: 3px; background: rgba(0, 0, 0, .12); }
-.l-paquete__marcas { list-style: none; margin: 0; padding: 0; counter-reset: m; display: grid; gap: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
-.l-paquete__marcas li { counter-increment: m; display: grid; grid-template-columns: 2.4rem 1fr; gap: .15rem .8rem; padding: .9rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+.l-paquete__peso { grid-column: 1; align-self: end; justify-self: start; padding: .4rem .7rem; border: 1.5px solid var(--c-tinta); font: 500 1rem var(--f-mono); }
+/* Etiqueta de clase 9 dibujada: siete rayas arriba y el 9 abajo */
+.l-paquete__un, .l-paquete__nombre, .l-paquete__peso { position: relative; }
+.l-paquete__rombo { position: relative; grid-column: 2; grid-row: 1 / span 3; align-self: center; width: clamp(92px, 12vw, 150px); }
+.l-paquete__rombo svg { display: block; width: 100%; height: auto; overflow: visible; }
+.l-paquete__rombo .l-r-borde { fill: #fff; stroke: var(--c-tinta); stroke-width: 3; stroke-linejoin: round; }
+.l-paquete__rombo .l-r-raya { fill: none; stroke: var(--c-tinta); stroke-width: 4; }
+.l-paquete__rombo .l-r-linea { fill: none; stroke: var(--c-tinta); stroke-width: 1.5; }
+.l-paquete__rombo text { font: 800 22px var(--f-display); fill: var(--c-tinta); }
+.l-paquete__ranura { position: absolute; top: 12px; left: 30%; right: 30%; height: 6px; border-radius: 3px; background: rgba(15, 29, 41, .18); }
+/* Pines: cada uno va dentro de la pieza que señala. Los de texto (1, 2, 3), a su izquierda y centrados en su altura;
+   el de la etiqueta (4), en su esquina; el de la ranura (5), encima de ella. */
+.l-paquete { --pin: 28px; --pin-hueco: .9rem; } /* hueco: el anillo del pin encendido (×1,18) no toca el texto */
+.l-pin { position: absolute; z-index: 1; display: grid; place-items: center; width: var(--pin); height: var(--pin); border-radius: 50%; background: var(--c-blanco); border: 1.5px solid var(--c-marino); color: var(--c-marino); font: 500 .8rem/1 var(--f-mono); letter-spacing: 0; text-transform: none; box-shadow: var(--sombra-1); transition: transform var(--d-corta) var(--e-salida); }
+.l-pin::after { content: ""; position: absolute; inset: -6px; border: 2px solid var(--c-marino); border-radius: 50%; opacity: 0; transform: scale(.8); transition: opacity var(--d-corta) linear, transform var(--d-corta) var(--e-salida); }
+.l-pin--1, .l-pin--2, .l-pin--3 { left: calc(-1 * var(--pin) - var(--pin-hueco)); top: 50%; margin-top: calc(var(--pin) / -2); }
+.l-pin--3 { left: calc(-1 * var(--pin) - var(--pin-hueco) - 1.5px); }
+.l-pin--4 { right: -4px; top: 6%; }
+.l-pin--5 { left: 50%; top: 50%; margin: calc(var(--pin) / -2) 0 0 calc(var(--pin) / -2); }
+/* Encendido: por la marca activa (scroll) si no hay ninguna con el ratón encima; con el ratón, la que se señala */
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="0"] .l-pin--1, .l-paquete:has(.m1:hover) .l-pin--1,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="1"] .l-pin--2, .l-paquete:has(.m2:hover) .l-pin--2,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="2"] .l-pin--3, .l-paquete:has(.m3:hover) .l-pin--3,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="3"] .l-pin--4, .l-paquete:has(.m4:hover) .l-pin--4,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="4"] .l-pin--5, .l-paquete:has(.m5:hover) .l-pin--5 { transform: scale(1.18); }
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="0"] .l-pin--1::after, .l-paquete:has(.m1:hover) .l-pin--1::after,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="1"] .l-pin--2::after, .l-paquete:has(.m2:hover) .l-pin--2::after,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="2"] .l-pin--3::after, .l-paquete:has(.m3:hover) .l-pin--3::after,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="3"] .l-pin--4::after, .l-paquete:has(.m4:hover) .l-pin--4::after,
+.l-paquete:not(:has(.l-paquete__marcas li:hover))[data-activo="4"] .l-pin--5::after, .l-paquete:has(.m5:hover) .l-pin--5::after { opacity: 1; transform: none; }
+/* La lista: número en círculo que también crece con su pin */
+.l-paquete__marcas { list-style: none; margin: 0; padding: 0; counter-reset: m; border-bottom: 1px solid var(--c-linea-fuerte); }
+.l-paquete__marcas li { counter-increment: m; position: relative; display: grid; grid-template-columns: 2.4rem 1fr; gap: .15rem .8rem; padding: 1.1rem 0; border-top: 1px solid var(--c-linea-fuerte); }
 .l-paquete__marcas li:first-child { border-top-color: var(--c-tinta); }
-.l-paquete__marcas li::before { content: counter(m); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--c-marino); color: #fff; font: 500 .85rem var(--f-mono); }
+.l-paquete__marcas li::before { content: counter(m); grid-row: span 2; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--c-marino); color: #fff; font: 500 .85rem var(--f-mono); transition: transform var(--d-corta) var(--e-salida); }
+.l-paquete__marcas li:hover::before, .l-paquete:not(:has(.l-paquete__marcas li:hover)) .l-paquete__marcas li.activo::before { transform: scale(1.18); }
 .l-paquete__marcas strong { font-weight: 600; line-height: 1.4; }
 .l-paquete__marcas span { color: var(--c-acero); font-size: .92rem; }
-.l-etiqueta__aviso { margin-top: 2rem; max-width: 50rem; padding: 1rem 1.2rem; border-left: 3px solid var(--c-senal); background: #FFF6E8; border-radius: 0 12px 12px 0; }
-@media (max-width: 900px) { .l-paquete { grid-template-columns: 1fr; } }
+.l-etiqueta__aviso { margin-top: 2rem; max-width: 50rem; padding: 1rem 1.2rem; border-left: 3px solid var(--c-senal); background: var(--c-blanco); border-radius: 0 var(--radio) var(--radio) 0; }
+@media (max-width: 900px) {
+	.l-paquete { grid-template-columns: 1fr; gap: 1.5rem; }
+	/* La caja se queda arriba mientras la lista pasa por debajo: cada marca enciende su pin al llegar al centro */
+	.l-paquete__escena { z-index: 2; top: calc(var(--alto-cabecera) + .5rem); padding: .9rem 0 1rem; margin-top: -.9rem; background: var(--c-papel); }
+	.l-paquete__caja { width: min(100%, 26rem); margin-inline: auto; padding-left: 13%; }
+	.l-paquete__un { font-size: clamp(1.5rem, 7vw, 2.2rem); }
+	.l-paquete__peso { font-size: .82rem; padding: .3rem .5rem; }
+	.l-paquete { --pin: 24px; --pin-hueco: .7rem; }
+	.l-pin { font-size: .72rem; }
+	.l-pin--1, .l-pin--2 { left: calc(-1 * var(--pin) - var(--pin-hueco)); }
+}
 
-/* ---------- L4 · Para centros: ficha en filas ----------
-   El título a la izquierda y los servicios como filas de una ficha técnica. El icono va en una cara blanca
-   sobre una placa de hielo: al pasar por la fila, la cara se levanta (solo transform). */
-.l-centros__in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
-.l-filas { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
-.l-filas li { display: grid; grid-template-columns: 4.6rem minmax(0, .9fr) minmax(0, 1.1fr); gap: .4rem clamp(1rem, 2.4vw, 2rem); align-items: center; padding: clamp(1.4rem, 2.6vw, 2rem) 0; border-top: 1px solid var(--c-linea-fuerte); }
-.l-filas li:first-child { border-top-color: var(--c-tinta); }
-.l-filas__ico { position: relative; width: 56px; height: 56px; margin: 5px 0 0 5px; border-radius: 10px; background: var(--c-hielo); }
-.l-filas__cara { position: absolute; inset: 0; display: grid; place-items: center; border: 1px solid var(--c-tinta); border-radius: 10px; background: #fff; color: var(--c-marino); transform: translate3d(-5px, -5px, 0); transition: transform var(--d-corta) var(--e-salida); }
-.l-filas__cara .ico { width: 26px; height: 26px; }
-.l-filas li:hover .l-filas__cara { transform: translate3d(-8px, -8px, 0); }
-.l-filas h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.35rem, 2vw, 1.7rem); line-height: 1.12; letter-spacing: -.015em; text-wrap: balance; }
-.l-filas p { color: var(--c-acero); }
-@media (max-width: 1100px) { .l-filas li { grid-template-columns: 4.6rem minmax(0, 1fr); align-items: start; } .l-filas__ico { grid-row: span 2; margin-top: .35rem; } }
-@media (max-width: 900px) { .l-centros__in { grid-template-columns: 1fr; } }
-
-/* ---------- L5 · Preguntas numeradas ---------- */
-.l-faq__lista { list-style: none; margin: 1.6rem 0 2rem; padding: 0; counter-reset: f; border-bottom: 1px solid var(--c-linea-fuerte); }
-.l-faq__lista li { counter-increment: f; position: relative; padding: 1.6rem 0 1.6rem clamp(4rem, 8vw, 6rem); border-top: 1px solid var(--c-linea-fuerte); }
-.l-faq__lista li:first-child { border-top-color: var(--c-tinta); }
-.l-faq__lista li::before { content: counter(f, decimal-leading-zero); position: absolute; left: 0; top: 1.35rem; font: 800 clamp(2rem, 3.4vw, 2.9rem)/1 var(--f-display); letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: var(--c-marino-2); }
-.l-faq__lista h3 { font-family: var(--f-display); font-weight: 700; font-size: 1.2rem; line-height: 1.25; margin-bottom: .45rem; }
-.l-faq__lista p { color: var(--c-acero); max-width: 44rem; }
-
-/* ---------- L3b · Cliente (Semillas Fitó) ---------- */
-/* Placa de características: cliente y uso, con remaches en las esquinas */
-.sc-cliente { padding-block: clamp(3.5rem, 7vw, 6rem); }
-.sc-cliente__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 46rem); gap: clamp(1.6rem, 5vw, 5rem); align-items: center; }
-.sc-cliente__titulo em { color: var(--c-marino-2); }
-.sc-placa { --placa-fondo: var(--c-blanco); --placa-linea: #B9C6D2; --placa-remache: var(--c-niebla); --placa-logo: var(--c-marino); --placa-texto: var(--c-tinta); --placa-suave: var(--c-acero); --placa-brillo: rgba(255, 255, 255, .9); --placa-sombra: rgba(11, 20, 28, .4);
-	position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border: 1px solid var(--placa-linea); border-radius: 6px; color: var(--placa-texto);
-	box-shadow: inset 0 1px 0 var(--placa-brillo), 0 1px 2px rgba(11, 20, 28, .08), 0 22px 44px -26px var(--placa-sombra);
-	background: radial-gradient(circle at 14px 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at 14px calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), var(--placa-fondo); }
-.sc-placa__campo { display: grid; align-content: start; gap: 1rem; padding: clamp(1.8rem, 3.4vw, 2.6rem); }
-.sc-placa__campo + .sc-placa__campo { border-left: 1px dashed var(--placa-linea); }
-.sc-placa dt { font-size: .7rem; text-transform: uppercase; letter-spacing: .14em; color: var(--placa-suave); }
-.sc-placa dd { display: grid; justify-items: start; gap: .45rem; margin: 0; }
-.sc-placa .logo-cliente { width: calc(var(--lw) * 1.05rem); max-width: 100%; margin-bottom: .5rem; color: var(--placa-logo); }
-.sc-placa__detalle { font-size: .92rem; color: var(--placa-suave); }
-.sc-placa__uso { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.7rem, 2.8vw, 2.5rem); line-height: 1.08; letter-spacing: -.018em; text-wrap: balance; }
-/* Sobre azul marino: placa oscura y logotipo en hielo */
-.sc-cliente.tono-marino .sc-cliente__titulo em { color: var(--c-hielo); }
-.sc-cliente.tono-marino .sc-placa { --placa-fondo: var(--c-noche-2); --placa-linea: rgba(184, 208, 232, .3); --placa-remache: var(--c-hielo); --placa-logo: var(--c-hielo-claro); --placa-texto: #fff; --placa-suave: var(--c-niebla); --placa-brillo: rgba(184, 208, 232, .14); --placa-sombra: rgba(0, 0, 0, .7); }
-@media (max-width: 760px) {
-	.sc-cliente__in, .sc-placa { grid-template-columns: 1fr; }
-	.sc-placa__campo + .sc-placa__campo { border-left: 0; border-top: 1px dashed var(--placa-linea); }
+/* ---------- L4 · Para centros: tres hojas de servicio en diagonal sobre la foto de la entrega ----------
+   Es la «hoja sobre foto» de la página (una sola vez). La foto entra con cortina y las hojas, una tras otra. */
+.l-centros__titulo { max-width: 18ch; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+.l-centros__mesa { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--hueco); align-items: start; }
+.l-centros__foto { grid-column: 1 / 9; grid-row: 1; aspect-ratio: 3 / 2; }
+.l-hojas { grid-column: 7 / 13; grid-row: 1; position: relative; z-index: 2; list-style: none; margin: 0; padding: clamp(2.5rem, 6vw, 5rem) 0 0; display: grid; gap: 1.1rem; }
+.l-hoja { display: grid; gap: .55rem; padding: clamp(1.2rem, 2.2vw, 1.8rem); }
+/* La diagonal baja hacia la foto: la primera hoja, la más alta, es la que menos la pisa y deja a la vista la cara de quien
+   recibe la caja (arriba a la derecha de la foto); la última se monta sobre la mesa. */
+.l-hoja--1 { margin-left: 4rem; }
+.l-hoja--2 { margin-inline: 2rem; }
+.l-hoja--3 { margin-right: 4rem; }
+.l-hoja__cabeza { display: flex; align-items: center; justify-content: space-between; color: var(--c-acero); }
+.l-hoja__cabeza .ico { width: 22px; height: 22px; color: var(--c-marino); }
+.l-hoja h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.25rem, 1.7vw, 1.5rem); line-height: 1.15; letter-spacing: -.012em; text-wrap: balance; }
+.l-hoja p:last-child { color: var(--c-acero); font-size: .95rem; }
+@media (max-width: 900px) {
+	.l-centros__mesa { display: block; }
+	.l-centros__foto { margin-right: calc(-1 * var(--margen)); }
+	.l-hojas { padding: 0; gap: .9rem; }
+	.l-hoja--1 { margin: calc(-1 * var(--solape)) 1.5rem 0 0; }
+	.l-hoja--2 { margin-inline: .75rem; }
+	.l-hoja--3 { margin: 0 0 0 1.5rem; }
 }

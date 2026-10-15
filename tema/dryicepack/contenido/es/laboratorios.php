@@ -30,6 +30,8 @@ return array(
 			array( 'Envase no hermético', 'Para que el gas pueda salir.' ),
 		),
 		'aviso'  => 'Las normas del avión (IATA, instrucción 954) y de la carretera (ADR) no son iguales. Confirme con su transportista qué exige para su envío.',
+		// Rótulo de ejemplo del dibujo de la caja (decorativo, aria-hidden; el mismo «4 kg» que tenía el dibujo)
+		'peso_caja' => 'Peso neto: 4 kg',
 	),
 	'centros' => array(
 		'titulo' => '¿Lo usa cada semana?|<em>Que no tenga que acordarse.</em>',
@@ -54,5 +56,10 @@ return array(
 			array( '¿Puedo guardarlo en el ultracongelador?', 'No. En un congelador cerrado el gas genera presión y puede dañar el equipo. Consérvelo en su caja de EPS, en un sitio ventilado.' ),
 			array( '¿Cuánto hielo seco pongo por caja?', 'Depende de las horas de viaje, del tamaño de la caja y de la temperatura exterior. Díganos la ruta y el tipo de caja y le orientamos.' ),
 		),
+	),
+	// Cierre común (rediseño 13/10/2026): el titular de la portada pasado a usted y la fecha real de entrega, de usted
+	'final' => array(
+		'titulo' => '¿Lo necesita mañana?|<em>Pídalo antes de las 12:00.</em>',
+		'corte'  => array( 'Pida antes de las 12:00 y lo tiene el %s por la mañana', 'Quedan %s para pedir hoy', 'Si pide ahora, lo tiene el %s por la mañana' ),
 	),
 );

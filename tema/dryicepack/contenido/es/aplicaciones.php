@@ -9,6 +9,9 @@ return array(
 	'migas'  => array( 'Inicio', 'Usos' ),
 	'titulo' => 'Para qué sirve|el hielo seco|<em>y qué formato pedir.</em>',
 	'texto'  => 'Hace dos cosas: frío a −78,5 °C que no deja ni una gota de agua, y niebla que se queda pegada al suelo. Busca tu uso y te decimos qué formato pedir.',
+	// Rediseño 13/10/2026 (plan 2.7, A1): botón que baja al selector y rótulos de las dos láminas del hero
+	'hero_boton' => 'Elegir formato',
+	'laminas'    => array( 'niebla' => 'Niebla', 'frio' => 'Frío' ),
 	'sectores' => array(
 		array( 'hosteleria', 'Hostelería', 'Humo al servir, cócteles y frío en barra que no deja agua.', 'uso-hosteleria' ),
 		array( 'transporte', 'Transporte en frío', 'Que el congelado llegue congelado, sin cajas llenas de agua.', 'uso-transporte' ),

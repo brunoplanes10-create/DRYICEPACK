@@ -67,4 +67,8 @@ return array(
 			array( '¿Hacen limpieza criogénica?', 'La hace INDUNOVA, la empresa de la que forma parte DryIcePack. Le ponemos en contacto.' ),
 		),
 	),
+	// Cierre común (rediseño 13/10/2026): titular nuevo, pendiente de validar por el propietario
+	'final' => array(
+		'titulo' => '¿Cuántos kilos y para qué día?|<em>Le damos precio y fecha.</em>',
+	),
 );

@@ -9,6 +9,9 @@ return array(
 	'migas'  => array( 'Inici', 'Usos' ),
 	'titulo' => 'Per a què serveix|el gel sec|<em>i quin format demanar.</em>',
 	'texto'  => 'Fa dues coses: fred a −78,5 °C que no deixa ni una gota d\'aigua, i boira que es queda enganxada a terra. Busca el teu ús i et diem quin format demanar.',
+	// Redisseny 13/10/2026 (pla 2.7, A1): botó que baixa al selector i rètols de les dues làmines de l'hero
+	'hero_boton' => 'Triar format',
+	'laminas'    => array( 'niebla' => 'Boira', 'frio' => 'Fred' ),
 	'sectores' => array(
 		array( 'hosteleria', 'Hostaleria', 'Fum en servir, còctels i fred a la barra que no deixa aigua.', 'uso-hosteleria' ),
 		array( 'transporte', 'Transport en fred', 'Que el congelat arribi congelat, sense caixes plenes d\'aigua.', 'uso-transporte' ),

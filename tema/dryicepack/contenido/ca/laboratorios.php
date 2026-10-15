@@ -30,6 +30,7 @@ return array(
 			array( 'Envàs no hermètic', 'Perquè el gas pugui sortir.' ),
 		),
 		'aviso'  => 'Les normes de l\'avió (IATA, instrucció 954) i de la carretera (ADR) no són iguals. Confirmi amb el seu transportista què exigeix per al seu enviament.',
+		'peso_caja' => 'Pes net: 4 kg',
 	),
 	'centros' => array(
 		'titulo' => 'El fa servir cada setmana?|<em>Que no hi hagi de pensar.</em>',
@@ -54,5 +55,10 @@ return array(
 			array( 'El puc guardar a l\'ultracongelador?', 'No. En un congelador tancat el gas genera pressió i pot fer malbé l\'equip. Conservi\'l a la seva caixa d\'EPS, en un lloc ventilat.' ),
 			array( 'Quant gel sec poso per caixa?', 'Depèn de les hores de viatge, de la mida de la caixa i de la temperatura exterior. Digui\'ns la ruta i el tipus de caixa i l\'orientem.' ),
 		),
+	),
+	// Tancament comú (redisseny 13/10/2026): el titular de la portada amb vostè i la data real d'entrega
+	'final' => array(
+		'titulo' => 'El necessita demà?|<em>Demani\'l abans de les 12:00.</em>',
+		'corte'  => array( 'Demani abans de les 12:00 i el té el %s al matí', 'Falten %s per demanar avui', 'Si demana ara, el té el %s al matí' ),
 	),
 );

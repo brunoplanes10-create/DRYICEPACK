@@ -34,6 +34,7 @@ return array(
 		'titulo' => 'Halloween cae en sábado este año.',
 		'texto'  => 'Pide antes de las 12:00 del jueves 29 de octubre y lo tienes el viernes 30. ¿Lo quieres el mismo sábado? Pídelo antes de las 12:00 del viernes: según zona y con suplemento de 11,74 €.',
 		'enlace' => 'Hielo seco para Halloween',
+		'fecha'  => 'JUE 29/10 · 12:00', // último pedido para recibirlo el viernes 30 (rótulo en mono)
 	),
 	'seguridad' => array(
 		'titulo' => '¿Es seguro|<em>con invitados?</em>',

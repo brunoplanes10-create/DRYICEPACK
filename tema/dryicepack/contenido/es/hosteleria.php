@@ -62,4 +62,9 @@ return array(
 			array( '¿Se puede servir con el pellet dentro?', 'No. El hielo seco no se come ni se bebe. El efecto se hace siempre con doble recipiente, sin que toque la bebida.' ),
 		),
 	),
+	// Cierre común (rediseño 13/10/2026): el titular de la portada pasado a usted y la fecha real de entrega, de usted (como Laboratorios)
+	'final' => array(
+		'titulo' => '¿Lo necesita mañana?|<em>Pídalo antes de las 12:00.</em>',
+		'corte'  => array( 'Pida antes de las 12:00 y lo tiene el %s por la mañana', 'Quedan %s para pedir hoy', 'Si pide ahora, lo tiene el %s por la mañana' ),
+	),
 );

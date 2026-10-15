@@ -9,6 +9,9 @@ return array(
 	'migas'  => array( 'Home', 'Uses' ),
 	'titulo' => 'What dry ice|is used for|<em>and which format to order.</em>',
 	'texto'  => 'It does two things: cold at −78.5 °C that leaves not a drop of water, and fog that clings to the floor. Find your use and we’ll tell you which format to order.',
+	// Redesign 13/10/2026 (plan 2.7, A1): button down to the selector and labels of the two hero plates
+	'hero_boton' => 'Choose a format',
+	'laminas'    => array( 'niebla' => 'Fog', 'frio' => 'Cold' ),
 	'sectores' => array(
 		array( 'hosteleria', 'Hospitality', 'Smoke when serving, cocktails, and cooling behind the bar that leaves no water.', 'uso-hosteleria' ),
 		array( 'transporte', 'Cold-chain transport', 'Frozen goods that arrive frozen, with no boxes full of water.', 'uso-transporte' ),

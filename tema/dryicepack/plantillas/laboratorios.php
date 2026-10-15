@@ -1,21 +1,22 @@
 <?php
 /**
- * Laboratorios: L1 foto en círculo con título al lado · L2 corte técnico de la caja de EPS (muestras rodeadas de hielo seco) ·
- * L3 anatomía de un paquete con hielo seco · L3b cliente en placa de características · L4 para centros (tres columnas con línea) ·
- * L5 preguntas numeradas.
+ * Laboratorios (rediseño 13/10/2026, plan 2.8): L1 foto en círculo con órbita (en móvil, círculo de 150 px a la derecha
+ * y el H1 rodeándolo) · L2 corte técnico de la caja de EPS (no se toca) · L3 anatomía de un paquete con pines numerados
+ * enlazados con la lista · placa de cliente a caballo · L4 para centros: foto con tres hojas de servicio en diagonal ·
+ * L5 preguntas · cierre común.
+ * Tonos: papel · noche · papel · (placa) · marino · blanco · noche (cierre) · pie marino.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 $c = dipt_contenido( 'laboratorios' );
-dipt_precargar( 'uso-laboratorio', '(max-width: 900px) 80vw, 38vw' );
-dipt_registrar_faq( $c['faq']['lista'] );
+dipt_precargar( 'uso-laboratorio', '(max-width: 900px) 150px, 38vw' );
 get_header();
 ?>
 
-<!-- L1 · Foto en círculo -->
-<section class="l-hero" aria-labelledby="l-hero-t">
+<!-- L1 · Foto en círculo (LCP: la foto no se anima; solo gira la órbita, después de cargar) -->
+<section class="l-hero tono-papel" aria-labelledby="l-hero-t">
 	<div class="envoltura l-hero__in">
-		<figure class="l-hero__foto"><?php echo dipt_foto( 'uso-laboratorio', $c['hero']['alt'], array( 'lcp' => true, 'sizes' => '(max-width: 900px) 80vw, 38vw' ) ); // phpcs:ignore ?><span class="l-hero__orbita" aria-hidden="true"></span></figure>
+		<figure class="l-hero__foto" data-pausa><?php echo dipt_foto( 'uso-laboratorio', $c['hero']['alt'], array( 'lcp' => true, 'sizes' => '(max-width: 900px) 150px, 38vw' ) ); // phpcs:ignore ?><span class="l-hero__orbita" aria-hidden="true"></span></figure>
 		<div>
 			<?php echo dipt_migas( array( array( $c['migas'][0], dipt_url( 'inicio' ) ), array( $c['migas'][1], dipt_url( 'aplicaciones' ) ), array( $c['migas'][2], dipt_url( 'laboratorios' ) ) ) ); // phpcs:ignore ?>
 			<h1 class="t-h1" id="l-hero-t"><?php dipt_html( '<span class="tramo">' . str_replace( '|', '</span><span class="tramo">', $c['hero']['titulo'] ) . '</span>' ); ?></h1>
@@ -130,21 +131,31 @@ $lc_cota = $c['caja']['cotas'] ?? array( '', '', '', '' );
 	</div>
 </section>
 
-<!-- L3 · Anatomía de un paquete -->
+<?php
+// L3 · Pines sobre la caja: cada número señala la marca de la lista con el mismo número (1 UN, 2 nombre, 3 peso, 4 etiqueta de clase 9, 5 ranura de salida del gas).
+// Cada pin va dentro de la pieza que señala: se queda pegado a ella con cualquier ancho y cualquier idioma.
+$l_marcas = $c['etiqueta']['marcas'];
+$l_pin    = static function ( $n ) {
+	return '<span class="l-pin l-pin--' . (int) $n . '">' . (int) $n . '</span>';
+};
+?>
+<!-- L3 · Anatomía de un paquete: pines numerados sobre la caja enlazados con la lista (el que cruza el centro de la pantalla se enciende) -->
 <section class="l-etiqueta tono-papel seccion" aria-labelledby="l-etiqueta-t">
 	<div class="envoltura">
 		<?php echo dipt_titulo( 'h2', $c['etiqueta']['titulo'], 't-h2 l-etiqueta__titulo', 'l-etiqueta-t' ); // phpcs:ignore ?>
-		<div class="l-paquete">
-			<div class="l-paquete__caja" aria-hidden="true">
-				<span class="l-paquete__un">UN 1845</span>
-				<span class="l-paquete__nombre">Hielo seco</span>
-				<span class="l-paquete__peso">Peso neto: 4 kg</span>
-				<span class="l-paquete__rombo"><span>9</span></span>
-				<span class="l-paquete__ranura"></span>
+		<div class="l-paquete" data-activa-grupo>
+			<div class="l-paquete__escena">
+				<div class="l-paquete__caja" aria-hidden="true">
+					<span class="l-paquete__ranura"><?php echo $l_pin( 5 ); // phpcs:ignore ?></span>
+					<span class="l-paquete__un"><?php echo $l_pin( 1 ); // phpcs:ignore ?>UN 1845</span>
+					<span class="l-paquete__nombre"><?php echo $l_pin( 2 ); // phpcs:ignore ?><?php echo esc_html( $l_marcas[1][0] ?? '' ); ?></span>
+					<span class="l-paquete__peso"><?php echo $l_pin( 3 ); // phpcs:ignore ?><?php echo esc_html( $c['etiqueta']['peso_caja'] ?? '' ); ?></span>
+					<span class="l-paquete__rombo"><?php echo $l_pin( 4 ); // phpcs:ignore ?><svg viewBox="0 0 100 100" focusable="false"><path class="l-r-borde" d="M50 3 97 50 50 97 3 50Z"/><path class="l-r-raya" d="M26 27V50M34 19V50M42 11V50M50 6V50M58 11V50M66 19V50M74 27V50"/><path class="l-r-linea" d="M8 50H92"/><text x="50" y="80" text-anchor="middle">9</text></svg></span>
+				</div>
 			</div>
 			<ol class="l-paquete__marcas">
-				<?php foreach ( $c['etiqueta']['marcas'] as $i => $m ) : ?>
-					<li class="m<?php echo (int) $i + 1; ?>" data-revela style="--i:<?php echo (int) $i; ?>"><strong><?php echo esc_html( $m[0] ); ?></strong><span><?php echo esc_html( $m[1] ); ?></span></li>
+				<?php foreach ( $l_marcas as $i => $m ) : ?>
+					<li class="m<?php echo (int) $i + 1; ?>" data-activa data-revela style="--i:<?php echo (int) $i; ?>"><strong><?php echo esc_html( $m[0] ); ?></strong><span><?php echo esc_html( $m[1] ); ?></span></li>
 				<?php endforeach; ?>
 			</ol>
 		</div>
@@ -152,47 +163,45 @@ $lc_cota = $c['caja']['cotas'] ?? array( '', '', '', '' );
 	</div>
 </section>
 
-<!-- L3b · Cliente: placa de características (cliente · uso) -->
-<section class="sc-cliente tono-marino" aria-labelledby="l-cliente-t">
-	<div class="envoltura sc-cliente__in">
-		<?php echo dipt_titulo( 'h2', $c['cliente']['titulo'], 't-h2 sc-cliente__titulo', 'l-cliente-t' ); // phpcs:ignore ?>
-		<dl class="sc-placa" data-revela>
-			<div class="sc-placa__campo">
-				<dt class="dato"><?php echo esc_html( $c['cliente']['etiquetas'][0] ); ?></dt>
-				<dd><?php echo dipt_logo_cliente( $c['cliente']['id'], $c['cliente']['alt'] ); // phpcs:ignore ?><span class="sc-placa__nombre dato" aria-hidden="true"><?php echo esc_html( dipt_cliente_nombre( $c['cliente']['id'] ) ); ?></span><span class="sc-placa__detalle"><?php echo esc_html( $c['cliente']['detalle'] ); ?></span></dd>
-			</div>
-			<div class="sc-placa__campo">
-				<dt class="dato"><?php echo esc_html( $c['cliente']['etiquetas'][1] ); ?></dt>
-				<dd class="sc-placa__uso"><?php echo esc_html( $c['cliente']['uso'] ); ?></dd>
-			</div>
-		</dl>
-	</div>
-</section>
+<?php echo dipt_placa_cliente( $c['cliente'], array( 'id' => 'l-cliente-t', 'arriba' => 'papel', 'abajo' => 'marino', 'lado' => 'izq' ) ); // phpcs:ignore ?>
 
-<!-- L4 · Para centros: ficha en filas (título a un lado, cada servicio en una fila con su icono en placa) -->
-<section class="l-centros tono-blanco seccion" aria-labelledby="l-centros-t">
-	<div class="envoltura l-centros__in">
-		<?php echo dipt_titulo( 'h2', $c['centros']['titulo'], 't-h2', 'l-centros-t' ); // phpcs:ignore ?>
-		<ul class="l-filas">
-			<?php $ic = array( 'calendario', 'factura', 'descarga' ); foreach ( $c['centros']['lista'] as $i => $l ) : ?>
-				<li data-revela style="--i:<?php echo (int) $i; ?>"><span class="l-filas__ico" aria-hidden="true"><span class="l-filas__cara"><?php echo dipt_icono( $ic[ $i ] ?? 'check' ); // phpcs:ignore ?></span></span><h3><?php echo esc_html( $l[0] ); ?></h3><p><?php echo esc_html( $l[1] ); ?></p></li>
-			<?php endforeach; ?>
-		</ul>
-	</div>
-</section>
-
-<!-- L5 · Preguntas numeradas -->
-<section class="l-faq tono-escarcha seccion" aria-labelledby="l-faq-t">
+<!-- L4 · Para centros: la entrega en el laboratorio, con tres hojas de servicio montadas en diagonal sobre la foto -->
+<section class="l-centros tono-marino seccion" aria-labelledby="l-centros-t">
 	<div class="envoltura">
-		<h2 class="t-h3" id="l-faq-t" data-revela><?php echo esc_html( $c['faq']['titulo'] ); ?></h2>
-		<ol class="l-faq__lista">
-			<?php foreach ( $c['faq']['lista'] as $f ) : ?>
-				<li data-revela><h3><?php echo esc_html( $f[0] ); ?></h3><p><?php echo esc_html( $f[1] ); ?></p></li>
-			<?php endforeach; ?>
-		</ol>
-		<p><?php echo dipt_enlace( dipt_t( 'seguridad_mas' ), dipt_url( 'seguridad' ) ); // phpcs:ignore ?></p>
+		<?php echo dipt_titulo( 'h2', $c['centros']['titulo'], 't-h2 l-centros__titulo', 'l-centros-t', 'cortina' ); // phpcs:ignore ?>
+		<div class="l-centros__mesa">
+			<div class="l-centros__foto foto--sangre foto--sangre-izq" data-cortina><?php echo dipt_foto( 'uso-laboratorio-entrega', '', array( 'sizes' => '(max-width: 900px) 100vw, 62vw', 'recorte' => '40% 50%' ) ); // phpcs:ignore ?></div>
+			<ol class="l-hojas">
+				<?php
+				$ic = array( 'calendario', 'factura', 'descarga' );
+				$nl = count( $c['centros']['lista'] );
+				foreach ( $c['centros']['lista'] as $i => $l ) :
+					?>
+					<li class="hoja l-hoja l-hoja--<?php echo (int) $i + 1; ?>" data-revela style="--i:<?php echo (int) $i * 2; ?>">
+						<p class="l-hoja__cabeza" aria-hidden="true"><span class="dato"><?php echo esc_html( sprintf( '%02d / %02d', $i + 1, $nl ) ); ?></span><?php echo dipt_icono( $ic[ $i ] ?? 'check' ); // phpcs:ignore ?></p>
+						<h3><?php echo esc_html( $l[0] ); ?></h3>
+						<p><?php echo esc_html( $l[1] ); ?></p>
+					</li>
+				<?php endforeach; ?>
+			</ol>
+		</div>
+	</div>
+</section>
+
+<!-- L5 · Preguntas -->
+<section class="l-faq seccion seccion--densa tono-blanco" aria-labelledby="l-faq-t">
+	<div class="envoltura">
+		<?php echo dipt_faq( $c['faq']['lista'], array( 'titulo' => $c['faq']['titulo'], 'id' => 'l-faq-t' ) ); // phpcs:ignore ?>
 	</div>
 </section>
 
 <?php
+// Cierre común: compra online con la fecha real de entrega, de usted. El enlace a seguridad va en el cierre.
+dipt_cierre( array(
+	'titulo'       => $c['final']['titulo'] ?? '',
+	'id'           => 'l-cierre-t',
+	'foto'         => 'nuggets-azul',
+	'recorte'      => '45% 55%',
+	'corte_textos' => $c['final']['corte'] ?? array( dipt_t( 'corte_antes' ), dipt_t( 'corte_quedan' ), dipt_t( 'corte_despues' ) ),
+) );
 get_footer();

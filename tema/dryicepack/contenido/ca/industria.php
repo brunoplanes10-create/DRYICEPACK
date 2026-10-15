@@ -67,4 +67,8 @@ return array(
 			array( 'Fan neteja criogènica?', 'La fa INDUNOVA, l\'empresa de la qual forma part DryIcePack. Li facilitem el contacte.' ),
 		),
 	),
+	// Tancament comú (redisseny 13/10/2026): titular nou, pendent de validar
+	'final' => array(
+		'titulo' => 'Quants quilos i per a quin dia?|<em>Li donem preu i data.</em>',
+	),
 );

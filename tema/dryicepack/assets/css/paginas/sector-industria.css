@@ -1,122 +1,197 @@
 /* =========================================================================
-   Industria · N1 a N6
-   Dirección C "Industrial sobrio": Inter Tight 800/700 en titulares, Inter en el texto,
-   Geist Mono solo en los datos (.dato). Movimiento: solo transform y opacity.
+   Industria · N1 a N6 (rediseño 13/10/2026, plan 2.8)
+   Firma propia: los «+» de la retícula que se dibujan en cada cruce (N2). Pieza central: la cinta métrica de kilos (N3).
+   Comparte con los otros sectores solo la placa de cliente (sectores.css), las preguntas y el cierre (base.css).
+   Tonos: N1 noche · N2 escarcha · N3 marino · placa · N4 papel · N5 noche · N6 blanco · cierre noche · pie marino.
+   Movimiento: solo transform y opacity; con .quieto o reducir movimiento, todo en su estado final.
    ========================================================================= */
-/* Titulares con salto ("|" en el texto): cada tramo es un bloque equilibrado por separado, sin palabras sueltas */
-h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 
-
-/* ---------- N1 · −78,5 °C en contorno sobre foto ---------- */
-.n-hero { position: relative; overflow: hidden; padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); background: var(--c-noche); }
-.n-hero__foto { position: absolute; inset: 0 0 0 auto; width: 55%; }
-.n-hero__foto img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.3); }
-.n-hero__foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #0B141C 0%, rgba(11, 20, 28, .4) 45%, rgba(11, 20, 28, .1) 100%); }
-.n-hero__in { position: relative; z-index: 2; display: grid; justify-items: start; gap: 1.4rem; }
-/* 18ch: "volumen y fecha cerrada." cabe en una línea y no deja una palabra suelta */
-.n-hero__in h1 { max-width: 18ch; margin-top: .6rem; color: #fff; text-wrap: pretty; }
-.n-hero__in h1 em { color: var(--c-hielo); }
-.n-hero__in .entrada { color: var(--c-hielo-claro); max-width: 34rem; }
-/* La firma de marca: −78,5 °C en Inter Tight 800 de contorno, como una cota de plano.
-   Cifras tabulares y el contador siempre en negativo (de −20 a −78,5): el ancho no cambia mientras cuenta. */
-.n-hero__cifra { display: flex; align-items: baseline; gap: 1rem 1.4rem; margin: clamp(1.5rem, 4vw, 3rem) 0 0; }
+/* ---------- N1 · −78,5 °C en contorno junto a la foto ----------
+   La foto (LCP) va a sangre por la derecha, opacidad 1, sin capa encima y sin animación. */
+.n-hero { --n-col: calc(54vw - max(0px, (100vw - var(--ancho)) / 2) - var(--margen) - var(--hueco));
+	position: relative; overflow: hidden; padding: calc(var(--alto-cabecera) + clamp(1.5rem, 4vw, 3rem)) 0 clamp(3.5rem, 7vw, 6rem); }
+.n-hero__migas { position: relative; z-index: 2; }
+.n-hero__foto { position: absolute; top: 0; right: 0; bottom: 0; width: 46%; background: var(--c-noche-2); }
+.n-hero__foto img { width: 100%; height: 100%; object-fit: cover; }
+.n-hero__in { position: relative; z-index: 2; display: grid; justify-items: start; gap: 1.4rem; margin-top: clamp(1.2rem, 3vw, 2.4rem); }
+.n-hero__in > * { max-width: var(--n-col); }
+.n-hero__in h1 { color: #fff; text-wrap: pretty; }
+.n-hero__in .entrada { color: var(--c-hielo-claro); max-width: min(34rem, var(--n-col)); }
+/* La firma: −78,5 °C en contorno, como la cota de un plano. Cuenta de 20 a −78,5; la cifra final reserva el ancho (CLS 0). */
+.n-hero__cifra { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .8rem 1.4rem; margin-top: clamp(1rem, 3vw, 2.2rem); }
 .n-hero__temp { display: flex; align-items: flex-start; font-family: var(--f-display); font-weight: 800; line-height: .9; color: transparent; -webkit-text-stroke: 1.5px var(--c-hielo); }
-.n-hero__num { min-width: 2.7em; font-size: clamp(5.75rem, 15vw, 11rem); letter-spacing: -.05em; font-variant-numeric: tabular-nums; font-kerning: none; }
-.n-hero__grados { font-size: clamp(2.3rem, 5.6vw, 4.6rem); margin: .2em 0 0 .14em; letter-spacing: -.02em; -webkit-text-stroke-width: 1.25px; }
-.n-hero__cifra small { position: relative; padding-left: 1.4rem; font-family: var(--f-mono); font-weight: 400; font-size: .85rem; line-height: 1.4; color: var(--c-hielo); -webkit-text-stroke: 0; letter-spacing: .1em; text-transform: uppercase; }
+/* La cifra que cuenta ocupa toda la celda (alineada a la derecha): cambia el texto, no la caja, y no cuenta como desplazamiento */
+.n-hero .cifra-fija > [data-cuenta], .n-cinta .cifra-fija > [data-cuenta] { justify-self: stretch; text-align: right; }
+.n-hero__num { font-size: clamp(5rem, 12vw, 9.5rem); letter-spacing: -.05em; font-kerning: none; }
+.n-hero__grados { font-size: clamp(2rem, 4.6vw, 3.8rem); margin: .2em 0 0 .14em; letter-spacing: -.02em; -webkit-text-stroke-width: 1.25px; }
+/* La leyenda va siempre en su propia línea: si se colocara junto a la cifra según el ancho, el cambio de fuente
+   la haría saltar de línea y movería N2 (CLS medido en /ca/ y /en/ a 1440 px) */
+.n-hero__cifra small { position: relative; flex-basis: 100%; padding: 0 0 0 1.4rem; font-family: var(--f-mono); font-size: .8125rem; line-height: 1.4; letter-spacing: .02em; color: var(--c-hielo); }
 .n-hero__cifra small::before { content: ""; position: absolute; left: 0; top: .7em; width: .9rem; height: 1px; background: currentColor; }
-@media (max-width: 900px) { .n-hero__foto { width: 100%; opacity: .35; } }
-@media (max-width: 520px) { .n-hero__cifra { flex-wrap: wrap; gap: 1.1rem 1rem; } .n-hero__cifra small { flex-basis: 100%; } }
+/* Móvil: la foto en banda de 200 px, a sangre y opacidad 1; el H1 se monta 32 px sobre ella en una pestaña noche */
+@media (max-width: 900px) {
+	.n-hero { --n-col: 100%; padding-top: calc(var(--alto-cabecera) + 1rem); }
+	.n-hero__foto { position: relative; width: 100%; height: 200px; margin-top: 1rem; }
+	.n-hero__in { margin-top: -2rem; }
+	/* La pestaña deja ver al menos 2,5 rem de foto a la derecha: se lee como solape, no como recorte */
+	.n-hero__in h1 { width: fit-content; max-width: calc(100% + var(--margen) - 2.5rem); margin-left: calc(-1 * var(--margen)); padding: .8rem 1.1rem 0 var(--margen); background: var(--c-noche); font-size: clamp(1.95rem, 8.4vw, 2.6rem); }
+}
 
-/* ---------- N2 · Usos en plano técnico ---------- */
-.n-plano { background-color: #EEF3F7; background-image: linear-gradient(rgba(31, 60, 85, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(31, 60, 85, .08) 1px, transparent 1px); background-size: 32px 32px; }
-.n-plano__rejilla { list-style: none; margin: clamp(2.5rem, 5vw, 4rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--c-marino); border-left: 1px solid var(--c-marino); box-shadow: 0 30px 60px -45px rgba(11, 20, 28, .45); }
-.n-plano__rejilla li { position: relative; isolation: isolate; display: grid; align-content: start; gap: .7rem; min-height: 200px; padding: 2.6rem 1.8rem 1.8rem; border-right: 1px solid var(--c-marino); border-bottom: 1px solid var(--c-marino); background: rgba(246, 248, 249, .6); }
-/* Al pasar: la celda se ilumina (capa blanca por opacidad) y la cota de la esquina avanza */
-.n-plano__rejilla li::before { content: ""; position: absolute; inset: 0; z-index: -1; background: #fff; opacity: 0; transition: opacity var(--d-corta); }
-.n-plano__rejilla li:hover::before { opacity: 1; }
-.n-plano__coord { position: absolute; top: .8rem; left: .9rem; color: var(--c-marino); transition: transform var(--d-corta) var(--e-salida); }
-.n-plano__rejilla li:hover .n-plano__coord { transform: translate3d(4px, 0, 0); }
-.n-plano__rejilla li::after { content: "+"; position: absolute; right: -.45rem; bottom: -.85rem; font: 300 1.2rem var(--f-mono); color: var(--c-marino); }
-.n-plano__rejilla h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.3rem, 1.8vw, 1.55rem); line-height: 1.15; letter-spacing: -.012em; text-wrap: balance; }
-.n-plano__rejilla p { color: var(--c-acero); }
-@media (max-width: 900px) { .n-plano__rejilla { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 560px) { .n-plano__rejilla { grid-template-columns: 1fr; } .n-plano__rejilla li { min-height: 0; padding-bottom: 2rem; } }
+/* ---------- N2 · Usos en un plano de 4 columnas ----------
+   El título y la foto ocupan celdas de la retícula (la foto, 2 × 2). En cada cruce se dibuja un «+» al entrar.
+   Al pasar el ratón o al cruzar el centro de la pantalla (.activo), la celda se aclara y la coordenada avanza. */
+.n-plano { --n-linea: rgba(31, 60, 85, .28); }
+.n-plano__rejilla { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-areas: "t t f f" "u1 u2 f f" "u3 u4 u5 u6";
+	border-top: 1px solid var(--n-linea); border-left: 1px solid var(--n-linea); }
+.n-plano__rejilla > * { position: relative; border-right: 1px solid var(--n-linea); border-bottom: 1px solid var(--n-linea); }
+.n-plano__titulo { grid-area: t; display: grid; align-items: end; padding: clamp(1.6rem, 3vw, 2.6rem) clamp(1.2rem, 2.4vw, 2rem); }
+.n-plano__foto { grid-area: f; min-height: 100%; overflow: hidden; background: var(--c-noche-2); }
+.n-plano__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.n-uso:nth-of-type(1) { grid-area: u1; } .n-uso:nth-of-type(2) { grid-area: u2; } .n-uso:nth-of-type(3) { grid-area: u3; }
+.n-uso:nth-of-type(4) { grid-area: u4; } .n-uso:nth-of-type(5) { grid-area: u5; } .n-uso:nth-of-type(6) { grid-area: u6; }
+.n-uso { isolation: isolate; min-height: 13.5rem; padding: 2.8rem clamp(1.1rem, 2vw, 1.8rem) 1.8rem; }
+.n-uso::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--c-blanco); opacity: 0; transition: opacity var(--d-corta) linear; }
+.n-uso:hover::before, .n-uso.activo::before { opacity: 1; }
+.n-uso__d > summary { display: block; }
+.n-uso__coord { position: absolute; top: .9rem; left: 1rem; color: var(--c-marino); transition: transform var(--d-corta) var(--e-salida); }
+.n-uso:hover .n-uso__coord, .n-uso.activo .n-uso__coord { transform: translate3d(4px, 0, 0); }
+.n-uso h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.2rem, 1.6vw, 1.45rem); line-height: 1.15; letter-spacing: -.012em; text-wrap: balance; }
+.n-uso p { margin-top: .7rem; color: var(--c-acero); text-wrap: pretty; }
+.n-uso__signo { display: none; }
+/* En escritorio cada uso se lee entero: el resumen no pliega con el ratón */
+@media (min-width: 601px) { .n-uso__d > summary { cursor: default; pointer-events: none; } }
+/* «+» en la esquina inferior derecha de cada celda: dos trazos de 15 px que crecen al entrar */
+.n-plano__cruz { position: absolute; right: -8px; bottom: -8px; z-index: 2; width: 15px; height: 15px; pointer-events: none; }
+.n-plano__cruz::before, .n-plano__cruz::after { content: ""; position: absolute; background: var(--c-marino); }
+.n-plano__cruz::before { left: 0; right: 0; top: 7px; height: 1px; }
+.n-plano__cruz::after { top: 0; bottom: 0; left: 7px; width: 1px; }
+.js .n-plano__cruz::before { transform: scaleX(0); transition: transform var(--d-media) var(--e-salida) calc(var(--i, 0) * var(--escalon) + .25s); }
+.js .n-plano__cruz::after { transform: scaleY(0); transition: transform var(--d-media) var(--e-salida) calc(var(--i, 0) * var(--escalon) + .35s); }
+.js .visto > .n-plano__cruz::before, .js .visto > .n-plano__cruz::after { transform: none; }
+@media (max-width: 900px) {
+	.n-plano__rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "t t" "f f" "u1 u2" "u3 u4" "u5 u6"; }
+	.n-plano__foto { aspect-ratio: 4 / 3; }
+	.n-uso { min-height: 0; }
+}
+/* 390: dos columnas, cada uso plegado a su título (se abre al tocarlo) */
+@media (max-width: 600px) {
+	.n-plano__titulo { padding: 1.4rem 1rem; }
+	.n-uso { padding: 0; }
+	.n-uso__d > summary { position: relative; min-height: 8.5rem; padding: 2.4rem .9rem 2.6rem; }
+	.n-uso__coord { left: .9rem; }
+	.n-uso h3 { font-size: 1.05rem; line-height: 1.2; }
+	.n-uso p { margin: 0; padding: 0 .9rem 1.2rem; font-size: .92rem; line-height: 1.5; }
+	/* Indicador de plegado: un ángulo (no un «+», que ya es la firma de los cruces de la retícula) que gira al abrir */
+	.n-uso__signo { position: absolute; left: .95rem; bottom: 1.05rem; display: block; width: 9px; height: 9px; color: var(--c-marino); border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform var(--d-corta) var(--e-salida); }
+	.n-uso__d[open] .n-uso__signo { transform: translate3d(0, 4px, 0) rotate(225deg); }
+	.n-uso__d[open] > p { animation: n-abre .25s var(--e-salida); }
+}
+@keyframes n-abre { from { opacity: 0; transform: translate3d(0, -6px, 0); } to { opacity: 1; transform: none; } }
 
-/* ---------- N3 · Escala de kilos ---------- */
-.n-regla { position: relative; margin-top: clamp(3rem, 6vw, 5rem); padding-top: 3rem; }
-.n-regla__barra { position: relative; height: 10px; border-radius: 5px; background: rgba(184, 208, 232, .15); overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .35); }
-.n-regla__barra span { position: absolute; inset: 0; background: linear-gradient(90deg, var(--c-hielo) 0 62.5%, rgba(184, 208, 232, .4) 62.5%); transform: scaleX(0); transform-origin: left; transition: transform 2.2s var(--e-salida); }
-.n-escala.visto .n-regla__barra span, .quieto .n-regla__barra span { transform: none; }
-.n-regla__marcas { position: relative; list-style: none; margin: 0; padding: 0; height: 180px; }
-/* Cada marca se coloca con margin (no con transform: el transform es de la animación de entrada [data-revela]).
-   La raya queda en su punto de la escala: al 10 % de la caja en las marcas normales y en el borde derecho en la última.
-   Ancho: 19 % de la regla como máximo (el % de width y de margin se mide sobre la regla), para que la marca de 250 kg
-   (62,5 %) y la última (100 %) no se pisen: 0,9 × ancho + ancho ≤ 37,5 %. Por debajo de 1100 px, en lista. */
-.n-regla__marcas li { --marca-ancho: min(15rem, 19%); position: absolute; left: var(--pos); top: 0; width: var(--marca-ancho); margin-left: calc(var(--marca-ancho) * -.1); padding-top: 1.4rem; }
-.n-regla__marcas li:first-child { margin-left: 0; }
-.n-regla__marcas li:first-child::before { left: 0; }
-.n-regla__marcas li:last-child { margin-left: calc(var(--marca-ancho) * -1); text-align: right; }
-.n-regla__marcas li::before { content: ""; position: absolute; left: 10%; top: -1.6rem; width: 1px; height: 2.4rem; background: var(--c-hielo); }
-.n-regla__marcas li:last-child::before { left: auto; right: 0; }
-.n-regla__marcas strong { display: block; margin-bottom: .35rem; font-family: var(--f-display); font-weight: 700; font-size: clamp(1.3rem, 1.8vw, 1.55rem); line-height: 1.15; letter-spacing: -.012em; color: #fff; }
-.n-regla__marcas span { display: block; font-size: .88rem; line-height: 1.55; color: var(--c-hielo-claro); }
-@media (max-width: 1100px) { .n-regla__barra { display: none; } .n-regla__marcas { height: auto; display: grid; gap: 1.2rem; } .n-regla__marcas li, .n-regla__marcas li:first-child, .n-regla__marcas li:last-child { position: static; width: auto; margin-left: 0; text-align: left; padding: 0 0 0 1rem; border-left: 2px solid var(--c-hielo); } .n-regla__marcas li::before { display: none; } }
+/* ---------- N3 · Cinta métrica de kilos ----------
+   Escritorio: cinta horizontal de 0 a 400 con una marca cada 10 kg; la parte servida (hasta 250 kg) se llena al entrar
+   y el tramo del suministro programado va en discontinuo. La foto de las cajas sale por debajo de la cinta.
+   Menos de 1100 px: regla vertical; cada hito llena su tramo al entrar. */
+/* El título se apoya sobre la cinta que presenta (abajo), no arriba con un vacío debajo.
+   La cinta es una banda opaca que pasa por encima del borde inferior de la foto: la foto «sale por debajo» de la cinta,
+   las marcas se leen sobre marino y no sobre las cajas, y las cifras no se pegan al borde de la foto. */
+.n-escala { --n-banda: 34px; }
+.n-escala__cabeza { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--hueco); align-items: end; }
+.n-escala__cabeza h2 { padding-bottom: clamp(2rem, 3vw, 3rem); }
+.n-escala__foto { aspect-ratio: 4 / 3; margin-bottom: calc(-1 * var(--n-banda)); }
+.n-cinta { position: relative; z-index: 2; }
+.n-cinta__banda { position: relative; height: var(--n-banda); border-top: 1px solid var(--c-niebla); background: var(--c-marino); }
+/* La banda tapa también el trozo de foto que sangra por la derecha (mismo cálculo que .foto--sangre-der) */
+.n-cinta__banda::before { content: ""; position: absolute; top: -1px; bottom: 0; left: 100%; width: calc(var(--margen) + max(0px, (100vw - var(--ancho)) / 2)); background: var(--c-marino); }
+.n-cinta__banda::after { content: ""; position: absolute; left: 62.5%; right: 0; top: -2px; border-top: 3px dashed var(--c-niebla); }
+.n-cinta__lleno { position: absolute; left: 0; top: -3px; width: 62.5%; height: 5px; background: var(--c-hielo); transform-origin: 0 50%; }
+.js .n-cinta__lleno { transform: scaleX(0); transition: transform var(--d-larga) var(--e-salida) .15s; }
+.js .n-cinta.visto .n-cinta__lleno, .js .n-cinta:has(.visto) .n-cinta__lleno { transform: none; }
+.n-cinta__marcas-h { position: absolute; left: 0; top: 0; width: 100%; height: 24px; overflow: visible; fill: none; stroke: var(--c-niebla); stroke-width: 1; }
+.n-cinta__marcas-v { display: none; fill: none; stroke: var(--c-niebla); stroke-width: 1; }
+/* Los hitos: columnas con el ancho del tramo hasta el siguiente (0 · 150 · 250 · 400 = 37,5 % · 25 % · resto · final) */
+.n-cinta__lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 37.5% 25% minmax(0, 1fr) minmax(0, 15%); }
+.n-cinta__marca { position: relative; display: grid; align-content: start; gap: .5rem; padding: 2.2rem 1.6rem 0 0; }
+.n-cinta__marca::before { content: ""; position: absolute; left: 0; top: calc(-1 * var(--n-banda)); width: 1px; height: 3.6rem; background: var(--c-hielo); }
+.n-cinta__marca--4 { justify-items: end; padding-right: 0; text-align: right; }
+.n-cinta__marca--4::before { left: auto; right: 0; }
+.n-cinta__cifra { display: flex; align-items: baseline; gap: .12em; margin-bottom: .4rem; font-family: var(--f-display); font-weight: 800; font-size: var(--t-gigante); line-height: .9; letter-spacing: -.045em; color: var(--c-hielo-claro); }
+.n-cinta__cifra small { font-family: var(--f-mono); font-weight: 400; font-size: .9rem; letter-spacing: .02em; color: var(--c-hielo); }
+.n-cinta__cifra--icono { height: .9em; align-items: center; }
+.n-cinta__cifra--icono .ico { width: .62em; height: .62em; stroke-width: 1.2; color: var(--c-hielo); }
+.n-cinta__marca strong { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.15rem, 1.5vw, 1.4rem); line-height: 1.15; letter-spacing: -.012em; color: #fff; }
+.n-cinta__texto { max-width: 22rem; font-size: .92rem; line-height: 1.55; color: var(--c-hielo-claro); }
+@media (max-width: 1100px) {
+	.n-escala__cabeza { grid-template-columns: 1fr; gap: 2rem; }
+	.n-escala__cabeza h2 { padding-bottom: 0; }
+	.n-escala__foto { aspect-ratio: 16 / 10; margin-bottom: 0; }
+	.n-cinta { margin-top: clamp(2.5rem, 6vw, 3.5rem); padding-left: 2.6rem; }
+	.n-cinta__banda { position: absolute; left: 0; top: 0; bottom: 0; width: 24px; height: auto; border-top: 0; border-left: 1px solid var(--c-niebla); }
+	.n-cinta__banda::before, .n-cinta__banda::after, .n-cinta__lleno, .n-cinta__marcas-h { display: none; }
+	.n-cinta__marcas-v { display: block; position: absolute; left: 0; top: 0; width: 24px; height: 100%; }
+	.n-cinta__lista { display: grid; grid-template-columns: 1fr; }
+	.n-cinta__marca, .n-cinta__marca--4 { justify-items: start; padding: 0 0 2.4rem; text-align: left; }
+	.n-cinta__marca:last-child { padding-bottom: 0; }
+	/* Tick del hito (horizontal) y tramo de la regla que se llena al entrar */
+	.n-cinta__marca::before, .n-cinta__marca--4::before { left: -2.6rem; right: auto; top: 1.6rem; width: 2rem; height: 1px; }
+	.n-cinta__marca::after { content: ""; position: absolute; left: calc(-2.6rem - 1px); top: 0; bottom: 0; width: 4px; background: var(--c-hielo); transform-origin: 50% 0; }
+	.n-cinta__marca--4::after { width: 0; border-left: 3px dashed var(--c-niebla); background: none; }
+	.js .n-cinta__marca:not(.n-cinta__marca--4)::after { transform: scaleY(0); transition: transform var(--d-larga) var(--e-salida) .2s; }
+	.js .n-cinta__marca.visto::after { transform: none; }
+	.n-cinta__cifra { font-size: clamp(3.2rem, 14vw, 5rem); }
+}
+/* Tableta (601–1100): la regla vertical a la izquierda y la foto de las cajas fija a su lado, a sangre por la derecha
+   (sin la mitad derecha vacía junto a la regla) */
+@media (min-width: 601px) and (max-width: 1100px) {
+	.n-escala > .envoltura { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--hueco); align-items: start; }
+	.n-escala__cabeza { display: contents; }
+	.n-escala__cabeza h2 { grid-column: 1 / -1; }
+	.n-escala .n-escala__foto { grid-column: 2; grid-row: 2; position: sticky; top: calc(var(--alto-cabecera) + 2rem); aspect-ratio: 4 / 5; margin-top: clamp(2.5rem, 6vw, 3.5rem); }
+	.n-cinta { grid-column: 1; grid-row: 2; }
+}
 
-/* ---------- N4 · Lo que pide compras (portapapeles) ---------- */
-.n-compras__in { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
-/* rotate (propiedad suelta) y no transform: el transform lo usa la entrada [data-revela] y lo deja en "none" */
-.n-portapapeles { position: relative; padding: 3.4rem clamp(1.6rem, 4vw, 2.8rem) 2rem; border-radius: 18px; background: #fff; rotate: -1.5deg;
-	box-shadow: 0 0 0 10px #C9B79A, 0 0 0 11px #B19D7E, 0 2px 4px 10px rgba(11, 20, 28, .08), 0 40px 70px -36px rgba(11, 20, 28, .5), 0 90px 110px -70px rgba(11, 20, 28, .35); }
-.n-portapapeles__pinza { position: absolute; left: 50%; top: -22px; width: 150px; height: 44px; margin-left: -75px; border-radius: 10px 10px 16px 16px; background: linear-gradient(180deg, #9AA6B2, #6F7B87); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 6px 10px -4px rgba(11, 20, 28, .45); }
-.n-portapapeles ul { list-style: none; margin: 0 0 1.4rem; padding: 0; display: grid; gap: .2rem; }
-.n-portapapeles li { display: grid; grid-template-columns: 32px 1fr; gap: .15rem .8rem; padding: .9rem 0; border-bottom: 1px dashed var(--c-linea-fuerte); }
-.n-portapapeles__check { grid-row: span 2; display: grid; place-items: center; width: 28px; height: 28px; border: 1.5px solid var(--c-marino); border-radius: 6px; color: var(--c-marino); }
-.n-portapapeles__check .ico { width: 18px; height: 18px; }
-.n-portapapeles strong { font-weight: 600; }
-.n-portapapeles li span:last-child { color: var(--c-acero); font-size: .92rem; }
-@media (max-width: 900px) { .n-compras__in { grid-template-columns: 1fr; } .n-portapapeles { margin-inline: 10px; rotate: -.8deg; } }
+/* ---------- N4 · Lo que pide compras: expediente ----------
+   Hoja con borde tinta y, detrás, la ficha de datos de seguridad asomando por arriba. Al entrar, la ficha sale
+   de detrás de la hoja y los checks se marcan uno a uno. */
+.n-compras__in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+.n-expediente { position: relative; padding: 2.4rem 2rem 0 0; }
+.n-expediente__detras { position: absolute; top: 0; right: 0; bottom: 2.4rem; left: 2rem; display: flex; justify-content: flex-end; align-items: flex-start; padding: .55rem .9rem; background: var(--c-escarcha); border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-1); color: var(--c-acero); }
+.js .n-expediente__detras { transform: translate3d(-2rem, 2.4rem, 0); transition: transform var(--d-larga) var(--e-salida) .2s; }
+.js .n-expediente.visto .n-expediente__detras { transform: none; }
+.n-expediente__hoja { position: relative; z-index: 1; padding: clamp(1.6rem, 3.6vw, 2.8rem); background: var(--c-blanco); border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-3); }
+.n-expediente ul { list-style: none; margin: 0 0 1.4rem; padding: 0; }
+.n-expediente li:first-child { padding-top: 0; }
+.n-expediente li { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: .2rem .9rem; padding: 1rem 0; border-bottom: 1px solid var(--c-linea-fuerte); }
+.n-expediente__check { grid-row: span 2; display: grid; place-items: center; width: 26px; height: 26px; margin-top: .05rem; border: 1.5px solid var(--c-marino); border-radius: 2px; color: var(--c-marino); }
+.n-expediente__check .ico { width: 18px; height: 18px; stroke-width: 2; }
+.js .n-expediente__check .ico { opacity: 0; transform: scale(.4); transition: opacity var(--d-corta) var(--e-salida), transform var(--d-corta) var(--e-salida); transition-delay: calc(var(--i, 0) * 120ms + .45s); }
+.js .n-expediente.visto .n-expediente__check .ico { opacity: 1; transform: none; }
+.n-expediente strong { font-weight: 600; line-height: 1.4; }
+.n-expediente li span:last-child { color: var(--c-acero); font-size: .92rem; }
+@media (max-width: 900px) {
+	.n-compras__in { grid-template-columns: 1fr; }
+	.n-expediente { padding: 2.2rem 1rem 0 0; }
+	.n-expediente__detras { left: 1rem; bottom: 2.2rem; }
+	.js .n-expediente__detras { transform: translate3d(-1rem, 2.2rem, 0); }
+}
 
-/* ---------- N5 · Presupuesto en tarjeta oscura ---------- */
-.n-tarjeta { display: grid; gap: 1.6rem; padding: clamp(1.8rem, 5vw, 4rem); border-radius: var(--radio-grande); border: 1px solid #22384B;
-	box-shadow: inset 0 1px 0 rgba(184, 208, 232, .1), 0 2px 4px rgba(11, 20, 28, .2), 0 40px 80px -40px rgba(11, 20, 28, .6); }
+/* ---------- N5 · Presupuesto: noche a todo el ancho (sin tarjeta) ---------- */
+.n-tarjeta { display: grid; gap: 1.6rem; }
 .n-tarjeta__cabeza { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem 3rem; padding-bottom: 1.6rem; border-bottom: 1px solid var(--c-linea-oscura); }
 .n-tarjeta__cabeza p { max-width: 30rem; color: var(--c-hielo-claro); }
 .n-tarjeta__campos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .n-tarjeta .campo label { color: var(--c-niebla); }
-.n-tarjeta .campo input { background: var(--c-noche-2); border-color: rgba(184, 208, 232, .24); color: #fff; color-scheme: dark; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3); }
+.n-tarjeta .campo input { background: var(--c-noche-2); border-color: rgba(184, 208, 232, .3); color: #fff; color-scheme: dark; }
 .n-tarjeta .campo input:focus { border-color: var(--c-hielo); box-shadow: 0 0 0 3px rgba(184, 208, 232, .2); }
 .n-tarjeta .casilla a { color: var(--c-hielo); }
 .n-tarjeta .boton { justify-self: start; }
 @media (max-width: 900px) { .n-tarjeta__campos { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .n-tarjeta__campos { grid-template-columns: 1fr; } }
 
-/* ---------- N6 · Preguntas ---------- */
-.n-faq__lista { margin: 1.6rem 0 0; display: grid; gap: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
-.n-faq__lista div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 2rem; padding: 1.6rem 0; border-top: 1px solid var(--c-linea-fuerte); }
-.n-faq__lista div:first-child { border-top-color: var(--c-tinta); }
-.n-faq__lista dt { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.2rem, 1.8vw, 1.45rem); line-height: 1.22; letter-spacing: -.008em; text-wrap: balance; }
-.n-faq__lista dd { margin: 0; color: var(--c-acero); }
-.n-faq__seg { margin: 1.6rem 0 0; }
-@media (max-width: 800px) { .n-faq__lista div { grid-template-columns: 1fr; gap: .6rem; } }
-
-/* ---------- N3b · Cliente (Nissan Formula E Team) ---------- */
-/* Placa de características: cliente y uso, con remaches en las esquinas */
-.sc-cliente { padding-block: clamp(3.5rem, 7vw, 6rem); }
-.sc-cliente__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 46rem); gap: clamp(1.6rem, 5vw, 5rem); align-items: center; }
-.sc-cliente__titulo em { color: var(--c-marino-2); }
-.sc-placa { --placa-fondo: var(--c-blanco); --placa-linea: #B9C6D2; --placa-remache: var(--c-niebla); --placa-logo: var(--c-marino); --placa-texto: var(--c-tinta); --placa-suave: var(--c-acero); --placa-brillo: rgba(255, 255, 255, .9); --placa-sombra: rgba(11, 20, 28, .4);
-	position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border: 1px solid var(--placa-linea); border-radius: 6px; color: var(--placa-texto);
-	box-shadow: inset 0 1px 0 var(--placa-brillo), 0 1px 2px rgba(11, 20, 28, .08), 0 22px 44px -26px var(--placa-sombra);
-	background: radial-gradient(circle at 14px 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) 14px, var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at 14px calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--placa-remache) 0 2.5px, transparent 3.5px), var(--placa-fondo); }
-.sc-placa__campo { display: grid; align-content: start; gap: 1rem; padding: clamp(1.8rem, 3.4vw, 2.6rem); }
-.sc-placa__campo + .sc-placa__campo { border-left: 1px dashed var(--placa-linea); }
-.sc-placa dt { font-size: .7rem; text-transform: uppercase; letter-spacing: .14em; color: var(--placa-suave); }
-.sc-placa dd { display: grid; justify-items: start; gap: .45rem; margin: 0; }
-.sc-placa .logo-cliente { width: calc(var(--lw) * 1.05rem); max-width: 100%; margin-bottom: .5rem; color: var(--placa-logo); }
-.sc-placa__detalle { font-size: .92rem; color: var(--placa-suave); }
-.sc-placa__uso { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.7rem, 2.8vw, 2.5rem); line-height: 1.08; letter-spacing: -.018em; text-wrap: balance; }
-@media (max-width: 760px) {
-	.sc-cliente__in, .sc-placa { grid-template-columns: 1fr; }
-	.sc-placa__campo + .sc-placa__campo { border-left: 0; border-top: 1px dashed var(--placa-linea); }
+/* ---------- Movimiento reducido: todo dibujado y en su sitio ---------- */
+.quieto .n-plano__cruz::before, .quieto .n-plano__cruz::after, .quieto .n-cinta__lleno, .quieto .n-cinta__marca::after,
+.quieto .n-expediente__detras, .quieto .n-expediente__check .ico { opacity: 1 !important; transform: none !important; transition: none !important; }
+.quieto .n-uso__d[open] > p { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+	.n-plano__cruz::before, .n-plano__cruz::after, .n-cinta__lleno, .n-cinta__marca::after, .n-expediente__detras, .n-expediente__check .ico { opacity: 1 !important; transform: none !important; }
 }

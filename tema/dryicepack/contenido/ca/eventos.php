@@ -34,6 +34,7 @@ return array(
 		'titulo' => 'Aquest any, Halloween cau en dissabte.',
 		'texto'  => 'Demana abans de les 12:00 del dijous 29 d\'octubre i el tens divendres 30. El vols el mateix dissabte? Demana\'l abans de les 12:00 de divendres: segons la zona i amb un suplement d\'11,74 €.',
 		'enlace' => 'Gel sec per a Halloween',
+		'fecha'  => 'DJ 29/10 · 12:00',
 	),
 	'seguridad' => array(
 		'titulo' => 'És segur|<em>amb convidats?</em>',
