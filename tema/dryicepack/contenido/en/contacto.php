@@ -26,6 +26,9 @@ return array(
 		'mensaje' => 'What do you need, and when?',
 		'boton'   => 'Get a reply',
 		'enviando'=> 'Sending…',
+		// Redesign 14/10/2026: data line above the form and photo on the left
+		'linea'   => 'Use · kg · postcode → price and date',
+		'alt'     => 'Thermal glove pouring dry ice pellets into an EPS box',
 	),
 	'nave' => array(
 		'titulo'  => 'Our warehouse in Mataró',
@@ -34,5 +37,6 @@ return array(
 		'como'    => 'Get directions',
 		'empresa' => 'Company details',
 		'alt'     => 'Boxes of dry ice ready next to the delivery van',
+		'alt_reparto' => 'Courier loading a box of dry ice into the van',
 	),
 );

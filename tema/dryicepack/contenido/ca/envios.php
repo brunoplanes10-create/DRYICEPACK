@@ -12,6 +12,7 @@ return array(
 		'reloj'    => array( 'antes' => 'Temps per demanar avui', 'despues' => 'Per avui ja ha passat l\'hora límit' ),
 		'llega'    => array( 'antes' => 'Si demanes ara, el tens el %s al matí.', 'despues' => 'Si demanes ara, el tens el %s al matí.' ),
 		'texto'    => 'El que entra abans de les 12:00, de dilluns a divendres, surt aquell mateix dia i arriba l\'endemà al matí, de dimarts a dissabte (el dissabte, segons la zona). O tries en pagar qualsevol dia dels pròxims 90.',
+		'alt'      => 'Repartidor carregant una caixa de gel sec a la furgoneta',
 	),
 	'semana' => array(
 		'titulo' => 'Quin dia arriba?|<em>Depèn de quan demanis.</em>',
@@ -69,12 +70,19 @@ return array(
 		),
 		'alt'    => 'Operari amb un cassó de pèl·lets de gel sec al magatzem',
 		'como'   => 'Com arribar-hi',
+		// Redisseny 14/10/2026: foto de cajas-oscuro i fila de preus de recollida
+		'alt_cajas' => 'Caixes de gel sec amb vapor al costat de la furgoneta de repartiment',
+		'efectivo'  => 'Només efectiu, import exacte',
 	),
 	'cobertura' => array(
 		'titulo' => 'Arriba a la meva zona?',
 		'si'     => array( 'titulo' => 'Sí, l\'endemà al matí', 'texto' => 'Tota l\'Espanya peninsular: de Girona a Huelva i de la Corunya a Múrcia.' ),
 		'no'     => array( 'titulo' => 'Fora de la península,&nbsp;no','texto' => 'Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla, ni fora d\'Espanya.' ),
 		'zonas'  => 'Veure les zones d\'entrega a prop de Barcelona',
+		// Mapa de cobertura (redisseny 14/10/2026)
+		'mapa'    => 'Mapa: enviem des de Mataró a tota l\'Espanya peninsular; no a les Balears, les Canàries, Ceuta ni Melilla.',
+		'mapa_no' => 'No hi enviem',
+		'islas'   => array( 'baleares' => 'Balears', 'canarias' => 'Canàries', 'ceuta' => 'Ceuta', 'melilla' => 'Melilla' ),
 	),
 	'faq' => array(
 		'titulo' => 'Dubtes sobre l\'enviament',

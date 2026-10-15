@@ -82,6 +82,8 @@ return array(
 		'recordatorio' => 'Quiero que me avisen cuando me toque repetir el pedido.',
 		'boton'        => 'Pedir mi precio',
 		'enviando'     => 'Enviando…',
+		'alt'          => 'Operario echando hielo seco en una caja EPS con producto refrigerado, en el almacén', // foto junto a la frase (rediseño 14/10/2026)
+		'frecuencia'   => 'Cada cuánto', // etiqueta accesible del desplegable de la frase (revisión 14/10/2026)
 	),
 	'faq' => array(
 		'titulo' => 'Lo que preguntan las empresas',

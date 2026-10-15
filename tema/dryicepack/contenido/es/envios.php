@@ -12,6 +12,7 @@ return array(
 		'reloj'    => array( 'antes' => 'Tiempo para pedir hoy', 'despues' => 'Por hoy ya ha pasado la hora límite' ),
 		'llega'    => array( 'antes' => 'Si pides ahora, lo tienes el %s por la mañana.', 'despues' => 'Si pides ahora, lo tienes el %s por la mañana.' ),
 		'texto'    => 'Lo que entra antes de las 12:00, de lunes a viernes, sale ese mismo día y llega al siguiente por la mañana, de martes a sábado (el sábado, según zona). O eliges al pagar cualquier día de los próximos 90.',
+		'alt'      => 'Repartidor cargando una caja de hielo seco en la furgoneta',
 	),
 	'semana' => array(
 		'titulo' => '¿Qué día llega?|<em>Depende de cuándo pidas.</em>',
@@ -69,12 +70,19 @@ return array(
 		),
 		'alt'    => 'Operario con un cazo de pellets de hielo seco en el almacén',
 		'como'   => 'Cómo llegar',
+		// Rediseño 14/10/2026: foto de cajas-oscuro y fila de precios de recogida
+		'alt_cajas' => 'Cajas de hielo seco con vapor junto a la furgoneta de reparto',
+		'efectivo'  => 'Solo efectivo, importe exacto',
 	),
 	'cobertura' => array(
 		'titulo' => '¿Llega a mi zona?',
 		'si'     => array( 'titulo' => 'Sí, al día siguiente por la mañana', 'texto' => 'Toda la España peninsular: de Girona a Huelva y de A Coruña a Murcia.' ),
 		'no'     => array( 'titulo' => 'Fuera de la península,&nbsp;no', /* &nbsp;: el "no" no queda solo en móvil */ 'texto' => 'Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla, ni fuera de España.' ),
 		'zonas'  => 'Ver zonas de entrega cerca de Barcelona',
+		// Mapa de cobertura (rediseño 14/10/2026)
+		'mapa'    => 'Mapa: enviamos desde Mataró a toda la España peninsular; no a Baleares, Canarias, Ceuta ni Melilla.',
+		'mapa_no' => 'No enviamos',
+		'islas'   => array( 'baleares' => 'Baleares', 'canarias' => 'Canarias', 'ceuta' => 'Ceuta', 'melilla' => 'Melilla' ),
 	),
 	'faq' => array(
 		'titulo' => 'Dudas de envío',

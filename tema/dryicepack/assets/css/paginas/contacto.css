@@ -1,63 +1,114 @@
 /* =========================================================================
-   Contacto · C1 a C3
+   Contacto · C1 a C3 (rediseño del 14/10/2026, plan 2.6)
+   Tonos: C1 papel · C2 noche · C3 papel · pie marino.
+   Movimiento: solo transform y opacity; con .quieto todo queda visible y en su estado final.
    ========================================================================= */
+
+/* ---------- C1 · Canales en tipografía gigante ---------- */
 .c-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); background: var(--c-papel); }
 .c-hero__cabeza { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem 3rem; margin: 1.5rem 0 clamp(2rem, 5vw, 4rem); }
-/* Estado en directo: frase en Inter (no es un dato técnico) con un piloto que late cuando la nave está abierta */
-.c-estado { position: relative; max-width: 24rem; padding: .85rem 1rem .85rem 2.4rem; border-left: 2px solid var(--c-marino); color: var(--c-acero); font-family: var(--f-texto) !important; font-size: .95rem !important; line-height: 1.45; letter-spacing: 0 !important; }
-.c-estado::before, .c-estado::after { content: ""; position: absolute; left: 1rem; top: 1.32rem; width: 8px; height: 8px; border-radius: 50%; background: var(--c-niebla); }
+/* Estado en directo (abierto / cerrado): una línea con filete, sin piloto */
+.c-estado-caja { display: grid; max-width: 24rem; }
+.c-estado-caja > * { grid-area: 1 / 1; }
+.c-estado { align-self: start; /* arriba: al cambiar el texto, la línea no se desplaza (con end, CLS 0,004) */ padding: .2rem 0 .2rem 1rem; border-left: 2px solid var(--c-marino); color: var(--c-acero); font-size: .95rem; line-height: 1.45; }
+.c-estado__reserva { display: block; visibility: hidden; }
 .c-estado.es-abierto { color: var(--c-tinta); }
-.c-estado.es-abierto::before, .c-estado.es-abierto::after { background: var(--c-marino); }
-.c-estado::after { opacity: 0; }
-.anima .c-estado.es-abierto::after { animation: piloto 2.4s var(--e-salida) infinite; }
-@keyframes piloto { 0% { opacity: .55; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
 .c-estado.es-cerrado { border-color: var(--c-niebla); }
 
 .c-canales { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--c-tinta); }
 .c-canales li { border-bottom: 1px solid var(--c-linea-fuerte); }
 .c-canales a { display: grid; grid-template-columns: 12rem minmax(0, 1fr) 16rem; align-items: center; gap: 1.5rem; padding: clamp(1.2rem, 2.6vw, 2.2rem) 0; text-decoration: none; position: relative; overflow: hidden; }
-/* Al pasar: una hoja blanca sube desde abajo, una regla marino aparece a la izquierda y el dato avanza. Solo transform. */
-.c-canales a::before { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--c-blanco); box-shadow: inset 0 -1px 0 var(--c-linea-fuerte); transform: scaleY(0); transform-origin: bottom; transition: transform .45s var(--e-salida); }
-.c-canales a::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; z-index: 1; background: var(--c-marino); transform: scaleY(0); transform-origin: top; transition: transform .45s var(--e-salida) .05s; }
-.c-canales a > * { position: relative; z-index: 1; transition: transform .5s var(--e-salida); }
-.c-canales a:hover::before, .c-canales a:focus-visible::before, .c-canales a:hover::after, .c-canales a:focus-visible::after { transform: scaleY(1); }
-.c-canales a:hover .c-canales__valor, .c-canales a:focus-visible .c-canales__valor { transform: translate3d(1.2rem, 0, 0); }
+/* Hoja blanca que sube desde abajo, regla marino a la izquierda y el dato que avanza: con el ratón, el foco,
+   al pulsar y cuando la fila cruza el centro de la pantalla (.activo, el equivalente del hover en móvil) */
+.c-canales a::before { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--c-blanco); box-shadow: inset 0 -1px 0 var(--c-linea-fuerte); transform: scaleY(0); transform-origin: bottom; transition: transform var(--d-media) var(--e-salida); }
+.c-canales a::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; z-index: 1; background: var(--c-marino); transform: scaleY(0); transform-origin: top; transition: transform var(--d-media) var(--e-salida) .05s; }
+.c-canales a > * { position: relative; z-index: 1; transition: transform var(--d-media) var(--e-salida); }
+.c-canales a:hover::before, .c-canales a:focus-visible::before, .c-canales a:active::before,
+.c-canales a:hover::after, .c-canales a:focus-visible::after, .c-canales a:active::after { transform: scaleY(1); }
+.c-canales a:hover .c-canales__valor, .c-canales a:focus-visible .c-canales__valor, .c-canales a:active .c-canales__valor { transform: translate3d(1.2rem, 0, 0); }
+/* Sin ratón (pantallas táctiles), la fila que cruza el centro hace lo mismo que el hover */
+@media (hover: none) {
+	.c-canales li.activo a::before, .c-canales li.activo a::after { transform: scaleY(1); }
+	.c-canales li.activo .c-canales__valor { transform: translate3d(.4rem, 0, 0); }
+	/* La franja central puede tocar dos filas a la vez (filas de ~155 px en 390): solo se enciende la primera */
+	.c-canales li.activo ~ li.activo a:not(:active):not(:focus-visible)::before,
+	.c-canales li.activo ~ li.activo a:not(:active):not(:focus-visible)::after { transform: scaleY(0); }
+	.c-canales li.activo ~ li.activo a:not(:active):not(:focus-visible) .c-canales__valor { transform: none; }
+}
 .c-canales__tipo { display: flex; align-items: center; gap: .6rem; font-family: var(--f-mono); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acero); padding-left: 1rem; }
 .c-canales__valor { font-family: var(--f-display); font-weight: 700; font-size: clamp(2rem, 4.6vw, 4.4rem); line-height: 1.05; letter-spacing: -.035em; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-bottom: .06em; }
 .c-canales__para { font-size: .92rem; color: var(--c-acero); padding-right: 1rem; }
-@media (max-width: 900px) { .c-canales a { grid-template-columns: 1fr; gap: .4rem; padding-inline: 0 1rem; } .c-canales__tipo, .c-canales__para { padding: 0; } .c-canales__valor { font-size: clamp(1.7rem, 7.6vw, 2.8rem); } .c-canales a > * { padding-left: 1rem; } }
+@media (max-width: 900px) {
+	.c-canales a { grid-template-columns: 1fr; gap: .4rem; padding-inline: 0 1rem; }
+	.c-canales__tipo, .c-canales__para { padding: 0; }
+	.c-canales__valor { font-size: clamp(1.7rem, 7.6vw, 2.8rem); }
+	.c-canales a > * { padding-left: 1rem; }
+	/* En móvil la cifra no avanza tanto: el email largo no se corta */
+	.c-canales a:hover .c-canales__valor, .c-canales a:active .c-canales__valor { transform: translate3d(.4rem, 0, 0); }
+}
 
-/* ---------- C2 · Formulario de líneas ---------- */
-.c-form__in { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
-.c-form__texto { margin-top: 1.4rem; }
-.c-lineas { display: grid; gap: 1.6rem; }
+/* ---------- C2 · Formulario: foto a sangre por la izquierda y la hoja montada 5 rem sobre ella ---------- */
+.c-form__in { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--hueco); }
+/* Escritorio: título y texto arriba a la izquierda, la foto debajo hasta el pie de la hoja y la hoja a la derecha
+   en toda la altura, montada 5 rem sobre la foto. (Revisión 15/10: con el título a la derecha y la foto bajada
+   7 rem, la esquina superior izquierda quedaba como un hueco noche de ~270 px en 1440: el problema de partida de C2.
+   La foto, de 662 px de origen, no puede crecer más sin verse borrosa: por eso no ocupa las dos filas.) */
+.c-form__cabeza { grid-column: 1 / 7; grid-row: 1; padding: 0 calc(5rem + var(--hueco) + 1rem) clamp(2rem, 4vw, 3rem) 0; }
+.c-form__texto { margin-top: 1.4rem; color: var(--c-hielo-claro); }
+.c-form__foto { grid-column: 1 / 7; grid-row: 2; align-self: stretch; min-height: 26rem; }
+.c-form__foto > img { position: absolute; inset: 0; }
+.c-lineas.hoja { grid-column: 7 / -1; grid-row: 1 / span 2; align-self: start; display: grid; gap: 1.6rem; margin-left: calc(-1 * (5rem + var(--hueco))); padding: clamp(1.6rem, 3.4vw, 2.8rem); }
+/* Lo que hace falta para contestar con precio y fecha, como cabecera de ficha */
+.c-lineas__linea { margin: -.2rem 0 -.2rem; padding-bottom: .9rem; border-bottom: 2px solid var(--c-tinta); color: var(--c-acero); letter-spacing: .04em; }
 .c-lineas__doble { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
 .c-lineas .campo { position: relative; display: block; }
 .c-lineas .campo input, .c-lineas .campo textarea { width: 100%; min-height: 56px; padding: 1.4rem 0 .5rem; border: 0; border-bottom: 1px solid var(--c-linea-fuerte); border-radius: 0; background: transparent; font-size: 1.1rem; box-shadow: none; }
 .c-lineas .campo textarea { min-height: 120px; resize: vertical; }
 /* Etiqueta flotante: se desplaza y encoge con transform; el subrayado marino se dibuja con scaleX */
-.c-lineas .campo label { position: absolute; left: 0; top: 1.3rem; font-size: 1.05rem; font-weight: 400; color: var(--c-acero); pointer-events: none; transform-origin: 0 0; transition: transform .25s var(--e-salida); }
-.c-lineas .campo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--c-marino); transform: scaleX(0); transform-origin: left; transition: transform .25s var(--e-salida); pointer-events: none; }
+.c-lineas .campo label { position: absolute; left: 0; top: 1.3rem; font-size: 1.05rem; font-weight: 400; color: var(--c-acero); pointer-events: none; transform-origin: 0 0; transition: transform var(--d-corta) var(--e-salida); }
+.c-lineas .campo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--c-marino); transform: scaleX(0); transform-origin: left; transition: transform var(--d-corta) var(--e-salida); pointer-events: none; }
 .c-lineas .campo:focus-within::after { transform: scaleX(1); }
 .c-lineas .campo textarea + label { top: 1.3rem; }
 .c-lineas .campo:has(textarea)::after { bottom: 6px; }
 .c-lineas .campo input:focus, .c-lineas .campo textarea:focus { outline: none; }
 .c-lineas .campo input:focus + label, .c-lineas .campo textarea:focus + label, .c-lineas .campo input:not(:placeholder-shown) + label, .c-lineas .campo textarea:not(:placeholder-shown) + label { transform: translateY(-1.25rem) scale(.78); color: var(--c-marino); }
 .c-lineas .boton { justify-self: start; }
-@media (max-width: 900px) { .c-form__in, .c-lineas__doble { grid-template-columns: 1fr; } }
+.c-lineas :focus-visible { outline-color: var(--c-marino); }
+@media (max-width: 900px) {
+	.c-form__in { display: block; }
+	.c-form__cabeza { padding: 0 0 2rem; }
+	.c-form__foto { height: 200px; min-height: 0; aspect-ratio: auto; margin-top: 0; margin-right: calc(-1 * var(--margen)); }
+	.c-lineas.hoja { margin: -3rem 0 0; }
+	.c-lineas__doble { grid-template-columns: 1fr; }
+}
 
-/* ---------- C3 · La nave ---------- */
-.c-nave { display: grid; grid-template-columns: 1fr 1fr; min-height: 640px; }
-.c-nave__foto { overflow: hidden; }
-.c-nave__foto img { width: 100%; height: 100%; object-fit: cover; }
-.c-nave__datos { display: grid; align-content: center; gap: 1.4rem; padding: clamp(2.5rem, 6vw, 6rem) var(--margen); }
-.c-nave__dir { font-style: normal; font-family: var(--f-display); font-weight: 700; font-size: clamp(1.5rem, 2.3vw, 2.2rem); line-height: 1.15; letter-spacing: -.025em; color: #fff; }
-/* Horario y recogida: frases, en Inter; los iconos van en una casilla con borde */
-.c-nave__lista { display: grid; gap: .7rem; margin: 0; color: var(--c-hielo-claro); font-family: var(--f-texto) !important; font-size: .98rem !important; letter-spacing: 0 !important; }
-.c-nave__lista div { display: flex; gap: .9rem; align-items: center; }
-.c-nave__lista dt { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border: 1px solid var(--c-linea-oscura); border-radius: 8px; color: var(--c-hielo); }
+/* ---------- C3 · La nave: la dirección se monta sobre la foto (cada línea con su fondo papel) ---------- */
+.c-nave__in { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--hueco); align-items: center; }
+.c-nave__foto { grid-column: 6 / -1; grid-row: 1; aspect-ratio: 3 / 2; }
+/* La foto se mueve un 8 % del desplazamiento (data-paralaje): el marco es más alto para que no asome el fondo */
+.c-nave__marco { position: absolute; left: 0; right: 0; top: -18%; height: 136%; }
+.c-nave__marco img { width: 100%; height: 100%; object-fit: cover; }
+.c-nave__cabeza { grid-column: 1 / 9; grid-row: 1; position: relative; z-index: 2; }
+.c-nave__titulo { margin-bottom: 1.2rem; }
+.c-nave__dir { font-style: normal; line-height: 1.12; }
+.c-nave__dir span { padding: .02em .25em .06em 0; background: var(--c-papel); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* Ficha en mono de dos columnas */
+.c-nave__ficha { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1.5rem clamp(2rem, 6vw, 6rem); margin-top: clamp(2.5rem, 5vw, 4rem); padding-top: 1.6rem; border-top: 2px solid var(--c-tinta); font-family: var(--f-mono); font-size: .84rem; line-height: 1.7; font-feature-settings: "tnum" 1; }
+.c-nave__lista { display: grid; gap: 1.1rem; margin: 0; }
+.c-nave__lista div { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: .9rem; align-items: start; }
+.c-nave__lista dt { color: var(--c-marino); padding-top: .15rem; }
 .c-nave__lista dt .ico { width: 20px; height: 20px; }
 .c-nave__lista dd { margin: 0; }
-.c-nave__empresa { margin-top: 1rem; padding-top: 1.2rem; border-top: 1px solid var(--c-linea-oscura); color: var(--c-niebla); font-size: .9rem; }
-.c-nave__empresa .dato { text-transform: uppercase; letter-spacing: .1em; margin-bottom: .3rem; }
-@media (max-width: 900px) { .c-nave { grid-template-columns: 1fr; } .c-nave__foto { height: 320px; } }
+.c-nave__empresa { display: grid; gap: .3rem; align-content: start; }
+.c-nave__etiqueta { color: var(--c-acero); text-transform: uppercase; letter-spacing: .1em; }
+.c-nave__como { margin-top: .9rem; font-family: var(--f-texto); font-size: 1rem; }
+@media (max-width: 900px) {
+	.c-nave__in { display: block; }
+	.c-nave__foto { height: 240px; aspect-ratio: auto; margin-left: calc(-1 * var(--margen)); }
+	/* Franja baja: el 8 % del recorrido pasa del 18 % de margen del marco y asomaba el fondo arriba */
+	.c-nave__marco { top: -30%; height: 160%; }
+	.c-nave__cabeza { margin-top: -2.4rem; }
+	.c-nave__dir { font-size: clamp(1.6rem, 7.4vw, 2.15rem); }
+	.c-nave__titulo { display: inline-block; padding: .4rem .6rem 0 0; background: var(--c-papel); margin-bottom: .6rem; }
+	.c-nave__ficha { grid-template-columns: 1fr; }
+}

@@ -82,6 +82,8 @@ return array(
 		'recordatorio' => 'Vull que m\'avisin quan em toqui repetir la comanda.',
 		'boton'        => 'Demanar el preu',
 		'enviando'     => 'Enviant…',
+		'alt'          => 'Operari tirant gel sec en una caixa EPS amb producte refrigerat, al magatzem', // foto al costat de la frase (redisseny 14/10/2026)
+		'frecuencia'   => 'Cada quant', // etiqueta accessible del desplegable de la frase (revisió 14/10/2026)
 	),
 	'faq' => array(
 		'titulo' => 'El que pregunten les empreses',

@@ -26,6 +26,9 @@ return array(
 		'mensaje' => 'Què necessites i per a quan?',
 		'boton'   => 'Rebre resposta',
 		'enviando'=> 'Enviant…',
+		// Redisseny 14/10/2026: línia de dades sobre el formulari i foto de l'esquerra
+		'linea'   => 'Ús · kg · codi postal → preu i data',
+		'alt'     => 'Guant tèrmic tirant pèl·lets de gel sec en una caixa EPS',
 	),
 	'nave' => array(
 		'titulo'  => 'La nostra nau a Mataró',
@@ -34,5 +37,6 @@ return array(
 		'como'    => 'Com arribar-hi',
 		'empresa' => 'Dades de l\'empresa',
 		'alt'     => 'Caixes de gel sec preparades al costat de la furgoneta de repartiment',
+		'alt_reparto' => 'Repartidor carregant una caixa de gel sec a la furgoneta',
 	),
 );

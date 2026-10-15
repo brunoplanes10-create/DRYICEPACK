@@ -26,6 +26,9 @@ return array(
 		'mensaje' => '¿Qué necesitas y para cuándo?',
 		'boton'   => 'Recibir respuesta',
 		'enviando'=> 'Enviando…',
+		// Rediseño 14/10/2026: línea de datos sobre el formulario y foto de la izquierda
+		'linea'   => 'Uso · kg · código postal → precio y fecha',
+		'alt'     => 'Guante térmico echando pellets de hielo seco en una caja EPS',
 	),
 	'nave' => array(
 		'titulo'  => 'Nuestra nave en Mataró',
@@ -34,5 +37,6 @@ return array(
 		'como'    => 'Cómo llegar',
 		'empresa' => 'Datos de la empresa',
 		'alt'     => 'Cajas de hielo seco preparadas junto a la furgoneta de reparto',
+		'alt_reparto' => 'Repartidor cargando una caja de hielo seco en la furgoneta',
 	),
 );

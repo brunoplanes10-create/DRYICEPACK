@@ -82,6 +82,8 @@ return array(
 		'recordatorio' => 'Remind me when it’s time to reorder.',
 		'boton'        => 'Get my price',
 		'enviando'     => 'Sending…',
+		'alt'          => 'Worker adding dry ice to an EPS box with chilled products in the warehouse', // photo next to the sentence (redesign 14/10/2026)
+		'frecuencia'   => 'How often', // accessible label for the sentence's drop-down (review 14/10/2026)
 	),
 	'faq' => array(
 		'titulo' => 'What businesses ask us',

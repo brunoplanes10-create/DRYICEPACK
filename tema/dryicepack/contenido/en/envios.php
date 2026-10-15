@@ -12,6 +12,7 @@ return array(
 		'reloj'    => array( 'antes' => 'Time left to order today', 'despues' => 'Today’s order deadline has passed' ),
 		'llega'    => array( 'antes' => 'Order now and you’ll have it on the morning of %s.', 'despues' => 'Order now and you’ll have it on the morning of %s.' ),
 		'texto'    => 'Orders placed before 12:00 (Spanish time), Monday to Friday, leave the same day and arrive the next morning, Tuesday to Saturday (Saturday depending on the area). Or choose any day in the next 90 at checkout.',
+		'alt'      => 'Courier loading a box of dry ice into the van',
 	),
 	'semana' => array(
 		'titulo' => 'Which day will it arrive?|<em>It depends on when you order.</em>',
@@ -69,12 +70,19 @@ return array(
 		),
 		'alt'    => 'Worker with a scoop of dry ice pellets in the warehouse',
 		'como'   => 'Get directions',
+		// Redesign 14/10/2026: cajas-oscuro photo and collection price row
+		'alt_cajas' => 'Boxes of dry ice with vapour next to the delivery van',
+		'efectivo'  => 'Cash only, exact amount',
 	),
 	'cobertura' => array(
 		'titulo' => 'Do you deliver to my area?',
 		'si'     => array( 'titulo' => 'Yes, the next morning', 'texto' => 'All of mainland Spain: from Girona to Huelva and from A Coruña to Murcia.' ),
 		'no'     => array( 'titulo' => 'Outside mainland Spain, no', 'texto' => 'We only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla, or outside Spain.' ),
 		'zonas'  => 'See delivery areas near Barcelona',
+		// Coverage map (redesign 14/10/2026)
+		'mapa'    => 'Map: we deliver from Mataró to all of mainland Spain; not to the Balearic or Canary Islands, Ceuta or Melilla.',
+		'mapa_no' => 'No delivery',
+		'islas'   => array( 'baleares' => 'Balearic Is.', 'canarias' => 'Canary Is.', 'ceuta' => 'Ceuta', 'melilla' => 'Melilla' ),
 	),
 	'faq' => array(
 		'titulo' => 'Delivery questions',
