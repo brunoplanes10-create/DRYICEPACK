@@ -84,3 +84,70 @@
 	});
 	pintar();
 })();
+
+/* I5 · Usos «escenario fijo». Manda el uso que cruza la línea central de la pantalla (IntersectionObserver con una
+   raíz de 0 px de alto: nunca hay dos a la vez y funciona igual al subir que al bajar; no se escucha el scroll).
+   El ratón o el foco encima de un uso mandan mientras están ahí. Las miniaturas del visor son botones: enseñan su uso
+   y lo llevan al centro (aria-pressed marca el que está en escena). En móvil, el mismo estado enciende la flecha del
+   uso que está en el centro. La entrada (.visto) llega del observador común (data-vivo). */
+(function () {
+	'use strict';
+	var d = document, w = window;
+	var sec = d.querySelector('[data-usos]');
+	if (!sec || !('IntersectionObserver' in w)) return;
+	var lista = sec.querySelector('.i-usos__lista');
+	var usos = Array.prototype.slice.call(sec.querySelectorAll('.i-usos__uso'));
+	var capas = Array.prototype.slice.call(sec.querySelectorAll('.i-usos__capa'));
+	var minis = Array.prototype.slice.call(sec.querySelectorAll('.i-usos__mini'));
+	var etiqueta = sec.querySelector('.i-usos__etiqueta');
+	var suave = !d.documentElement.classList.contains('quieto');
+	var porScroll = 0, actual = -1, encima = false, destino = -1, reloj = 0;
+
+	function mostrar(i) {
+		if (i === actual || i < 0 || i >= usos.length) return;
+		actual = i;
+		usos.forEach(function (u, k) { u.classList.toggle('en-escena', k === i); });
+		capas.forEach(function (c, k) { c.classList.toggle('en-escena', k === i); });
+		minis.forEach(function (m, k) { m.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+		if (etiqueta) etiqueta.style.setProperty('--a', i);
+	}
+	function soltar() { destino = -1; clearTimeout(reloj); if (!encima) mostrar(porScroll); }
+	mostrar(porScroll);
+	sec.classList.add('i-usos--vivo');
+
+	var centro = new IntersectionObserver(function (es) {
+		es.forEach(function (e) {
+			if (!e.isIntersecting) return;
+			porScroll = usos.indexOf(e.target);
+			if (destino !== -1) { if (porScroll === destino) soltar(); return; } // de camino a una miniatura: sin parpadeos
+			if (!encima) mostrar(porScroll);
+		});
+	}, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+	usos.forEach(function (u) { centro.observe(u); });
+
+	/* Ratón (solo donde hay hover de verdad) y teclado */
+	if (w.matchMedia('(hover: hover)').matches) {
+		usos.forEach(function (u, k) { u.addEventListener('mouseenter', function () { encima = true; mostrar(k); }); });
+		lista.addEventListener('mouseleave', function () { encima = false; if (destino === -1) mostrar(porScroll); });
+	}
+	usos.forEach(function (u, k) { u.addEventListener('focusin', function () { encima = true; mostrar(k); }); });
+	lista.addEventListener('focusout', function (e) {
+		if (lista.contains(e.relatedTarget)) return;
+		encima = false;
+		if (destino === -1) mostrar(porScroll);
+	});
+
+	/* Miniaturas: enseñan su uso y lo llevan al centro de la pantalla */
+	minis.forEach(function (m, k) {
+		m.addEventListener('click', function () {
+			mostrar(k);
+			var r = usos[k].getBoundingClientRect();
+			var falta = r.top + r.height / 2 - w.innerHeight / 2;
+			if (Math.abs(falta) < r.height / 2) return;
+			destino = k;
+			clearTimeout(reloj);
+			reloj = setTimeout(soltar, 1600);
+			w.scrollBy({ top: falta, behavior: suave ? 'smooth' : 'auto' });
+		});
+	});
+})();

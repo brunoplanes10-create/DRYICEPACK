@@ -21,6 +21,7 @@ return array(
 			'3mm'  => array( 'nombre' => 'Pellets de 3 mm', 'texto' => 'Enfría más rápido y hace la niebla más densa.', 'para' => 'Cócteles, niebla, procesos', 'foto' => 'cenital-3mm', 'alt' => 'Pellets de hielo seco de 3 mm vistos desde arriba' ),
 			'16mm' => array( 'nombre' => 'Nuggets de 16 mm', 'texto' => 'Aguanta más horas en la caja. Para transporte y muestras.', 'para' => 'Transporte, muestras, cadena de frío', 'foto' => 'cenital-16mm', 'alt' => 'Nuggets de hielo seco de 16 mm vistos desde arriba' ),
 		),
+		'formato_aria' => 'Formato', // nombre del grupo de botones de formato (lectores de pantalla)
 		'cuanto'    => '¿Cuántos kilos?',
 		'envio'     => 'Envío',
 		'total'     => 'Total con envío',
@@ -50,6 +51,7 @@ return array(
 			array( 'eventos', 'Fiestas y eventos', 'Niebla por el suelo en bodas, escenarios y Halloween.', 'uso-eventos' ),
 		),
 		'todos'  => 'Todos los usos',
+		'tira'   => 'Ver la foto de cada uso', // grupo de miniaturas del visor (escritorio)
 	),
 	'clientes' => array(
 		'titulo' => 'No lo decimos nosotros.|<em>Lo usan ellos.</em>',
@@ -77,6 +79,7 @@ return array(
 		'texto'   => 'Pides por WhatsApp o en dos clics. Contrato de suministro, descuento sobre tarifa según volumen y una factura al mes, a 30 días.',
 		'tarjeta' => array( 'titulo' => 'Cuenta de empresa', 'lineas' => array( 'Descuento sobre tarifa', 'Factura mensual a 30 días', 'Pedido por WhatsApp o web', 'Datos fiscales guardados' ), 'pie' => 'DryIcePack · Mataró' ),
 		'enlace'  => 'Abrir mi cuenta',
+		'semana'  => 'Sem. %s', // tira de 4 semanas del albarán (decorativa)
 	),
 	'recogida' => array(
 		'titulo'  => '¿Estás cerca de Mataró?|Recógelo: <em>10 kg por {recogida:10}.</em>',
@@ -85,6 +88,8 @@ return array(
 		'como'    => 'Cómo llegar',
 		'alt'     => 'Carga de una caja de hielo seco en la furgoneta de reparto',
 		'cerca'   => array( 'Mataró', 'Maresme', 'Barcelona', 'Vallès' ),
+		'tarifa'  => 'Precio en la nave, IVA incluido', // título de la tarifa de mostrador (precios de dipt_precios_recogida)
+		'efectivo' => 'Solo efectivo, importe exacto',
 	),
 	'seguridad' => array(
 		'titulo' => 'Seguro,|si sabes <em>cómo.</em>',

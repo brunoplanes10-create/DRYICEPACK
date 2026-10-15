@@ -21,6 +21,7 @@ return array(
 			'3mm'  => array( 'nombre' => '3 mm pellets', 'texto' => 'Cools faster and makes thicker fog.', 'para' => 'Cocktails, fog, processes', 'foto' => 'cenital-3mm', 'alt' => 'Top view of 3 mm dry ice pellets' ),
 			'16mm' => array( 'nombre' => '16 mm nuggets', 'texto' => 'Lasts longer in the box. For transport and samples.', 'para' => 'Transport, samples, cold chain', 'foto' => 'cenital-16mm', 'alt' => 'Top view of 16 mm dry ice nuggets' ),
 		),
+		'formato_aria' => 'Format', // name of the format button group (screen readers)
 		'cuanto'    => 'How many kilos?',
 		'envio'     => 'Delivery',
 		'total'     => 'Total incl. delivery',
@@ -50,6 +51,7 @@ return array(
 			array( 'eventos', 'Parties and events', 'Fog across the floor at weddings, on stage and at Halloween.', 'uso-eventos' ),
 		),
 		'todos'  => 'All uses',
+		'tira'   => 'See the photo for each use', // visor thumbnails (desktop)
 	),
 	'clientes' => array(
 		'titulo' => 'Don’t take our word for it.|<em>See who uses it.</em>',
@@ -77,6 +79,7 @@ return array(
 		'texto'   => 'Order by WhatsApp or in two clicks. A supply contract, a discount on list prices based on volume and one invoice a month, payable within 30 days.',
 		'tarjeta' => array( 'titulo' => 'Business account', 'lineas' => array( 'Discount on list prices', 'Monthly invoice, 30-day terms', 'Order by WhatsApp or online', 'Tax details saved' ), 'pie' => 'DryIcePack · Mataró' ),
 		'enlace'  => 'Open my account',
+		'semana'  => 'Wk %s',
 	),
 	'recogida' => array(
 		'titulo'  => 'Near Mataró?|Collect it: <em>10 kg for {recogida:10}.</em>',
@@ -85,6 +88,8 @@ return array(
 		'como'    => 'Get directions',
 		'alt'     => 'Loading a box of dry ice into the delivery van',
 		'cerca'   => array( 'Mataró', 'Maresme', 'Barcelona', 'Vallès' ),
+		'tarifa'  => 'Price at the warehouse, VAT included',
+		'efectivo' => 'Cash only, exact amount',
 	),
 	'seguridad' => array(
 		'titulo' => 'Safe,|if you know <em>how.</em>',

@@ -21,6 +21,7 @@ return array(
 			'3mm'  => array( 'nombre' => 'Pèl·lets de 3 mm', 'texto' => 'Refreda més de pressa i fa la boira més densa.', 'para' => 'Còctels, boira, processos', 'foto' => 'cenital-3mm', 'alt' => 'Pèl·lets de gel sec de 3 mm vistos des de dalt' ),
 			'16mm' => array( 'nombre' => 'Nuggets de 16 mm', 'texto' => 'Aguanta més hores a la caixa. Per a transport i mostres.', 'para' => 'Transport, mostres, cadena de fred', 'foto' => 'cenital-16mm', 'alt' => 'Nuggets de gel sec de 16 mm vistos des de dalt' ),
 		),
+		'formato_aria' => 'Format', // nom del grup de botons de format (lectors de pantalla)
 		'cuanto'    => 'Quants quilos?',
 		'envio'     => 'Enviament',
 		'total'     => 'Total amb enviament',
@@ -50,6 +51,7 @@ return array(
 			array( 'eventos', 'Festes i esdeveniments', 'Boira arran de terra en casaments, escenaris i Halloween.', 'uso-eventos' ),
 		),
 		'todos'  => 'Tots els usos',
+		'tira'   => 'Veure la foto de cada ús', // grup de miniatures del visor (escriptori)
 	),
 	'clientes' => array(
 		'titulo' => 'No ho diem nosaltres.|<em>Ho fan servir ells.</em>',
@@ -77,6 +79,7 @@ return array(
 		'texto'   => 'Demanes per WhatsApp o en dos clics. Contracte de subministrament, descompte sobre tarifa segons el volum i una factura al mes, a 30 dies.',
 		'tarjeta' => array( 'titulo' => 'Compte d\'empresa', 'lineas' => array( 'Descompte sobre tarifa', 'Factura mensual a 30 dies', 'Comanda per WhatsApp o web', 'Dades fiscals desades' ), 'pie' => 'DryIcePack · Mataró' ),
 		'enlace'  => 'Obrir un compte',
+		'semana'  => 'Setm. %s',
 	),
 	'recogida' => array(
 		'titulo'  => 'Ets a prop de Mataró?|Recull-lo: <em>10 kg per {recogida:10}.</em>',
@@ -85,6 +88,8 @@ return array(
 		'como'    => 'Com arribar-hi',
 		'alt'     => 'Càrrega d\'una caixa de gel sec a la furgoneta de repartiment',
 		'cerca'   => array( 'Mataró', 'Maresme', 'Barcelona', 'Vallès' ),
+		'tarifa'  => 'Preu a la nau, IVA inclòs',
+		'efectivo' => 'Només efectiu, import exacte',
 	),
 	'seguridad' => array(
 		'titulo' => 'Segur,|si saps <em>com.</em>',
