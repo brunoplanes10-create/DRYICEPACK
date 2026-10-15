@@ -8,6 +8,12 @@
       "port": 9500
     },
     {
+      "name": "wordpress-paquete",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["herramientas/servidor-tema.mjs", "--paquete"],
+      "port": 9500
+    },
+    {
       "name": "wordpress-prueba",
       "runtimeExecutable": "node",
       "runtimeArgs": ["herramientas/servidor-prueba.mjs"],

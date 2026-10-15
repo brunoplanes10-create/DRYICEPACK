@@ -6,12 +6,15 @@ Guía paso a paso para pasar de Divi al tema `dryicepack` y al plugin `dryicepac
 
 | Archivo | Qué es | Dónde se sube |
 |---|---|---|
-| `dryicepack-tienda.zip` (59 KB) | Plugin con la lógica de la tienda | Plugins → Añadir nuevo → Subir plugin |
-| `dryicepack-tema.zip` (3,2 MB) | Tema: diseño, páginas, textos en ES/CA/EN | Apariencia → Temas → Añadir nuevo → Subir tema |
+| `dryicepack-tienda.zip` (139 KB) | Plugin con la lógica de la tienda | Plugins → Añadir nuevo → Subir plugin |
+| `dryicepack-tema.zip` (5,8 MB) | Tema: diseño, páginas, textos en ES/CA/EN, landing de Halloween | Apariencia → Temas → Añadir nuevo → Subir tema |
+
+Los dos .zip se han probado tal cual se suben (servidor de prueba en modo paquete, 15/10/2026).
 
 **Cuándo:**
+- Decidido el 15/10/2026: **antes de Halloween**, para que la landing nueva y la recogida del sábado 31 sin suplemento estén en marcha. Último día: **20/10** (si no, el 2/11, fuera del pico de Halloween).
 - Un día laborable a primera hora de la tarde, después del corte de las 12:00. Así no hay pedidos a medio hacer.
-- Si no está hecho antes del **20/10**, se deja para el **2/11**, fuera del pico de Halloween (CLAUDE.md).
+- Si el servidor de Arsys pide más de 2 MB por archivo al subir el tema (5,8 MB), súbelo por el gestor de archivos de Arsys a `wp-content/themes/` descomprimido, o pide a Arsys que suba `upload_max_filesize`.
 
 **Tiempo:** unos 45 minutos con las pruebas.
 
@@ -32,12 +35,8 @@ Guía paso a paso para pasar de Divi al tema `dryicepack` y al plugin `dryicepac
 2. Apunta la fecha y la hora de la copia.
 3. Comprueba que no hay pedidos en "Pendiente de pago" de los últimos minutos.
 
-### Datos que faltan
-Los textos legales tienen un dato marcado `[PENDIENTE]`: la inscripción en el Registro Mercantil (tomo, folio, hoja e inscripción).
-
-- Lo exige el art. 10 de la LSSI. El aviso legal antiguo en PDF tenía ese campo vacío.
-- Está en la escritura de la sociedad o en la gestoría.
-- Se escribe en `tema/dryicepack/contenido/{es,ca,en}/legal-aviso-legal.php`, y después se vuelve a generar el .zip.
+### Datos que faltaban
+Ninguno. La inscripción en el Registro Mercantil (tomo 45484, folio 53, sección 8, hoja B-489371, inscripción 1.ª) ya está en el aviso legal en los tres idiomas desde el 07/10/2026.
 
 ---
 
@@ -89,7 +88,8 @@ Ve a Ajustes → Enlaces permanentes:
   - Si hay dos métodos de envío, el cliente vería dos opciones con el mismo precio. Deja uno.
 - **WooCommerce → Ajustes → Pagos:**
   - **WooPayments** activo. En "Pago exprés", Apple Pay y Google Pay solo en el checkout: el plugin los coloca dentro del bloque de pago, nunca arriba.
-  - **Contra reembolso** activo. El plugin lo muestra como "Efectivo al recoger" y **solo** cuando el cliente elige recoger en Mataró.
+  - **Contra reembolso** activo. El plugin lo muestra como "Efectivo al recoger" y **solo** cuando el cliente elige recoger en Mataró. Deja **vacío** su campo «Instrucciones»: si tiene el texto de serie («Pagar en efectivo en la entrega»), sale en la página de gracias y en el email delante de nuestro «Pago en efectivo al recoger: 60,00 €. Trae el importe exacto…».
+- **WooCommerce → Ajustes → Generales → Habilitar el uso de cupones: desactivado.** No se hacen descuentos (decisión del 01/10/2026) y un cupón en una recogida haría que el importe en efectivo dejara de ser redondo.
   - **Factura mensual** activo. Solo lo ven las cuentas de empresa aprobadas.
 
 ### 7. Ajustes del plugin
@@ -148,13 +148,14 @@ Desactívalos **después** de las pruebas del paso 11 (y con la tienda funcionan
    - En el pedido (WooCommerce → Pedidos), escribe la hora en "Hora de recogida" y elige **Acciones del pedido → Confirmar recogida al cliente (email)**. Al cliente le llega el día, la hora, la dirección, el importe en efectivo y los avisos para el coche. La lista de pedidos marca "Confirmada" o "Sin confirmar".
 4. **Más de 150 kg fuera de la provincia de Barcelona:** con un código postal de Madrid (28001) y 160 kg, el envío desaparece y sale el aviso con WhatsApp, teléfono y email. Con un código postal 08… se puede comprar hasta 250 kg.
 5. **Sábado:** elige un sábado como fecha de entrega con envío. Debe sumar 11,74 € (IVA incluido), también el 31/10.
-5b. **App INDUNOVA:** abre `https://dryicepack.es/wp-json/dip/v1/envio`. Tiene que salir un JSON con la tarifa, la recogida y los días de MRW (sin datos de clientes).
+5b. **App INDUNOVA:** abre `https://dryicepack.es/wp-json/dip/v1/envio`. Tiene que salir un JSON con `"version": 2`, la tarifa, la recogida (con `sabados_sin_suplemento`) y los días de MRW, sin datos de clientes. Avisa al chat de INDUNOVA Control de que es la versión 2.
 6. **Más de 400 €:** sin razón social ni NIF no deja pagar. Con B66800103 sí.
 7. **Factura:** en la página de gracias, el botón "¿Necesitas factura?" abre /factura/. Rellénalo y comprueba que llega el aviso a info@ y que queda la nota en el pedido.
 8. **Cookies:** el banner tiene Aceptar, Rechazar y Elegir. Con "Rechazar", Analytics no se carga (en el navegador: F12 → Red → filtrar "gtag").
 9. **Formularios:** envía uno de contacto y comprueba que llega al email de avisos y a Dryicepack → Solicitudes.
 10. **Idioma:** cambia a CA y a EN desde el selector. Después vuelve a una página en castellano: debe salir en castellano.
 11. **WP Rocket:** vacía la caché (WP Rocket → Vaciar caché) y repite la prueba 2.
+    - Después no hace falta acordarse: el plugin vacía la caché solo el día que entra el pack de 5 kg (o vuelve el de 3 kg) y la mañana del 1/11, para que la web deje de decir «Salvo el 31 de octubre: sin suplemento».
     - Si el selector de fechas no responde, ve a WP Rocket → Archivos → Retrasar la ejecución de JavaScript → Exclusiones.
     - Añade `dryicepack-tienda` y `jquery`.
 

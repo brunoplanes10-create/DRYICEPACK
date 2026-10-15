@@ -120,7 +120,7 @@ const blueprint = {
 writeFileSync('.tmp/blueprint-tema.json', JSON.stringify(blueprint, null, 2));
 
 // PAQUETE=1: prueba lo que se va a subir (los .zip de dist/, con CSS y JS minificados) en vez del código fuente
-const origen = process.env.PAQUETE ? '.tmp/paquete' : null;
+const origen = (process.env.PAQUETE || process.argv.includes('--paquete')) ? '.tmp/paquete' : null;
 if (origen) {
   const { execFileSync } = await import('node:child_process');
   const { rmSync, mkdirSync } = await import('node:fs');
