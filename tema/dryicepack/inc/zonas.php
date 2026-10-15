@@ -110,27 +110,61 @@ function dipt_distancia( $a, $b ) {
 
 /**
  * Mapa radial: la nave en el centro, anillos cada 10 km y cada zona en su posición real (proyección simple).
- * $destacadas: claves de las zonas que se resaltan (vacío en el índice).
+ * $destacadas: claves de las zonas que se resaltan (vacío en el índice). La primera es la zona de la página.
+ * $etiquetas:  true pinta el nombre de todas las zonas. Los que no se pisan con otro (de mayor a menor prioridad,
+ *              en el orden de datos/zonas.json) llevan .radar__punto--rotulo y se ven siempre; el resto, al pasar o tocar.
+ * $opc:        barrido (bool) línea de radar que gira en 20 s · furgoneta (bool) furgoneta que viaja de Mataró a la
+ *              primera zona destacada al entrar (coordenadas en --fx / --fy).
+ * Los puntos aparecen por distancia a la nave (--d de 0 a 1). Todo con [data-vivo] (.visto) y en su estado final con .quieto.
  */
-function dipt_mapa_radial( array $destacadas = array(), $etiquetas = true ) {
-	$nave  = dipt_zona_nave();
+function dipt_mapa_radial( array $destacadas = array(), $etiquetas = true, array $opc = array() ) {
+	$opc    = wp_parse_args( $opc, array( 'barrido' => false, 'furgoneta' => false ) );
+	$nave   = dipt_zona_nave();
 	$escala = 6.2; // píxeles por km
 	$cx = 600; $cy = 140; // Mataró a la derecha: todas las zonas quedan al oeste y al suroeste
-	$html = '<svg class="radar" viewBox="0 0 720 500" role="img" aria-label="' . esc_attr( dipt_contenido( 'zonas' )['mapa'] ?? '' ) . '">';
+	$html = '<svg class="radar" viewBox="0 0 720 500" role="img" data-vivo aria-label="' . esc_attr( dipt_contenido( 'zonas' )['mapa'] ?? '' ) . '">';
 	foreach ( array( 10, 20, 30, 40, 50 ) as $km ) {
 		$html .= sprintf( '<circle class="radar__anillo" cx="%d" cy="%d" r="%.1f"/><text class="radar__km" x="%d" y="%.1f">%d km</text>', $cx, $cy, $km * $escala, $cx + 4, $cy - $km * $escala - 4, $km );
 	}
+	if ( $opc['barrido'] ) {
+		// Sector de 24° detrás de la línea, en color plano (sin degradado), que gira alrededor de la nave
+		$r  = 52 * $escala;
+		$a2 = deg2rad( -24 );
+		$html .= sprintf( '<g class="radar__barrido" data-pausa><path class="radar__estela" d="M%d %d L%.1f %d A%.1f %.1f 0 0 0 %.1f %.1f Z"/><line x1="%d" y1="%d" x2="%.1f" y2="%d"/></g>', $cx, $cy, $cx + $r, $cy, $r, $r, $cx + $r * cos( $a2 ), $cy + $r * sin( $a2 ), $cx, $cy, $cx + $r, $cy );
+	}
+	// Posiciones primero: un rótulo no puede pisar ni otro rótulo ni el punto de otra zona
+	$puntos  = array();
+	$ocupado = array( array( $cx - 14, $cy - 14, $cx + 80, $cy + 14 ) ); // la nave y su rótulo
 	foreach ( dipt_zonas() as $clave => $z ) {
 		if ( 'comarca' === $z['tipo'] || 'maresme' === $clave || 'mataro' === $clave ) continue;
 		$dx = ( $z['lon'] - $nave[1] ) * 111.32 * cos( deg2rad( $nave[0] ) ) * $escala;
 		$dy = -( $z['lat'] - $nave[0] ) * 110.57 * $escala;
+		$puntos[ $clave ] = array( $z, $dx, $dy );
+		$ocupado[]        = array( $cx + $dx - 7, $cy + $dy - 7, $cx + $dx + 7, $cy + $dy + 7 );
+	}
+	$destino = null;
+	foreach ( $puntos as $clave => list( $z, $dx, $dy ) ) {
 		$x  = $cx + $dx;
 		$y  = $cy + $dy;
 		$on = in_array( $clave, $destacadas, true );
-		$html .= sprintf( '<g class="radar__punto%s"><line x1="%d" y1="%d" x2="%.1f" y2="%.1f"/><circle cx="%.1f" cy="%.1f" r="%d"/>', $on ? ' es-actual' : '', $cx, $cy, $x, $y, $x, $y, $on ? 9 : 5 );
-		if ( $etiquetas || $on ) $html .= sprintf( '<text x="%.1f" y="%.1f">%s</text>', $x + 10, $y + 4, esc_html( dipt_zona_nombre( $z ) ) );
+		if ( $destacadas && $clave === $destacadas[0] ) $destino = array( $dx, $dy );
+		$nombre = dipt_zona_nombre( $z );
+		// ¿Cabe el rótulo sin pisar otro? (13 px de mono ≈ 8 px por carácter)
+		$caja  = array( $x + 8, $y - 12, $x + 14 + mb_strlen( $nombre ) * 8, $y + 6 ); // empieza después de su propio punto
+		$libre = $caja[2] < 716;
+		foreach ( $ocupado as $o ) {
+			if ( $caja[0] < $o[2] && $caja[2] > $o[0] && $caja[1] < $o[3] && $caja[3] > $o[1] ) { $libre = false; break; }
+		}
+		if ( $etiquetas && $libre ) $ocupado[] = $caja;
+		$clases = 'radar__punto' . ( $on ? ' es-actual' : '' ) . ( $etiquetas && $libre ? ' radar__punto--rotulo' : '' );
+		$html  .= sprintf( '<g class="%s" style="--d:%.2f"><line x1="%d" y1="%d" x2="%.1f" y2="%.1f"/><circle cx="%.1f" cy="%.1f" r="%d"/>', $clases, min( 1, $z['km'] / 60 ), $cx, $cy, $x, $y, $x, $y, $on ? 9 : 5 );
+		if ( $etiquetas || $on ) $html .= sprintf( '<text x="%.1f" y="%.1f">%s</text>', $x + 10, $y + 4, esc_html( $nombre ) );
 		$html .= '</g>';
 	}
 	$html .= sprintf( '<g class="radar__nave"><circle cx="%d" cy="%d" r="11"/><text x="%d" y="%d">Mataró</text></g>', $cx, $cy, $cx + 16, $cy + 5 );
+	if ( $opc['furgoneta'] && $destino ) {
+		// Furgoneta sobre la nave (mirando al oeste) que viaja hasta la zona: el destino va en variables CSS
+		$html .= sprintf( '<g class="radar__furgo" style="--fx:%.1fpx;--fy:%.1fpx"><g transform="translate(%d %d)"><rect x="-17" y="-15" width="34" height="30" rx="4"/><g transform="translate(12 -12) scale(-1 1)">%s</g></g></g>', $destino[0], $destino[1], $cx, $cy - 34, dipt_icono( 'furgoneta' ) );
+	}
 	return $html . '</svg>';
 }

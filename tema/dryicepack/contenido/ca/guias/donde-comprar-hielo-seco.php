@@ -2,6 +2,7 @@
 /* Guia · On comprar gel sec (respon a "venen gel sec a les farmàcies / al Mercadona?"). El slug es manté igual que en castellà. */
 return array(
 	'slug'     => 'on-comprar-gel-sec',
+	'foto'     => 'cajas-oscuro', // foto de la guía (assets/img/fotos): índice y cabecera
 	'titulo'   => 'On comprar gel sec si no en trobes a la farmàcia ni al súper',
 	'extracto' => 'Has preguntat a la farmàcia i no en tenen? És normal. T\'expliquem per què i on es compra de debò, amb enviament a casa o recollida.',
 	'seo'      => array(

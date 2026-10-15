@@ -3,6 +3,7 @@
  * Contingut de salut: només com demanar, guardar i manipular el gel sec. Cap afirmació mèdica ni d'eficàcia. Sense dades de la clienta. */
 return array(
 	'slug'         => 'gel-sec-casquets-freds-quimioterapia',
+	'foto'     => 'uso-laboratorio-entrega', // foto de la guía (assets/img/fotos): índice y cabecera
 	'relacionadas' => false, // ni s'enllaça des de les altres guies ni les enllaça (partes/guia-articulo.php)
 	'titulo'       => 'Gel sec per a casquets freds en quimioteràpia: quant en cal i com manipular-lo amb seguretat',
 	'extracto'     => 'Per a què serveix el gel sec amb els casquets freds, quant en cal demanar per sessió, com fer que arribi a temps i com manipular-lo sense risc.',

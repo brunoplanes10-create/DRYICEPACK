@@ -44,7 +44,9 @@ return array(
 		'boton'  => 'Download the sheet',
 		'archivo'=> '/wp-content/uploads/2026/01/CO2-SOLIDO-FICHA-DE-DATOS-DE-SEGURIDAD-DRYICEPACK-1.pdf',
 		'meta'   => 'PDF · Spanish',
+		'apartados' => array( array( '01', 'Identification' ), array( '02', 'Hazards' ), array( '04', 'First aid' ), array( '07', 'Handling' ), array( '08', 'Protection' ), array( '14', 'Transport' ) ),
 	),
+	'final' => array( 'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>' ),
 	'faq' => array(
 		'titulo' => 'More safety questions',
 		'lista'  => array(

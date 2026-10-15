@@ -2,6 +2,8 @@
 /* Guia · Com fer boira amb gel sec (respon a "on comprar gel sec per fer fum", "gel sec per fer fum"). El slug es manté igual que en castellà. */
 return array(
 	'slug'     => 'com-fer-boira-amb-gel-sec',
+	'foto'     => 'uso-eventos', // foto de la guía (assets/img/fotos): índice y cabecera
+	'formato'  => '3mm', // formato que recomienda la guía: acceso directo en la nota al margen
 	'titulo'   => 'Com fer boira amb gel sec en 3 passos',
 	'extracto' => 'Aigua calenta, un recipient ample i pèl·lets de 3 mm: amb això tens boira arran de terra a l\'instant. Quants quilos cal demanar segons la festa i com fer-ho amb seguretat.',
 	'seo'      => array(

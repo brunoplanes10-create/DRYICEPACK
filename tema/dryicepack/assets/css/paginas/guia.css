@@ -1,21 +1,41 @@
-/* Guía (entrada): lectura con índice lateral. Retícula asimétrica fija (índice 240 px · texto 44 rem) que repiten
-   el cuerpo y "Para seguir"; apartados numerados como una ficha técnica; compra en una tarjeta que pisa el pie. */
-.gu { --gu-col: 240px; --gu-hueco: clamp(2rem, 6vw, 6rem); }
+/* =========================================================================
+   Guía (entrada) · rediseño del 13/10/2026, plan 2.11
+   Cabecera con la foto de la guía a sangre que pisa el cuerpo. Retícula de tres columnas: índice (240 px) ·
+   texto (44 rem) · notas al margen. El apartado que cruza el centro se marca en el índice. Solo transform y opacity.
+   ========================================================================= */
+.gu { --gu-col: 220px; --gu-hueco: clamp(2rem, 4vw, 4rem); }
 
-/* ---------- Cabecera ---------- */
-.gu-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2.2rem, 4vw, 3.4rem); background: var(--c-escarcha); border-bottom: 1px solid var(--c-linea-fuerte); }
+/* ---------- Cabecera: texto a la izquierda, foto a sangre a la derecha que baja sobre el cuerpo ---------- */
+.gu-cabeza { position: relative; z-index: 2; padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2.2rem, 4vw, 3.4rem); border-bottom: 1px solid var(--c-linea-fuerte); }
+.gu-cabeza__in { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
 .gu-cabeza h1 { margin: 1rem 0 1.1rem; max-width: 20ch; }
-.gu-cabeza__meta { display: inline-flex; align-items: center; gap: .55rem; padding: .4rem .8rem .4rem .6rem; border: 1px solid var(--c-linea-fuerte); border-radius: 999px; background: var(--c-blanco); color: var(--c-acero); }
-.gu-cabeza__meta .ico { width: 16px; height: 16px; color: var(--c-marino); }
+/* Meta en mono, sin caja: una línea con un filete delante */
+.gu-cabeza__meta { display: flex; align-items: center; gap: .7rem; color: var(--c-acero); }
+.gu-cabeza__meta::before { content: ""; width: 2rem; height: 1px; background: currentColor; }
+/* Encuadre de uso-eventos en 4:3: acercada desde la izquierda (se ve el 62 % del ancho) para que no salga la máquina
+   de humo, que está abajo a la derecha (la guía es de hielo seco); se quedan los novios y la niebla del suelo.
+   Va en "scale" (fijo, no se anima) para que el acercamiento al pasar, en "transform", se sume sin pisarlo. */
+img.f-uso-eventos { object-position: 0% 50%; transform-origin: 0% 38%; scale: 1.36; }
 /* Migas: el último tramo (el título, que ya es el H1) se recorta en una línea en vez de partirse */
 .gu-cabeza .migas li:last-child { flex: 1 1 0; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+@media (min-width: 901px) {
+	.gu--foto .gu-cabeza { padding-bottom: 0; }
+	.gu--foto .gu-cabeza__in { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: end; gap: var(--gu-hueco); }
+	.gu--foto .gu-cabeza__texto { padding-bottom: clamp(2.2rem, 4vw, 3.4rem); }
+	.gu--foto .gu-cabeza__foto { margin-bottom: calc(-1 * var(--solape)); box-shadow: var(--sombra-3); }
+}
+@media (max-width: 900px) {
+	.gu--foto .gu-cabeza { padding-bottom: 0; }
+	.gu-cabeza__foto { margin-left: calc(-1 * var(--margen)); margin-bottom: -2rem; }
+}
 
 /* ---------- Cuerpo ---------- */
-.gu-cuerpo { display: grid; grid-template-columns: var(--gu-col) minmax(0, 1fr); gap: var(--gu-hueco); padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+.gu-cuerpo { display: grid; grid-template-columns: var(--gu-col) minmax(0, 42rem) minmax(15rem, 1fr); gap: var(--gu-hueco); padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+.gu--foto .gu-cuerpo { padding-top: calc(var(--solape) + clamp(1.5rem, 3vw, 2.5rem)); }
 
-/* Índice: números en monoespaciada y una marca que crece al pasar el ratón */
+/* Índice: números en mono y una marca marina en el apartado activo (y al pasar el ratón) */
 .gu-indice { position: sticky; top: calc(var(--alto-cabecera) + 1.5rem); align-self: start; }
-.gu-indice .dato { margin-bottom: .9rem; text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; color: var(--c-acero); }
+.gu-indice .dato { margin-bottom: .9rem; color: var(--c-acero); }
 .gu-indice ol { list-style: none; margin: 0; padding: 0; counter-reset: gi; border-left: 1px solid var(--c-linea-fuerte); }
 .gu-indice li { counter-increment: gi; }
 .gu-indice a { position: relative; display: grid; grid-template-columns: 2rem minmax(0, 1fr); padding: .42rem 0 .42rem 1rem; font-size: .9rem; line-height: 1.4; color: var(--c-acero); text-decoration: none; }
@@ -23,26 +43,47 @@
 .gu-indice a::after { content: ""; position: absolute; left: -1px; top: .3rem; bottom: .3rem; width: 2px; background: var(--c-marino); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--d-corta) var(--e-salida); }
 .gu-indice a:hover, .gu-indice a:focus-visible { color: var(--c-tinta); }
 .gu-indice a:hover::after, .gu-indice a:focus-visible::after { transform: scaleY(1); }
+/* Apartado activo (data-activa-grupo en el texto: uno a la vez). Hasta 12 apartados. */
+.gu-cuerpo:has(.gu-ap:nth-of-type(1).activo) .gu-indice li:nth-child(1) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(2).activo) .gu-indice li:nth-child(2) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(3).activo) .gu-indice li:nth-child(3) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(4).activo) .gu-indice li:nth-child(4) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(5).activo) .gu-indice li:nth-child(5) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(6).activo) .gu-indice li:nth-child(6) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(7).activo) .gu-indice li:nth-child(7) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(8).activo) .gu-indice li:nth-child(8) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(9).activo) .gu-indice li:nth-child(9) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(10).activo) .gu-indice li:nth-child(10) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(11).activo) .gu-indice li:nth-child(11) a,
+.gu-cuerpo:has(.gu-ap:nth-of-type(12).activo) .gu-indice li:nth-child(12) a { color: var(--c-tinta); font-weight: 600; }
+.gu-cuerpo:has(.gu-ap:nth-of-type(1).activo) .gu-indice li:nth-child(1) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(2).activo) .gu-indice li:nth-child(2) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(3).activo) .gu-indice li:nth-child(3) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(4).activo) .gu-indice li:nth-child(4) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(5).activo) .gu-indice li:nth-child(5) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(6).activo) .gu-indice li:nth-child(6) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(7).activo) .gu-indice li:nth-child(7) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(8).activo) .gu-indice li:nth-child(8) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(9).activo) .gu-indice li:nth-child(9) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(10).activo) .gu-indice li:nth-child(10) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(11).activo) .gu-indice li:nth-child(11) a::after,
+.gu-cuerpo:has(.gu-ap:nth-of-type(12).activo) .gu-indice li:nth-child(12) a::after { transform: scaleY(1); }
 
-/* Texto: cada apartado empieza con un filete y su número */
+/* Texto: cada apartado (section.gu-ap) empieza con un filete y su número */
 .gu-texto { counter-reset: ap; }
-.gu-texto h2 { counter-increment: ap; scroll-margin-top: calc(var(--alto-cabecera) + 1rem); padding-top: 1.5rem; border-top: 1px solid var(--c-linea-fuerte); }
-.gu-texto h2::before { content: counter(ap, decimal-leading-zero); display: block; margin-bottom: .8rem; font: 500 var(--t-dato)/1 var(--f-mono); letter-spacing: .04em; color: var(--c-acero); }
+.gu-texto > * + * { margin-top: 2.2em; }
+.gu-texto > .gu-intro > * + *, .gu-texto > .gu-ap > * + * { margin-top: 1.1em; }
+.gu-texto h2 { counter-increment: ap; margin-top: 0; scroll-margin-top: calc(var(--alto-cabecera) + 1rem); padding-top: 1.5rem; border-top: 1px solid var(--c-linea-fuerte); }
+.gu-texto h2::before { content: counter(ap, decimal-leading-zero); display: block; margin-bottom: .8rem; font: 500 var(--t-dato)/1 var(--f-mono); letter-spacing: .02em; color: var(--c-acero); }
 .gu-texto h3 { font-family: var(--f-display); font-weight: 700; letter-spacing: -.01em; }
 
-/* Resumen: la ficha de arriba, con profundidad real (varias sombras) y el borde marino a la izquierda */
-.gu-texto .resumen {
-	padding: 1.35rem 1.6rem 1.35rem 1.7rem; background: var(--c-blanco);
-	border: 1px solid var(--c-linea-fuerte); border-left: 4px solid var(--c-marino); border-radius: 4px var(--radio) var(--radio) 4px;
-	box-shadow: 0 1px 1px rgba(11, 20, 28, .05), 0 10px 22px -14px rgba(11, 20, 28, .3), 0 34px 60px -44px rgba(11, 20, 28, .45);
-	font-size: 1.12rem; line-height: 1.6;
-}
-.gu-texto .resumen + * { margin-top: 1.6em; }
+/* Resumen sin caja: texto de entrada con un filete grueso encima */
+.gu-texto .resumen { padding-top: 1rem; border-top: 2px solid var(--c-tinta); font-size: clamp(1.15rem, 1.4vw, 1.3rem); line-height: 1.55; }
 
-/* Listas: rombo marino (el mismo motivo que la cinta de datos) */
+/* Listas: guion corto en marino (sin rombos) */
 .gu-texto ul { list-style: none; padding-left: 0; }
 .gu-texto ul > li { position: relative; padding-left: 1.6rem; }
-.gu-texto ul > li::before { content: ""; position: absolute; left: .2rem; top: .7em; width: 7px; height: 7px; border: 1.5px solid var(--c-marino); transform: rotate(45deg); }
+.gu-texto ul > li::before { content: ""; position: absolute; left: 0; top: .8em; width: .85rem; height: 2px; background: var(--c-marino); }
 
 /* Pasos: tecla numerada con canto (sombra dura) y un hilo que los une */
 .gu-texto ol { list-style: none; padding-left: 0; counter-reset: paso; }
@@ -50,52 +91,79 @@
 .gu-texto ol > li + li { margin-top: 1.1rem; }
 .gu-texto ol > li::before {
 	content: counter(paso); position: absolute; left: 0; top: 0; width: 2.3rem; height: 2.3rem;
-	display: grid; place-items: center; border: 1px solid var(--c-tinta); border-radius: 8px; background: var(--c-blanco);
+	display: grid; place-items: center; border: 1px solid var(--c-tinta); border-radius: var(--radio); background: var(--c-blanco);
 	box-shadow: 0 2px 0 var(--c-tinta); font: 600 .9rem/1 var(--f-mono); color: var(--c-tinta);
 }
 .gu-texto ol > li:not(:last-child)::after { content: ""; position: absolute; left: calc(1.15rem - .5px); top: 2.75rem; bottom: -1rem; width: 1px; background: var(--c-linea-fuerte); }
 
-/* Tablas: filete grueso arriba, cabecera en versalitas pequeñas y la cantidad en negrita */
+/* Tablas: filete grueso arriba y la cantidad en negrita */
 .gu-texto table { border-top: 2px solid var(--c-tinta); font-variant-numeric: tabular-nums; }
-.gu-texto th { padding-top: .8rem; font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acero); }
+.gu-texto th { padding-top: .8rem; font-size: .8rem; font-weight: 600; color: var(--c-acero); }
 .gu-texto td:last-child { font-weight: 600; }
 
+/* ---------- Notas al margen (aviso de seguridad y compra): fijas en escritorio ---------- */
+.gu-margen { position: sticky; top: calc(var(--alto-cabecera) + 1.5rem); align-self: start; display: grid; gap: 1.6rem; max-width: 20rem; }
+.gu-nota { display: grid; gap: .8rem; justify-items: start; padding-top: 1rem; border-top: 2px solid var(--c-tinta); font-size: .95rem; }
+.gu-nota--aviso { border-top-color: var(--c-senal); }
+.gu-nota__ico .ico { width: 28px; height: 28px; color: var(--c-tinta); }
+.gu-nota p { color: var(--c-acero); }
+.gu-nota strong { color: var(--c-tinta); }
+.gu-nota .enlace-flecha { font-size: .9rem; }
+.gu-nota .boton { white-space: nowrap; }
+.gu-nota__formato { font-family: var(--f-display); font-weight: 800; font-size: 2.6rem; line-height: 1; letter-spacing: -.04em; color: var(--c-marino) !important; }
+
+@media (max-width: 1280px) {
+	.gu-cuerpo { grid-template-columns: var(--gu-col) minmax(0, 1fr); }
+	.gu-margen { position: static; grid-column: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 44rem; }
+}
 @media (max-width: 900px) {
 	.gu-cuerpo { grid-template-columns: minmax(0, 1fr); gap: 2.2rem; }
-	.gu-indice { position: static; padding: 1.2rem 1.2rem .8rem; background: var(--c-blanco); border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio); box-shadow: 0 1px 1px rgba(11, 20, 28, .04), 0 14px 28px -22px rgba(11, 20, 28, .35); }
+	.gu-margen { grid-column: auto; grid-template-columns: minmax(0, 1fr); }
+	.gu-indice { position: static; padding: 1.2rem 1.2rem .8rem; background: var(--c-blanco); border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-1); }
 	.gu-indice ol { border-left: 0; }
 	.gu-indice a { padding-left: 0; }
 	.gu-indice a::after { display: none; }
 }
 
-/* ---------- Para seguir: misma retícula que el cuerpo (la etiqueta en la columna del índice) ---------- */
-.gu-seguir { position: relative; display: grid; grid-template-columns: var(--gu-col) minmax(0, 44rem); gap: 1rem var(--gu-hueco); padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3.5rem, 7vw, 6rem); }
+/* ---------- Para seguir: la siguiente guía con foto y los enlaces fijos en lista pequeña ---------- */
+.gu-seguir { position: relative; display: grid; grid-template-columns: var(--gu-col) minmax(0, 1fr); gap: 1rem var(--gu-hueco); padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3.5rem, 7vw, 6rem); }
 .gu-seguir::before { content: ""; position: absolute; top: 0; left: var(--margen); right: var(--margen); height: 1px; background: var(--c-linea-fuerte); }
-.gu-seguir .dato { margin: 0; padding-top: .9rem; text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; color: var(--c-acero); }
-.gu-seguir ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--c-tinta); }
-.gu-seguir a { display: grid; grid-template-columns: 1.8rem minmax(0, 1fr); align-items: baseline; padding: .9rem 0; border-bottom: 1px solid var(--c-linea-fuerte); color: var(--c-tinta); font-weight: 500; font-size: 1.05rem; text-decoration: none; }
-.gu-seguir a::before { content: "→"; font-family: var(--f-mono); color: var(--c-marino); transition: transform var(--d-corta) var(--e-salida); }
-.gu-seguir a:hover, .gu-seguir a:focus-visible { color: var(--c-marino); text-decoration: underline; text-decoration-thickness: 1px; }
-.gu-seguir a:hover::before, .gu-seguir a:focus-visible::before { transform: translate3d(5px, 0, 0); }
-@media (max-width: 900px) { .gu-seguir { grid-template-columns: minmax(0, 1fr); } .gu-seguir .dato { padding-top: 0; } }
+.gu-seguir > .dato { margin: 0; padding-top: .9rem; color: var(--c-acero); }
+.gu-seguir__in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 2rem var(--gu-hueco); align-items: start; }
+.gu-siguiente { display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) auto; gap: 1.4rem; align-items: center; padding: 1rem 0; border-top: 2px solid var(--c-tinta); color: var(--c-tinta); text-decoration: none; }
+.gu-siguiente:hover, .gu-siguiente:focus-visible { text-decoration: none; }
+.gu-siguiente__foto img { transition: transform var(--d-media) var(--e-salida); }
+.gu-siguiente:hover .gu-siguiente__foto img, .gu-siguiente:focus-visible .gu-siguiente__foto img, .gu-siguiente.activo .gu-siguiente__foto img { transform: scale(1.04); }
+.gu-siguiente__titulo { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.15; letter-spacing: -.02em; text-wrap: balance; }
+.gu-siguiente__ir svg { width: 24px; height: 24px; transition: transform var(--d-corta) var(--e-salida); }
+.gu-siguiente:hover .gu-siguiente__ir svg, .gu-siguiente:focus-visible .gu-siguiente__ir svg, .gu-siguiente.activo .gu-siguiente__ir svg { transform: translate3d(6px, 0, 0); }
+.gu-seguir ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--c-tinta); }
+.gu-seguir ul a { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); align-items: baseline; padding: .65rem 0; border-bottom: 1px solid var(--c-linea-fuerte); color: var(--c-tinta); font-size: .95rem; text-decoration: none; }
+.gu-seguir ul a::before { content: "→"; font-family: var(--f-mono); color: var(--c-marino); transition: transform var(--d-corta) var(--e-salida); }
+.gu-seguir ul a:hover, .gu-seguir ul a:focus-visible { color: var(--c-marino); text-decoration: underline; text-decoration-thickness: 1px; }
+.gu-seguir ul a:hover::before, .gu-seguir ul a:focus-visible::before { transform: translate3d(5px, 0, 0); }
+@media (max-width: 900px) {
+	.gu-seguir, .gu-seguir__in { grid-template-columns: minmax(0, 1fr); }
+	.gu-seguir > .dato { padding-top: 0; }
+	.gu-siguiente { grid-template-columns: 7.5rem minmax(0, 1fr); }
+	.gu-siguiente__ir { display: none; }
+}
 
-/* ---------- Compra: tarjeta marina a caballo entre el papel y el pie ---------- */
-.gu-compra { background: linear-gradient(180deg, var(--c-papel) 0 50%, var(--c-noche) 50% 100%); }
+/* ---------- Compra: tarjeta noche a caballo entre el papel y el pie marino (corte recto, sin degradado) ---------- */
+.gu-compra { position: relative; }
+.gu-compra::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: var(--c-marino); }
+.gu-compra .envoltura { position: relative; }
 .gu-compra__in {
 	position: relative; overflow: hidden;
 	display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1.2rem clamp(1.2rem, 3vw, 2.4rem);
 	padding: clamp(1.6rem, 3.6vw, 2.6rem) clamp(1.4rem, 3.6vw, 3rem);
-	border: 1px solid rgba(184, 208, 232, .24); border-radius: var(--radio);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), 0 2px 4px rgba(11, 20, 28, .18), 0 26px 50px -24px rgba(11, 20, 28, .6), 0 70px 100px -70px rgba(11, 20, 28, .7);
+	border: 1px solid rgba(184, 208, 232, .3); border-top: 2px solid var(--c-hielo); border-radius: var(--radio); box-shadow: var(--sombra-3);
 }
-/* Filete de escarcha arriba: el corte de la caja EPS */
-.gu-compra__in::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: repeating-linear-gradient(90deg, var(--c-hielo) 0 18px, transparent 18px 26px); opacity: .55; }
-.gu-compra__ico { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; border: 1px solid rgba(184, 208, 232, .35); color: var(--c-hielo); }
-.gu-compra__ico .ico { width: 30px; height: 30px; }
-.gu-compra__t { color: #fff; font-size: clamp(1.55rem, 2.7vw, 2.4rem); line-height: 1.06; }
+.gu-compra__ico { display: grid; place-items: center; color: var(--c-hielo); }
+.gu-compra__ico .ico { width: 36px; height: 36px; }
+.gu-compra__t { color: var(--c-blanco); font-size: clamp(1.55rem, 2.7vw, 2.4rem); line-height: 1.06; }
 @media (max-width: 640px) {
 	.gu-compra__in { grid-template-columns: auto minmax(0, 1fr); }
-	.gu-compra__ico { width: 48px; height: 48px; }
-	.gu-compra__ico .ico { width: 24px; height: 24px; }
+	.gu-compra__ico .ico { width: 26px; height: 26px; }
 	.gu-compra__in .boton { grid-column: 1 / -1; justify-content: space-between; }
 }

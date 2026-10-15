@@ -1,34 +1,52 @@
 /* =========================================================================
-   Zonas de entrega (índice)
+   Zonas de entrega (índice) · rediseño del 13/10/2026, plan 2.11
+   Mapa grande a sangre con barrido de radar (20 s, se pausa fuera de pantalla), puntos que aparecen por distancia,
+   nombres que no se pisan siempre visibles y el resto al pasar o tocar. El estilo base del radar está en zona.css.
    ========================================================================= */
 @import url(zona.css);
-.zs-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); overflow: hidden; }
-.zs-hero__in { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(2rem, 5vw, 4rem); align-items: center; }
-.zs-hero h1 { margin: 1.2rem 0 1.4rem; color: #fff; text-wrap: pretty; }
+.zs-hero { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2rem, 4vw, 3rem); overflow: hidden; }
+.zs-hero__in { display: grid; grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: end; }
+@media (min-width: 901px) { .zs-hero__mapa { padding-top: 2rem; } }
+.zs-hero__texto { position: relative; z-index: 1; }
+.zs-hero h1 { margin: 1.2rem 0 1.4rem; color: var(--c-blanco); text-wrap: pretty; }
 .zs-hero h1 em { color: var(--c-hielo); }
 .zs-hero .entrada { color: var(--c-hielo-claro); }
-/* Mapa del índice: las ciudades del área metropolitana están tan juntas que sus nombres se pisan.
-   Se ven los puntos; el nombre aparece al pasar por cada uno (la lista de abajo los tiene todos). */
-.zs-hero .radar__punto text { opacity: 0; transition: opacity var(--d-corta); pointer-events: none; }
+.zs-hero__mapa .radar { width: 100%; max-width: none; }
+/* Nombres: los que caben se ven siempre (más grandes); el resto aparece al pasar o tocar (cursor: pointer, para el toque en iOS) */
+.zs-hero .radar__punto { cursor: pointer; }
+.zs-hero .radar__punto text { opacity: 0; transition: opacity var(--d-corta) linear; pointer-events: none; }
+.zs-hero .radar__punto--rotulo text, .zs-hero .radar__punto:hover text { opacity: 1; }
+.zs-hero .radar__punto--rotulo text { font-size: 15px; font-weight: 500; fill: var(--c-blanco); }
 .zs-hero .radar__punto line { pointer-events: none; }
-.zs-hero .radar__punto circle { transform-box: fill-box; transform-origin: center; transition: transform var(--d-corta) var(--e-salida); }
-.zs-hero .radar__punto:hover text { opacity: 1; }
 .zs-hero .radar__punto:hover circle { transform: scale(1.5); }
 .zs-hero .radar__punto:hover line { stroke: rgba(184, 208, 232, .55); }
-@media (max-width: 900px) { .zs-hero__in { grid-template-columns: 1fr; } }
+/* Escritorio: mapa grande, encuadrado en la zona con puntos (todos al oeste de Mataró). Al 100 % los puntos ocupaban
+   solo el tercio derecho y quedaba un hueco negro en el centro. Al 170 %: Mataró al 85 % de la columna, el punto más
+   lejano (~45 km) junto al texto, y se recorta la parte de abajo del plano (solo anillos). Rótulos más pequeños en el
+   SVG porque el mapa se amplía (~2× a 1440 px). */
+@media (min-width: 901px) {
+	.zs-hero__mapa .radar { width: 170%; margin: 0 0 -40% -58%; }
+	.zs-hero .radar__punto text { font-size: 9px; }
+	.zs-hero .radar__punto--rotulo text { font-size: 10px; }
+	.zs-hero .radar__nave text { font-size: 10.5px; }
+	.zs-hero .radar__km { font-size: 8px; }
+}
+@media (max-width: 900px) { .zs-hero__in { grid-template-columns: minmax(0, 1fr); } .zs-hero__mapa { margin-right: 0; } }
 @media (max-width: 600px) {
 	.zs-hero__mapa { overflow: hidden; margin-inline: calc(var(--margen) * -1); }
-	.zs-hero__mapa .radar { width: 165%; max-width: none; margin: -8% 0 -4% -58%; }
+	.zs-hero__mapa .radar { width: 165%; margin: -8% 0 -4% -58%; }
 }
 
-/* Comarcas en columnas equilibradas (sin una comarca suelta en la última fila) */
+/* ---------- Lista por comarca: columnas equilibradas, el nombre avanza al pasar o al cruzar el centro ---------- */
 .zs-comarcas { columns: 4 15rem; column-gap: var(--hueco); margin-top: 2rem; }
 .zs-comarca { break-inside: avoid; margin-bottom: clamp(2rem, 4vw, 3rem); }
-.zs-comarca h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.35rem, 2vw, 1.6rem); line-height: 1.15; letter-spacing: -.015em; margin-bottom: .8rem; padding-bottom: .7rem; border-bottom: 1px solid var(--c-tinta); }
+.zs-comarca h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.35rem, 2vw, 1.6rem); line-height: 1.15; letter-spacing: -.015em; margin-bottom: .8rem; padding-bottom: .7rem; border-bottom: 2px solid var(--c-tinta); }
 .zs-comarca ul { list-style: none; margin: 0; padding: 0; }
-.zs-comarca a { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--c-linea-fuerte); text-decoration: none; }
+.zs-comarca a { position: relative; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; min-height: 44px; padding: .7rem 0; border-bottom: 1px solid var(--c-linea-fuerte); text-decoration: none; }
+.zs-comarca a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--c-marino); transform: scaleX(0); transform-origin: 0 50%; transition: transform var(--d-corta) var(--e-salida); }
 .zs-comarca a span:first-child { transition: transform var(--d-corta) var(--e-salida); }
-.zs-comarca a:hover span:first-child { transform: translate3d(.5rem, 0, 0); }
-.zs-comarca a:hover { text-decoration: none; border-bottom-color: var(--c-marino); }
+.zs-comarca a:hover, .zs-comarca a:focus-visible { text-decoration: none; }
+.zs-comarca a:hover span:first-child, .zs-comarca a:focus-visible span:first-child, .zs-comarca li.activo a span:first-child { transform: translate3d(.5rem, 0, 0); }
+.zs-comarca a:hover::after, .zs-comarca a:focus-visible::after, .zs-comarca li.activo a::after { transform: scaleX(1); }
 .zs-comarca .dato { flex: none; color: var(--c-acero); }
 .zs-resto { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; align-items: center; padding-top: 1.6rem; border-top: 1px solid var(--c-linea-fuerte); }

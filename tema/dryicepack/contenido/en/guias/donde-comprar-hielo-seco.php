@@ -2,6 +2,7 @@
 /* Guía · Dónde comprar hielo seco · inglés (responde a "where to buy dry ice in Spain", "do pharmacies sell dry ice") */
 return array(
 	'slug'     => 'where-to-buy-dry-ice',
+	'foto'     => 'cajas-oscuro', // foto de la guía (assets/img/fotos): índice y cabecera
 	'titulo'   => 'Where to buy dry ice when the pharmacy and the supermarket don’t have it',
 	'extracto' => 'Asked at the pharmacy and they don’t have it? That’s normal. Here’s why, and where you can actually buy it, with home delivery or collection.',
 	'seo'      => array(

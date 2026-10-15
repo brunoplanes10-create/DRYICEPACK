@@ -11,6 +11,7 @@ return array(
 		'titulo'  => 'Què és el|<em>gel sec?</em>',
 		'resumen' => 'És diòxid de carboni (CO<sub>2</sub>) en estat sòlid, a −78,5 °C. No es fon: en escalfar-se passa directament a gas. Per això refreda molt més que el gel normal i no mulla res.',
 		'tambien' => 'També se\'n diu neu carbònica. En castellà, hielo seco; en anglès, dry ice.',
+		'seguridad' => 'Normes de seguretat',
 	),
 	'ficha' => array(
 		'titulo' => 'Fitxa tècnica',
@@ -35,6 +36,7 @@ return array(
 			array( 'Per a què', 'Congelat, mostres, boira, processos', 'Refrescar begudes i producte fresc', 'Refrigerat en trajectes curts' ),
 		),
 		'nota'     => 'Les dades dels acumuladors de fred depenen de cada fabricant.',
+		'congelador' => 'Congelador domèstic',
 	),
 	'tamano' => array(
 		'titulo' => 'A mida <em>real.</em>',
@@ -51,6 +53,7 @@ return array(
 			array( 'Es premsa', 'La neu es premsa a través d\'una matriu: en surten els pèl·lets de 3 mm o els nuggets de 16 mm.' ),
 		),
 		'nota'   => 'En sublimar-se, aquest CO₂ torna a l\'aire. Com que s\'aprofita un gas que ja s\'emetia, no sol suposar una emissió addicional; l\'impacte ve sobretot del transport.',
+		'estados' => array( 'Gas', 'Líquid', 'Neu', 'Sòlid' ),
 	),
 	'faq' => array(
 		'titulo' => 'Dubtes sobre el gel sec',

@@ -1,36 +1,51 @@
 /* =========================================================================
-   Zona de entrega (plantilla por ciudad o comarca) · Z1 a Z6 + mapa radial
-   Dirección C "Industrial sobrio": Inter Tight 800/700 en titulares, Inter en el texto,
-   Geist Mono solo en los datos (.dato). Movimiento: solo transform y opacity.
+   Zona de entrega (plantilla por ciudad o comarca) · Z1 a Z6 + mapa radial · rediseño del 13/10/2026, plan 2.11
+   Inter Tight en titulares, Inter en el texto, Geist Mono solo en los datos (.dato). Solo transform y opacity;
+   con .quieto todo queda en su estado final (puntos visibles, furgoneta en la zona).
    ========================================================================= */
-/* Titulares con salto ("|" en el texto): cada tramo es un bloque equilibrado por separado, sin palabras sueltas */
-h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 
-.radar { width: 100%; height: auto; display: block; }
+/* ---------- Mapa radial (también lo usa el índice: zonas.css lo importa) ---------- */
+.radar { width: 100%; height: auto; display: block; overflow: hidden; } /* los anillos de 40–50 km no salen del plano */
 .radar__anillo { fill: none; stroke: rgba(184, 208, 232, .22); stroke-width: 1; stroke-dasharray: 3 5; }
 .radar__km { fill: var(--c-niebla); font: 400 11px var(--f-mono); }
 .radar__punto line { stroke: rgba(184, 208, 232, .18); stroke-width: 1; }
-.radar__punto circle { fill: var(--c-marino-2); stroke: var(--c-hielo); stroke-width: 1.5; }
+.radar__punto circle { fill: var(--c-marino-2); stroke: var(--c-hielo); stroke-width: 1.5; transform-box: fill-box; transform-origin: center; transition: transform var(--d-corta) var(--e-salida); }
 .radar__punto text { fill: var(--c-hielo-claro); font: 400 13px var(--f-mono); paint-order: stroke; stroke: var(--c-noche); stroke-width: 4px; stroke-linejoin: round; }
-.radar__punto.es-actual line { stroke: var(--c-hielo); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.radar__punto.es-actual line { stroke: var(--c-hielo); stroke-width: 1.5; }
 .radar__punto.es-actual circle { fill: var(--c-hielo); }
-.radar__punto.es-actual text { fill: #fff; font-size: 16px; font-weight: 500; }
-.visto .radar__punto.es-actual line, .z-mapa .radar__punto.es-actual line { stroke-dasharray: none; }
-.radar__nave circle { fill: #fff; }
-.radar__nave text { fill: #fff; font: 500 16px var(--f-mono); paint-order: stroke; stroke: var(--c-noche); stroke-width: 4px; stroke-linejoin: round; }
+.radar__punto.es-actual text { fill: var(--c-blanco); font-size: 16px; font-weight: 500; }
+.radar__nave circle { fill: var(--c-blanco); }
+.radar__nave text { fill: var(--c-blanco); font: 500 16px var(--f-mono); paint-order: stroke; stroke: var(--c-noche); stroke-width: 4px; stroke-linejoin: round; }
+/* Entrada: los puntos aparecen por distancia a la nave (--d de 0 a 1) */
+.js .radar__punto { opacity: 0; transition: opacity var(--d-media) linear; transition-delay: calc(var(--d, 0) * 500ms + 100ms); }
+.js .radar__punto circle { transform: scale(.3); transition: transform var(--d-media) var(--e-salida); transition-delay: calc(var(--d, 0) * 500ms + 100ms); }
+.js .radar.visto .radar__punto, .quieto .radar__punto { opacity: 1; }
+.js .radar.visto .radar__punto circle, .quieto .radar__punto circle { transform: none; }
+.js .radar.visto .radar__punto:hover circle { transform: scale(1.5); transition-delay: 0s; }
+/* Barrido de radar: una vuelta cada 20 s alrededor de la nave (se pausa fuera de pantalla con data-pausa) */
+.radar__barrido { transform-box: view-box; transform-origin: 600px 140px; opacity: 0; }
+.radar__barrido line { stroke: var(--c-hielo); stroke-width: 1.2; opacity: .55; }
+.radar__estela { fill: var(--c-hielo); opacity: .07; }
+.anima .radar.visto .radar__barrido { opacity: 1; animation: radar-barrido 20s linear infinite; transition: opacity var(--d-larga) linear; }
+@keyframes radar-barrido { to { transform: rotate(360deg); } }
+/* Furgoneta: sale de la nave y viaja hasta la zona al entrar (600 ms); con .quieto ya está en la zona */
+.radar__furgo { color: var(--c-hielo); transform: translate(var(--fx), var(--fy)); }
+.radar__furgo rect { fill: var(--c-noche); stroke: var(--c-hielo); stroke-width: 1; }
+.radar__furgo .ico { overflow: visible; }
+.js .radar__furgo { transform: none; transition: transform var(--d-larga) var(--e-suave) .5s; }
+.js .radar.visto .radar__furgo, .quieto .radar__furgo { transform: translate(var(--fx), var(--fy)); }
 
 /* ---------- Z1 · Título y cifras ----------
    Las cifras van en una ficha blanca que se monta sobre la franja oscura del mapa (solape a propósito). */
-.z-hero { position: relative; z-index: 2; padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); background: var(--c-papel); }
+.z-hero { position: relative; z-index: 2; padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(3rem, 6vw, 5rem); }
 .z-hero__in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: clamp(2rem, 6vw, 6rem); align-items: end; }
 .z-hero h1 { margin: 1.2rem 0 1.4rem; text-wrap: pretty; }
 .z-hero h1 em { color: var(--c-marino-2); }
 .z-hero .entrada { margin-bottom: 2rem; }
-.z-cifras { margin: 0; display: grid; gap: 0; padding: .4rem clamp(1.4rem, 2.4vw, 2rem); border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio); background: #fff;
-	box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(11, 20, 28, .06), 0 30px 60px -34px rgba(11, 20, 28, .45), 0 70px 90px -70px rgba(11, 20, 28, .35); }
+.z-cifras { margin: 0; display: grid; gap: 0; padding: .4rem clamp(1.4rem, 2.4vw, 2rem); border: 1px solid var(--c-tinta); border-radius: var(--radio); background: var(--c-blanco); box-shadow: var(--sombra-3); }
 .z-cifras div { padding: 1.1rem 0 1.2rem; border-top: 1px solid var(--c-linea-fuerte); }
 .z-cifras div:first-child { border-top: 0; }
-.z-cifras dt { text-transform: uppercase; letter-spacing: .1em; color: var(--c-acero); }
+.z-cifras dt { color: var(--c-acero); }
 .z-cifras dd { margin: .35rem 0 0; font-family: var(--f-display); font-weight: 800; font-size: clamp(1.7rem, 2.6vw, 2.3rem); line-height: 1.05; letter-spacing: -.03em; }
 @media (min-width: 901px) {
 	.z-cifras { margin-bottom: calc((clamp(3rem, 6vw, 5rem) + 3.5rem) * -1); }
@@ -38,53 +53,96 @@ h1 .tramo, h2 .tramo { display: block; text-wrap: balance; }
 }
 @media (max-width: 900px) { .z-hero__in { grid-template-columns: 1fr; } }
 
-/* ---------- Z2 · Mapa radial ---------- */
-.z-mapa { padding: clamp(2rem, 5vw, 4rem) 0; }
-.z-mapa .radar { max-width: 900px; margin: 0 auto; }
-.z-mapa__fuente { text-align: center; color: var(--c-niebla); margin-top: .8rem; }
-/* Escritorio: el mapa se pega a la derecha, bajo la ficha de cifras; la fuente, abajo a la izquierda como pie de plano */
+/* ---------- Z2 · De la nave a la zona: tres pasos en mono y el mapa ---------- */
+.z-mapa { padding: clamp(2rem, 5vw, 4rem) 0; overflow: hidden; }
+.z-mapa__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 900px); gap: var(--hueco); align-items: end; }
+.z-ruta { position: relative; z-index: 1; display: grid; gap: 2rem; padding-bottom: clamp(1rem, 3vw, 2.5rem); } /* encima de los anillos del mapa ampliado */
+.z-ruta__pasos { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; font-size: .9rem; }
+.z-ruta__pasos li { position: relative; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: .2rem .4rem; padding: .9rem 0; border-top: 1px solid var(--c-linea-oscura); }
+.z-ruta__pasos li:last-child { border-bottom: 1px solid var(--c-linea-oscura); }
+.z-ruta__n { color: var(--c-niebla); }
+.z-ruta__valor { color: var(--c-blanco); font-size: 1rem; }
+.z-ruta__nota { grid-column: 2; color: var(--c-niebla); }
+.z-ruta__pasos li:last-child .z-ruta__valor { color: var(--c-hielo); font-weight: 600; }
+.z-mapa__fuente { max-width: 16rem; color: var(--c-niebla); line-height: 1.6; }
+.z-mapa .radar { max-width: 900px; }
+/* Escritorio: los pasos con un ancho mínimo (a 1024 px se partían palabra a palabra) y el mapa ampliado y encuadrado
+   en la zona con puntos, que quedaba pequeño en el tercio derecho. Mataró al ~80 % de su columna; se recorta la parte
+   de abajo del plano (solo anillos). Los rótulos del SVG, más pequeños porque el mapa se amplía (~1,4–2×). */
 @media (min-width: 901px) {
-	.z-mapa .envoltura { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 900px); align-items: end; gap: var(--hueco); }
-	.z-mapa .radar { grid-column: 2; grid-row: 1; margin: 0; }
-	.z-mapa__fuente { grid-column: 1; grid-row: 1; max-width: 16rem; margin: 0 0 clamp(1rem, 3vw, 2.5rem); padding-top: 1rem; border-top: 1px solid var(--c-linea-oscura); text-align: left; line-height: 1.6; }
+	.z-mapa__in { grid-template-columns: minmax(15rem, .3fr) minmax(0, 1fr); }
+	.z-mapa .radar { width: 150%; max-width: none; margin: -2% 0 -36% -44%; }
+	.z-mapa .radar__punto.es-actual text { font-size: 11px; }
+	.z-mapa .radar__nave text { font-size: 11px; }
+	.z-mapa .radar__km { font-size: 8px; }
+}
+@media (max-width: 900px) {
+	.z-mapa__in { grid-template-columns: minmax(0, 1fr); }
+	.z-ruta { order: 2; padding-bottom: 0; }
 }
 /* En móvil, el mapa se amplía y se recorta a la zona con puntos (todos al oeste de Mataró) */
 @media (max-width: 600px) {
-	.z-mapa .envoltura { overflow: hidden; }
-	.z-mapa .radar { width: 150%; max-width: none; margin-left: -48%; }
+	/* Mataró al ~78 % del ancho y el punto más lejano junto al borde izquierdo; arriba y abajo solo hay anillos: se recortan */
+	.z-mapa .radar { width: 190%; max-width: none; margin: -12% 0 -42% -80%; }
 }
 
-/* ---------- Z3 · Entrega en la zona ---------- */
-.z-entrega__in { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+/* ---------- Z3 · Entrega en la zona, con la recogida destacada ---------- */
+.z-entrega__in { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.z-entrega__cab { display: grid; gap: 2.4rem; }
+.z-recogida { justify-self: start; padding: 1.2rem 1.4rem; background: var(--c-blanco); border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-2); }
+.z-recogida__et { color: var(--c-acero); margin-bottom: .6rem; }
+.z-recogida dl { display: flex; flex-wrap: wrap; gap: .4rem 2rem; margin: 0; }
+.z-recogida dl div { display: grid; }
+.z-recogida dt { color: var(--c-acero); }
+.z-recogida dd { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: clamp(2rem, 3.4vw, 2.8rem); line-height: 1; letter-spacing: -.035em; color: var(--c-marino); white-space: nowrap; }
 .z-tabla { margin: 0; border-bottom: 1px solid var(--c-linea-fuerte); }
 .z-tabla div { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 1.5rem; padding: 1.1rem 0; border-top: 1px solid var(--c-linea-fuerte); }
-.z-tabla div:first-child { border-top-color: var(--c-tinta); }
+.z-tabla div:first-child { border-top: 2px solid var(--c-tinta); }
 .z-tabla dt { font-weight: 600; line-height: 1.45; }
 .z-tabla dd { margin: 0; color: var(--c-acero); }
 @media (max-width: 800px) { .z-entrega__in { grid-template-columns: 1fr; gap: 1.8rem; } .z-tabla div { grid-template-columns: 1fr; gap: .3rem; } }
 
-/* ---------- Z4 · Usos ---------- */
-.z-usos__lista { list-style: none; margin: 1.6rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
-.z-usos__lista a { display: inline-flex; align-items: center; gap: .6rem; min-height: 48px; padding: .7rem 1.2rem; border: 1px solid var(--c-linea-fuerte); border-radius: 999px; background: #fff; box-shadow: 0 1px 0 rgba(11, 20, 28, .05); text-decoration: none; font-weight: 500; transition: transform var(--d-corta) var(--e-salida); }
-.z-usos__lista a:hover { transform: translateY(-2px); border-color: var(--c-marino); text-decoration: none; }
-.z-usos__lista .ico { width: 16px; height: 16px; transition: transform var(--d-corta) var(--e-salida); }
-.z-usos__lista a:hover .ico { transform: translate3d(3px, 0, 0); }
+/* ---------- Z4 · Usos: tira de fotos de anchos distintos; carril con scroll-snap en móvil ---------- */
+.z-usos__tira { list-style: none; margin: 2rem 0 0; padding: 0; display: flex; gap: .6rem; height: clamp(16rem, 24vw, 21rem); }
+.z-usos__tira li { flex: 1 1 0; min-width: 0; }
+.z-usos__tira li:nth-child(1), .z-usos__tira li:nth-child(4) { flex-grow: 1.6; }
+.z-usos__tira li:nth-child(3) { flex-grow: 1.25; }
+.z-usos__tira a { position: relative; display: block; height: 100%; color: var(--c-blanco); text-decoration: none; }
+.z-usos__foto { display: block; height: 100%; }
+.z-usos__foto img { transition: transform var(--d-media) var(--e-salida); }
+/* Nombre en mono sobre una franja sólida noche (sin degradado) */
+.z-usos__nombre { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .75rem .9rem; background: rgba(11, 20, 28, .8); font-size: .85rem; }
+.z-usos__nombre .ico { flex: none; width: 16px; height: 16px; transition: transform var(--d-corta) var(--e-salida); }
+.z-usos__tira a:hover .z-usos__foto img, .z-usos__tira a:focus-visible .z-usos__foto img, .z-usos__tira li.activo .z-usos__foto img { transform: scale(1.05); }
+.z-usos__tira a:hover .ico, .z-usos__tira a:focus-visible .ico, .z-usos__tira li.activo .ico { transform: translate3d(4px, 0, 0); }
+.z-usos__tira a:hover, .z-usos__tira a:focus-visible { text-decoration: none; }
+@media (max-width: 800px) {
+	.z-usos__tira { height: auto; margin-inline: calc(-1 * var(--margen)); padding: 0 var(--margen) .4rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--margen); }
+	.z-usos__tira li, .z-usos__tira li:nth-child(n) { flex: 0 0 auto; width: 70%; aspect-ratio: 4 / 5; scroll-snap-align: start; }
+	.z-usos__tira li:nth-child(even) { width: 56%; }
+}
 
-/* ---------- Z5 · Preguntas locales ---------- */
+/* ---------- Z5 · Preguntas locales: «+» que pasa a «−» ---------- */
 .z-faq__in { display: grid; grid-template-columns: minmax(0, .6fr) minmax(0, 1.4fr); gap: clamp(2rem, 6vw, 6rem); }
 .z-faq__item { border-top: 1px solid var(--c-linea-fuerte); }
-.z-faq__item:first-child { border-top-color: var(--c-tinta); }
+.z-faq__item:first-child { border-top: 2px solid var(--c-tinta); }
 .z-faq__item:last-child { border-bottom: 1px solid var(--c-linea-fuerte); }
-.z-faq__item summary { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 1.2rem 0; font-weight: 600; font-size: 1.08rem; line-height: 1.4; }
-.z-faq__item summary::after { content: "+"; flex: none; font: 400 1.3rem/1 var(--f-texto); transition: transform var(--d-corta) var(--e-salida); }
-.z-faq__item[open] summary::after { transform: rotate(45deg); }
-.z-faq__item p { padding-bottom: 1.2rem; color: var(--c-acero); }
-@media (max-width: 800px) { .z-faq__in { grid-template-columns: 1fr; } }
+.z-faq__item summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 44px; padding: 1.2rem 0; font-weight: 600; font-size: 1.08rem; line-height: 1.4; cursor: pointer; list-style: none; }
+.z-faq__item summary::-webkit-details-marker { display: none; }
+.z-faq__signo { position: relative; flex: none; width: 16px; height: 16px; }
+.z-faq__signo::before, .z-faq__signo::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; margin-top: -.75px; background: currentColor; transition: transform var(--d-corta) var(--e-salida); }
+.z-faq__signo::after { transform: rotate(90deg); }
+.z-faq__item[open] .z-faq__signo::after { transform: rotate(90deg) scaleX(0); }
+.z-faq__item p { padding-bottom: 1.2rem; color: var(--c-acero); max-width: 44rem; }
+.z-faq__item[open] > p { animation: z-abre .25s var(--e-salida); }
+@keyframes z-abre { from { opacity: 0; transform: translate3d(0, 8px, 0); } }
+.quieto .z-faq__item[open] > p { animation: none; }
+@media (max-width: 800px) { .z-faq__in { grid-template-columns: 1fr; gap: 1rem; } }
 
-/* ---------- Z6 · Zonas cercanas ---------- */
-.z-cerca { padding: 1.8rem 0; }
+/* ---------- Z6 · Zonas cercanas (noche, antes del pie marino) ---------- */
+.z-cerca { padding: 2rem 0; border-bottom: 1px solid var(--c-linea-oscura); }
 .z-cerca .envoltura { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem 2rem; }
-.z-cerca h2 { color: var(--c-niebla); text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; font-weight: 400; }
+.z-cerca h2 { color: var(--c-niebla); font-weight: 400; }
 .z-cerca ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; }
-.z-cerca a { color: #fff; text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.2rem; letter-spacing: 0; }
-.z-cerca a:hover { text-decoration: underline; text-decoration-thickness: 1px; }
+.z-cerca a { color: var(--c-blanco); text-decoration: none; font-family: var(--f-display); font-weight: 700; font-size: 1.2rem; }
+.z-cerca a:hover, .z-cerca a:focus-visible { text-decoration: underline; text-decoration-thickness: 1px; }

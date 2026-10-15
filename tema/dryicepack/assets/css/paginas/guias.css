@@ -1,6 +1,10 @@
-/* Guías (índice): lista editorial. Titular gigante contra un texto aireado; cada guía es una fila con número hueco,
-   título compacto y resumen. Al pasar el ratón: fondo que aparece (opacidad), número que se rellena y flecha que gira. */
-.gs-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2.5rem, 5vw, 4.5rem); background: var(--c-papel); }
+/* =========================================================================
+   Guías (índice) · rediseño del 13/10/2026, plan 2.11
+   Titular gigante contra un texto aireado; la primera guía, destacada con foto grande; el resto, filas con
+   miniatura 4:5 que se descubre con cortina. Al pasar el ratón o al cruzar el centro de la pantalla (.activo):
+   fondo que aparece, foto que se acerca y flecha que avanza. Solo transform y opacity.
+   ========================================================================= */
+.gs-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2.5rem, 5vw, 4.5rem); }
 .gs-cabeza__in { display: grid; gap: 1rem 3rem; margin-top: 1rem; }
 .gs-cabeza h1 { color: var(--c-marino); line-height: 1; }
 .gs-cabeza .entrada { max-width: 30rem; }
@@ -9,49 +13,60 @@
 	.gs-cabeza .entrada { justify-self: end; padding-bottom: .55em; }
 }
 
-/* Lista: pegada a la cabecera (la cabecera ya da el aire), con un filete grueso arriba como una ficha */
-.gs-lista { padding-block: clamp(1.5rem, 3vw, 2.5rem) var(--seccion); }
+.gs-lista { padding-block: clamp(2.5rem, 5vw, 4.5rem) var(--seccion); }
+
+/* Flecha común (sin círculo): avanza al pasar o con .activo */
+.gs-ir { display: inline-grid; place-items: center; width: 44px; height: 44px; color: var(--c-tinta); }
+.gs-ir svg { width: 24px; height: 24px; transition: transform var(--d-corta) var(--e-salida); }
+
+/* ---------- Destacada: foto grande 7/5 y el texto apoyado abajo ---------- */
+.gs-destacada { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: end; padding-bottom: clamp(2.5rem, 5vw, 4rem); margin-bottom: clamp(1rem, 2vw, 1.5rem); color: var(--c-tinta); text-decoration: none; }
+.gs-destacada:hover, .gs-destacada:focus-visible { text-decoration: none; }
+.gs-destacada__foto { display: block; }
+/* Encuadre de uso-eventos en 4:3: acercada desde la izquierda (se ve el 62 % del ancho) para que no salga la máquina
+   de humo, que está abajo a la derecha (la guía es de hielo seco); se quedan los novios y la niebla del suelo.
+   Va en "scale" (fijo) para que el acercamiento al pasar, en "transform", se sume sin pisarlo. */
+img.f-uso-eventos { object-position: 0% 50%; transform-origin: 0% 38%; scale: 1.36; }
+.gs-destacada__foto img, .gs-entradas__foto img { transition: transform var(--d-media) var(--e-salida); }
+.gs-destacada:hover .gs-destacada__foto img, .gs-destacada:focus-visible .gs-destacada__foto img, .gs-destacada.activo .gs-destacada__foto img { transform: scale(1.03); }
+.gs-destacada__texto { display: grid; gap: 1rem; justify-items: start; padding-bottom: .4rem; }
+.gs-destacada__n { color: var(--c-acero); }
+.gs-destacada__titulo { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.06; letter-spacing: -.03em; text-wrap: balance; }
+.gs-destacada__resumen { color: var(--c-acero); max-width: 30rem; text-wrap: pretty; }
+.gs-destacada__pie { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; padding-top: 1rem; border-top: 2px solid var(--c-tinta); }
+.gs-destacada__pie .dato { color: var(--c-acero); }
+.gs-destacada:hover .gs-ir svg, .gs-destacada:focus-visible .gs-ir svg, .gs-destacada.activo .gs-ir svg { transform: translate3d(6px, 0, 0); }
+@media (max-width: 900px) {
+	.gs-destacada { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+	.gs-destacada__foto { margin-inline: calc(-1 * var(--margen)); border-inline: 0; border-radius: 0; aspect-ratio: 4 / 3; }
+}
+
+/* ---------- Resto: filas con miniatura 4:5 ---------- */
 .gs-entradas { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--c-tinta); }
 .gs-entradas a {
 	position: relative; isolation: isolate;
-	display: grid; grid-template-columns: clamp(4.5rem, 9vw, 8.5rem) minmax(0, 1.25fr) minmax(0, 1fr) 2.75rem;
-	grid-template-areas: "n titulo resumen ir" "n meta resumen ir";
-	gap: .55rem clamp(1.25rem, 3vw, 3rem); padding: clamp(1.6rem, 3vw, 2.6rem) 0;
+	display: grid; grid-template-columns: clamp(6rem, 9vw, 8.5rem) minmax(0, 1.25fr) minmax(0, 1fr) 2.75rem;
+	grid-template-areas: "foto n resumen ir" "foto titulo resumen ir" "foto meta resumen ir";
+	grid-template-rows: auto auto 1fr;
+	gap: .5rem clamp(1.25rem, 3vw, 3rem); padding: clamp(1.4rem, 2.6vw, 2.2rem) 0;
 	border-bottom: 1px solid var(--c-linea-fuerte); color: var(--c-tinta); text-decoration: none;
 }
 /* Fondo al pasar: una capa que aparece con opacidad, sangrando hasta el margen de la envoltura */
 .gs-entradas a::before { content: ""; position: absolute; inset: 0 calc(-1 * min(var(--margen), 1.5rem)); z-index: -1; background: var(--c-escarcha); opacity: 0; transition: opacity var(--d-corta) var(--e-salida); }
 .gs-entradas a:hover, .gs-entradas a:focus-visible { text-decoration: none; }
-.gs-entradas a:hover::before, .gs-entradas a:focus-visible::before { opacity: 1; }
-
-.gs-entradas__n {
-	grid-area: n; position: relative; align-self: start;
-	font-family: var(--f-display); font-weight: 800; font-size: clamp(2.4rem, 5vw, 4.4rem); line-height: 1; letter-spacing: -.04em;
-	font-variant-numeric: tabular-nums; color: var(--c-marino);
-	transition: transform var(--d-media) var(--e-salida);
-}
-@supports (-webkit-text-stroke: 1px black) {
-	.gs-entradas__n { color: transparent; -webkit-text-stroke: 1.5px var(--c-marino); }
-	.gs-entradas__n::after { content: attr(data-n); position: absolute; inset: 0; color: var(--c-marino); -webkit-text-stroke: 0; opacity: 0; transition: opacity var(--d-corta) var(--e-salida); }
-	.gs-entradas a:hover .gs-entradas__n::after, .gs-entradas a:focus-visible .gs-entradas__n::after { opacity: 1; }
-}
-.gs-entradas a:hover .gs-entradas__n, .gs-entradas a:focus-visible .gs-entradas__n { transform: translate3d(6px, 0, 0); }
-
+.gs-entradas a:hover::before, .gs-entradas a:focus-visible::before, .gs-entradas li.activo a::before { opacity: 1; }
+.gs-entradas a:hover .gs-entradas__foto img, .gs-entradas a:focus-visible .gs-entradas__foto img, .gs-entradas li.activo .gs-entradas__foto img { transform: scale(1.04); }
+.gs-entradas a:hover .gs-ir svg, .gs-entradas a:focus-visible .gs-ir svg, .gs-entradas li.activo .gs-ir svg { transform: translate3d(6px, 0, 0); }
+.gs-entradas__foto { grid-area: foto; align-self: start; display: block; }
+.gs-entradas__foto--vacia { border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio); background: var(--c-escarcha); }
+.gs-entradas__n { grid-area: n; color: var(--c-acero); }
 .gs-entradas__titulo { grid-area: titulo; font-family: var(--f-display); font-weight: 700; font-size: clamp(1.35rem, 2.1vw, 1.95rem); line-height: 1.12; letter-spacing: -.02em; text-wrap: balance; }
 .gs-entradas__resumen { grid-area: resumen; align-self: center; max-width: 34rem; color: var(--c-acero); text-wrap: pretty; }
 .gs-entradas__meta { grid-area: meta; align-self: start; color: var(--c-acero); }
-.gs-entradas__ir {
-	grid-area: ir; align-self: center; justify-self: end;
-	display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
-	border: 1px solid var(--c-tinta); background: var(--c-blanco); color: var(--c-tinta);
-	box-shadow: 0 2px 0 var(--c-tinta);
-	transition: transform var(--d-corta) var(--e-salida);
-}
-.gs-entradas__ir svg { width: 18px; height: 18px; }
-.gs-entradas a:hover .gs-entradas__ir, .gs-entradas a:focus-visible .gs-entradas__ir { transform: translate3d(0, -2px, 0) rotate(-45deg); }
+.gs-entradas__ir { grid-area: ir; align-self: center; justify-self: end; }
 
 @media (max-width: 800px) {
-	.gs-entradas a { grid-template-columns: 3.4rem minmax(0, 1fr); grid-template-areas: "n titulo" "n resumen" "n meta"; column-gap: 1rem; }
-	.gs-entradas__n { font-size: 2.3rem; }
+	.gs-entradas a { grid-template-columns: 6.5rem minmax(0, 1fr); grid-template-areas: "foto n" "foto titulo" "foto meta" "resumen resumen"; grid-template-rows: auto auto 1fr auto; column-gap: 1rem; }
+	.gs-entradas__resumen { margin-top: .4rem; font-size: .95rem; }
 	.gs-entradas__ir { display: none; }
 }

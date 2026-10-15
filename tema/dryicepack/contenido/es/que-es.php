@@ -11,6 +11,7 @@ return array(
 		'titulo'  => '¿Qué es el|<em>hielo seco?</em>',
 		'resumen' => 'Es dióxido de carbono (CO<sub>2</sub>) en estado sólido, a −78,5 °C. No se funde: al calentarse pasa directamente a gas. Por eso enfría mucho más que el hielo normal y no moja nada.',
 		'tambien' => 'También se llama nieve carbónica. En inglés, dry ice; en catalán, gel sec.',
+		'seguridad' => 'Normas de seguridad',
 	),
 	'ficha' => array(
 		'titulo' => 'Ficha técnica',
@@ -35,6 +36,7 @@ return array(
 			array( 'Para qué', 'Congelado, muestras, niebla, procesos', 'Refrescar bebidas y producto fresco', 'Refrigerado en trayectos cortos' ),
 		),
 		'nota'     => 'Los datos de placas y geles dependen de cada fabricante.',
+		'congelador' => 'Congelador doméstico',
 	),
 	'tamano' => array(
 		'titulo' => 'A tamaño <em>real.</em>',
@@ -51,6 +53,7 @@ return array(
 			array( 'Se prensa', 'La nieve se prensa por una matriz: salen los pellets de 3 mm o los nuggets de 16 mm.' ),
 		),
 		'nota'   => 'Al sublimarse, ese CO₂ vuelve al aire. Como se aprovecha un gas que ya se emitía, no suele suponer una emisión adicional; el impacto viene sobre todo del transporte.',
+		'estados' => array( 'Gas', 'Líquido', 'Nieve', 'Sólido' ),
 	),
 	'faq' => array(
 		'titulo' => 'Dudas sobre el hielo seco',

@@ -2,6 +2,8 @@
 /* Guía · Cómo hacer niebla con hielo seco · inglés (responde a "how to make fog with dry ice", "dry ice smoke effect") */
 return array(
 	'slug'     => 'how-to-make-fog-with-dry-ice',
+	'foto'     => 'uso-eventos', // foto de la guía (assets/img/fotos): índice y cabecera
+	'formato'  => '3mm', // formato que recomienda la guía: acceso directo en la nota al margen
 	'titulo'   => 'How to make fog with dry ice in 3 steps',
 	'extracto' => 'Hot water, a wide container and 3 mm pellets: that’s all you need for fog at floor level, straight away. How many kilos to order for your party and how to do it safely.',
 	'seo'      => array(

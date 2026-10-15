@@ -3,6 +3,7 @@
  * Contenido de salud: solo cómo pedir, guardar y manipular el hielo seco. Ninguna afirmación médica ni de eficacia. Sin datos de la clienta. */
 return array(
 	'slug'         => 'dry-ice-cold-caps-chemotherapy',
+	'foto'     => 'uso-laboratorio-entrega', // foto de la guía (assets/img/fotos): índice y cabecera
 	'relacionadas' => false, // ni se enlaza desde las otras guías ni las enlaza (partes/guia-articulo.php)
 	'titulo'       => 'Dry ice for cold caps during chemotherapy: how much to order and how to handle it safely',
 	'extracto'     => 'What dry ice does with cold caps, how much to order per session, how to make sure it arrives in time and how to handle it safely.',

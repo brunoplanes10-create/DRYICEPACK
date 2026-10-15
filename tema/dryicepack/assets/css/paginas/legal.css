@@ -2,9 +2,10 @@
    en monoespaciada encima del título (como las cláusulas de un contrato). */
 .lg-cabeza { padding: calc(var(--alto-cabecera) + clamp(2rem, 5vw, 4rem)) 0 clamp(2rem, 4vw, 3rem); background: var(--c-escarcha); border-bottom: 1px solid var(--c-linea-fuerte); }
 .lg-cabeza h1 { margin: 1rem 0 .9rem; }
-.lg-cabeza__meta { display: inline-flex; align-items: center; gap: .55rem; padding: .4rem .8rem .4rem .6rem; border: 1px solid var(--c-linea-fuerte); border-radius: 999px; background: var(--c-blanco); color: var(--c-acero); }
-.lg-cabeza__meta .ico { width: 16px; height: 16px; flex: none; color: var(--c-marino); }
-@media (max-width: 520px) { .lg-cabeza__meta { align-items: flex-start; padding: 0; border: 0; background: none; } .lg-cabeza__meta .ico { margin-top: .1rem; } }
+/* Fecha: una línea en mono, sin caja ni icono, con un filete delante */
+.lg-cabeza__meta { display: flex; align-items: center; gap: .7rem; color: var(--c-acero); }
+.lg-cabeza__meta::before { content: ""; flex: none; width: 2rem; height: 1px; background: currentColor; }
+.lg-cabeza__meta span { text-wrap: balance; } /* en 390 px, sin «de» al final y el año solo en otra línea */
 .lg-cuerpo { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: var(--seccion); }
 
 /* Índice: número en monoespaciada y una marca marina que crece al pasar el ratón */
@@ -27,13 +28,13 @@
 .lg-texto h2 + * { margin-top: 1.1em; }
 .lg-texto ul { list-style: none; padding-left: 0; }
 .lg-texto ul > li { position: relative; padding-left: 1.5rem; }
-.lg-texto ul > li::before { content: ""; position: absolute; left: .2rem; top: .7em; width: 6px; height: 6px; border: 1.5px solid var(--c-marino); transform: rotate(45deg); }
+.lg-texto ul > li::before { content: ""; position: absolute; left: 0; top: .8em; width: .8rem; height: 2px; background: var(--c-marino); } /* guion corto, sin rombos */
 .lg-texto table { display: block; overflow-x: auto; border-top: 2px solid var(--c-tinta); }
-.lg-texto th { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acero); }
+.lg-texto th { font-size: .8rem; font-weight: 600; color: var(--c-acero); }
 
 @media (max-width: 900px) {
 	.lg-cuerpo { grid-template-columns: minmax(0, 1fr); gap: 2.4rem; }
-	.lg-indice { position: static; padding: 1rem 1.2rem .7rem; background: var(--c-blanco); border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio); box-shadow: 0 1px 1px rgba(11, 20, 28, .04), 0 14px 28px -22px rgba(11, 20, 28, .35); }
+	.lg-indice { position: static; padding: 1rem 1.2rem .7rem; background: var(--c-blanco); border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-1); }
 	.lg-indice ol { border-left: 0; }
 	.lg-indice a { padding-left: 0; }
 	.lg-indice a::after { display: none; }

@@ -11,6 +11,7 @@ return array(
 		'titulo'  => 'What is|<em>dry ice?</em>',
 		'resumen' => 'It’s carbon dioxide (CO<sub>2</sub>) in solid form, at −78.5 °C. It doesn’t melt: as it warms up it turns straight into gas. That’s why it cools far more than ordinary ice and leaves everything dry.',
 		'tambien' => 'In Spanish it’s hielo seco, also called nieve carbónica; in Catalan, gel sec.',
+		'seguridad' => 'Safety rules',
 	),
 	'ficha' => array(
 		'titulo' => 'Technical data',
@@ -35,6 +36,7 @@ return array(
 			array( 'Used for', 'Frozen goods, samples, fog, processes', 'Chilling drinks and fresh produce', 'Chilled goods on short journeys' ),
 		),
 		'nota'     => 'Figures for ice packs and gels vary by manufacturer.',
+		'congelador' => 'Home freezer',
 	),
 	'tamano' => array(
 		'titulo' => 'Actual <em>size.</em>',
@@ -51,6 +53,7 @@ return array(
 			array( 'Pressed', 'The snow is pressed through a die: out come the 3 mm pellets or the 16 mm nuggets.' ),
 		),
 		'nota'   => 'As it sublimates, that CO₂ returns to the air. Because it reuses a gas that was already being emitted, it usually doesn’t add to emissions; the impact comes mainly from transport.',
+		'estados' => array( 'Gas', 'Liquid', 'Snow', 'Solid' ),
 	),
 	'faq' => array(
 		'titulo' => 'Questions about dry ice',

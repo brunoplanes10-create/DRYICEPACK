@@ -44,11 +44,15 @@ return array(
 		'boton'  => 'Descargar la ficha',
 		'archivo'=> '/wp-content/uploads/2026/01/CO2-SOLIDO-FICHA-DE-DATOS-DE-SEGURIDAD-DRYICEPACK-1.pdf',
 		'meta'   => 'PDF · castellano',
+		// Apartados de la ficha que cita el texto, con su número en el formato europeo de 16 secciones (REACH, anexo II)
+		'apartados' => array( array( '01', 'Identificación' ), array( '02', 'Peligros' ), array( '04', 'Primeros auxilios' ), array( '07', 'Manipulación' ), array( '08', 'Protección' ), array( '14', 'Transporte' ) ),
 	),
+	// Cierre: el titular ya revisado de la portada
+	'final' => array( 'titulo' => '¿Lo necesitas mañana?|<em>Pídelo antes de las 12:00.</em>' ),
 	'faq' => array(
 		'titulo' => 'Más preguntas de seguridad',
 		'lista'  => array(
-			array( '¿Es peligroso respirar el "humo"?', 'Lo que ves no es humo: es vapor de agua del aire condensado por el frío, junto con CO₂. En un sitio ventilado no pasa nada; el riesgo aparece en espacios pequeños y cerrados.' ),
+			array( '¿Es peligroso respirar el «humo»?', 'Lo que ves no es humo: es vapor de agua del aire condensado por el frío, junto con CO₂. En un sitio ventilado no pasa nada; el riesgo aparece en espacios pequeños y cerrados.' ),
 			array( '¿Se puede usar en bebidas y cócteles?', 'Para el efecto de niebla, sí, con doble recipiente: el hielo seco va en el recipiente exterior y la bebida en otro. Nunca un pellet dentro de la copa que se va a beber.' ),
 			array( '¿Puede explotar?', 'El hielo seco no explota. Lo que puede reventar es un recipiente hermético por la presión del gas. Por eso la caja no se precinta.' ),
 			array( '¿Es seguro con niños o mascotas en casa?', 'Sí, si lo manipula un adulto y lo guardas fuera del alcance de niños y mascotas. Si haces niebla, que el hielo seco quede donde nadie del público pueda tocarlo.' ),

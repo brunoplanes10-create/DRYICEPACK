@@ -2,6 +2,7 @@
 /* Guía · Dónde comprar hielo seco (responde a "¿venden hielo seco en farmacias / Mercadona?") */
 return array(
 	'slug'     => 'donde-comprar-hielo-seco',
+	'foto'     => 'cajas-oscuro', // foto de la guía (assets/img/fotos): índice y cabecera
 	'titulo'   => 'Dónde comprar hielo seco si no lo encuentras en la farmacia ni en el súper',
 	'extracto' => '¿Has preguntado en la farmacia y no lo tienen? Es lo normal. Te contamos por qué y dónde se compra de verdad, con envío a casa o recogida.',
 	'seo'      => array(

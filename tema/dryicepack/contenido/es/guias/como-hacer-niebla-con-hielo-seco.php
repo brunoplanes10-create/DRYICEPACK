@@ -2,6 +2,8 @@
 /* Guía · Cómo hacer niebla con hielo seco (responde a "donde comprar hielo seco para hacer humo", "hielo seco para humo") */
 return array(
 	'slug'     => 'como-hacer-niebla-con-hielo-seco',
+	'foto'     => 'uso-eventos', // foto de la guía (assets/img/fotos): índice y cabecera
+	'formato'  => '3mm', // formato que recomienda la guía: acceso directo en la nota al margen
 	'titulo'   => 'Cómo hacer niebla con hielo seco en 3 pasos',
 	'extracto' => 'Agua caliente, un recipiente ancho y pellets de 3 mm: con eso tienes niebla a ras de suelo al momento. Cuántos kilos pedir según la fiesta y cómo hacerlo con seguridad.',
 	'seo'      => array(

@@ -3,6 +3,7 @@
  * Contenido de salud: solo cómo pedir, guardar y manipular el hielo seco. Ninguna afirmación médica ni de eficacia. Sin datos de la clienta. */
 return array(
 	'slug'         => 'hielo-seco-gorros-frios-quimioterapia',
+	'foto'     => 'uso-laboratorio-entrega', // foto de la guía (assets/img/fotos): índice y cabecera
 	'relacionadas' => false, // ni se enlaza desde las otras guías ni las enlaza (partes/guia-articulo.php)
 	'titulo'       => 'Hielo seco para gorros fríos en quimioterapia: cuánto pedir y cómo manejarlo con seguridad',
 	'extracto'     => 'Para qué sirve el hielo seco con los gorros fríos, cuánto pedir por sesión, cómo hacer que llegue a tiempo y cómo manipularlo sin riesgo.',
