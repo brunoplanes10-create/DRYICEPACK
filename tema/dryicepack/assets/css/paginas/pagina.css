@@ -20,8 +20,8 @@
 .dip-factura::after { content: ""; position: absolute; inset: 12px -12px -12px 12px; z-index: -2; border: 1px solid var(--c-linea-fuerte); border-radius: 4px; background: var(--c-hielo-claro); }
 .dip-factura__pedido { font-family: var(--f-mono); font-size: .85rem; letter-spacing: .04em; color: var(--c-acero); padding-bottom: 1rem; margin-bottom: 1.2rem; border-bottom: 2px solid var(--c-tinta); }
 .dip-factura__nota, .dip-factura__ok, .dip-factura__error { margin-bottom: 1.6rem; }
-.dip-factura__ok { padding: 1rem 1.2rem; border-radius: 12px; background: #E7F4EC; color: #0F5132; font-weight: 500; }
-.dip-factura__error { padding: 1rem 1.2rem; border-radius: 12px; background: #FBEAEA; color: #7A1712; font-weight: 500; }
+.dip-factura__ok { padding: 1rem 1.2rem; border-radius: var(--radio); background: #E7F4EC; color: #0F5132; font-weight: 500; }
+.dip-factura__error { padding: 1rem 1.2rem; border-radius: var(--radio); background: #FBEAEA; color: #7A1712; font-weight: 500; }
 .dip-factura__form { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.3rem 1.4rem; }
 .dip-factura__campo { display: grid; gap: .15rem; }
 .dip-factura__campo label { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-acero); }

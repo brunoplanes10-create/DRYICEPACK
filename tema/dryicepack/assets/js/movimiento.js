@@ -143,7 +143,9 @@
 
 	/* ---------- WhatsApp flotante: aparece al dejar atrás el hero; se esconde con el cierre o el pie en pantalla ---------- */
 	var wa = d.querySelector('.flotante-wa');
-	if (wa) {
+	// Después de load: medir el hero (offsetHeight) durante la carga obligaba a maquetar la página entera (reflujo forzado).
+	// Hasta entonces el botón sigue oculto, que es su estado al empezar.
+	function iniciarWa() {
 		// El hero: la primera sección con alto de verdad (los avisos vacíos de WooCommerce no cuentan)
 		var hero = Array.prototype.find.call(d.querySelectorAll('#contenido > *'), function (x) { return x.offsetHeight > 160; });
 		var tapan = d.querySelectorAll('[data-cierre], .pie');
@@ -162,6 +164,7 @@
 			tapan.forEach(function (t) { ioW.observe(t); });
 		}
 	}
+	if (wa) { if (d.readyState === 'complete') iniciarWa(); else w.addEventListener('load', iniciarWa, { once: true }); }
 
 	/* ---------- Regla de rango: .regla-rango > input[type=range] + output.regla-rango__cifra ----------
 	   Pone --p (0–1) en la regla y escribe la cifra (data-sufijo=" kg"; data-propia si la escribe el JS de la página).
@@ -290,42 +293,8 @@
 		el.classList.add(abierto ? 'es-abierto' : 'es-cerrado');
 	});
 
-	/* ---------- Imagen que sigue al cursor en listas índice: [data-sigue] con hijos [data-sigue-foto] ----------
-	   RECHAZADO por el propietario (13/10/2026). Se mantiene solo mientras la portada (plantillas/inicio.php, I5)
-	   lo use: se borra cuando el lote 1 publique los usos nuevos. No usarlo en nada nuevo. */
-	d.querySelectorAll('[data-sigue]').forEach(function (lista) {
-		var visor = lista.querySelector('[data-sigue-visor]');
-		if (!visor || quieto || !w.matchMedia('(hover: hover) and (min-width: 901px)').matches) return;
-		var x = 0, y = 0, tx = 0, ty = 0, activo = false;
-		function mover() {
-			tx += (x - tx) * 0.14; ty += (y - ty) * 0.14;
-			visor.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0)';
-			if (activo) raf(mover);
-		}
-		lista.addEventListener('mousemove', function (e) { var r = lista.getBoundingClientRect(); x = e.clientX - r.left; y = e.clientY - r.top; });
-		lista.addEventListener('mouseenter', function (e) { var r = lista.getBoundingClientRect(); x = tx = e.clientX - r.left; y = ty = e.clientY - r.top; activo = true; visor.classList.add('activo'); raf(mover); });
-		lista.addEventListener('mouseleave', function () { activo = false; visor.classList.remove('activo'); });
-		lista.querySelectorAll('[data-sigue-foto]').forEach(function (fila) {
-			fila.addEventListener('mouseenter', function () {
-				var id = fila.getAttribute('data-sigue-foto');
-				visor.querySelectorAll('img').forEach(function (img) { img.classList.toggle('activa', img.getAttribute('data-id') === id); });
-			});
-		});
-	});
-
-	/* ---------- Tarjeta que se inclina con el cursor: [data-inclina] ----------
-	   RECHAZADO por el propietario (13/10/2026). Se mantiene solo mientras la portada (I7) lo use; se borra después. */
-	d.querySelectorAll('[data-inclina]').forEach(function (t) {
-		if (quieto || !w.matchMedia('(hover: hover)').matches) return;
-		var marco = t.parentElement;
-		marco.addEventListener('mousemove', function (e) {
-			var r = marco.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
-			t.style.transform = 'rotateY(' + (px * 14).toFixed(2) + 'deg) rotateX(' + (-py * 12).toFixed(2) + 'deg)';
-			t.style.setProperty('--brillo-x', ((px + 0.5) * 100).toFixed(0) + '%');
-			t.style.setProperty('--brillo-y', ((py + 0.5) * 100).toFixed(0) + '%');
-		});
-		marco.addEventListener('mouseleave', function () { t.style.transform = ''; });
-	});
+	/* (Fuera desde el 15/10/2026: la foto que sigue al cursor, data-sigue, y la tarjeta que se inclina, data-inclina.
+	   El propietario los rechazó el 13/10; no se vuelven a usar.) */
 
 	/* ---------- Pestañas accesibles: [data-pestanas] con role=tab / role=tabpanel ---------- */
 	d.querySelectorAll('[data-pestanas]').forEach(function (grupo) {
