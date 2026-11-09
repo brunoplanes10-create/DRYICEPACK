@@ -1,5 +1,5 @@
 // WordPress de prueba (Playground) con el TEMA NUEVO + WooCommerce + copia del producto real.
-// Arranca en http://127.0.0.1:9500   ·   Uso: node herramientas/servidor-tema.mjs
+// Arranca en http://127.0.0.1:9500   ·   Uso: node herramientas/servidor-tema.mjs [--paquete] [--actualizar]
 import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 
@@ -130,10 +130,18 @@ if (origen) {
 const dirTema = origen ? `./${origen}/dryicepack` : './tema/dryicepack';
 const dirPlugin = origen ? `./${origen}/dryicepack-tienda` : './plugin/dryicepack-tienda';
 
-const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-const args = ['--yes', '@wp-playground/cli@latest', 'server', '--port=9500',
+const args = ['server', '--port=9500',
   `--mount=${dirTema}:/wordpress/wp-content/themes/dryicepack`,
   '--blueprint=./.tmp/blueprint-tema.json', '--mount=./.tmp/pg:/salida'];
 if (existsSync('plugin/dryicepack-tienda')) args.push(`--mount=${dirPlugin}:/wordpress/wp-content/plugins/dryicepack-tienda`);
-const hijo = spawn(npx, args, { stdio: 'inherit', shell: process.platform === 'win32' });
+// Playground ya descargado por npx: se usa tal cual (sin red). Con --actualizar, o si no hay copia, npx baja la última versión.
+const { readdirSync } = await import('node:fs');
+const { join } = await import('node:path');
+const cacheNpx = join(process.env.LOCALAPPDATA || '', 'npm-cache', '_npx');
+const binario = process.platform === 'win32' ? 'wp-playground-cli.cmd' : 'wp-playground-cli';
+const copia = process.argv.includes('--actualizar') || !existsSync(cacheNpx) ? null
+  : readdirSync(cacheNpx).map((d) => join(cacheNpx, d, 'node_modules', '.bin', binario)).find((b) => existsSync(b));
+const [orden, argumentos] = copia ? [`"${copia}"`, args]
+  : [process.platform === 'win32' ? 'npx.cmd' : 'npx', ['--yes', '@wp-playground/cli@latest', ...args]];
+const hijo = spawn(orden, argumentos, { stdio: 'inherit', shell: process.platform === 'win32' });
 hijo.on('exit', (c) => process.exit(c ?? 0));

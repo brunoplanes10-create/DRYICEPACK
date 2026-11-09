@@ -25,6 +25,7 @@ function dip_ajustes_por_defecto() {
 		'festivos'          => implode( "\n", dip_festivos_por_defecto() ),
 		'recordatorios'     => 0,
 		'resenas_url'       => 'https://g.page/r/CTbZyC_fpj4LECE/review',
+		'resenas_email'     => $produccion ? 1 : 0, // inc/resenas.php: email «¿Qué tal llegó tu hielo seco?» el día después de la entrega
 		'limite_factura'    => 400,
 		'factura_simplificada' => 1,   // inc/factura-simplificada.php
 		'serie_simplificada'   => 'W', // + año: W2026-00001
@@ -64,6 +65,7 @@ function dip_sanear_ajustes( $entrada ) {
 		'festivos'       => dip_sanear_fechas( (string) ( $entrada['festivos'] ?? '' ) ),
 		'recordatorios'  => empty( $entrada['recordatorios'] ) ? 0 : 1,
 		'resenas_url'    => esc_url_raw( trim( (string) ( $entrada['resenas_url'] ?? '' ) ) ),
+		'resenas_email'  => empty( $entrada['resenas_email'] ) ? 0 : 1,
 		'limite_factura' => max( 0, (float) str_replace( ',', '.', (string) ( $entrada['limite_factura'] ?? 400 ) ) ),
 		'factura_simplificada' => empty( $entrada['factura_simplificada'] ) ? 0 : 1,
 		'serie_simplificada'   => substr( (string) preg_replace( '/[^A-Z0-9]/', '', strtoupper( (string) ( $entrada['serie_simplificada'] ?? '' ) ) ), 0, 6 ) ?: 'W',
@@ -173,7 +175,13 @@ function dip_pantalla_ajustes() {
 				<tr>
 					<th scope="row"><label for="dip-resenas">Enlace para reseñas de Google</label></th>
 					<td><input id="dip-resenas" name="dip_ajustes[resenas_url]" type="url" class="regular-text" value="<?php echo esc_attr( $a['resenas_url'] ); ?>" placeholder="https://g.page/r/…/review">
-						<p class="description">Ficha de Google → Pedir reseñas → Copiar enlace. Aparece en el email de pedido completado.</p></td>
+						<p class="description">Ficha de Google → Pedir reseñas → Copiar enlace. Lo usan el email del día después de la entrega (abajo) y el email de pedido completado. Si lo dejas vacío, no se pide reseña.</p></td>
+				</tr>
+				<tr>
+					<th scope="row">Reseña por email</th>
+					<td><label><input name="dip_ajustes[resenas_email]" type="checkbox" value="1" <?php checked( $a['resenas_email'], 1 ); ?>> Pedir reseña por email el día después de la entrega</label>
+						<p class="description">Email «¿Qué tal llegó tu hielo seco?» a las 9:00 del día siguiente a la entrega o a la recogida (pedidos Procesando o Completados), en el idioma del pedido y de usted a empresas. Se pide a todos los clientes, sin filtrar y sin nada a cambio, como exige Google. Como mucho uno por email cada 6 meses, con enlace de baja. Si no sale, llega un aviso al correo de avisos. A mano: en el pedido, Acciones del pedido → Pedir reseña por email. Con la casilla activada, el email de pedido completado solo lleva la reseña si ese pedido no va a recibir este email.</p>
+						<?php if ( function_exists( 'dip_resenas_resumen_admin' ) ) : ?><p class="description"><strong><?php echo esc_html( dip_resenas_resumen_admin() ); ?></strong></p><?php endif; ?></td>
 				</tr>
 			</table>
 			<?php submit_button( 'Guardar ajustes' ); ?>

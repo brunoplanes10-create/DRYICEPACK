@@ -285,11 +285,14 @@ add_action( 'template_redirect', static function () {
 	}
 }, 0 );
 
-/* ---------- Petición de reseña en el email de pedido completado ---------- */
+/* ---------- Petición de reseña en el email de pedido completado ----------
+ * Alternativa al email del día siguiente (inc/resenas.php): no sale si el cliente se dio de baja ni, con ese email
+ * activado, si el pedido ya lo recibió o lo va a recibir. */
 add_action( 'woocommerce_email_after_order_table', static function ( $pedido, $a_admin, $texto_plano, $email ) {
 	if ( $a_admin || ! $email || 'customer_completed_order' !== $email->id ) return;
 	$url = (string) dip_ajuste( 'resenas_url' );
 	if ( ! $url ) return;
+	if ( function_exists( 'dip_resenas_bloque_completado' ) && ! dip_resenas_bloque_completado( $pedido ) ) return;
 	$t = dip_textos_tienda( (string) $pedido->get_meta( '_dip_idioma' ) ?: 'es' );
 	if ( $texto_plano ) {
 		echo "\n" . esc_html( $t['resena'] ) . ' ' . esc_url( $url ) . "\n";

@@ -6,7 +6,7 @@ return array(
 		'descripcion' => 'Qué datos personales tratamos en dryicepack.es, para qué, durante cuánto tiempo y cómo ejercer tus derechos. Responsable: INDUNOVA IMS S.L., Mataró.',
 	),
 	'titulo'     => 'Política de privacidad',
-	'actualizado'=> 'Última actualización: 30 de septiembre de 2026',
+	'actualizado'=> 'Última actualización: 9 de noviembre de 2026',
 	'secciones'  => array(
 		array( 'Responsable', '<ul><li><strong>INDUNOVA IMS S.L.</strong> · NIF B66800103</li><li>Ronda Alfonso X El Sabio, 10, 2º 1ª, 08301 Mataró (Barcelona)</li><li>info@dryicepack.es · 936 73 76 41</li></ul>' ),
 		array( 'Qué datos tratamos y para qué', '<table><thead><tr><th>Para qué</th><th>Datos</th><th>Base legal</th><th>Cuánto tiempo</th></tr></thead><tbody>
@@ -16,6 +16,7 @@ return array(
 <tr><td>Responder a formularios, llamadas y mensajes de WhatsApp</td><td>Nombre, email, teléfono y lo que nos cuentes</td><td>Consentimiento y medidas precontractuales</td><td>Hasta resolver la consulta y 1 año más</td></tr>
 <tr><td>Cuentas de empresa</td><td>Datos de contacto y fiscales, precio acordado e historial de pedidos</td><td>Ejecución del contrato</td><td>Mientras la cuenta esté activa y los plazos legales</td></tr>
 <tr><td>Recordatorio de reposición</td><td>Email e historial de pedidos</td><td>Consentimiento (se activa solo si lo pides y se desactiva con un clic)</td><td>Hasta que te des de baja</td></tr>
+<tr><td>Pedirte tu opinión sobre el pedido: después de la entrega podemos enviarte un único email (como mucho uno cada 6 meses)</td><td>Nombre, email, día de entrega y kilos del pedido</td><td>Interés legítimo (relación de cliente). Puedes oponerte con el enlace de cada email o escribiendo a info@dryicepack.es</td><td>Mientras dure la relación de cliente. Si te opones, guardamos solo una huella de tu email, que no permite leerlo, para no volver a escribirte</td></tr>
 <tr><td>Medir el uso de la web (Google Analytics)</td><td>Datos de navegación y dirección IP abreviada</td><td>Consentimiento (aviso de cookies)</td><td>Según la política de cookies</td></tr>
 </tbody></table>' ),
 		array( 'Quién más ve tus datos', '<p>No vendemos ni cedemos tus datos. Solo acceden los proveedores que necesitamos para prestar el servicio, con contrato de encargo de tratamiento:</p><ul><li>Alojamiento web y seguridad de la web (Arsys, Cloudflare).</li><li>Pasarela de pago (WooPayments, de Automattic, que usa Stripe): procesa la tarjeta, Apple Pay y Google Pay.</li><li>Empresa de mensajería que entrega el pedido.</li><li>Gestoría y aplicación de facturación.</li><li>Google (Analytics), solo si aceptas las cookies de análisis.</li></ul><p>Algunos de estos proveedores pueden tratar datos fuera del Espacio Económico Europeo con las garantías del RGPD (cláusulas contractuales tipo o decisiones de adecuación).</p>' ),

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:          Dryicepack · Tienda
  * Plugin URI:           https://dryicepack.es/
- * Description:          Lógica de la tienda de dryicepack.es: envío por peso, máximo de 250 kg, corte de las 12:00, festivos, sábado con suplemento, recogida en Mataró a precio redondo, pack pequeño de 3 o 5 kg, datos para la app INDUNOVA, checkout corto, factura después de la compra, cuentas de empresa, formularios sin spam, aviso de cookies con Google Consent Mode, redirecciones y exportación para Odoo.
+ * Description:          Lógica de la tienda de dryicepack.es: envío por peso, máximo de 250 kg, corte de las 12:00, festivos, sábado con suplemento, recogida en Mataró a precio redondo, pack pequeño de 3 o 5 kg, datos para la app INDUNOVA, checkout corto, factura después de la compra, petición de reseña el día después de la entrega, cuentas de empresa, formularios sin spam, aviso de cookies con Google Consent Mode, redirecciones y exportación para Odoo.
  * Version:              1.0.0
  * Requires at least:    6.5
  * Requires PHP:         8.0
@@ -90,6 +90,7 @@ add_action( 'plugins_loaded', static function () {
 	require_once DIP_TIENDA_DIR . 'inc/cuentas.php';
 	require_once DIP_TIENDA_DIR . 'inc/informes.php';
 	require_once DIP_TIENDA_DIR . 'inc/seguimiento-entregas.php'; // revisión diaria: pedidos reservados con antelación que caen en un festivo de MRW
+	require_once DIP_TIENDA_DIR . 'inc/resenas.php';              // email «¿Qué tal llegó tu hielo seco?» el día después de la entrega (reseña en Google)
 }, 20 );
 
 add_action( 'init', static function () {

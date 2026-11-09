@@ -45,7 +45,7 @@ const leer = (p) => p.evaluate(() => ({
   await recoger.click(); await esperar; await new Promise((r) => setTimeout(r, 1500));
   let d = await leer(p);
   console.log('Recogida, fechas:', d.fechas.join(' | '));
-  ok(d.fechas.some((f) => /sáb|sab/i.test(f) && /11,74/.test(f)), 'la recogida ofrece sábado con +11,74 €');
+  ok(d.fechas.some((f) => /sáb|sab/i.test(f) && /10,00/.test(f)), 'la recogida ofrece sábado con +10,00 € (IVA incl., desde el 03/10/2026)');
   ok(!d.fechas.some((f) => /dom/i.test(f)), 'la recogida no ofrece domingo');
   ok(/confirmar la hora/i.test(d.nota), 'nota de confirmación de la hora');
   // Elegir el sábado y ver el suplemento en el resumen
