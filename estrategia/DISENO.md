@@ -23,7 +23,7 @@ Sustituye a «Frío en calma» (30/09), que el propietario rechazó. Sirve para 
 | Movimiento | `--d-corta .2s` (microinteracciones) · `--d-media .4s` · `--d-larga .6s` (máximo de una entrada) · `--escalon 70ms` · `--niebla-1/2/3` 18/24/30 s · `--e-salida` · `--e-suave` |
 
 **Tonos de sección:** `.tono-oscuro` (noche) · `.tono-marino` · `.tono-papel` · `.tono-escarcha` · `.tono-blanco` · `.tono-hielo`. Cada uno define `--cortina`.
-**Ritmo:** nunca el mismo tono dos secciones seguidas; como mucho dos claras seguidas; la sección antes del pie es noche (cierre) y el pie, marino. Densa y aire, alternando.
+**Ritmo:** nunca el mismo tono dos secciones seguidas; como mucho dos claras seguidas; la sección antes del pie es el cierre común en escarcha (corta con el pie marino) y el pie, marino. Densa y aire, alternando.
 
 **Halloween** tiene su propia hoja (`assets/halloween/`): negro `#0B0B0E`, carbón, naranja `#FF6B1A` solo para lo que se pulsa y blanco vapor. Usa sus propias variables `--hw-*` (radio 8 px).
 
@@ -40,7 +40,7 @@ Sustituye a «Frío en calma» (30/09), que el propietario rechazó. Sirve para 
 | **Enlace con flecha** | `dipt_enlace( $texto, $url )`. Subrayado que se dibuja con `scaleX` | Todas |
 | **Título** | `dipt_titulo( $etiqueta, 'Línea 1\|<em>línea 2</em>', $clase, $id, 'lineas' \| 'cortina' \| 'revela' \| 'ninguna' )`. `lineas` solo en el H1 y un H2 por página | Todas |
 | **Preguntas** | `dipt_faq( $lista, array( 'titulo', 'id', 'lado' => 'contacto' \| 'foto' \| 'nada', 'foto', 'pie' ) )` dentro de `<section class="seccion seccion--densa tono-…"><div class="envoltura">`. `details/summary`, barra de 2 px al abrir y FAQPage sin duplicar | Portada, Empresas, Hostelería, Transporte, Industria, Laboratorios, Eventos |
-| **Cierre común** | `dipt_cierre( array( 'titulo', 'foto', 'boton', 'boton_url', 'secundario', 'corte_textos', 'seguridad' ) )` (`partes/cierre.php`). Noche, titular en `t-gigante`, foto a la derecha, fecha real con `data-corte` (reloj y «Quedan…» en su propia línea), niebla que sube y enlace a seguridad | Portada (caja-3mm), Aplicaciones (cajas-oscuro), Hostelería (caja-3mm), Industria (cenital-caja-nuggets), Laboratorios (nuggets-azul), Qué es (cajas-furgoneta), Seguridad (anadiendo-hielo), Guías (reparto-furgoneta), Zonas (cajas-furgoneta) |
+| **Cierre común** | «Tres caminos en tipografía» (boceto v2-cierre-1, 15/10). `dipt_cierre( array( 'titulo', 'entrada', 'texto', 'usted', 'boton', 'boton_url', 'nota', 'corte', 'corte_textos', 'secundario', 'seguridad' ) )` (`partes/cierre.php`; `foto` y `recorte` ya no se usan y se ignoran). Escarcha, titular de la página en `t-hero` y tres líneas grandes entre filetes de borde a borde (la línea entera es el enlace): «Comprar hielo seco» con círculo cian y la fecha real (`data-corte`, la fecha en Geist Mono) · «Hielo seco para empresas» → /empresas/ · «Hablar con una persona» (teléfono en Inter 300, WhatsApp y horario). Enlace a seguridad debajo. Sin tarjetas ni foto | Portada (compra → `#elegir`), Aplicaciones, Hostelería (usted), Industria (usted; «Pedir presupuesto» → `#presupuesto` con el plazo de respuesta), Laboratorios (usted), Qué es, Seguridad (sin enlace a seguridad), Guías, Zonas (con frase y enlace a envíos) |
 | **Placa de cliente a caballo** | `dipt_placa_cliente( $c['cliente'], array( 'id', 'arriba', 'abajo', 'lado', 'grande' ) )` (`sectores.css`, solo en los 4 sectores B2B). Montada sobre la frontera entre dos secciones, con remaches | Hostelería (Sushitok), Transporte (Italpizza), Industria (Nissan, grande), Laboratorios (Semillas Fitó) |
 | **Foto a sangre** | `.foto--sangre` + `.foto--sangre-der/-izq`; texto encima con `.foto__franja` (noche al 80 %, sin degradado) | Heros y secciones oscuras |
 | **Lámina** | `.foto--lamina` + `.foto--4x3/4x5/3x4/1x1/16x9`, con `data-cortina` | Fondos claros |
@@ -48,7 +48,7 @@ Sustituye a «Frío en calma» (30/09), que el propietario rechazó. Sirve para 
 | **Cota de plano** | `<span class="cota" style="--largo:12rem"><span class="cota__linea"></span><span class="cota__valor">40 mm</span></span>` (`.cota--v` vertical) | Portada I6, Producto P2, Aplicaciones A3, Qué es Q4, Hostelería, Transporte (dibujos) |
 | **Regla de rango** | `.regla-rango > input[type=range] + output.regla-rango__cifra` + `.regla-rango__marcas` | Envíos V3, Empresas E4 |
 | **Cifra que cuenta** | `<span class="cifra-fija"><span class="cifra-fija__reserva">−78,5</span><span data-cuenta="-78.5" data-desde="20" data-decimales="1">−78,5</span></span>`. La caja que cuenta ocupa el hueco reservado (CLS 0) | Pie, Portada I6, Qué es Q1, Industria N1/N3, Empresas E1, Aplicaciones A1, Envíos (reloj) |
-| **Fecha real de entrega** | `[data-corte]` con `data-t-antes/quedan/despues` y `dipt_primera_entrega()` en el servidor | Cierres, menú móvil, Portada, Envíos |
+| **Fecha real de entrega** | `[data-corte]` con `data-t-antes/quedan/despues` y `dipt_primera_entrega()` en el servidor. Si la fecha va en su propio `<span data-corte-fecha>` dentro de `[data-corte-texto]`, el JS solo reescribe lo que la rodea (cierre común: la fecha en mono) | Cierre común, menú móvil, Portada, Envíos |
 
 ---
 
@@ -65,7 +65,7 @@ Reglas: solo `transform` y `opacity`; un IntersectionObserver por tipo (`movimie
 | Paralaje | `data-paralaje="0.08"` (JS) o `animation-timeline: view()` (CSS, Portada I5 e I10) | continuo |
 | Contador | `data-cuenta` + `data-desde` | 1,8–2,2 s |
 | Niebla horizontal | `<div class="niebla" aria-hidden="true"><i></i><i></i><i></i></div>` (hasta 4 capas) | 18/24/30 s |
-| Niebla que sube | `.niebla.niebla--sube` (solo en el cierre común) | 24/30 s |
+| Filetes que se dibujan | Cierre común: `scaleX` de los filetes al entrar (90 ms de escalón) y el filete en tinta de la línea activa (ratón, foco o `.activo` en táctil) | 0,6 s · 0,25 s |
 | Bucle propio | contenedor con `data-pausa` (se para fuera de pantalla) | 15–30 s si es niebla |
 
 **Firma de movimiento de cada página** (una por página; no repetir en una página hermana):
@@ -96,21 +96,21 @@ Reglas: solo `transform` y `opacity`; un IntersectionObserver por tipo (`movimie
 
 | Página | Secuencia (→ pie marino) |
 |---|---|
-| Portada | noche (hero + cinta) · papel · marino · blanco · noche · escarcha · papel · noche · papel · blanco · noche (cierre) |
+| Portada | noche (hero + cinta) · papel · marino · blanco · noche · escarcha · papel · noche · papel · blanco · escarcha (cierre) |
 | Producto | papel · noche · papel · marino · escarcha · blanco |
 | Empresas | papel · noche · papel · marino · blanco · escarcha · papel + franja noche |
 | Envíos | noche · papel · escarcha · blanco · marino · blanco (panel noche) |
 | Contacto | papel · noche · papel |
-| Aplicaciones | noche · papel · marino · blanco · noche (cierre) |
-| Hostelería | noche · papel · noche · placa · papel · escarcha · marino · noche (cierre) |
+| Aplicaciones | noche · papel · marino · blanco · escarcha (cierre) |
+| Hostelería | noche · papel · noche · placa · papel · escarcha · marino · escarcha (cierre) |
 | Transporte | papel · noche · papel · placa · blanco · marino · noche (final propio) |
-| Industria | noche · escarcha · marino · placa · papel · noche · blanco · noche (cierre) |
-| Laboratorios | papel · noche · papel · placa · marino · blanco · noche (cierre) |
+| Industria | noche · escarcha · marino · placa · papel · noche · blanco · escarcha (cierre) |
+| Laboratorios | papel · noche · papel · placa · marino · blanco · escarcha (cierre) |
 | Eventos | noche · papel · noche · banda Halloween · blanco · escarcha · noche |
-| Qué es | papel · blanco · papel · noche · escarcha · blanco · noche (cierre) |
-| Seguridad | papel · blanco · hielo / noche · papel · escarcha · blanco · noche (cierre) |
-| Guías | papel · blanco · noche (cierre) |
-| Zonas | noche · papel · noche (cierre) |
+| Qué es | papel · blanco · papel · noche · escarcha · blanco · escarcha (cierre) |
+| Seguridad | papel · blanco · hielo / noche · papel · escarcha · blanco · escarcha (cierre) |
+| Guías | papel · blanco · escarcha (cierre) |
+| Zonas | noche · papel · escarcha (cierre) |
 | Zona | papel · noche · papel · blanco · escarcha · noche |
 
 Excepciones aceptadas por el plan: Producto, Envíos y Contacto terminan en claro (no llevan cierre común); Transporte usa su propio final.
@@ -119,6 +119,7 @@ Excepciones aceptadas por el plan: Producto, Envíos y Contacto terminan en clar
 
 ## 5. Excepciones conocidas
 
+- Cierre común en escarcha (decidido el 15/10, estrategia del embudo): en varias páginas es la tercera sección clara seguida (p. ej. Portada: seguridad papel · preguntas blanco · cierre escarcha). Lo separan los filetes de borde a borde y la escala del titular; no se oscurece la sección de antes para compensar.
 - `dipt_faq()` no se usa en Producto P6 (burbujas de chat), Qué es Q6 y Seguridad S6 (preguntas como titulares, sin acordeón, a petición del plan) ni en Zona Z5 (acordeón propio «+» → «−»).
 - Degradados que quedan: viñetas de legibilidad de los heros de la Portada y Hostelería, tramas de rayas (sábado del calendario, etiqueta de clase 9, factura), máscaras del billete y de la esquina cóncava de la portada, los de Halloween (anteriores al rediseño) y las volutas de la niebla que rebosa en Hostelería (`radial-gradient`, nuevas). No añadir más.
 - Duraciones fuera de la regla, decididas: termómetro del hero de la portada 1,2 s; línea de progreso de los pasos de Halloween 0,7 s (sigue al scroll, no es una entrada); spinner del producto 0,75 s.

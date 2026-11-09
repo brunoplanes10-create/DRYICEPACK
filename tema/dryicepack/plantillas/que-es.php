@@ -4,7 +4,7 @@
  * Q1 hero con foto a sangre que baja sobre Q2 y −78,5 °C que cuenta · Q2 ficha técnica (hoja sobre foto) ·
  * Q3 comparativa con termómetro · Q4 a tamaño real sobre una regla de borde a borde · Q5 de dónde sale (estados del CO₂) ·
  * Q6 dudas con foto fija · cierre común.
- * Tonos: papel · blanco · papel (aire) · noche · escarcha · blanco · cierre noche · pie marino.
+ * Tonos: papel · blanco · papel (aire) · noche · escarcha · blanco · cierre escarcha · pie marino.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -173,13 +173,10 @@ get_header();
 </section>
 
 <?php
-// Cierre común: el titular es el que ya tenía la página ([a validar] en el plan: no se cambia). Va a t-h1 (es una frase larga).
+// Cierre común «tres caminos»: el titular es el que ya tenía la página ([a validar] en el plan: no se cambia).
 dipt_cierre( array(
 	'titulo'  => $c['final']['titulo'],
 	'entrada' => 'revela',
-	'foto'    => 'cajas-furgoneta',
-	'recorte' => '30% 50%',
 	'boton'   => $c['final']['boton'],
-	'clase'   => 'q-cierre',
 ) );
 get_footer();

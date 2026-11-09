@@ -1,14 +1,16 @@
 <?php
 /**
- * Portada (castellano, catalán e inglés). Orden AIDA:
- * atención (hero) → interés (elegir, cómo llega) → deseo (usos, clientes, ficha, empresas, recogida) → objeciones (seguridad, preguntas) → acción.
+ * Portada (castellano, catalán e inglés). Orden AIDA (estrategia del embudo, 15/10/2026):
+ * atención (hero, con los clientes en su base) → interés (elegir, cómo llega) → deseo (usos, ficha, empresas, recogida) → objeciones (seguridad, preguntas) → acción.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 $c   = dipt_contenido( 'inicio' );
 $con = dipt_contacto();
 $GLOBALS['dipt_hero_oscuro'] = true;
-dipt_precargar( 'caja-16mm-niebla', '(max-width: 900px) 100vw, 58vw' );
+// La foto del hero (LCP): marco vertical a la derecha en escritorio y arriba a la derecha en móvil (ver inicio.css)
+$hero_sizes = '(max-width: 600px) 78vw, (max-width: 900px) 26rem, 42vw';
+dipt_precargar( 'hero-caja-vertical', $hero_sizes );
 dipt_registrar_faq( $c['faq']['lista'] );
 
 // Selección inicial del configurador: 10 kg de 16 mm
@@ -28,45 +30,49 @@ if ( $var_ini && ! empty( $var_ini['padre'] ) ) {
 get_header();
 ?>
 
-<!-- I1 · Hero "cámara oscura" -->
-<section class="i-hero tono-oscuro" aria-labelledby="i-hero-t">
-	<div class="i-hero__foto">
-		<?php echo dipt_foto( 'caja-16mm-niebla', $c['hero']['alt'], array( 'lcp' => true, 'sizes' => '(max-width: 900px) 100vw, 58vw' ) ); // phpcs:ignore ?>
-	</div>
-	<div class="niebla niebla--hero" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<!-- I1 · Hero «editorial asimétrico» (boceto v2-hero-2, elegido el 15/10/2026). Titular t-gigante a la izquierda; a la derecha,
+     la caja real en un marco vertical que sangra hasta el borde derecho y baja sobre I3, con la cota −78,5 °C encima.
+     Frase, dos acciones (comprar → #elegir · empresas) y la fecha real en una columna estrecha; «Lo usan» y los 4 logos en la base.
+     Sin la cinta (I2) ni la banda de clientes (I5b): los logos están aquí. compra-a-la-vista: inicio.js la quita cuando el botón
+     cian del hero deja de verse, y entonces vuelve el «Comprar» de la cabecera (inicio.css). -->
+<?php
+$e_hero    = dipt_primera_entrega();
+$hero_frio = ( 'en' === dipt_idioma() ? '−78.5' : '−78,5' ) . "\u{00A0}°C";
+?>
+<section class="i-hero tono-oscuro compra-a-la-vista" aria-labelledby="i-hero-t">
 	<div class="envoltura i-hero__in">
-		<h1 class="t-hero i-hero__titulo" id="i-hero-t"><?php dipt_html( str_replace( '|', '<br>', $c['hero']['titulo'] ) ); ?></h1>
-		<p class="entrada i-hero__texto"><?php echo esc_html( str_replace( ' €', "\u{00A0}€", $c['hero']['texto'] ) ); // el importe y el € no se separan ?></p>
-		<div class="i-hero__acciones">
-			<?php echo dipt_boton( $c['hero']['boton'], dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
-			<p class="i-hero__tel"><?php echo esc_html( $c['hero']['o_llama'] ); ?> <a href="<?php echo esc_attr( $con['telefono_href'] ); ?>"><?php echo esc_html( $con['telefono'] ); ?></a></p>
+		<?php echo dipt_titulo( 'h1', $c['hero']['titulo'], 't-gigante i-hero__titulo', 'i-hero-t' ); // phpcs:ignore ?>
+
+		<div class="i-hero__columna">
+			<p class="entrada i-hero__frase"><?php echo esc_html( $c['hero']['texto'] ); ?></p>
+			<div class="i-hero__acciones">
+				<?php echo dipt_boton( $c['hero']['boton'], '#elegir', 'hielo' ); // phpcs:ignore ?>
+				<a class="enlace-flecha i-hero__empresas" href="<?php echo esc_url( dipt_url( 'empresas' ) ); ?>"><span><?php echo esc_html( $c['hero']['empresas'] ); ?></span><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></a>
+			</div>
+			<p class="i-hero__fecha" data-corte data-t-antes="<?php echo esc_attr( $c['hero']['fecha'] ); ?>" data-t-despues="<?php echo esc_attr( $c['hero']['fecha'] ); ?>"><span data-corte-texto><?php echo esc_html( sprintf( $c['hero']['fecha'], $e_hero ? dipt_fecha_larga( $e_hero['fecha'] ) : '' ) ); ?></span></p>
 		</div>
-		<p class="i-hero__corte dato" data-corte data-t-antes="<?php echo esc_attr( $c['hero']['corte']['antes'] ); ?>" data-t-quedan="<?php echo esc_attr( $c['hero']['corte']['quedan'] ); ?>" data-t-despues="<?php echo esc_attr( $c['hero']['corte']['despues'] ); ?>">
-			<?php echo dipt_icono( 'reloj' ); // phpcs:ignore ?>
-			<span data-corte-texto><?php $e = dipt_primera_entrega(); echo esc_html( sprintf( $c['hero']['corte']['despues'], $e ? dipt_fecha_larga( $e['fecha'] ) : '' ) ); ?></span>
-			<span class="i-hero__quedan" data-corte-quedan hidden></span>
-		</p>
-	</div>
-	<div class="i-hero__escala" aria-hidden="true">
-		<span class="i-hero__escala-marca"><span>−78,5</span></span>
+
+		<div class="i-hero__base">
+			<p class="i-hero__usan" id="i-hero-usan"><?php echo esc_html( $c['hero']['usan'] ); ?></p>
+			<ul class="i-hero__logos" aria-labelledby="i-hero-usan">
+				<?php foreach ( $c['hero']['clientes'] as $cl ) : $cl_etiqueta = dipt_cliente_nombre( $cl['id'] ) . ': ' . $cl['uso']; ?>
+					<li title="<?php echo esc_attr( $cl_etiqueta ); ?>"><?php echo dipt_logo_cliente( $cl['id'], $cl_etiqueta ); // phpcs:ignore ?></li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+
+		<figure class="i-hero__marco">
+			<span class="cota i-hero__cota" aria-hidden="true"><span class="cota__valor"><?php echo esc_html( $hero_frio ); ?></span><span class="cota__linea"></span></span>
+			<div class="i-hero__foto" data-cortina>
+				<?php echo dipt_foto( 'hero-caja-vertical', $c['hero']['alt'], array( 'lcp' => true, 'sizes' => $hero_sizes ) ); // phpcs:ignore ?>
+				<div class="niebla i-hero__vapor" aria-hidden="true"><i></i><i></i><i></i></div>
+			</div>
+		</figure>
 	</div>
 </section>
 
-<!-- I2 · Cinta: línea de ficha técnica montada en el borde inferior del hero (sin la cifra −78,5, que ya tiene la ficha I6).
-     Bucle de 60 s en escritorio; en móvil, carril con scroll-snap y sin la copia del bucle. -->
-<?php
-$cinta = array_values( array_filter( $c['cinta'], static fn( $e ) => false === strpos( $e, '78' ) ) );
-$cinta_uno = '';
-$cinta_dos = '';
-foreach ( $cinta as $e ) {
-	$cinta_uno .= '<span class="cinta__elem">' . esc_html( $e ) . '</span>';
-	$cinta_dos .= '<span class="cinta__elem cinta__elem--copia">' . esc_html( $e ) . '</span>';
-}
-?>
-<div class="i-cinta"><div class="cinta dato" aria-hidden="true"><div class="cinta__pista"><?php echo $cinta_uno . $cinta_dos; // phpcs:ignore ?></div></div></div>
-
-<!-- I3 · Elegir formato y cantidad con el precio final -->
-<section class="i-elegir tono-papel seccion" aria-labelledby="i-elegir-t" data-configurador data-kg="<?php echo esc_attr( $kg_ini ); ?>" data-formato="16mm">
+<!-- I3 · Elegir formato y cantidad con el precio final (ancla #elegir: el «Comprar» del hero lleva aquí) -->
+<section class="i-elegir tono-papel seccion" id="elegir" aria-labelledby="i-elegir-t" data-configurador data-kg="<?php echo esc_attr( $kg_ini ); ?>" data-formato="16mm">
 	<div class="envoltura">
 		<?php echo dipt_titulo( 'h2', $c['elegir']['titulo'], 't-h2 i-elegir__titulo', 'i-elegir-t', 'cortina' ); // phpcs:ignore ?>
 		<div class="i-elegir__paneles" role="radiogroup" aria-label="<?php echo esc_attr( $c['elegir']['formato_aria'] ?? 'Formato' ); ?>">
@@ -183,24 +189,6 @@ $usos_fp = array( 'uso-hosteleria' => '50% 50%', 'uso-transporte' => '62% 50%', 
 				</p>
 			</div>
 		</div>
-	</div>
-</section>
-
-<!-- I5b · Clientes: banda baja y densa; cuatro logos con su uso entre filetes que crecen; el vapor se aparta al entrar -->
-<section class="i-clientes tono-oscuro seccion seccion--densa" aria-labelledby="i-clientes-t">
-	<div class="envoltura i-clientes__in">
-		<div class="i-clientes__cabeza">
-			<?php echo dipt_titulo( 'h2', $c['clientes']['titulo'], 't-h3 i-clientes__titulo', 'i-clientes-t', 'revela' ); // phpcs:ignore ?>
-			<p class="suave" data-revela style="--i:1"><?php echo esc_html( $c['clientes']['texto'] ); ?></p>
-		</div>
-		<ol class="i-clientes__lista">
-			<?php foreach ( $c['clientes']['lista'] as $i => $cl ) : ?>
-				<li class="i-cliente" data-revela style="--i:<?php echo (int) $i; ?>">
-					<span class="i-cliente__logo"><?php echo dipt_logo_cliente( $cl['id'], $cl['alt'] ); // phpcs:ignore ?></span>
-					<span class="i-cliente__uso"><?php echo esc_html( $cl['uso'] ); ?></span>
-				</li>
-			<?php endforeach; ?>
-		</ol>
 	</div>
 </section>
 
@@ -348,14 +336,13 @@ foreach ( array_keys( dipt_packs() ) as $kg ) {
 	</div>
 </section>
 
-<!-- I11 · Cierre común: caja de 3 mm, niebla que sube y la fecha real de entrega -->
+<!-- I11 · Cierre común «tres caminos»: «Comprar hielo seco» lleva a #elegir (I3, en esta misma página), con la fecha real de entrega -->
 <?php
 dipt_cierre( array(
 	'titulo'       => $c['final']['titulo'],
 	'id'           => 'i-final-t',
 	'entrada'      => 'cortina',
-	'foto'         => 'caja-3mm',
-	'boton'        => $c['final']['boton'],
+	'boton_url'    => '#elegir',
 	'corte_textos' => array( $c['hero']['corte']['antes'], $c['hero']['corte']['quedan'], $c['hero']['corte']['despues'] ),
 	'clase'        => 'i-final',
 ) );

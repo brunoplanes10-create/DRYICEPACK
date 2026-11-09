@@ -56,9 +56,8 @@ return array(
 			array( 'How much dry ice do I put in each box?', 'It depends on the journey time, the size of the box and the outside temperature. Tell us the route and the type of box and we’ll advise you.' ),
 		),
 	),
-	// Shared closing section (redesign 13/10/2026): the home page headline and the real delivery date
+	// Shared closing section: the home page headline (the delivery date sentence is in comun.php, 'usted' => true)
 	'final' => array(
 		'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>',
-		'corte'  => array( 'Order before 12:00 and you’ll have it on the morning of %s', '%s left to order today', 'Order now and you’ll have it on the morning of %s' ),
 	),
 );

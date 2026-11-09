@@ -2,7 +2,7 @@
    Industria · N1 a N6 (rediseño 13/10/2026, plan 2.8)
    Firma propia: los «+» de la retícula que se dibujan en cada cruce (N2). Pieza central: la cinta métrica de kilos (N3).
    Comparte con los otros sectores solo la placa de cliente (sectores.css), las preguntas y el cierre (base.css).
-   Tonos: N1 noche · N2 escarcha · N3 marino · placa · N4 papel · N5 noche · N6 blanco · cierre noche · pie marino.
+   Tonos: N1 noche · N2 escarcha · N3 marino · placa · N4 papel · N5 noche · N6 blanco · cierre escarcha · pie marino.
    Movimiento: solo transform y opacity; con .quieto o reducir movimiento, todo en su estado final.
    ========================================================================= */
 

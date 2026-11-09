@@ -4,7 +4,7 @@
  * con la foto en una celda 2 × 2 y «+» que se dibujan en cada cruce · N3 cinta métrica de kilos (3 / 150 / 250) ·
  * placa de cliente a caballo (grande) · N4 expediente para compras · N5 presupuesto en noche a todo el ancho ·
  * N6 preguntas · cierre común.
- * Tonos: noche · escarcha · marino · (placa) · papel · noche · blanco · noche (cierre) · pie marino.
+ * Tonos: noche · escarcha · marino · (placa) · papel · noche · blanco · escarcha (cierre) · pie marino.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -157,14 +157,15 @@ for ( $k = 10; $k < 400; $k += 10 ) {
 </section>
 
 <?php
-// Cierre común: pide presupuesto (no es la compra online de la ficha). El enlace a seguridad va en el cierre.
+// Cierre común «tres caminos»: el primero pide presupuesto (no es la compra online de la ficha), sin fecha de entrega
+// y con el plazo de respuesta. El enlace a seguridad va en el cierre.
 dipt_cierre( array(
 	'titulo'    => $c['final']['titulo'] ?? '',
 	'id'        => 'n-cierre-t',
-	'foto'      => 'cenital-caja-nuggets',
-	'recorte'   => '50% 60%',
+	'usted'     => true,
 	'boton'     => $c['hero']['boton'],
 	'boton_url' => '#presupuesto',
 	'corte'     => false,
+	'nota'      => $c['final']['nota'] ?? '',
 ) );
 get_footer();

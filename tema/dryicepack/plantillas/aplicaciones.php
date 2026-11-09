@@ -1,10 +1,10 @@
 <?php
 /**
- * Usos (índice) · rediseño del 13/10/2026 (plan 2.7). Tonos: A1 noche · A2 papel · A3 marino · A4 blanco · cierre noche · pie marino.
+ * Usos (índice) · rediseño del 13/10/2026 (plan 2.7). Tonos: A1 noche · A2 papel · A3 marino · A4 blanco · cierre escarcha · pie marino.
  * A1 H1 a la izquierda y dos láminas superpuestas (niebla / frío −78,5 °C) con paralaje contrario y niebla por debajo ·
  * A2 mosaico de sectores con franja sólida y formato habitual en mono (cortina escalonada) ·
  * A3 selector: lista de usos, foto cenital del formato a sangre, ficha solapada y cota que compara 3 y 16 mm ·
- * A4 hoja de contactos con otros usos (alturas distintas, nada en bucle; carril en móvil) · cierre común (cajas-oscuro).
+ * A4 hoja de contactos con otros usos (alturas distintas, nada en bucle; carril en móvil) · cierre común (tres caminos).
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -129,10 +129,9 @@ get_header();
 </section>
 
 <?php
-// Cierre común: noche, cajas-oscuro, niebla que sube, fecha real de entrega, compra y enlace a seguridad
+// Cierre común «tres caminos»: compra con la fecha real de entrega, empresas, persona y enlace a seguridad
 dipt_cierre( array(
 	'titulo' => $fin['titulo'] ?? '',
 	'id'     => 'a-cierre-t',
-	'foto'   => 'cajas-oscuro',
 ) );
 get_footer();

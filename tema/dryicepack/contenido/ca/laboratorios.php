@@ -56,9 +56,8 @@ return array(
 			array( 'Quant gel sec poso per caixa?', 'Depèn de les hores de viatge, de la mida de la caixa i de la temperatura exterior. Digui\'ns la ruta i el tipus de caixa i l\'orientem.' ),
 		),
 	),
-	// Tancament comú (redisseny 13/10/2026): el titular de la portada amb vostè i la data real d'entrega
+	// Tancament comú: el titular de la portada amb vostè (la data d'entrega amb vostè és a comun.php, 'usted' => true)
 	'final' => array(
 		'titulo' => 'El necessita demà?|<em>Demani\'l abans de les 12:00.</em>',
-		'corte'  => array( 'Demani abans de les 12:00 i el té el %s al matí', 'Falten %s per demanar avui', 'Si demana ara, el té el %s al matí' ),
 	),
 );

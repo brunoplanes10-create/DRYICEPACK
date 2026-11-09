@@ -1,6 +1,6 @@
 /* =========================================================================
    Hostelería · rediseño del 13/10/2026 (plan 2.8)
-   Tonos: H1 noche (foto) · H2 papel · H3 noche · placa (sectores.css) · H4 papel · H5 escarcha · H6 marino · cierre noche · pie marino.
+   Tonos: H1 noche (foto) · H2 papel · H3 noche · placa (sectores.css) · H4 papel · H5 escarcha · H6 marino · cierre escarcha · pie marino.
    Firma ambiental (una): la niebla que rebosa del doble recipiente (H2). El resto, entradas al llegar.
    Movimiento: solo transform y opacity. Con .quieto o reducir movimiento, todo en su estado final.
    La placa de cliente, la regla de h1/h2 .tramo, las preguntas y el cierre son piezas comunes (sectores.css y base.css).

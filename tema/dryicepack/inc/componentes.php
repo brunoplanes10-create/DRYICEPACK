@@ -262,8 +262,9 @@ function dipt_faq( array $preguntas, array $opc = array() ) {
 }
 
 /**
- * Cierre común antes del pie (partes/cierre.php). Ver los parámetros en ese archivo.
- * dipt_cierre( array( 'titulo' => $c['final']['titulo'], 'foto' => 'caja-3mm' ) );
+ * Cierre común antes del pie (partes/cierre.php): titular de la página y tres caminos (comprar, empresas, persona).
+ * Ver los parámetros en ese archivo. Los del cierre anterior que ya no se usan (foto…) se aceptan y se ignoran.
+ * dipt_cierre( array( 'titulo' => $c['final']['titulo'], 'usted' => true ) );
  */
 function dipt_cierre( array $args ) {
 	get_template_part( 'partes/cierre', null, $args );

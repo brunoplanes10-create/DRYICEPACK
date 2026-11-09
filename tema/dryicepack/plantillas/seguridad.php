@@ -3,7 +3,7 @@
  * Seguridad (rediseño 13/10/2026, plan 2.10): S1 respuesta directa con etiqueta de transporte · S2 riesgo → qué pasa → qué hacer ·
  * S3 haz / evita en pantalla partida con la foto montada sobre la costura · S4 primeros auxilios con el 112 fijo ·
  * S5 ficha de datos (PDF) que se endereza · S6 preguntas abiertas · cierre común.
- * Tonos: papel · blanco · hielo | noche · papel · escarcha · blanco · cierre noche · pie marino.
+ * Tonos: papel · blanco · hielo | noche · papel · escarcha · blanco · cierre escarcha · pie marino.
  * Todos los avisos se muestran completos: aquí no se quita ni se acorta ninguno.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -109,13 +109,11 @@ get_header();
 </section>
 
 <?php
-// Cierre común. Sin el enlace a seguridad: es esta misma página.
+// Cierre común «tres caminos». Sin el enlace a seguridad: es esta misma página.
 if ( ! empty( $c['final']['titulo'] ) ) {
 	dipt_cierre( array(
 		'titulo'    => $c['final']['titulo'],
 		'entrada'   => 'revela', // la entrada línea a línea ya la usa el H2 de S2
-		'foto'      => 'anadiendo-hielo',
-		'recorte'   => '40% 50%',
 		'seguridad' => false,
 	) );
 }

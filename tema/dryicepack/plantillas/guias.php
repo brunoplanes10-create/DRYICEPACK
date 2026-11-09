@@ -92,15 +92,11 @@ get_header();
 	</div>
 </section>
 <?php
-// Cierre común (la sección antes del pie siempre es noche): el titular es el 'cta' ya revisado de las guías,
-// partido después de la pregunta. Foto: la furgoneta de reparto (no está en la lista de guías; sin foto, la mitad
-// derecha del cierre quedaba vacía en escritorio).
+// Cierre común «tres caminos»: el titular es el 'cta' ya revisado de las guías, partido después de la pregunta.
 if ( ! empty( $c['cta'] ) ) {
 	dipt_cierre( array(
 		'titulo'  => preg_replace( '/\?\s+(.+)$/u', '?|<em>$1</em>', (string) $c['cta'], 1 ),
 		'entrada' => 'revela',
-		'foto'    => 'reparto-furgoneta',
-		'recorte' => '50% 50%',
 	) );
 }
 get_footer();

@@ -68,6 +68,14 @@ return array(
 	'corte_antes'     => 'Order before 12:00 and you’ll have it on the morning of %s',
 	'corte_quedan'    => '%s left to order today',
 	'corte_despues'   => 'Order now and you’ll have it on the morning of %s',
+	// B2B pages (hospitality, laboratories, industry): English has no formal "you", same wording
+	'corte_antes_usted'   => 'Order before 12:00 and you’ll have it on the morning of %s',
+	'corte_despues_usted' => 'Order now and you’ll have it on the morning of %s',
+	// Cierre común (partes/cierre.php): the three paths. The first uses 'comprar' and the date; the third, 'horario'.
+	'cierre_empresas'      => 'Dry ice for business',
+	'cierre_empresas_nota' => 'Scheduled orders and one invoice a month, payable within 30 days.',
+	'cierre_persona'       => 'Speak to a person',
+	'cierre_llamar'        => 'Call %s',
 	'horas'           => 'h',
 	'minutos'         => 'min',
 	// Seguridad: los seis avisos (se enlazan desde cualquier página que explica un uso)

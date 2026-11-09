@@ -7,14 +7,22 @@ return array(
 		'descripcion' => 'Dry ice as 3 mm pellets or 16 mm nuggets, from {pk} kg. Order before 12:00 and have it tomorrow, or collect it in Mataró (Barcelona): {pk} kg for {recogida:pk}.',
 	),
 	'hero' => array(
-		'titulo'    => 'Dry ice at your door,|<em>tomorrow morning.</em>',
-		'texto'     => 'Order before 12:00 (Spanish time) and you’ll have it tomorrow morning (Tuesday to Saturday), or pick any day you like. In an insulated box, from {pk} kg, no contracts. Near Mataró? Collect it from the warehouse: {pk} kg for {recogida:pk}, VAT included.',
-		'boton'     => 'Place my order',
-		'o_llama'   => 'or call',
+		'titulo'    => 'Dry ice supply,|<em>when you need it.</em>',
+		'texto'     => 'One-off orders from {pk} kg or scheduled supply for your business. Order before 12:00 (Spanish time) and it arrives the next working day.',
+		'boton'     => 'Buy dry ice',          // goes to the format and kilos picker (#elegir), on the same page
+		'empresas'  => 'Dry ice for business', // goes to /en/business/
+		'fecha'     => 'Order now and it’ll be with you on the morning of %s.', // %s = real delivery date (data-corte: changes with the 12:00 cutoff)
 		'alt'       => 'Open box of 16 mm dry ice nuggets giving off cold vapour',
-		'corte'     => array( 'antes' => 'Order before 12:00 and you’ll have it on the morning of %s', 'quedan' => '%s left', 'despues' => 'Order now and you’ll have it on the morning of %s' ),
+		'usan'      => 'Used by',
+		// Customers who gave permission: their logo at the foot of the hero; the use goes in the accessible label and the title ("Italpizza: cold-chain transport")
+		'clientes'  => array(
+			array( 'id' => 'italpizza', 'uso' => 'cold-chain transport' ),
+			array( 'id' => 'sushitok', 'uso' => 'smoke when plating' ),
+			array( 'id' => 'fito', 'uso' => 'sample transport' ),
+			array( 'id' => 'nissan', 'uso' => 'cooling batteries' ),
+		),
+		'corte'     => array( 'antes' => 'Order before 12:00 and you’ll have it on the morning of %s', 'quedan' => '%s left', 'despues' => 'Order now and you’ll have it on the morning of %s' ), // used by the closing section (I11)
 	),
-	'cinta' => array( '−78.5 °C', '3 mm pellets', '16 mm nuggets', '40 mm EPS box', '12:00 cutoff', 'Morning delivery', 'Collection in Mataró', 'Monthly invoice for businesses', '{pk} to 250 kg per order' ),
 	'elegir' => array(
 		'titulo'   => 'Know what you pay|<em>before you pay.</em>',
 		'formatos' => array(
@@ -52,16 +60,6 @@ return array(
 		),
 		'todos'  => 'All uses',
 		'tira'   => 'See the photo for each use', // visor thumbnails (desktop)
-	),
-	'clientes' => array(
-		'titulo' => 'Don’t take our word for it.|<em>See who uses it.</em>',
-		'texto'  => 'Four customers who let us name them, and what they use it for.',
-		'lista'  => array(
-			array( 'id' => 'italpizza', 'uso' => 'Cold-chain transport', 'alt' => 'Italpizza logo' ),
-			array( 'id' => 'sushitok', 'uso' => 'Smoke when plating', 'alt' => 'Sushitok logo' ),
-			array( 'id' => 'fito', 'uso' => 'Sample transport', 'alt' => 'Semillas Fitó logo' ),
-			array( 'id' => 'nissan', 'uso' => 'Cooling batteries', 'alt' => 'Nissan Formula E Team logo' ),
-		),
 	),
 	'ficha' => array(
 		'titulo' => 'It isn’t ice.|It’s CO<sub>2</sub> at −78.5 °C.',
@@ -108,8 +106,6 @@ return array(
 		),
 	),
 	'final' => array(
-		'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>',
-		'boton'  => 'Place my order',
-		'wa'     => 'Message us on WhatsApp',
+		'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>', // common closing section (I11); also used by aplicaciones.php
 	),
 );

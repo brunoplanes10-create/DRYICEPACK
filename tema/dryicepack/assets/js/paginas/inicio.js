@@ -1,3 +1,23 @@
+/* I1 · Hero. Un solo botón cian a la vista: mientras se ve el «Comprar» del hero (por debajo de la cabecera), el hero lleva
+   .compra-a-la-vista y el «Comprar» de la cabecera se aparta (inicio.css). El observador da su primera lectura al empezar
+   y otra cada vez que el botón entra o sale, también cuando el navegador restaura el scroll al recargar a mitad de página:
+   el de la cabecera vuelve sin esperar a que se mueva la página. El resto del movimiento del hero lo pone movimiento.js
+   (data-lineas, data-cortina, .cota, niebla, data-corte); si no ha llegado a ejecutarse, el titular, la foto y la cota se
+   enseñan ya (la cortina no se queda tapando la foto). */
+(function () {
+	'use strict';
+	var d = document, w = window;
+	var hero = d.querySelector('.i-hero');
+	if (!hero) return;
+	if (!w.dipEntrega) hero.querySelectorAll('[data-lineas], [data-cortina], .cota').forEach(function (el) { el.classList.add('visto'); });
+	var boton = hero.querySelector('.i-hero__acciones .boton');
+	if (!boton || !('IntersectionObserver' in w)) { hero.classList.remove('compra-a-la-vista'); return; }
+	var cabecera = parseFloat(getComputedStyle(d.documentElement).getPropertyValue('--alto-cabecera')) || 76;
+	new IntersectionObserver(function (es) {
+		hero.classList.toggle('compra-a-la-vista', es[es.length - 1].isIntersecting);
+	}, { rootMargin: '-' + cabecera + 'px 0px 0px 0px', threshold: 0 }).observe(boton);
+})();
+
 /* Portada: configurador de formato y kilos con el precio final (misma fórmula de envío que el checkout). */
 (function () {
 	'use strict';

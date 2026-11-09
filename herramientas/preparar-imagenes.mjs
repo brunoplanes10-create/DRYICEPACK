@@ -43,10 +43,15 @@ const lista = [
   ['nuggets-ia', F + 'ChatGPT-Image-1-dic-2025-13_15_17-1.png', [480, 900, 1400]],
 ];
 
+// Fotos preparadas a mano (recorte y gradado propios, fuera de la lista): el script no las rehace y conserva su entrada.
+// hero-caja-vertical (480, 760, 1140): recorte vertical 4:5 de HIELO-SECO-16MM.jpeg para el hero de la portada (15/10/2026).
+const MANUALES = ['hero-caja-vertical'];
+
 // Con nombres como argumento (uso-vino,uso-eventos) solo se rehacen esas y se conserva el resto del manifiesto.
 const solo = (process.argv[2] || '').split(',').filter(Boolean);
 const MANIFIESTO = OUT + '/fotos.json';
-const manifiesto = solo.length && existsSync(MANIFIESTO) ? JSON.parse(readFileSync(MANIFIESTO, 'utf8')) : {};
+const previo = existsSync(MANIFIESTO) ? JSON.parse(readFileSync(MANIFIESTO, 'utf8')) : {};
+const manifiesto = solo.length ? previo : Object.fromEntries(MANUALES.filter((n) => previo[n]).map((n) => [n, previo[n]]));
 for (const [nombre, origen, anchos, recorte, ajuste] of lista) {
   if (solo.length && !solo.includes(nombre)) continue;
   if (!existsSync(origen)) { console.log('Falta', origen); continue; }

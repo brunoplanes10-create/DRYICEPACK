@@ -4,7 +4,7 @@
  * y el H1 rodeándolo) · L2 corte técnico de la caja de EPS (no se toca) · L3 anatomía de un paquete con pines numerados
  * enlazados con la lista · placa de cliente a caballo · L4 para centros: foto con tres hojas de servicio en diagonal ·
  * L5 preguntas · cierre común.
- * Tonos: papel · noche · papel · (placa) · marino · blanco · noche (cierre) · pie marino.
+ * Tonos: papel · noche · papel · (placa) · marino · blanco · escarcha (cierre) · pie marino.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -196,12 +196,10 @@ $l_pin    = static function ( $n ) {
 </section>
 
 <?php
-// Cierre común: compra online con la fecha real de entrega, de usted. El enlace a seguridad va en el cierre.
+// Cierre común «tres caminos»: compra online con la fecha real de entrega, de usted. El enlace a seguridad va en el cierre.
 dipt_cierre( array(
-	'titulo'       => $c['final']['titulo'] ?? '',
-	'id'           => 'l-cierre-t',
-	'foto'         => 'nuggets-azul',
-	'recorte'      => '45% 55%',
-	'corte_textos' => $c['final']['corte'] ?? array( dipt_t( 'corte_antes' ), dipt_t( 'corte_quedan' ), dipt_t( 'corte_despues' ) ),
+	'titulo' => $c['final']['titulo'] ?? '',
+	'id'     => 'l-cierre-t',
+	'usted'  => true,
 ) );
 get_footer();

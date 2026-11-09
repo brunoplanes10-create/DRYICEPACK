@@ -1,6 +1,6 @@
 /* =========================================================================
    Qué es el hielo seco · Q1 a Q6 + cierre común (rediseño del 13/10/2026, plan 2.9)
-   Tonos: papel · blanco · papel (aire) · noche · escarcha · blanco · cierre noche · pie marino.
+   Tonos: papel · blanco · papel (aire) · noche · escarcha · blanco · cierre escarcha · pie marino.
    Movimiento: solo transform y opacity; con .quieto todo queda en su estado final.
    ========================================================================= */
 
@@ -193,6 +193,4 @@
 	.q-faq__foto { max-width: none; aspect-ratio: 16 / 9; }
 	.q-faq__item { grid-template-columns: 2.2rem minmax(0, 1fr); }
 }
-
-/* ---------- Cierre: el titular de la página es una frase larga; va a t-h1 en vez de t-gigante ---------- */
-.q-cierre .cierre__titulo { font-size: var(--t-h1); line-height: 1.05; letter-spacing: -.03em; max-width: 16ch; }
+/* Cierre común: sin reglas propias (base.css). El titular largo va en t-hero como en el resto de páginas. */

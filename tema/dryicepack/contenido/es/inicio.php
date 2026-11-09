@@ -7,14 +7,22 @@ return array(
 		'descripcion' => 'Hielo seco en pellets de 3 mm o nuggets de 16 mm, desde {pk} kg. Pide antes de las 12:00 y mañana lo tienes, o recógelo en Mataró: {pk} kg por {recogida:pk}.',
 	),
 	'hero' => array(
-		'titulo'    => 'Hielo seco en tu puerta,|<em>mañana por la mañana.</em>',
-		'texto'     => 'Pide antes de las 12:00 y mañana por la mañana lo tienes (de martes a sábado), o elige el día que quieras. En caja aislante, desde {pk} kg y sin contratos. ¿Cerca de Mataró? Recógelo en la nave: {pk} kg por {recogida:pk}, IVA incluido.',
-		'boton'     => 'Hacer mi pedido',
-		'o_llama'   => 'o llama al',
+		'titulo'    => 'Suministro&nbsp;de hielo seco,|<em>cuando lo necesitas.</em>', // &nbsp;: «Suministro de / hielo seco,» (con text-wrap: balance salía «Suministro / de hielo seco,»)
+		'texto'     => 'Compra puntual desde {pk} kg o suministro programado para tu negocio. Pide antes de las 12:00 y llega el siguiente día laborable.',
+		'boton'     => 'Comprar hielo seco',       // lleva a «Elegir formato y kilos» (#elegir), en la misma página
+		'empresas'  => 'Hielo seco para empresas', // lleva a /empresas/
+		'fecha'     => 'Si pides ahora, llega el %s por la mañana.', // %s = fecha real de entrega (data-corte: cambia sola con el corte de las 12:00)
 		'alt'       => 'Caja de hielo seco en nuggets de 16 mm, abierta y soltando vapor frío',
-		'corte'     => array( 'antes' => 'Pide antes de las 12:00 y lo tienes el %s por la mañana', 'quedan' => 'Quedan %s', 'despues' => 'Si pides ahora, lo tienes el %s por la mañana' ),
+		'usan'      => 'Lo usan',
+		// Clientes con permiso: su logotipo en la base del hero; el uso va en la etiqueta accesible y en el title («Italpizza: transporte en frío»)
+		'clientes'  => array(
+			array( 'id' => 'italpizza', 'uso' => 'transporte en frío' ),
+			array( 'id' => 'sushitok', 'uso' => 'humo al emplatar' ),
+			array( 'id' => 'fito', 'uso' => 'transporte de muestras' ),
+			array( 'id' => 'nissan', 'uso' => 'enfriar baterías' ),
+		),
+		'corte'     => array( 'antes' => 'Pide antes de las 12:00 y lo tienes el %s por la mañana', 'quedan' => 'Quedan %s', 'despues' => 'Si pides ahora, lo tienes el %s por la mañana' ), // los usa el cierre (I11)
 	),
-	'cinta' => array( '−78,5 °C', 'Pellets de 3 mm', 'Nuggets de 16 mm', 'Caja EPS de 40 mm', 'Corte a las 12:00', 'Entrega por la mañana', 'Recogida en Mataró', 'Factura mensual para empresas', 'De {pk} a 250 kg por pedido' ),
 	'elegir' => array(
 		'titulo'   => 'Sabes lo que pagas|<em>antes de pagar.</em>',
 		'formatos' => array(
@@ -52,16 +60,6 @@ return array(
 		),
 		'todos'  => 'Todos los usos',
 		'tira'   => 'Ver la foto de cada uso', // grupo de miniaturas del visor (escritorio)
-	),
-	'clientes' => array(
-		'titulo' => 'No lo decimos nosotros.|<em>Lo usan ellos.</em>',
-		'texto'  => 'Cuatro clientes que nos dejan decirlo, y para qué lo usan.',
-		'lista'  => array(
-			array( 'id' => 'italpizza', 'uso' => 'Transporte en frío', 'alt' => 'Logotipo de Italpizza' ),
-			array( 'id' => 'sushitok', 'uso' => 'Humo al emplatar', 'alt' => 'Logotipo de Sushitok' ),
-			array( 'id' => 'fito', 'uso' => 'Transporte de muestras', 'alt' => 'Logotipo de Semillas Fitó' ),
-			array( 'id' => 'nissan', 'uso' => 'Enfriar baterías', 'alt' => 'Logotipo de Nissan Formula E Team' ),
-		),
 	),
 	'ficha' => array(
 		'titulo' => 'No es hielo.|Es CO<sub>2</sub> a −78,5 °C.',
@@ -108,8 +106,6 @@ return array(
 		),
 	),
 	'final' => array(
-		'titulo' => '¿Lo necesitas mañana?|<em>Pídelo antes de las 12:00.</em>',
-		'boton'  => 'Hacer mi pedido',
-		'wa'     => 'Escríbenos por WhatsApp',
+		'titulo' => '¿Lo necesitas mañana?|<em>Pídelo antes de las 12:00.</em>', // cierre común (I11); también lo usa aplicaciones.php
 	),
 );

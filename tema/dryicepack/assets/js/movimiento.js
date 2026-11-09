@@ -260,7 +260,18 @@
 	}
 	w.dipEntrega = { proxima: proximaEntrega, texto: fechaTexto, ahora: ahoraMadrid };
 
-	/* Reloj del corte: [data-corte] con data-t-antes, data-t-quedan y data-t-despues (%s = fecha o tiempo) */
+	/* Reloj del corte: [data-corte] con data-t-antes, data-t-quedan y data-t-despues (%s = fecha o tiempo).
+	   Si el texto lleva la fecha en su propio <span data-corte-fecha> (cierre común: la fecha en mono), se conserva
+	   ese span y se reescribe solo lo que lo rodea. Si la frase no cambia, no se toca el DOM. */
+	function escribirCorte(dest, plantilla, valor) {
+		var frase = plantilla.replace('%s', valor);
+		if (dest.textContent === frase) return;
+		var marca = dest.querySelector('[data-corte-fecha]'), i = plantilla.indexOf('%s');
+		if (!marca || i < 0) { dest.textContent = frase; return; }
+		marca.textContent = valor;
+		dest.textContent = '';
+		dest.append(plantilla.slice(0, i), marca, plantilla.slice(i + 2));
+	}
 	function pintarCorte() {
 		var r = proximaEntrega(); if (!r) return;
 		var a = ahoraMadrid();
@@ -269,7 +280,7 @@
 			var dest = el.querySelector('[data-corte-texto]') || el;
 			var quedan = el.querySelector('[data-corte-quedan]');
 			if (r.saleHoy) {
-				dest.textContent = (el.getAttribute('data-t-antes') || '%s').replace('%s', fecha);
+				escribirCorte(dest, el.getAttribute('data-t-antes') || '%s', fecha);
 				if (quedan) {
 					var min = (CFG.corte ? CFG.corte.hora : 12) * 60 - (a.h * 60 + a.mi);
 					var hh = Math.floor(min / 60), mm = min % 60;
@@ -277,7 +288,7 @@
 					quedan.hidden = false;
 				}
 			} else {
-				dest.textContent = (el.getAttribute('data-t-despues') || '%s').replace('%s', fecha);
+				escribirCorte(dest, el.getAttribute('data-t-despues') || '%s', fecha);
 				if (quedan) quedan.hidden = true;
 			}
 			el.classList.add('corte-listo');

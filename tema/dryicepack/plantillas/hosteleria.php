@@ -1,11 +1,11 @@
 <?php
 /**
  * Hostelería · rediseño del 13/10/2026 (plan 2.8). Tonos: H1 noche (foto) · H2 papel · H3 noche · placa (noche → papel) ·
- * H4 papel · H5 escarcha · H6 marino · cierre noche · pie marino.
+ * H4 papel · H5 escarcha · H6 marino · cierre escarcha · pie marino.
  * H1 foto a sangre con título abajo (sin cambios) · H2 doble recipiente en corte técnico (lenguaje de L2): cada paso de la
  * lista enciende su pieza (data-activa) y la niebla rebosa (firma de la página) · H3 díptico 7/5 con la cifra «3 → 16 mm»
  * en contorno sobre la junta · placa de cliente a caballo · H4 un fin de semana: reparto-furgoneta con paralaje y panel noche
- * solapado · H5 «reglas de la casa» en carta de bar (sin cambios) · H6 preguntas (dipt_faq) · cierre común (caja-3mm).
+ * solapado · H5 «reglas de la casa» en carta de bar (sin cambios) · H6 preguntas (dipt_faq) · cierre común (tres caminos, de usted).
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -174,12 +174,10 @@ get_header();
 </section>
 
 <?php
-// Cierre común: noche, caja-3mm, niebla que sube, fecha real de entrega (de usted), compra y enlace a seguridad
+// Cierre común «tres caminos»: compra con la fecha real de entrega (de usted), empresas, persona y enlace a seguridad
 dipt_cierre( array(
-	'titulo'       => $fin['titulo'] ?? '',
-	'id'           => 'h-cierre-t',
-	'foto'         => 'caja-3mm',
-	'boton'        => $c['hero']['boton'],
-	'corte_textos' => $fin['corte'] ?? array( dipt_t( 'corte_antes' ), dipt_t( 'corte_quedan' ), dipt_t( 'corte_despues' ) ),
+	'titulo' => $fin['titulo'] ?? '',
+	'id'     => 'h-cierre-t',
+	'usted'  => true,
 ) );
 get_footer();

@@ -7,14 +7,22 @@ return array(
 		'descripcion' => 'Gel sec en pèl·lets de 3 mm o nuggets de 16 mm, des de {pk} kg. Demana abans de les 12:00 i demà al matí el tens, o recull-lo a Mataró: {pk} kg per {recogida:pk}.',
 	),
 	'hero' => array(
-		'titulo'    => 'Gel sec a la teva porta,|<em>demà al matí.</em>',
-		'texto'     => 'Demana abans de les 12:00 i demà al matí el tens (de dimarts a dissabte), o tria el dia que vulguis. En caixa aïllant, des de {pk} kg i sense contractes. A prop de Mataró? Recull-lo a la nau: {pk} kg per {recogida:pk}, IVA inclòs.',
-		'boton'     => 'Fer la comanda',
-		'o_llama'   => 'o truca al',
+		'titulo'    => 'Subministrem gel sec,|<em>quan el necessites.</em>', // «Subministrament» no cap en una línia del titular gegant a l'escriptori
+		'texto'     => 'Compra puntual des de {pk} kg o subministrament programat per al teu negoci. Demana abans de les 12:00 i arriba el dia laborable següent.',
+		'boton'     => 'Comprar gel sec',        // porta a la tria de format i quilos (#elegir), a la mateixa pàgina
+		'empresas'  => 'Gel sec per a empreses', // porta a /ca/empreses/
+		'fecha'     => 'Si demanes ara, arriba el %s al matí.', // %s = data real d'entrega (data-corte: canvia sola amb l'hora límit de les 12:00)
 		'alt'       => 'Caixa de gel sec en nuggets de 16 mm, oberta i deixant anar vapor fred',
-		'corte'     => array( 'antes' => 'Demana abans de les 12:00 i el tens el %s al matí', 'quedan' => 'Falten %s', 'despues' => 'Si demanes ara, el tens el %s al matí' ),
+		'usan'      => 'El fan servir',
+		// Clients amb permís: el logotip a la base del hero; l'ús va a l'etiqueta accessible i al title («Italpizza: transport en fred»)
+		'clientes'  => array(
+			array( 'id' => 'italpizza', 'uso' => 'transport en fred' ),
+			array( 'id' => 'sushitok', 'uso' => 'fum en emplatar' ),
+			array( 'id' => 'fito', 'uso' => 'transport de mostres' ),
+			array( 'id' => 'nissan', 'uso' => 'refredar bateries' ),
+		),
+		'corte'     => array( 'antes' => 'Demana abans de les 12:00 i el tens el %s al matí', 'quedan' => 'Falten %s', 'despues' => 'Si demanes ara, el tens el %s al matí' ), // els fa servir el tancament (I11)
 	),
-	'cinta' => array( '−78,5 °C', 'Pèl·lets de 3 mm', 'Nuggets de 16 mm', 'Caixa EPS de 40 mm', 'Hora límit: 12:00', 'Entrega al matí', 'Recollida a Mataró', 'Factura mensual per a empreses', 'De {pk} a 250 kg per comanda' ),
 	'elegir' => array(
 		'titulo'   => 'Saps el que pagues|<em>abans de pagar.</em>',
 		'formatos' => array(
@@ -52,16 +60,6 @@ return array(
 		),
 		'todos'  => 'Tots els usos',
 		'tira'   => 'Veure la foto de cada ús', // grup de miniatures del visor (escriptori)
-	),
-	'clientes' => array(
-		'titulo' => 'No ho diem nosaltres.|<em>Ho fan servir ells.</em>',
-		'texto'  => 'Quatre clients que ens deixen dir-ho, i per a què el fan servir.',
-		'lista'  => array(
-			array( 'id' => 'italpizza', 'uso' => 'Transport en fred', 'alt' => 'Logotip d\'Italpizza' ),
-			array( 'id' => 'sushitok', 'uso' => 'Fum en emplatar', 'alt' => 'Logotip de Sushitok' ),
-			array( 'id' => 'fito', 'uso' => 'Transport de mostres', 'alt' => 'Logotip de Semillas Fitó' ),
-			array( 'id' => 'nissan', 'uso' => 'Refredar bateries', 'alt' => 'Logotip de Nissan Formula E Team' ),
-		),
 	),
 	'ficha' => array(
 		'titulo' => 'No és gel.|És CO<sub>2</sub> a −78,5 °C.',
@@ -108,8 +106,6 @@ return array(
 		),
 	),
 	'final' => array(
-		'titulo' => 'El necessites demà?|<em>Demana\'l abans de les 12:00.</em>',
-		'boton'  => 'Fer la comanda',
-		'wa'     => 'Escriu-nos per WhatsApp',
+		'titulo' => 'El necessites demà?|<em>Demana\'l abans de les 12:00.</em>', // tancament comú (I11); també el fa servir aplicaciones.php
 	),
 );

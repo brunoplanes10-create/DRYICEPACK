@@ -1,7 +1,7 @@
 /* =========================================================================
    Dryicepack · base común a toda la web (dirección C · rediseño del 13/10/2026)
    Tokens, tipografía, retícula, botones, cabecera, pie, movimiento y piezas comunes:
-   fotos (sangre y lámina), hoja, cota, regla de rango, preguntas, cierre y WhatsApp.
+   fotos (sangre y lámina), hoja, cota, regla de rango, preguntas, cierre común (tres caminos) y WhatsApp.
    Cada página añade su propia hoja (assets/css/paginas/*.css).
    Movimiento: solo transform y opacity. Con .quieto o prefers-reduced-motion todo se ve en su estado final.
    ========================================================================= */
@@ -344,7 +344,7 @@ h1 .tramo, h2 .tramo, h3 .tramo { display: block; text-wrap: balance; }
 /* ---------- Niebla: capas de 1200 × 300 px que se repiten sin costura y se desplazan exactamente una baldosa ----------
    Bucles de 18, 24 y 30 s. Se pausa fuera de pantalla (movimiento.js pone .en-pantalla) y no se anima con .quieto.
    Nunca encima de la imagen LCP. Hasta 4 capas: <div class="niebla" aria-hidden="true"><i></i><i></i><i></i></div>
-   Variante que sube (cierres): .niebla--sube. Cualquier otro bucle de la página se pausa igual con [data-pausa]. */
+   Cualquier otro bucle de la página se pausa igual con [data-pausa]. */
 .niebla { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
 .niebla i { position: absolute; left: 0; width: calc(100% + 1200px); height: 300px; background: url(../img/niebla-capa.webp) repeat-x 0 0 / 1200px 300px; opacity: .5; will-change: transform; }
 .niebla i:nth-child(1) { bottom: -40px; }
@@ -358,20 +358,6 @@ h1 .tramo, h2 .tramo, h3 .tramo { display: block; text-wrap: balance; }
 .anima .niebla:not(.en-pantalla) i, .anima [data-pausa]:not(.en-pantalla), .anima [data-pausa]:not(.en-pantalla) * { animation-play-state: paused !important; }
 @keyframes niebla-izq { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-1200px, 0, 0); } }
 @keyframes niebla-der { from { transform: translate3d(-1200px, 0, 0); } to { transform: translate3d(0, 0, 0); } }
-/* Niebla que sube: nace abajo, sube y se deshace */
-.niebla--sube i { --o: .4; bottom: -120px; }
-.niebla--sube i:nth-child(1) { --o: .42; bottom: -120px; }
-.niebla--sube i:nth-child(2) { --o: .26; bottom: -80px; }
-.niebla--sube i:nth-child(3) { --o: .16; bottom: -40px; }
-.anima .niebla--sube i:nth-child(1) { animation: niebla-sube var(--niebla-2) linear infinite; }
-.anima .niebla--sube i:nth-child(2) { animation: niebla-sube var(--niebla-2) linear infinite; animation-delay: -12s; }
-.anima .niebla--sube i:nth-child(3) { animation: niebla-sube var(--niebla-3) linear infinite; animation-delay: -20s; }
-@keyframes niebla-sube {
-	0% { transform: translate3d(0, 30%, 0); opacity: 0; }
-	30% { opacity: var(--o); }
-	70% { opacity: var(--o); }
-	100% { transform: translate3d(-420px, -110%, 0); opacity: 0; }
-}
 
 /* ---------- Entradas al entrar en pantalla (un solo IntersectionObserver en movimiento.js) ---------- */
 /* [data-revela]: fundido y 24 px. Valores: "izq", "der", "zoom". Escalón con style="--i:n". */
@@ -494,34 +480,95 @@ h1 .tramo, h2 .tramo, h3 .tramo { display: block; text-wrap: balance; }
 	.faq__respuesta { padding-right: 0; }
 }
 
-/* ---------- Cierre común (partes/cierre.php): noche plana, foto abajo a la derecha, niebla que sube ---------- */
-.cierre { position: relative; overflow: hidden; padding-block: var(--seccion) 0; }
-/* La niebla cubre todo el cierre: si ocupa solo la parte de abajo, las capas que suben se cortan en una línea recta */
-.cierre .niebla { z-index: 2; }
-.cierre__in { position: relative; z-index: 3; display: grid; gap: 1.6rem; justify-items: start; padding-bottom: var(--seccion); }
-.cierre__titulo { max-width: 13ch; text-wrap: balance; }
-.cierre__texto { color: var(--c-hielo-claro); }
-/* Reloj en su columna (sin encogerse) y «Quedan …» en su propia línea bajo la fecha: nada se aprieta en columnas estrechas */
-.cierre__corte { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: .6rem; row-gap: .15rem; min-height: 1.6em; max-width: 34rem; color: var(--c-hielo); font-size: .875rem; line-height: 1.55; }
-.cierre__reloj { grid-row: 1 / span 2; }
-.cierre__reloj .ico { width: 18px; height: 18px; margin-top: .1rem; }
-.cierre__corte > [data-corte-texto], .cierre__quedan { grid-column: 2; }
-.cierre__quedan { color: var(--c-niebla); }
-.cierre__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; margin-top: .4rem; }
-.cierre__tel .ico { width: 20px; height: 20px; }
-.cierre__seguridad { display: flex; align-items: center; gap: .6rem; font-size: .92rem; color: var(--c-hielo-claro); }
-.cierre__seguridad .ico { width: 20px; height: 20px; color: var(--c-niebla); }
-.cierre__foto { position: absolute; right: 0; bottom: 0; z-index: 1; width: min(46vw, 760px); aspect-ratio: 4 / 5; max-height: 88%; }
-.cierre__foto img { height: 100%; }
-.cierre--foto .cierre__in { padding-right: clamp(0px, 30vw, 34rem); }
-.cierre--foto .cierre__titulo { position: relative; z-index: 1; max-width: 11ch; }
-@media (max-width: 900px) {
-	.cierre { display: flex; flex-direction: column; padding-top: clamp(4.5rem, 14vw, 6rem); }
-	.cierre__foto { order: 2; }
-	.cierre__in { padding-bottom: 2.5rem; }
-	.cierre--foto .cierre__in { padding-right: var(--margen); }
-	.cierre__foto { position: relative; width: 78%; max-height: none; aspect-ratio: 4 / 3; margin-left: auto; }
+/* ---------- Cierre común (partes/cierre.php) · «Tres caminos en tipografía» (boceto v2-cierre-1, 15/10/2026) ----------
+   Escarcha entre la última sección y el pie marino. El titular de cada página en t-hero y, debajo, tres caminos como
+   líneas de texto con filete de 1 px de borde a borde. Nada de tarjetas: la línea entera es el enlace.
+   Tres tamaños de texto: t-hero (titular) · t-h1 en escritorio y t-h2 en móvil (caminos y teléfono) · t-base (lo demás).
+   Geist Mono solo en la fecha real de entrega. El cian solo en el círculo de la compra.
+   Movimiento: los filetes se dibujan (scaleX) y las líneas suben escalonadas al entrar (.visto); al pasar el ratón,
+   enfocar o, en táctil, cruzar el centro de la pantalla (.activo, [data-activa] en movimiento.js), el nombre se
+   desplaza, la flecha avanza y el filete de debajo se dibuja en tinta. Con .quieto, todo visible y quieto. */
+.cierre { position: relative; padding-block: var(--seccion) clamp(4rem, 7vw, 6.5rem); color: var(--c-tinta); }
+.cierre__titulo { max-width: 15em; }
+.cierre__texto { max-width: 40ch; margin-top: 1.5rem; color: var(--c-acero); line-height: 1.55; text-wrap: pretty; }
+
+/* Los tres caminos */
+.cierre__caminos { list-style: none; margin: clamp(3rem, 6vw, 5rem) 0 0; padding: 0; }
+.camino { position: relative; }
+/* Filete de base (arriba de cada línea y debajo de la última), de borde a borde de la pantalla */
+.camino::before,
+.camino:last-child::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: var(--c-linea-fuerte); transform-origin: 0 50%; pointer-events: none; }
+.camino::before { top: 0; }
+.camino:last-child::after { top: 100%; }
+/* Filete que se dibuja en tinta debajo de la línea activa (sale por la derecha al soltarla) */
+.camino__trazo { position: absolute; z-index: 2; left: 0; right: 0; top: 100%; height: 1px; background: var(--c-tinta); transform: scaleX(0); transform-origin: 100% 50%; transition: transform .25s var(--e-salida); pointer-events: none; }
+.camino__in { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "nombre accion" "nota nota"; column-gap: 1rem; row-gap: .75rem; align-items: center; padding-block: 1.5rem 1.75rem; }
+.camino__enlace { grid-area: nombre; color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.camino__enlace:hover { text-decoration: none; }
+/* La capa del enlace ocupa toda la línea, también los márgenes */
+.camino__enlace::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.camino__enlace:focus-visible { outline: none; }
+.camino__enlace:focus-visible::after { outline: 2px solid var(--c-marino); outline-offset: -4px; }
+.camino__nombre { display: block; font: 800 var(--t-h2)/1.1 var(--f-display); letter-spacing: -.025em; text-wrap: balance; transition: transform var(--d-corta) var(--e-salida); }
+.camino__nota { grid-area: nota; max-width: 34ch; color: var(--c-acero); line-height: 1.55; text-wrap: pretty; }
+/* La única línea de dato en mono: la fecha real de entrega (data-corte-fecha, movimiento.js) */
+.camino__fecha { font-family: var(--f-mono); color: var(--c-tinta); font-feature-settings: "tnum" 1, "zero" 0; white-space: nowrap; }
+/* Acción a la derecha: círculo cian (compra o pedido) o flecha de línea */
+.camino__accion { grid-area: accion; align-self: center; justify-self: end; display: grid; place-items: center; transition: transform var(--d-corta) var(--e-salida); }
+.camino__accion svg { width: 22px; height: 22px; }
+.camino__circulo { width: 52px; height: 52px; border-radius: 50%; background: var(--c-accion); color: var(--c-noche); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), var(--sombra-2); }
+.camino__flecha { width: 52px; height: 52px; color: var(--c-tinta); }
+.camino__flecha svg { width: 28px; height: 28px; }
+/* Hablar con una persona: el teléfono grande es el enlace de la línea (Inter fina frente al 800 de los caminos:
+   mismo tamaño, otra voz); WhatsApp va por encima de la capa del enlace */
+.camino--persona .camino__in { grid-template-areas: "nombre nombre" "tel tel" "nota nota"; row-gap: .5rem; }
+.camino--persona .camino__nombre { grid-area: nombre; }
+.camino__tel { grid-area: tel; justify-self: start; font: 300 var(--t-h2)/1.1 var(--f-texto); letter-spacing: -.02em; white-space: nowrap; }
+.camino__wa { position: relative; z-index: 3; color: var(--c-tinta); font-weight: 600; }
+.camino--persona .camino__nota { margin-top: .25rem; }
+.camino__horario { display: block; }
+.camino__sep { display: none; }
+/* Respuesta de la línea: ratón y foco en todos; «activo al centro» solo en táctil */
+.camino:hover .camino__trazo, .camino:focus-within .camino__trazo { transform: scaleX(1); transform-origin: 0 50%; }
+.camino:hover .camino__nombre, .camino:focus-within .camino__nombre { transform: translate3d(.75rem, 0, 0); }
+.camino:hover .camino__accion, .camino:focus-within .camino__accion { transform: translate3d(.5rem, 0, 0); }
+.camino__enlace:active ~ .camino__circulo { transform: translate3d(.5rem, 0, 0) scale(.96); }
+/* En táctil la línea que cruza el centro dibuja su filete y adelanta la flecha; el nombre solo se desplaza al tocarlo
+   (desplazado en reposo parecería un descuadre) */
+@media (hover: none) {
+	.camino.activo .camino__trazo { transform: scaleX(1); transform-origin: 0 50%; }
+	.camino.activo .camino__accion { transform: translate3d(.25rem, 0, 0); }
+	.camino:active .camino__nombre { transform: translate3d(.5rem, 0, 0); }
 }
+/* Pie del cierre: seguridad (obligatorio) y, si la página lo pide, un enlace más */
+.cierre__pie { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 2.5rem; margin-top: 2rem; }
+.cierre__seguridad { display: flex; align-items: center; gap: .6rem; color: var(--c-acero); }
+.cierre__seguridad .ico { width: 22px; height: 22px; }
+.cierre__seguridad a { color: var(--c-tinta); }
+@media (min-width: 1024px) {
+	.camino__in { grid-template-columns: minmax(0, 1fr) 22rem 4rem; grid-template-areas: "nombre nota accion"; column-gap: var(--hueco); padding-block: clamp(1.75rem, 2.6vw, 2.5rem); }
+	.camino__nombre { font-size: var(--t-h1); line-height: 1.05; letter-spacing: -.03em; }
+	.camino__circulo, .camino__flecha { width: 64px; height: 64px; }
+	.camino--persona .camino__in { grid-template-areas: "nombre tel tel" ". nota nota"; align-items: baseline; row-gap: .375rem; }
+	.camino__tel { font-size: var(--t-h1); line-height: 1.05; }
+	.camino--persona .camino__nota { margin-top: 0; max-width: none; }
+	.camino__horario, .camino__sep { display: inline; }
+	.cierre__pie { margin-top: 2.5rem; }
+}
+/* Entrada: filetes que se dibujan y líneas que suben escalonadas (90 ms) */
+.js .camino::before, .js .camino:last-child::after { transform: scaleX(0); transition: transform var(--d-larga) var(--e-salida) calc(var(--i, 0) * 90ms); }
+.js .camino:last-child::after { transition-delay: calc(var(--i, 0) * 90ms + 90ms); }
+.js .camino.visto::before, .js .camino.visto:last-child::after { transform: none; }
+.js .camino__in { opacity: 0; transform: translate3d(0, 1.5rem, 0); transition: opacity var(--d-larga) var(--e-salida), transform var(--d-larga) var(--e-salida); transition-delay: calc(var(--i, 0) * 90ms + 120ms); }
+.js .camino.visto .camino__in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+	.js .camino::before, .js .camino:last-child::after, .js .camino__in { opacity: 1 !important; transform: none !important; transition: none !important; }
+	.camino__nombre, .camino__accion, .camino__trazo { transition: none !important; }
+	.camino .camino__nombre, .camino .camino__accion { transform: none !important; }
+}
+.quieto .camino::before, .quieto .camino:last-child::after, .quieto .camino__in { opacity: 1 !important; transform: none !important; transition: none !important; }
+.quieto .camino__nombre, .quieto .camino__accion, .quieto .camino__trazo { transition: none !important; }
+.quieto .camino .camino__nombre, .quieto .camino .camino__accion { transform: none !important; }
 
 /* ---------- Pregunta / respuesta (base; cada página puede tener su composición) ---------- */
 details summary { cursor: pointer; list-style: none; }

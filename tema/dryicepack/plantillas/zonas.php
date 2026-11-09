@@ -2,7 +2,7 @@
 /**
  * Zonas de entrega (índice, rediseño 13/10/2026, plan 2.11): mapa radial grande a sangre con barrido de radar,
  * lista por comarca y cierre común con «¿No ves tu zona?».
- * Tonos: hero noche · lista papel · cierre noche · pie marino.
+ * Tonos: hero noche · lista papel · cierre escarcha · pie marino.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -54,11 +54,10 @@ get_header();
 </section>
 <?php
 if ( 2 === count( $zs_resto ) ) {
+	// Cierre común «tres caminos» con la frase bajo el titular y, junto al enlace a seguridad, el de envíos
 	dipt_cierre( array(
 		'titulo'     => $zs_resto[0],
 		'texto'      => esc_html( $zs_resto[1] ),
-		'foto'       => 'cajas-furgoneta',
-		'recorte'    => '35% 50%',
 		'secundario' => array( $ci['envios'], dipt_url( 'envios' ) ),
 	) );
 }

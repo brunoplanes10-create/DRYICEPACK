@@ -57,9 +57,8 @@ return array(
 			array( '¿Cuánto hielo seco pongo por caja?', 'Depende de las horas de viaje, del tamaño de la caja y de la temperatura exterior. Díganos la ruta y el tipo de caja y le orientamos.' ),
 		),
 	),
-	// Cierre común (rediseño 13/10/2026): el titular de la portada pasado a usted y la fecha real de entrega, de usted
+	// Cierre común: el titular de la portada pasado a usted (la fecha de entrega de usted está en comun.php, 'usted' => true)
 	'final' => array(
 		'titulo' => '¿Lo necesita mañana?|<em>Pídalo antes de las 12:00.</em>',
-		'corte'  => array( 'Pida antes de las 12:00 y lo tiene el %s por la mañana', 'Quedan %s para pedir hoy', 'Si pide ahora, lo tiene el %s por la mañana' ),
 	),
 );

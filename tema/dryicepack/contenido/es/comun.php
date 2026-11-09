@@ -68,6 +68,14 @@ return array(
 	'corte_antes'     => 'Pide antes de las 12:00 y lo tienes el %s por la mañana',
 	'corte_quedan'    => 'Quedan %s para pedir hoy',
 	'corte_despues'   => 'Si pides ahora, lo tienes el %s por la mañana',
+	// De usted (páginas B2B: hostelería, laboratorios, industria)
+	'corte_antes_usted'   => 'Pida antes de las 12:00 y lo tiene el %s por la mañana',
+	'corte_despues_usted' => 'Si pide ahora, lo tiene el %s por la mañana',
+	// Cierre común (partes/cierre.php): los tres caminos. El primero usa 'comprar' y la fecha; el tercero, 'horario'.
+	'cierre_empresas'      => 'Hielo seco para empresas',
+	'cierre_empresas_nota' => 'Pedidos programados y una factura al mes, a 30 días.',
+	'cierre_persona'       => 'Hablar con una persona',
+	'cierre_llamar'        => 'Llamar al %s',
 	'horas'           => 'h',
 	'minutos'         => 'min',
 	// Seguridad: los seis avisos (se enlazan desde cualquier página que explica un uso)

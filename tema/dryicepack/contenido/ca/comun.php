@@ -68,6 +68,14 @@ return array(
 	'corte_antes'     => 'Demana abans de les 12:00 i el tens el %s al matí',
 	'corte_quedan'    => 'Falten %s per demanar avui',
 	'corte_despues'   => 'Si demanes ara, el tens el %s al matí',
+	// De vostè (pàgines B2B: hostaleria, laboratoris, indústria)
+	'corte_antes_usted'   => 'Demani abans de les 12:00 i el té el %s al matí',
+	'corte_despues_usted' => 'Si demana ara, el té el %s al matí',
+	// Tancament comú (partes/cierre.php): els tres camins. El primer fa servir 'comprar' i la data; el tercer, 'horario'.
+	'cierre_empresas'      => 'Gel sec per a empreses',
+	'cierre_empresas_nota' => 'Comandes programades i una factura al mes, a 30 dies.',
+	'cierre_persona'       => 'Parlar amb una persona',
+	'cierre_llamar'        => 'Trucar al %s',
 	'horas'           => 'h',
 	'minutos'         => 'min',
 	// Seguretat: els sis avisos (s'enllacen des de qualsevol pàgina que explica un ús)
