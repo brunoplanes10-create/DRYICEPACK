@@ -211,8 +211,8 @@ function dipt_crear_paginas() {
 }
 
 /**
- * Interruptor de las páginas de ciudades (publicación escalonada, 10/11/2026): primero las provincias y, cuando se vea en
- * Search Console cómo las indexa Google, las ciudades. Apagado: las rutas de ciudad no se registran ni se enlazan.
+ * Interruptor de las páginas de ciudades (10/11/2026): encendido de serie (el propietario las quiere todas desde el
+ * principio). Apagado: las rutas de ciudad no se registran ni se enlazan y sus páginas redirigen a su provincia.
  * Devuelve true si ha cambiado. Al cambiar se vacía la caché de WP Rocket (cambian los enlaces de provincias y /zonas/).
  */
 function dipt_guardar_interruptor_ciudades( $activar ) {
@@ -224,10 +224,61 @@ function dipt_guardar_interruptor_ciudades( $activar ) {
 	return true;
 }
 
+/**
+ * Páginas de WordPress que el tema no usa (10/11/2026): restos de versiones anteriores (páginas vacías como /transporte/
+ * o /barcelona/, duplicados como /factura-2/, la página de Divi de «Programar suministro», borradores viejos…).
+ * En uso: las del registro en los tres idiomas y sus madres, las de ciudades (aunque estén apagadas), portada, blog,
+ * privacidad, las de WooCommerce y /factura/ (plugin).
+ */
+function dipt_paginas_en_uso_ids() {
+	$ids    = array();
+	$marcar = static function ( $ruta ) use ( &$ids ) {
+		$pg = $ruta ? get_page_by_path( $ruta ) : null;
+		if ( ! $pg ) return;
+		$ids[ $pg->ID ] = true;
+		foreach ( get_post_ancestors( $pg ) as $a ) $ids[ $a ] = true;
+	};
+	foreach ( dipt_paginas() as $p ) {
+		foreach ( array( 'es', 'ca', 'en' ) as $i ) $marcar( $p[ $i ] ?? null );
+	}
+	if ( function_exists( 'dipt_ciudades' ) ) {
+		foreach ( array_keys( dipt_ciudades( true ) ) as $k ) {
+			$marcar( 'hielo-seco-' . $k );
+			$marcar( 'ca/gel-sec-' . $k );
+		}
+	}
+	$marcar( 'factura' );
+	foreach ( array( 'page_on_front', 'page_for_posts', 'wp_page_for_privacy_policy' ) as $o ) {
+		$v = (int) get_option( $o );
+		if ( $v ) $ids[ $v ] = true;
+	}
+	if ( function_exists( 'wc_get_page_id' ) ) {
+		foreach ( array( 'shop', 'cart', 'checkout', 'myaccount', 'terms' ) as $w ) {
+			$v = (int) wc_get_page_id( $w );
+			if ( $v > 0 ) $ids[ $v ] = true;
+		}
+	}
+	return $ids;
+}
+function dipt_paginas_antiguas() {
+	$uso = dipt_paginas_en_uso_ids();
+	$todas = get_posts( array( 'post_type' => 'page', 'post_status' => array( 'publish', 'draft', 'pending', 'private', 'future' ), 'numberposts' => -1, 'orderby' => 'title', 'order' => 'ASC' ) );
+	return array_values( array_filter( $todas, static fn( $p ) => ! isset( $uso[ $p->ID ] ) ) );
+}
+
 function dipt_pantalla_paginas() {
 	if ( ! current_user_can( 'edit_pages' ) ) return;
 	$creadas = null;
 	$cambio  = false;
+	$a_papelera = null;
+	if ( isset( $_POST['dipt_papelera'] ) && check_admin_referer( 'dipt_papelera' ) && current_user_can( 'delete_pages' ) ) {
+		$sobran     = wp_list_pluck( dipt_paginas_antiguas(), 'ID' );
+		$a_papelera = array();
+		foreach ( array_map( 'absint', (array) wp_unslash( $_POST['dipt_antiguas'] ?? array() ) ) as $id ) {
+			if ( in_array( $id, $sobran, true ) && wp_trash_post( $id ) ) $a_papelera[] = $id;
+		}
+		if ( $a_papelera && function_exists( 'rocket_clean_domain' ) ) rocket_clean_domain();
+	}
 	if ( ( isset( $_POST['dipt_crear'] ) || isset( $_POST['dipt_guardar'] ) ) && check_admin_referer( 'dipt_crear_paginas' ) ) {
 		$cambio = function_exists( 'dipt_guardar_interruptor_ciudades' ) && dipt_guardar_interruptor_ciudades( ! empty( $_POST['dipt_ciudades'] ) );
 		if ( isset( $_POST['dipt_crear'] ) ) $creadas = dipt_crear_paginas();
@@ -238,7 +289,7 @@ function dipt_pantalla_paginas() {
 		<h1>Páginas Dryicepack</h1>
 		<p>El diseño y los textos de estas páginas están en el tema. Aquí solo se comprueba que cada dirección exista en WordPress.</p>
 		<?php if ( $cambio ) : ?>
-			<div class="notice notice-info"><p><?php echo dipt_ciudades_activas() ? 'Páginas de ciudades activadas: ya se enlazan desde su provincia y desde /zonas/.' : 'Páginas de ciudades desactivadas: ya no se enlazan. Si estaban creadas, siguen en Páginas (bórralas o pásalas a borrador si no las quieres publicadas).'; ?></p></div>
+			<div class="notice notice-info"><p><?php echo dipt_ciudades_activas() ? 'Páginas de ciudades activadas: ya se enlazan desde su provincia y desde /zonas/.' : 'Páginas de ciudades desactivadas: ya no se enlazan y sus direcciones redirigen a su provincia.'; ?></p></div>
 		<?php endif; ?>
 		<?php if ( null !== $creadas ) : ?>
 			<div class="notice notice-success"><p><?php echo $creadas ? esc_html( 'Creadas: ' . implode( ', ', $creadas ) ) : 'No faltaba ninguna.'; ?></p></div>
@@ -273,10 +324,45 @@ function dipt_pantalla_paginas() {
 		<form method="post" style="margin-top:1.5rem">
 			<?php wp_nonce_field( 'dipt_crear_paginas' ); ?>
 			<p><label><input type="checkbox" name="dipt_ciudades" value="1"<?php checked( dipt_ciudades_activas() ); ?>> Crear también las páginas de ciudades (<?php echo (int) $n_ciudades; ?> ciudades de más de 50.000 habitantes)</label><br>
-			<span class="description">Apagado: solo provincias. Al encenderlo, las ciudades se enlazan desde su provincia y desde /zonas/, y «Crear las que faltan» crea sus páginas.</span></p>
+			<span class="description">Encendido de serie: las ciudades se enlazan desde su provincia y desde /zonas/, y «Crear las que faltan» crea sus páginas. Si lo apagas, dejan de enlazarse y cada dirección de ciudad redirige a su provincia.</span></p>
 			<button class="button button-primary" name="dipt_crear" value="1">Crear las que faltan</button>
 			<button class="button" name="dipt_guardar" value="1">Guardar sin crear</button>
 		</form>
+
+		<?php $antiguas = dipt_paginas_antiguas(); ?>
+		<h2 style="margin-top:2.5rem">Páginas antiguas que sobran</h2>
+		<?php if ( null !== $a_papelera ) : ?>
+			<div class="notice notice-success"><p><?php echo esc_html( $a_papelera ? count( $a_papelera ) . ' páginas enviadas a la papelera. Se pueden recuperar durante 30 días en Páginas → Papelera.' : 'No se ha enviado ninguna.' ); ?></p></div>
+		<?php endif; ?>
+		<?php if ( ! $antiguas ) : ?>
+			<p>No queda ninguna: todas las páginas de WordPress las usa el tema, WooCommerce o la tienda.</p>
+		<?php else : ?>
+			<p>Estas páginas de WordPress no las usa el tema ni la tienda: son restos de versiones anteriores (páginas vacías, duplicados, la página de Divi de «Programar suministro», borradores viejos). Revísalas y pulsa el botón: van a la <strong>papelera</strong>, donde se pueden recuperar durante 30 días. Sus direcciones antiguas siguen redirigiendo a la página nueva que corresponde.</p>
+			<form method="post">
+				<?php wp_nonce_field( 'dipt_papelera' ); ?>
+				<table class="widefat striped" style="max-width:980px">
+					<thead><tr><td class="check-column"></td><th>Página</th><th>Dirección</th><th>Estado</th><th>Modificada</th><th>Redirige a</th></tr></thead>
+					<tbody>
+					<?php
+					$sobrantes = function_exists( 'dip_paginas_sobrantes' ) ? dip_paginas_sobrantes() : array();
+					foreach ( $antiguas as $p ) :
+						$ruta    = get_page_uri( $p );
+						$destino = ! $p->post_parent ? ( $sobrantes[ $p->post_name ] ?? '' ) : '';
+						?>
+						<tr>
+							<th scope="row" class="check-column"><input type="checkbox" name="dipt_antiguas[]" value="<?php echo (int) $p->ID; ?>" checked aria-label="<?php echo esc_attr( 'Mandar a la papelera: ' . $p->post_title ); ?>"></th>
+							<td><a href="<?php echo esc_url( get_edit_post_link( $p->ID ) ); ?>"><?php echo esc_html( $p->post_title ?: '(sin título)' ); ?></a></td>
+							<td><?php echo 'publish' === $p->post_status ? '<a href="' . esc_url( get_permalink( $p ) ) . '">/' . esc_html( $ruta ) . '/</a>' : '/' . esc_html( $ruta ) . '/'; ?></td>
+							<td><?php echo esc_html( get_post_status_object( $p->post_status )->label ?? $p->post_status ); ?></td>
+							<td><?php echo esc_html( get_the_modified_date( 'j/n/Y', $p ) ); ?></td>
+							<td><?php echo $destino ? esc_html( $destino ) : '—'; ?></td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+				<p><button class="button button-primary" name="dipt_papelera" value="1" onclick="return confirm('¿Mandar a la papelera las páginas marcadas? Se pueden recuperar durante 30 días.');">Mandar a la papelera las marcadas (<?php echo count( $antiguas ); ?>)</button></p>
+			</form>
+		<?php endif; ?>
 	</div>
 	<?php
 }

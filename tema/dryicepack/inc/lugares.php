@@ -83,9 +83,22 @@ function dipt_provincias() {
 	return $lista;
 }
 
-/** ¿Están activadas las páginas de ciudades? (Apariencia → Páginas Dryicepack; apagado de serie) */
+/** ¿Están activadas las páginas de ciudades? (Apariencia → Páginas Dryicepack; encendido de serie desde el 10/11/2026,
+ * por decisión del propietario: todas a la vez y quitar después las que no se usen). */
 function dipt_ciudades_activas() {
-	return (bool) get_option( 'dipt_ciudades', 0 );
+	return (bool) get_option( 'dipt_ciudades', 1 );
+}
+
+/** Página a la que redirige una ciudad apagada: su provincia (o la zona de Barcelona, o /zonas/). */
+function dipt_ciudad_destino( $clave ) {
+	$c       = dipt_ciudades( true )[ $clave ] ?? null;
+	$paginas = dipt_paginas();
+	if ( $c ) {
+		foreach ( array( 'provincia-' . $c['provincia_clave'], 'zona-' . $c['provincia_clave'] ) as $k ) {
+			if ( isset( $paginas[ $k ] ) ) return dipt_url( $k );
+		}
+	}
+	return dipt_url( 'zonas' );
 }
 
 /**
@@ -146,28 +159,30 @@ function dipt_ciudades( $todas = false ) {
 	return ( $todas || dipt_ciudades_activas() ) ? $lista : array();
 }
 
-/* Con el interruptor apagado, una página de ciudad que ya estaba creada en WordPress responde 404 (no una página vacía). */
-add_action( 'template_redirect', static function () {
-	if ( is_admin() || ! is_page() || dipt_ciudades_activas() ) return;
-	$ruta = get_page_uri( get_queried_object_id() );
+/** Clave de la ciudad apagada (interruptor apagado) a la que corresponde una ruta de página; null si no lo es. */
+function dipt_ciudad_apagada_de_ruta( $ruta ) {
+	$activas = dipt_ciudades();
 	foreach ( array_keys( dipt_ciudades( true ) ) as $clave ) {
 		if ( 'hielo-seco-' . $clave !== $ruta && 'ca/gel-sec-' . $clave !== $ruta ) continue;
-		global $wp_query;
-		$wp_query->set_404();
-		status_header( 404 );
-		nocache_headers();
-		return;
+		return isset( $activas[ $clave ] ) ? null : $clave;
 	}
-} );
+	return null;
+}
+
+/* Con el interruptor apagado, una página de ciudad que ya estaba creada en WordPress redirige (301) a su provincia: lo que Google
+ * tuviera de ella no se pierde y nadie ve una página vacía. */
+add_action( 'template_redirect', static function () {
+	if ( is_admin() || ! is_page() ) return;
+	$clave = dipt_ciudad_apagada_de_ruta( get_page_uri( get_queried_object_id() ) );
+	if ( null === $clave ) return;
+	wp_safe_redirect( dipt_ciudad_destino( $clave ), 301, 'Dryicepack' );
+	exit;
+}, 2 );
 
 /* …y tampoco sale en el sitemap de Rank Math. */
 add_filter( 'rank_math/sitemap/entry', static function ( $url, $tipo = '', $objeto = null ) {
-	if ( dipt_ciudades_activas() || ! ( $objeto instanceof WP_Post ) || 'page' !== $objeto->post_type ) return $url;
-	$ruta = get_page_uri( $objeto );
-	foreach ( array_keys( dipt_ciudades( true ) ) as $clave ) {
-		if ( 'hielo-seco-' . $clave === $ruta || 'ca/gel-sec-' . $clave === $ruta ) return false;
-	}
-	return $url;
+	if ( ! ( $objeto instanceof WP_Post ) || 'page' !== $objeto->post_type ) return $url;
+	return null === dipt_ciudad_apagada_de_ruta( get_page_uri( $objeto ) ) ? $url : false;
 }, 10, 3 );
 
 function dipt_lugar( $tipo, $clave ) {
