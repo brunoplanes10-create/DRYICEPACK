@@ -23,7 +23,7 @@ return array(
 
 <h2>¿Dónde se compra, entonces?</h2>
 <h3>Tienda online con envío</h3>
-<p>Eliges formato y kilos, ves el total con el envío incluido y pagas. En DryIcePack, si pides antes de las 12:00, lo tienes al día siguiente por la mañana en caja aislante, en toda la España peninsular. Repartimos de martes a sábado (el sábado, según zona y con suplemento).</p>
+<p>Eliges formato y kilos, ves el total con el envío incluido y pagas. En DryIcePack, si pides antes de las 12:00, llega al día siguiente antes de las 14:00 en caja aislante, en toda la España peninsular. Repartimos de martes a viernes y, según zona, el sábado antes de las 12:00, con suplemento.</p>
 <h3>Recogida en el almacén</h3>
 <p>Si estás cerca, te ahorras el envío. Nuestra nave está en Mataró (Barcelona) y se recoge de lunes a sábado, también festivos: eliges el día al pedir y te confirmamos la hora. El precio es redondo y con IVA incluido, el mismo en la web y en la nave: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Se paga en efectivo y con el importe exacto: no tenemos cambio.</p>
 <h3>Proveedores de gases industriales</h3>

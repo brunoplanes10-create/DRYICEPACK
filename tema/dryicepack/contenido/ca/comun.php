@@ -37,7 +37,7 @@ return array(
 	'wa_aria'         => 'Escriu-nos per WhatsApp al 686 980 471',
 	'idioma'          => 'Idioma',
 	// Peu
-	'pie_frase'       => 'Gel sec que arriba <em>fred</em> i a l\'hora.',
+	'pie_frase'       => 'Gel sec que arriba <em>fred</em> i abans de les 14:00.',
 	'pie_tienda'      => 'Gel sec',
 	'pie_servicio'    => 'Servei',
 	'pie_contacto'    => 'Parlem',
@@ -65,9 +65,10 @@ return array(
 	'config_cookies'  => 'Configurar les galetes',
 	'derechos'        => 'DryIcePack és una marca d\'INDUNOVA IMS S.L. · CIF B66800103',
 	// Entrega (rellotge de l'hora límit)
-	'corte_antes'     => 'Demana abans de les 12:00 i el tens el %s al matí',
+	// MRW entrega abans de les 14:00 (dissabte, abans de les 12:00; la primera entrega que s'anuncia mai no és en dissabte)
+	'corte_antes'     => 'Demana abans de les 12:00 i arriba el %s abans de les 14:00',
 	'corte_quedan'    => 'Falten %s per demanar avui',
-	'corte_despues'   => 'Si demanes ara, el tens el %s al matí',
+	'corte_despues'   => 'Si demanes ara, arriba el %s abans de les 14:00',
 	'horas'           => 'h',
 	'minutos'         => 'min',
 	// Seguretat: els sis avisos (s'enllacen des de qualsevol pàgina que explica un ús)
@@ -95,6 +96,9 @@ return array(
 	'form_error'      => 'No s\'ha pogut enviar. Truca\'ns al 936 73 76 41.',
 	// Formularis de les pàgines B2B (empreses, indústria): tracte de vostè
 	'form_privacidad_usted' => 'He llegit la <a href="%s">política de privacitat</a>. Fem servir les seves dades només per respondre-li.',
+	// Primera capa d'informació de privacitat, sota la casella de cada formulari (RGPD art. 13)
+	'form_capa'       => 'Responsable: INDUNOVA IMS S.L. Finalitat: respondre la teva consulta. Base legal: el teu consentiment. No cedim les teves dades a tercers, llevat d\'obligació legal. Drets: accés, rectificació, supressió, oposició i altres, escrivint a info@dryicepack.es.',
+	'form_capa_usted' => 'Responsable: INDUNOVA IMS S.L. Finalitat: respondre la seva consulta o sol·licitud. Base legal: el seu consentiment i les mesures precontractuals que demana. No cedim les seves dades a tercers, llevat d\'obligació legal. Drets: accés, rectificació, supressió, oposició i altres, escrivint a info@dryicepack.es.',
 	'form_ok_usted'         => 'Rebut. Li responem en horari laboral, normalment el mateix dia.',
 	'form_error_usted'      => 'No s\'ha pogut enviar. Truqui\'ns al 936 73 76 41.',
 );

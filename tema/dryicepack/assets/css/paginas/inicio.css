@@ -117,6 +117,8 @@
 .i-kilo__precio { color: var(--c-acero); font-size: .75rem; letter-spacing: 0; white-space: nowrap; }
 .i-kilo.activo { color: #fff; }
 .i-kilo.activo .i-kilo__precio { color: var(--c-hielo); }
+.i-kilo__kilo { color: var(--c-acero); font-size: .66rem; line-height: 1.2; letter-spacing: -.01em; white-space: nowrap; } /* precio por kilo con IVA */
+.i-kilo.activo .i-kilo__kilo { color: var(--c-hielo); }
 .i-kilo:not(.activo):hover .i-kilo__n { transform: translate3d(0, -2px, 0); }
 .i-kilo:focus-visible { outline: 2px solid var(--c-marino); outline-offset: 2px; }
 .i-regla__barra { position: absolute; z-index: 0; top: .35rem; bottom: .35rem; left: .35rem; width: calc((100% - .7rem) / var(--n, 4)); border-radius: var(--radio); background: var(--c-marino); box-shadow: var(--sombra-1); transform: translate3d(calc(var(--pos, 1) * 100%), 0, 0); transition: transform var(--d-media) var(--e-salida); }
@@ -150,7 +152,7 @@
 	.i-kilo__n { font-size: 1.8rem; }
 	.i-kilo { padding: .75rem .15rem .7rem; }
 }
-@media (max-width: 480px) { .i-regla__kilos--cinco .i-kilo { padding-inline: 0; } .i-regla__kilos--cinco .i-kilo__n { font-size: 1.6rem; } } /* 5 packs en una fila a 390 px */
+@media (max-width: 480px) { .i-regla__kilos--cinco .i-kilo { padding-inline: 0; } .i-regla__kilos--cinco .i-kilo__n { font-size: 1.6rem; } .i-regla__kilos--cinco .i-kilo__kilo { font-size: .6rem; letter-spacing: -.04em; } } /* 5 packs en una fila a 390 px */
 
 /* ---------- I4 · Cómo llega: mapa y tres horas (no se toca) ---------- */
 .i-llega__in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }

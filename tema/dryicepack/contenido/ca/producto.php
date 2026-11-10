@@ -4,11 +4,11 @@ return array(
 	'menu' => 'Comprar gel sec',
 	'seo'  => array(
 		'titulo'      => 'Comprar gel sec: {pk}, 10, 15 i 20 kg | DryIcePack',
-		'descripcion' => 'Compra gel sec des de {pk} kg, en pèl·lets de 3 mm o nuggets de 16 mm. Veus el total amb enviament abans de pagar. Demana abans de les 12:00 i arriba demà.',
+		'descripcion' => 'Compra gel sec des de {pk} kg, en 3 mm o 16 mm, amb l\'enviament ja inclòs al total. Demana abans de les 12:00 i arriba l\'endemà abans de les 14:00.',
 	),
 	'migas'   => array( 'Inici', 'Comprar gel sec' ),
 	'titulo'  => 'Comprar gel sec sense sorpreses amb l\'enviament',
-	'sub'     => 'Demana abans de les 12:00 i demà al matí el tens (de dimarts a dissabte), o tria el dia que vulguis. El total ja inclou l\'enviament.',
+	'sub'     => 'Demana abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O tria el dia que vulguis. El total ja inclou l\'enviament.',
 	'galeria' => array(
 		'3mm'  => array( array( 'caja-3mm', 'Caixa de gel sec en pèl·lets de 3 mm oberta, amb vapor' ), array( 'cenital-3mm', 'Pèl·lets de gel sec de 3 mm vistos des de dalt' ), array( 'caja-3mm-lateral', 'Caixa EPS amb pèl·lets de 3 mm i la tapa recolzada' ) ),
 		'16mm' => array( array( 'caja-16mm-niebla', 'Caixa de gel sec en nuggets de 16 mm oberta, amb vapor' ), array( 'cenital-16mm', 'Nuggets de gel sec de 16 mm vistos des de dalt' ), array( 'cenital-caja-nuggets', 'Caixa EPS oberta amb nuggets de 16 mm, vista zenital' ) ),
@@ -33,13 +33,13 @@ return array(
 	'cp_no_valido' => 'Codi postal no vàlid',
 	'cp_corto'     => 'Falten xifres: són 5',
 	// Línia d'entrega amb el codi postal (%1$s = "08301 · Barcelona", %2$s = data); "medida" acaba amb un enllaç a WhatsApp; "fuera", no (no s'hi envia)
-	'llega_cp_ok'     => '%1$s — t\'arriba el %2$s al matí',
-	'llega_cp_sabado' => 'O el %1$s, segons la zona: +%2$s',
+	'llega_cp_ok'     => '%1$s — arriba el %2$s abans de les 14:00',
+	'llega_cp_sabado' => 'O el %1$s abans de les 12:00, segons la zona: +%2$s',
 	'llega_cp_fuera'  => 'només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla.',
 	'llega_cp_medida' => 'més de 150 kg fora de la província de Barcelona: demana-ho per',
 	'llega_cp_error'  => 'El codi postal %s no existeix a Espanya. Revisa les 5 xifres.',
-	'llega'     => 'El tens el %s al matí',
-	'llega_hoy' => 'Si demanes abans de les 12:00, el tens el %s al matí',
+	'llega'     => 'Arriba el %s abans de les 14:00',
+	'llega_hoy' => 'Si demanes abans de les 12:00, arriba el %s abans de les 14:00',
 	'fuera'     => 'Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla.',
 	'precio'    => 'Gel sec',
 	'envio'     => 'Enviament',
@@ -50,6 +50,16 @@ return array(
 	'max'       => 'Fins a 250 kg per comanda. En necessites més? Escriu-nos i et donem preu i dia.',
 	'medida'    => 'Més de 150 kg fora de la província de Barcelona: aquest enviament es prepara a mida. Escriu-nos per',
 	'confianza' => array( 'Targeta, Apple Pay o Google Pay', 'Factura per a empreses', 'Sense crear cap compte' ),
+	// Informació de seguretat del producte al costat del botó de compra (Reglament (UE) 2023/988, art. 19)
+	'gpsr' => array(
+		'titulo' => 'Fabricant i seguretat del producte',
+		'filas'  => array(
+			array( 'Fabricant', 'INDUNOVA IMS S.L. (marca DryIcePack) · Ronda Alfonso X El Sabio 10, 2n 1a, 08301 Mataró · info@dryicepack.es' ),
+			array( 'Producte', 'Diòxid de carboni sòlid (gel sec), UN 1845, en pèl·lets de 3 mm o nuggets de 16 mm, en caixa EPS.' ),
+			array( 'Advertiments', 'A −78,5 °C crema la pell: guants tèrmics o pinces. Només en llocs ventilats: el CO₂ desplaça l\'oxigen. Mai en un recipient tancat. No es menja ni es beu. Fora de l\'abast de nens i mascotes. En cotxe, al maleter i ventilant.' ),
+		),
+		'enlace' => 'Normes de seguretat i fitxa de dades',
+	),
 	'caja' => array(
 		'titulo' => 'Així arriba|<em>a la teva porta.</em>',
 		'capas'  => array(
@@ -88,11 +98,11 @@ return array(
 		'titulo'   => 'Abans de pagar',
 		'empresas' => 'Compte d\'empresa amb factura mensual',
 		'lista'    => array(
-			array( 'Quan arriba?', 'Si demanes abans de les 12:00 de dilluns a dijous, surt aquell mateix dia i el tens l\'endemà al matí. Si demanes divendres, arriba dissabte (segons la zona, amb un suplement d\'11,74 €) o dimarts. No repartim ni diumenge ni dilluns. El dia el tries en pagar.' ),
+			array( 'Quan arriba?', 'Si demanes abans de les 12:00 de dilluns a dijous, surt aquell mateix dia i arriba l\'endemà abans de les 14:00. Si demanes divendres, arriba dissabte abans de les 12:00 (segons la zona, amb un suplement de {sabado_envio}) o dimarts. No repartim ni diumenge ni dilluns. El dia el tries en pagar.' ),
 			array( 'Puc demanar per a un altre dia?', 'Sí: en pagar tries qualsevol dia dels pròxims 90 amb repartiment a la teva zona, de dimarts a dissabte (el dissabte, segons la zona i amb suplement). Demana\'l per al dia que el faràs servir: el gel sec es va sublimant amb les hores.' ),
 			array( 'Quant dura el gel a la caixa?', 'Depèn de la temperatura i de quantes vegades s\'obri la caixa. Demana\'l per al dia que el faràs servir i no l\'obris fins aleshores. Si el necessites per a diversos dies, escriu-nos i ho calculem.' ),
 			array( 'I si necessito factura?', 'Si ets particular i la comanda és de fins a 400 € (IVA inclòs), t\'arriba la factura simplificada per correu electrònic des d\'info@dryicepack.es, sense demanar-la. Si compres per a una empresa o com a autònom, marca la casella en pagar i posa-hi la raó social i el NIF: reps la factura completa. Si te n\'oblides, t\'enviem un enllaç per demanar-la.' ),
-			array( 'El puc tornar?', 'El gel sec se sublima des que surt, així que no té dret de desistiment. Si arriba amb qualsevol problema, truca\'ns aquell mateix dia.' ),
+			array( 'El puc tornar?', 'El gel sec se sublima des que surt, així que no té dret de desistiment. Sí que té garantia legal: si arriba malament, te\'l reposem o et tornem els diners, sense cost. Avisa\'ns el mateix dia, amb fotos si pots, i te\'l reposem abans.' ),
 			array( 'Com el guardo quan el rebo?', 'Amb guants tèrmics, mai amb la mà. A la seva caixa, amb la tapa posada però sense precintar, en un lloc ventilat i fora de l\'abast de nens i mascotes. Mai al congelador ni en un recipient hermètic: la pressió el pot rebentar. No es menja ni es beu. I si el portes en cotxe, al maleter i ventilant.' ),
 		),
 	),

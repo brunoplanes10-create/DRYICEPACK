@@ -12,7 +12,7 @@ return array(
 	'vacio'        => 'Aviat publicarem les primeres guies.',
 	'lectura'      => '%d min de lectura',
 	'indice'       => 'En aquesta guia',
-	'cta'          => 'El necessites demà? Demana\'l abans de les 12:00.',
+	'cta'          => 'El necessites aviat? Demana\'l abans de les 12:00.',
 	'seguir'       => 'Per continuar',
 	'enlaces'      => array(
 		array( 'seguridad', 'Com manipular el gel sec amb seguretat' ),

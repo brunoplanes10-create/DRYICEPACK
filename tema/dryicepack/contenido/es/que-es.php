@@ -64,5 +64,5 @@ return array(
 			array( '¿Cuánto necesito?', 'Depende del uso, de las horas y del aislamiento. Para niebla, como referencia: en casa {pk} kg, en una fiesta grande 10 kg y en un bar o un evento de 15 a 20 kg. Para transporte o muestras, dinos cuántas horas y qué volumen y te lo calculamos.' ),
 		),
 	),
-	'final' => array( 'titulo' => 'Ya sabes qué es. Pídelo antes de las 12:00 y mañana lo tienes.', 'boton' => 'Comprar hielo seco' ),
+	'final' => array( 'titulo' => 'Ya sabes qué es. Pídelo antes de las 12:00 y llega al día siguiente antes de las 14:00.', 'boton' => 'Comprar hielo seco' ),
 );

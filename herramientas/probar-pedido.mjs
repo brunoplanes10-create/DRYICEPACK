@@ -66,9 +66,10 @@ if (modo === 'recogida') {
   ok(antes.pagos.length === 1 && /Efectivo al recoger/.test(antes.pagos[0]), 'recogida: la única forma de pago es «Efectivo al recoger»', antes.pagos);
   ok(limpio(antes.efectivo) === textoEfectivo, 'recogida: texto del efectivo en el checkout: «' + textoEfectivo + '»', antes.efectivo);
   ok(limpio(antes.precioRecogida) === `En efectivo al recoger: ${totalTexto}, IVA incluido`, 'recogida: el método «Recoger» enseña lo que se paga en efectivo', antes.precioRecogida);
-  ok(/Confirmar pedido/.test(antes.boton), 'recogida: el botón dice «Confirmar pedido»', antes.boton);
+  ok(limpio(antes.boton) === 'Pagar al recoger', 'recogida: el botón dice «Pagar al recoger» (TRLGDCU 98.2)', antes.boton);
 } else {
   ok(!antes.pagos.some((t) => /Efectivo/.test(t)), modo + ': con envío no se ofrece el efectivo', antes.pagos);
+  ok(limpio(antes.boton) === 'Pagar ' + limpio(antes.total), modo + ': el botón dice «Pagar» con el total del pedido', { boton: antes.boton, total: antes.total });
 }
 await p.evaluate(() => document.getElementById('place_order').click());
 try { await p.waitForNavigation({ timeout: 40000 }); } catch (e) {}

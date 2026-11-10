@@ -207,8 +207,30 @@ add_action( 'woocommerce_review_order_before_payment', static function () {
 	echo '<h2 class="dip-paso__titulo dip-paso__titulo--pago"><span class="dip-paso__n">3</span>' . esc_html( $t['paso_pago'] ) . '</h2>';
 } );
 
+/**
+ * Texto del botón final tal como sale del servidor, también sin JavaScript. Tiene que decir que el pedido obliga a pagar
+ * (TRLGDCU 98.2): «Pagar pedido»; recogida con efectivo: «Pagar al recoger»; factura mensual de cuenta de empresa:
+ * «Confirmar pedido». Con JavaScript, assets/checkout.js pone el total con tarjeta («Pagar 48,55 €») y estos mismos
+ * textos en los demás casos.
+ */
+function dip_texto_boton_pedido( $pasarela = null ) {
+	$t        = dip_textos_tienda();
+	$pasarela = null === $pasarela ? dip_pasarela_elegida() : (string) $pasarela;
+	if ( 'dip_factura_mensual' === $pasarela ) return $t['boton_confirmar'];
+	if ( 'cod' === $pasarela ) return $t['boton_recoger']; // el efectivo solo se ofrece en la recogida (inc/pagos.php)
+	return $t['boton_pedido'];
+}
+
+/** Forma de pago que sale marcada: la de la sesión si se ofrece; si no, la primera (lo mismo que hace WooCommerce). */
+function dip_pasarela_elegida() {
+	if ( ! function_exists( 'WC' ) || ! WC()->payment_gateways() ) return '';
+	$pasarelas = (array) WC()->payment_gateways()->get_available_payment_gateways();
+	$elegida   = WC()->session ? (string) WC()->session->get( 'chosen_payment_method' ) : '';
+	return isset( $pasarelas[ $elegida ] ) ? $elegida : (string) array_key_first( $pasarelas );
+}
+
 add_filter( 'woocommerce_order_button_text', static function () {
-	return dip_textos_tienda()['boton_confirmar'];
+	return dip_texto_boton_pedido();
 }, 20 );
 
 add_action( 'woocommerce_review_order_before_submit', static function () {
@@ -244,6 +266,8 @@ add_action( 'wp_enqueue_scripts', static function () {
 	wp_localize_script( 'dip-checkout', 'DIP_CHECKOUT', array(
 		'limite'       => (float) dip_ajuste( 'limite_factura' ),
 		'pagar'        => $t['boton_pagar'],
+		'pedido'       => $t['boton_pedido'],
+		'recoger'      => $t['boton_recoger'],
 		'confirmar'    => $t['boton_confirmar'],
 		'cataluna'     => array( '08', '17', '25', '43' ),
 		'decimal'      => wc_get_price_decimal_separator(),

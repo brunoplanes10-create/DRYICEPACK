@@ -1,6 +1,6 @@
 <?php
 /**
- * Envío: coste por peso, recogida gratis en Mataró, solo península, máximo 250 kg por pedido.
+ * Envío: coste por peso, recogida en Mataró sin coste de envío (el sábado lleva suplemento), solo península, máximo 250 kg por pedido.
  * Migrado del functions.php de producción (01/09/2026) sin cambiar el resultado de ningún cálculo.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -68,7 +68,7 @@ add_filter( 'woocommerce_shipping_rate_label', static function ( $label, $rate =
 	if ( ! is_object( $rate ) ) return $label;
 	$t = function_exists( 'dip_textos_tienda' ) ? dip_textos_tienda() : array();
 	if ( dip_es_recogida( $rate->get_method_id() ) ) return $t['recogida'] ?? 'Recoger en nuestra nave de Mataró';
-	return $t['envio'] ?? 'Envío por mensajería · por la mañana';
+	return $t['envio'] ?? 'Envío por mensajería · llega el día que elijas antes de las 14:00';
 }, 10, 2 );
 
 add_action( 'woocommerce_after_shipping_rate', static function ( $rate ) {

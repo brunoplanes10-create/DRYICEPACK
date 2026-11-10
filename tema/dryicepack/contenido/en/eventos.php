@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Dry ice for parties and events',
 	'seo'  => array(
 		'titulo'      => 'Dry ice for parties and events: low-lying fog | DryIcePack',
-		'descripcion' => 'Dry ice for parties, weddings and Halloween: fog that covers the floor, from {pk} kg. Order before 12:00 and have it at home tomorrow, ready to use.',
+		'descripcion' => 'Dry ice for parties, weddings and Halloween: fog that covers the floor, from {pk} kg. Order before 12:00 and it arrives the next day before 14:00.',
 	),
 	'migas' => array( 'Home', 'Uses', 'Parties and events' ),
 	'hero'  => array(
-		'titulo' => 'Dry ice for parties:|fog across the floor, <em>at your door tomorrow.</em>',
-		'texto'  => 'Want that fog that covers the floor for the first dance, on stage or at Halloween? All it takes is hot water and dry ice. Order before 12:00 (Spanish time) and you’ll have it tomorrow morning (Tuesday to Saturday), or pick any day you like. From {pk} kg.',
+		'titulo' => 'Dry ice for parties:|fog across the floor, <em>at your door before 14:00.</em>',
+		'texto'  => 'Want that fog that covers the floor for the first dance, on stage or at Halloween? All it takes is hot water and dry ice. Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or pick any day you like. From {pk} kg.',
 		'boton'  => 'Place my order',
 		'alt'    => 'Couple dancing at a wedding on a layer of low-lying dry ice fog',
 	),
@@ -31,10 +31,11 @@ return array(
 		),
 	),
 	'halloween' => array(
-		'titulo' => 'Halloween falls on a Saturday this year.',
-		'texto'  => 'Order before 12:00 (Spanish time) on Thursday 29 October and you’ll have it on Friday 30. Want it on the Saturday itself? Order before 12:00 on Friday: depending on the area, with an €11.74 surcharge.',
+		// Sale del 1/9 al 31/10 de cada año (plantillas/eventos.php), si Halloween está traducida: sin fechas de un año concreto
+		'titulo' => 'For Halloween, get it the day before.',
+		'texto'  => 'Order before 12:00 (Spanish time) on the day before delivery, or book it earlier and choose the day at checkout: it arrives before 14:00. Want it on the Saturday itself? Depending on the area, it arrives before 12:00, with a {sabado_envio} surcharge.',
 		'enlace' => 'Dry ice for Halloween',
-		'fecha'  => 'THU 29/10 · 12:00',
+		'fecha'  => '', // rótulo en mono con el último pedido del año (vacío: no se muestra)
 	),
 	'seguridad' => array(
 		'titulo' => 'Is it safe|<em>with guests?</em>',
@@ -43,7 +44,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Party and event questions',
 		'lista'  => array(
-			array( 'When should I order for a Saturday wedding?', 'Order whenever you like and choose Friday delivery (the last moment to do that: Thursday at 12:00). To receive it on the Saturday itself, choose Saturday: it depends on the area and has an €11.74 surcharge (VAT included). The closer to the event, the better: it sublimates over time.' ),
+			array( 'When should I order for a Saturday wedding?', 'Order whenever you like and choose Friday delivery (the last moment to do that: Thursday at 12:00). To receive it on the Saturday itself, choose Saturday: it arrives before 12:00, depends on the area and has a {sabado_envio} surcharge (VAT included). The closer to the event, the better: it sublimates over time.' ),
 			array( 'Does the fog make things wet or leave stains?', 'It doesn’t stain: it’s condensed water vapour and CO₂. With a lot of fog in a row, the floor can get damp: on a dance floor, dry it between rounds so nobody slips.' ),
 			array( 'Will it set off the fire alarm?', 'Optical smoke detectors can react to dense fog. Ask the venue before the event.' ),
 		),
@@ -55,7 +56,7 @@ return array(
 		'boton'   => 'Order dry ice',
 		'semana'  => 'Delivery days',
 		'dias'    => array( array( 'Mo', 'Monday' ), array( 'Tu', 'Tuesday' ), array( 'We', 'Wednesday' ), array( 'Th', 'Thursday' ), array( 'Fr', 'Friday' ), array( 'Sa', 'Saturday' ), array( 'Su', 'Sunday' ) ),
-		'estados' => array( 'si' => 'Morning delivery', 'zona' => 'Some areas, with a surcharge', 'no' => 'No delivery' ),
+		'estados' => array( 'si' => 'Delivery before 14:00', 'zona' => 'Some areas, with a surcharge', 'no' => 'No delivery' ),
 		'nota'    => 'At checkout you only see the days with delivery to your area.',
 	),
 );

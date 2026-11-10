@@ -37,16 +37,16 @@ return array(
 <h2>Com el demano perquè arribi a temps?</h2>
 <p>El pots demanar amb antelació i triar el dia d\'entrega en el pagament.</p>
 <ul>
-<li><strong>Comanda abans de les 12:00, de dilluns a dijous:</strong> arriba l\'endemà al matí, a tota la península.</li>
-<li><strong>Comanda abans de les 12:00 de divendres:</strong> arriba dissabte segons la zona, amb un suplement d\'11,74 € (IVA inclòs). Si no, dimarts.</li>
+<li><strong>Comanda abans de les 12:00, de dilluns a dijous:</strong> arriba l\'endemà abans de les 14:00, a tota la península.</li>
+<li><strong>Comanda abans de les 12:00 de divendres:</strong> arriba dissabte abans de les 12:00 segons la zona, amb un suplement de {sabado_envio} (IVA inclòs). Si no, dimarts.</li>
 <li><strong>Diumenge i dilluns no hi ha repartiment.</strong> Els dies festius no surten comandes: en el pagament només apareixen els dies que es poden triar.</li>
-<li><strong>El repartiment és al matí</strong>, però l\'hora exacta la marca la ruta de la missatgeria. Si la sessió és a primera hora, demana\'l per al dia abans. El gel sec se sublima amb les hores: no obris la caixa fins que vagis a preparar la nevera i, si no saps quants quilos et calen, escriu-nos.</li>
+<li><strong>MRW entrega abans de les 14:00</strong> (el dissabte, abans de les 12:00), però l\'hora exacta la marca la seva ruta. Si la sessió és a primera hora, demana\'l per al dia abans. El gel sec se sublima amb les hores: no obris la caixa fins que vagis a preparar la nevera i, si no saps quants quilos et calen, escriu-nos.</li>
 </ul>
 
 <h3>I si la sessió és un dilluns?</h3>
 <p>Dilluns no hi ha repartiment. Tens dues opcions:</p>
 <ul>
-<li><strong>Entrega el dissabte.</strong> Demana\'l abans de les 12:00 de divendres, si la teva zona té repartiment el dissabte (suplement d\'11,74 €, IVA inclòs). El gel passarà el cap de setmana a la caixa: escriu-nos abans de demanar-lo i calculem els quilos.</li>
+<li><strong>Entrega el dissabte.</strong> Demana\'l abans de les 12:00 de divendres, si la teva zona té repartiment el dissabte (arriba abans de les 12:00, amb un suplement de {sabado_envio}, IVA inclòs). El gel passarà el cap de setmana a la caixa: escriu-nos abans de demanar-lo i calculem els quilos.</li>
 <li><strong>Recollida a Mataró el mateix dilluns.</strong> A la nostra nau (Camí Ca La Madrona 19 D), de dilluns a dissabte, també festius. Tries el dilluns en pagar i et confirmem l\'hora per telèfon o WhatsApp; si la sessió és d\'hora, digues-nos-ho en fer la comanda. No hi ha despeses d\'enviament i el preu és rodó, amb IVA inclòs: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}. Es paga en efectiu i amb l\'import exacte: no tenim canvi.</li>
 </ul>
 

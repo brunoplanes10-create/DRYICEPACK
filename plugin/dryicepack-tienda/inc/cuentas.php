@@ -147,9 +147,9 @@ add_action( 'dip_tarea_diaria', static function () {
 		$ultimo = $pedidos[0];
 		$idioma = (string) $ultimo->get_meta( '_dip_idioma' ) ?: 'es';
 		$tx     = array(
-			'es' => array( 'Asunto' => '¿Repetimos tu pedido de hielo seco?', 'titulo' => '¿Repetimos el pedido?', 'cuerpo' => 'Sueles pedir cada %d días y tu último pedido fue el %s. Si lo necesitas otra vez, lo repites con un clic. Si pides antes de las 12:00, sale hoy.', 'boton' => 'Repetir pedido', 'baja' => 'No quiero más avisos' ),
-			'ca' => array( 'Asunto' => 'Repetim la comanda de gel sec?', 'titulo' => 'Repetim la comanda?', 'cuerpo' => 'Acostumes a demanar cada %d dies i la darrera comanda va ser el %s. Si el tornes a necessitar, la repeteixes amb un clic. Si la fas abans de les 12:00, surt avui.', 'boton' => 'Repetir la comanda', 'baja' => 'No vull més avisos' ),
-			'en' => array( 'Asunto' => 'Shall we repeat your dry ice order?', 'titulo' => 'Reorder?', 'cuerpo' => 'You usually order every %d days and your last order was on %s. If you need it again, reorder in one click. Orders placed before 12:00 ship today.', 'boton' => 'Reorder', 'baja' => 'Stop these reminders' ),
+			'es' => array( 'Asunto' => '¿Repetimos tu pedido de hielo seco?', 'titulo' => '¿Repetimos el pedido?', 'cuerpo' => 'Sueles pedir cada %d días y tu último pedido fue el %s. Si lo necesitas otra vez, lo repites con un clic. Si pides un día laborable antes de las 12:00, sale ese mismo día.', 'boton' => 'Repetir pedido', 'baja' => 'No quiero más avisos' ),
+			'ca' => array( 'Asunto' => 'Repetim la comanda de gel sec?', 'titulo' => 'Repetim la comanda?', 'cuerpo' => 'Acostumes a demanar cada %d dies i la darrera comanda va ser el %s. Si el tornes a necessitar, la repeteixes amb un clic. Si la fas un dia laborable abans de les 12:00, surt aquell mateix dia.', 'boton' => 'Repetir la comanda', 'baja' => 'No vull més avisos' ),
+			'en' => array( 'Asunto' => 'Shall we repeat your dry ice order?', 'titulo' => 'Reorder?', 'cuerpo' => 'You usually order every %d days and your last order was on %s. If you need it again, reorder in one click. Orders placed before 12:00 on a working day ship the same day.', 'boton' => 'Reorder', 'baja' => 'Stop these reminders' ),
 		)[ $idioma ] ?? array();
 		$baja   = add_query_arg( array( 'dip_baja' => $u->ID, 't' => wp_hash( 'baja|' . $u->ID ) ), home_url( '/' ) );
 		$cuerpo = '<p>' . esc_html( sprintf( $tx['cuerpo'], $ritmo, wp_date( 'd/m/Y', $fechas[0] ) ) ) . '</p>'

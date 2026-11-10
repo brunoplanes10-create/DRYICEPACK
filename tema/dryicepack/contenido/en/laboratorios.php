@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Dry ice for laboratories',
 	'seo'  => array(
 		'titulo'      => 'Dry ice for sample shipping and laboratories | DryIcePack',
-		'descripcion' => 'Dry ice for shipping samples at −78.5 °C, as 3 mm pellets or 16 mm nuggets. Order before 12:00 (Spanish time) and it’s with you tomorrow morning.',
+		'descripcion' => 'Dry ice for shipping lab samples, as 3 mm pellets or 16 mm nuggets. Order before 12:00 (Spanish time) and it arrives the next day before 14:00.',
 	),
 	'migas' => array( 'Home', 'Uses', 'Laboratories' ),
 	'hero'  => array(
-		'titulo' => 'Dry ice for sample shipping,|<em>with you tomorrow morning.</em>',
-		'texto'  => 'Samples, reagents and kits at −78.5 °C, no moisture in the box. Order by 12:00 (Spanish time) for tomorrow (Tue–Sat), or choose another day.',
+		'titulo' => 'Dry ice for sample shipping,|<em>at your lab before 14:00.</em>',
+		'texto'  => 'Samples, reagents and kits at −78.5 °C, no moisture in the box. Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or choose another day.',
 		'boton'  => 'Open my account',
 		'alt'    => 'Sample tubes surrounded by dry ice in an insulated box',
 	),
@@ -51,14 +51,14 @@ return array(
 	'faq' => array(
 		'titulo' => 'Laboratory questions',
 		'lista'  => array(
-			array( 'What time does it arrive?', 'The next morning, if you order before 12:00 (Spanish time). We deliver Tuesday to Friday, and on Saturday depending on the area, with a surcharge. The exact time depends on the courier’s route.' ),
+			array( 'What time does it arrive?', 'Before 14:00 the next day, if you order before 12:00 (Spanish time). We deliver Tuesday to Friday and, depending on the area, on Saturday before 12:00, with a surcharge. Within that window, the exact time depends on MRW’s route.' ),
 			array( 'Can I keep it in the ultra-low freezer?', 'No. In a closed freezer the gas builds up pressure and can damage the equipment. Keep it in its EPS box, somewhere ventilated.' ),
 			array( 'How much dry ice do I put in each box?', 'It depends on the journey time, the size of the box and the outside temperature. Tell us the route and the type of box and we’ll advise you.' ),
 		),
 	),
 	// Shared closing section (redesign 13/10/2026): the home page headline and the real delivery date
 	'final' => array(
-		'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>',
-		'corte'  => array( 'Order before 12:00 and you’ll have it on the morning of %s', '%s left to order today', 'Order now and you’ll have it on the morning of %s' ),
+		'titulo' => 'Need it soon?|<em>Order before 12:00.</em>',
+		'corte'  => array( 'Order before 12:00 and it arrives on %s before 14:00', '%s left to order today', 'Order now and it arrives on %s before 14:00' ),
 	),
 );

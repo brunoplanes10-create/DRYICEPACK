@@ -2,21 +2,54 @@
 /**
  * Aviso de cookies propio (sin plugins): 2 KB de JS, sin peticiones externas.
  * - Google Consent Mode v2: todo denegado por defecto; se actualiza con la decisión.
- * - Google Analytics 4 (ID en los ajustes) solo se carga después de aceptar la analítica.
- * - "Rechazar" está al mismo nivel que "Aceptar" (guía de cookies de la AEPD, 2023).
+ * - Google Analytics 4 (ID en los ajustes; en dryicepack.es, G-G1272ZSS41) solo se carga después de aceptar la analítica.
+ *   Es la única analítica de la web: la etiqueta de Site Kit se bloquea (abajo), porque Site Kit carga Google sin
+ *   esperar a «Aceptar».
+ * - "Rechazar" está al mismo nivel que "Aceptar" (guía de cookies de la AEPD, 2023): mismo estilo y tamaño, y al abrir
+ *   el foco va al aviso, no a "Aceptar".
+ * - El aviso dice quién es el editor: INDUNOVA IMS S.L. (DryIcePack).
  * - Cualquier enlace con data-dip-cookies vuelve a abrir el panel (el pie de página lleva uno).
  * - Eventos: clic en teléfono, WhatsApp y email, formulario enviado y compra.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 function dip_hay_analitica() {
-	return (bool) dip_ajuste( 'ga4' ) || defined( 'GOOGLESITEKIT_VERSION' );
+	return (bool) dip_ajuste( 'ga4' );
 }
+
+/* ---------- Site Kit: su etiqueta de Google Analytics, bloqueada ----------
+ * Site Kit (09/11/2026, producción) pone su etiqueta GA4 (G-ZQ85N7TXSW / GT-WPDWRDNH) sin esperar al consentimiento y no
+ * deja cambiar sus ajustes. Se bloquea con sus propios filtros, sin tocar Site Kit (google/site-kit-wp,
+ * Core/Modules/Tags/Module_Web_Tag::is_tag_blocked() → "googlesitekit_{slug}_tag_blocked" y
+ * Module_AMP_Tag::is_tag_blocked() → "googlesitekit_{slug}_tag_amp_blocked"; Analytics_4::register_tag() no registra la
+ * etiqueta si devuelven true). Slug actual 'analytics-4' y, por si acaso, el antiguo 'analytics'. Sin Site Kit, estos
+ * filtros no los llama nadie y no pasa nada. Para seguir viendo datos en Site Kit, el ajuste GA4 del plugin tiene que
+ * llevar el mismo ID de medición que usa Site Kit (el escritorio lo avisa si no coincide). */
+foreach ( array( 'googlesitekit_analytics-4_tag_blocked', 'googlesitekit_analytics-4_tag_amp_blocked', 'googlesitekit_analytics_tag_blocked', 'googlesitekit_analytics_tag_amp_blocked' ) as $dip_filtro_sitekit ) {
+	add_filter( $dip_filtro_sitekit, '__return_true', 99 );
+}
+unset( $dip_filtro_sitekit );
+
+/** ID de medición (G-…) que tiene configurado Site Kit, o '' si no está activo o no tiene. Solo lee su ajuste. */
+function dip_sitekit_id_medicion() {
+	if ( ! defined( 'GOOGLESITEKIT_VERSION' ) ) return '';
+	$ga = get_option( 'googlesitekit_analytics-4_settings', array() );
+	return is_array( $ga ) && is_string( $ga['measurementID'] ?? null ) ? strtoupper( trim( $ga['measurementID'] ) ) : '';
+}
+
+/* Aviso en el escritorio si Site Kit mide con un ID distinto del de nuestra GA4: sus informes se quedarían sin datos nuevos. */
+add_action( 'admin_notices', static function () {
+	if ( ! current_user_can( 'manage_options' ) ) return;
+	$sitekit = dip_sitekit_id_medicion();
+	$nuestro = strtoupper( (string) dip_ajuste( 'ga4' ) );
+	if ( '' === $sitekit || $sitekit === $nuestro ) return;
+	echo '<div class="notice notice-warning"><p>' . esc_html( sprintf( 'Dryicepack · cookies: la etiqueta de Google Analytics de Site Kit está bloqueada por el plugin (se cargaba sin consentimiento). Site Kit usa el ID %1$s y la web carga %2$s tras «Aceptar». Para seguir viendo los datos en Site Kit, pon %1$s en Dryicepack → Ajustes → Google Analytics 4.', $sitekit, '' !== $nuestro ? $nuestro : 'ninguno' ) ) . '</p></div>';
+} );
 
 function dip_textos_cookies( $idioma ) {
 	$tx = array(
 		'es' => array(
-			'texto'     => 'Usamos cookies técnicas para que la tienda funcione y, si lo aceptas, cookies de Google Analytics para saber qué páginas se usan y mejorarlas.',
+			'texto'     => 'INDUNOVA IMS S.L. (DryIcePack) usa cookies técnicas para que la tienda funcione y, si lo aceptas, cookies de Google Analytics para saber qué páginas se usan y mejorarlas.',
 			'aceptar'   => 'Aceptar',
 			'rechazar'  => 'Rechazar',
 			'config'    => 'Elegir',
@@ -28,7 +61,7 @@ function dip_textos_cookies( $idioma ) {
 			'url'       => '/politica-de-cookies/',
 		),
 		'ca' => array(
-			'texto'     => 'Fem servir galetes tècniques perquè la botiga funcioni i, si ho acceptes, galetes de Google Analytics per saber quines pàgines es fan servir i millorar-les.',
+			'texto'     => 'INDUNOVA IMS S.L. (DryIcePack) fa servir galetes tècniques perquè la botiga funcioni i, si ho acceptes, galetes de Google Analytics per saber quines pàgines es fan servir i millorar-les.',
 			'aceptar'   => 'Acceptar',
 			'rechazar'  => 'Rebutjar',
 			'config'    => 'Triar',
@@ -40,7 +73,7 @@ function dip_textos_cookies( $idioma ) {
 			'url'       => '/ca/politica-de-galetes/',
 		),
 		'en' => array(
-			'texto'     => 'We use technical cookies so the shop works and, if you accept, Google Analytics cookies to see which pages are used and improve them.',
+			'texto'     => 'INDUNOVA IMS S.L. (DryIcePack) uses technical cookies so the shop works and, if you accept, Google Analytics cookies to see which pages are used and improve them.',
 			'aceptar'   => 'Accept',
 			'rechazar'  => 'Reject',
 			'config'    => 'Choose',
@@ -70,9 +103,9 @@ add_action( 'wp_footer', static function () {
 	$tx  = dip_textos_cookies( dip_idioma() );
 	$ga4 = (string) dip_ajuste( 'ga4' );
 	?>
-	<div class="dip-cookies" id="dip-cookies" role="dialog" aria-modal="false" aria-labelledby="dip-cookies-t" hidden>
+	<div class="dip-cookies" id="dip-cookies" role="dialog" aria-modal="false" aria-labelledby="dip-cookies-t" aria-describedby="dip-cookies-d" tabindex="-1" hidden>
 		<p class="dip-cookies__t" id="dip-cookies-t"><?php echo esc_html( $tx['titulo'] ); ?></p>
-		<p class="dip-cookies__texto"><?php echo esc_html( $tx['texto'] ); ?> <a href="<?php echo esc_url( home_url( $tx['url'] ) ); ?>"><?php echo esc_html( $tx['mas'] ); ?></a></p>
+		<p class="dip-cookies__texto" id="dip-cookies-d"><?php echo esc_html( $tx['texto'] ); ?> <a href="<?php echo esc_url( home_url( $tx['url'] ) ); ?>"><?php echo esc_html( $tx['mas'] ); ?></a></p>
 		<div class="dip-cookies__opciones" hidden>
 			<label><input type="checkbox" checked disabled> <?php echo esc_html( $tx['tecnicas'] ); ?></label>
 			<label><input type="checkbox" data-dip-a> <?php echo esc_html( $tx['analitica'] ); ?></label>
@@ -87,6 +120,7 @@ add_action( 'wp_footer', static function () {
 	<style>
 		.dip-cookies{position:fixed;z-index:9990;left:16px;bottom:16px;max-width:400px;padding:20px 20px 16px;background:var(--c-noche,#0B141C);color:var(--c-hielo-claro,#E6EEF5);border:1px solid rgba(184,208,232,.22);border-radius:14px;box-shadow:0 24px 60px -20px rgba(0,0,0,.55);font:400 14px/1.5 var(--f-texto,system-ui,sans-serif)}
 		.dip-cookies[hidden]{display:none}
+		.dip-cookies:focus{outline:none}
 		.dip-cookies__t{margin:0 0 6px;font:400 22px/1.1 var(--f-display,Georgia,serif);color:#fff}
 		.dip-cookies__texto{margin:0 0 14px}
 		.dip-cookies a{color:#B8D0E8;text-underline-offset:3px}
@@ -106,7 +140,7 @@ add_action( 'wp_footer', static function () {
 		function leer(){var m=document.cookie.match(/(?:^|; )dip_consent=([^;]+)/);if(!m)return null;try{return JSON.parse(decodeURIComponent(m[1]));}catch(e){return null;}}
 		function cargarGA(){if(!GA||window.dipGA)return;window.dipGA=1;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(GA);document.head.appendChild(s);gtag('js',new Date());gtag('config',GA,{anonymize_ip:true});}
 		function guardar(a){var v={a:a?1:0,v:1,t:Date.now()};document.cookie='dip_consent='+encodeURIComponent(JSON.stringify(v))+';path=/;max-age='+(60*60*24*180)+';samesite=lax'+(location.protocol==='https:'?';secure':'');gtag('consent','update',{analytics_storage:a?'granted':'denied'});if(a)cargarGA();caja.hidden=true;}
-		function abrir(){caja.hidden=false;var b=caja.querySelector('[data-dip-c="aceptar"]');if(b)b.focus({preventScroll:true});}
+		function abrir(){caja.hidden=false;caja.focus({preventScroll:true});} /* el foco va al aviso, no a «Aceptar»: ninguna opción sale destacada */
 		var c=leer();
 		if(c){if(c.a)cargarGA();}else{setTimeout(abrir,600);}
 		caja.addEventListener('click',function(e){var b=e.target.closest('[data-dip-c]');if(!b)return;var accion=b.getAttribute('data-dip-c');

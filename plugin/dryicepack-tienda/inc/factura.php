@@ -47,13 +47,35 @@ function dip_enviar_email_factura( $pedido_id ) {
 	$t      = dip_textos_tienda( $idioma );
 	$numero = $pedido->get_order_number();
 	$url    = dip_url_factura( $pedido );
-	$cuerpo = '<p>' . esc_html( sprintf( $t['email_factura_cuerpo'], $numero ) ) . '</p>'
-		. '<p style="margin:24px 0"><a href="' . esc_url( $url ) . '" style="display:inline-block;padding:14px 22px;background:#1F3C55;color:#ffffff;text-decoration:none;border-radius:999px;font-weight:600">' . esc_html( $t['email_factura_boton'] ) . '</a></p>'
-		. '<p style="font-size:13px;color:#56677A">' . esc_html( $url ) . '</p>';
-
 	$mailer = WC()->mailer();
-	$html   = $mailer->wrap_message( $t['email_factura_titulo'], $cuerpo );
-	$mailer->send( $email, sprintf( $t['email_factura_asunto'], $numero ), $html );
+	if ( function_exists( 'dip_email_documento' ) ) {
+		// Envoltura común de los emails (inc/emails.php), con versión en texto
+		$doc = array(
+			'idioma'     => in_array( $idioma, array( 'es', 'ca', 'en' ), true ) ? $idioma : 'es',
+			'previo'     => sprintf( $t['email_factura_cuerpo'], $numero ),
+			'antetitulo' => sprintf( dip_avisos_textos( $idioma )['pedido'], $numero ),
+			'titulo'     => $t['email_factura_titulo'],
+			'bloques'    => array(
+				array( 'p', sprintf( $t['email_factura_cuerpo'], $numero ) ),
+				array( 'boton', $t['email_factura_boton'], $url ),
+				array( 'p', $url, 'pequeno' ),
+			),
+		);
+		$html  = dip_email_documento( $doc );
+		$texto = dip_email_texto( array_merge( $doc, array( 'bloques' => array_slice( $doc['bloques'], 0, 2 ) ) ) );
+		$alt   = static function ( $phpmailer ) use ( $texto ) {
+			$phpmailer->AltBody = $texto; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		};
+		add_action( 'phpmailer_init', $alt, 30 );
+		$mailer->send( $email, sprintf( $t['email_factura_asunto'], $numero ), $html );
+		remove_action( 'phpmailer_init', $alt, 30 );
+	} else {
+		$cuerpo = '<p>' . esc_html( sprintf( $t['email_factura_cuerpo'], $numero ) ) . '</p>'
+			. '<p style="margin:24px 0"><a href="' . esc_url( $url ) . '" style="display:inline-block;padding:14px 22px;background:#1F3C55;color:#ffffff;text-decoration:none;border-radius:999px;font-weight:600">' . esc_html( $t['email_factura_boton'] ) . '</a></p>'
+			. '<p style="font-size:13px;color:#56677A">' . esc_html( $url ) . '</p>';
+		$html = $mailer->wrap_message( $t['email_factura_titulo'], $cuerpo );
+		$mailer->send( $email, sprintf( $t['email_factura_asunto'], $numero ), $html );
+	}
 	$pedido->update_meta_data( '_dip_email_factura', current_time( 'mysql' ) );
 	$pedido->save_meta_data();
 }
@@ -78,6 +100,17 @@ add_action( 'woocommerce_thankyou', static function ( $pedido_id ) {
 /* ---------- Formulario ---------- */
 add_shortcode( 'dip_factura', 'dip_shortcode_factura' );
 
+/*
+ * Si la página /factura/ existe sin el shortcode (la crea vacía el tema, dipt_crear_paginas(), cuando se activa antes
+ * que el plugin, y entonces el plugin ya no la crea), el formulario sale igualmente debajo del contenido.
+ */
+add_filter( 'the_content', static function ( $contenido ) {
+	if ( ! is_page( 'factura' ) || ! in_the_loop() || ! is_main_query() ) return $contenido;
+	$post = get_post();
+	if ( $post && has_shortcode( (string) $post->post_content, 'dip_factura' ) ) return $contenido;
+	return $contenido . dip_shortcode_factura();
+}, 20 );
+
 function dip_textos_factura( $idioma ) {
 	$tx = array(
 		'es' => array(
@@ -95,7 +128,9 @@ function dip_textos_factura( $idioma ) {
 			'ya'         => 'Ya tenemos estos datos. Si hay algo que corregir, cámbialo y vuelve a enviarlo.',
 			'falta'      => 'Rellena todos los campos.',
 			'nif_mal'    => 'Revisa el NIF/CIF: no parece correcto.',
-			'privacidad' => 'Usamos estos datos solo para emitir tu factura. Responsable: INDUNOVA IMS S.L. Más información en la política de privacidad.',
+			'privacidad' => 'He leído la <a href="%s">política de privacidad</a>.',
+			'capa'       => 'Responsable: INDUNOVA IMS S.L. Usamos tus datos solo para emitir tu factura. Puedes ejercer tus derechos en info@dryicepack.es.',
+			'falta_priv' => 'Marca la casilla de la política de privacidad.',
 		),
 		'ca' => array(
 			'no_valido'  => "Aquest enllaç no és vàlid o ha caducat. Escriu-nos a info@dryicepack.es amb el número de comanda i t'ajudem.",
@@ -112,7 +147,9 @@ function dip_textos_factura( $idioma ) {
 			'ya'         => 'Ja tenim aquestes dades. Si cal corregir alguna cosa, canvia-la i torna-la a enviar.',
 			'falta'      => 'Omple tots els camps.',
 			'nif_mal'    => 'Revisa el NIF/CIF: no sembla correcte.',
-			'privacidad' => 'Fem servir aquestes dades només per emetre la factura. Responsable: INDUNOVA IMS S.L. Més informació a la política de privacitat.',
+			'privacidad' => 'He llegit la <a href="%s">política de privacitat</a>.',
+			'capa'       => 'Responsable: INDUNOVA IMS S.L. Fem servir les teves dades només per emetre la teva factura. Pots exercir els teus drets a info@dryicepack.es.',
+			'falta_priv' => 'Marca la casella de la política de privacitat.',
 		),
 		'en' => array(
 			'no_valido'  => 'This link is not valid or has expired. Write to info@dryicepack.es with your order number and we will help.',
@@ -129,7 +166,9 @@ function dip_textos_factura( $idioma ) {
 			'ya'         => 'We already have these details. If anything needs correcting, change it and send again.',
 			'falta'      => 'Please fill in every field.',
 			'nif_mal'    => 'Please check the tax ID: it does not look right.',
-			'privacidad' => 'We use these details only to issue your invoice. Controller: INDUNOVA IMS S.L. More in the privacy policy.',
+			'privacidad' => 'I have read the <a href="%s">privacy policy</a>.',
+			'capa'       => 'Controller: INDUNOVA IMS S.L. We only use your details to issue your invoice. You can exercise your rights at info@dryicepack.es.',
+			'falta_priv' => 'Please tick the privacy policy box.',
 		),
 	);
 	return $tx[ $idioma ] ?? $tx['es'];
@@ -165,6 +204,7 @@ add_action( 'template_redirect', static function () {
 	$error = '';
 	if ( in_array( '', $datos, true ) || ! is_email( $datos['email'] ) ) $error = $tx['falta'];
 	elseif ( ! dip_nif_valido( $datos['nif'] ) ) $error = $tx['nif_mal'];
+	elseif ( empty( $_POST['privacidad'] ) ) $error = $tx['falta_priv']; // primera capa de privacidad (RGPD art. 13)
 
 	if ( $error ) {
 		set_transient( 'dip_factura_error_' . $pedido->get_id(), array( 'error' => $error, 'datos' => $datos ), 10 * MINUTE_IN_SECONDS );
@@ -255,13 +295,23 @@ function dip_shortcode_factura() {
 				);
 			}
 			?>
-			<p class="dip-factura__privacidad"><?php echo esc_html( $tx['privacidad'] ); ?></p>
+			<?php $dip_url_priv = function_exists( 'dipt_url' ) ? dipt_url( 'privacidad', $idioma ) : get_privacy_policy_url(); ?>
+			<p class="dip-factura__privacidad"><label class="casilla"><input type="checkbox" name="privacidad" value="1" required aria-describedby="dip-f-capa"> <span><?php echo wp_kses( sprintf( $tx['privacidad'], esc_url( (string) $dip_url_priv ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label></p>
+			<p class="dip-factura__capa form-capa" id="dip-f-capa"><?php echo esc_html( $tx['capa'] ); // primera capa de privacidad (RGPD art. 13) ?></p>
 			<button type="submit" class="dip-boton"><?php echo esc_html( $tx['enviar'] ); ?></button>
 		</form>
 	</div>
 	<?php
 	return ob_get_clean();
 }
+
+/*
+ * Google Analytics (solo si el visitante lo aceptó, inc/cookies.php): la dirección sin ?pedido=…&clave=… (la clave del
+ * pedido no sale de la web). Lo mismo que «Mi pedido» (inc/mi-pedido.php).
+ */
+add_action( 'wp_head', static function () {
+	if ( is_page( 'factura' ) ) echo "<script nowprocket data-cfasync=\"false\">if(window.gtag)gtag('set',{page_location:location.origin+location.pathname,page_referrer:''});</script>\n";
+}, 1 );
 
 /* La página de factura no se indexa ni se cachea (lleva datos del pedido). */
 add_filter( 'wp_robots', static function ( $robots ) {

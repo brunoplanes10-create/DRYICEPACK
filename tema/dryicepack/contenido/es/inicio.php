@@ -3,18 +3,18 @@
 return array(
 	'menu' => 'Inicio',
 	'seo'  => array(
-		'titulo'      => 'Hielo seco: compra online y recíbelo mañana | DryIcePack',
-		'descripcion' => 'Hielo seco en pellets de 3 mm o nuggets de 16 mm, desde {pk} kg. Pide antes de las 12:00 y mañana lo tienes, o recógelo en Mataró: {pk} kg por {recogida:pk}.',
+		'titulo'      => 'Hielo seco a domicilio antes de las 14:00 | DryIcePack',
+		'descripcion' => 'Hielo seco en pellets de 3 mm o nuggets de 16 mm, desde {pk} kg. Pide antes de las 12:00 y llega al día siguiente antes de las 14:00, o recógelo en Mataró.',
 	),
 	'hero' => array(
-		'titulo'    => 'Hielo seco en tu puerta,|<em>mañana por la mañana.</em>',
-		'texto'     => 'Pide antes de las 12:00 y mañana por la mañana lo tienes (de martes a sábado), o elige el día que quieras. En caja aislante, desde {pk} kg y sin contratos. ¿Cerca de Mataró? Recógelo en la nave: {pk} kg por {recogida:pk}, IVA incluido.',
+		'titulo'    => 'Hielo seco en tu puerta,|<em>antes de las 14:00.</em>',
+		'texto'     => 'Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elige el día que quieras. En caja aislante, desde {pk} kg y sin contratos. ¿Cerca de Mataró? Recógelo en la nave: {pk} kg por {recogida:pk}, IVA incluido.',
 		'boton'     => 'Hacer mi pedido',
 		'o_llama'   => 'o llama al',
 		'alt'       => 'Caja de hielo seco en nuggets de 16 mm, abierta y soltando vapor frío',
-		'corte'     => array( 'antes' => 'Pide antes de las 12:00 y lo tienes el %s por la mañana', 'quedan' => 'Quedan %s', 'despues' => 'Si pides ahora, lo tienes el %s por la mañana' ),
+		'corte'     => array( 'antes' => 'Pide antes de las 12:00 y llega el %s antes de las 14:00', 'quedan' => 'Quedan %s', 'despues' => 'Si pides ahora, llega el %s antes de las 14:00' ),
 	),
-	'cinta' => array( '−78,5 °C', 'Pellets de 3 mm', 'Nuggets de 16 mm', 'Caja EPS de 40 mm', 'Corte a las 12:00', 'Entrega por la mañana', 'Recogida en Mataró', 'Factura mensual para empresas', 'De {pk} a 250 kg por pedido' ),
+	'cinta' => array( '−78,5 °C', 'Pellets de 3 mm', 'Nuggets de 16 mm', 'Caja EPS de 40 mm', 'Corte a las 12:00', 'Entrega antes de las 14:00', 'Recogida en Mataró', 'Factura mensual para empresas', 'De {pk} a 250 kg por pedido' ),
 	'elegir' => array(
 		'titulo'   => 'Sabes lo que pagas|<em>antes de pagar.</em>',
 		'formatos' => array(
@@ -31,11 +31,11 @@ return array(
 		'mas'       => '¿Más de 20 kg? Suma cajas, hasta 250 kg por pedido. Si son más de 150 kg y estás fuera de la provincia de Barcelona, escríbenos.',
 	),
 	'llega' => array(
-		'titulo' => 'Pides antes de las 12:00.|<em>Mañana por la mañana lo tienes.</em>',
+		'titulo' => 'Pides antes de las 12:00.|<em>Al día siguiente, antes de las 14:00.</em>',
 		'pasos'  => array(
 			array( '12:00', 'Haces tu pedido', 'Antes de las 12:00, de lunes a viernes, salvo festivos. Sale de Mataró ese mismo día.' ),
-			array( 'Hoy', 'Lo preparamos', 'En caja EPS de 40 mm, cerrada pero no hermética, y se va con la mensajería.' ),
-			array( 'Mañana', 'Lo tienes por la mañana', 'De martes a viernes. El sábado, según zona y con suplemento de 11,74 €.' ),
+			array( 'Hoy', 'Lo preparamos', 'En caja EPS de 40 mm, cerrada pero no hermética, y se va con MRW.' ),
+			array( '14:00', 'Llega al día siguiente', 'Antes de las 14:00, de martes a viernes. El sábado, según zona: antes de las 12:00 y con suplemento de {sabado_envio}.' ),
 		),
 		'nota'   => 'Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla. Sin entregas en domingo ni lunes.',
 		'enlace' => 'Envíos y plazos',
@@ -99,7 +99,7 @@ return array(
 		'titulo' => 'Lo que más|nos <em>preguntan.</em>',
 		'lista'  => array(
 			array( '¿Cuánto hielo seco necesito?', 'Depende del uso y de cuántas horas lo necesites. Para niebla, como referencia: en casa {pk} kg, en una fiesta grande 10 kg y en un bar o un evento de 15 a 20 kg. Para transporte o muestras, dinos cuántas horas y qué volumen, y te lo calculamos.' ),
-			array( '¿Cuándo me llega?', 'Si pides antes de las 12:00 de lunes a viernes, sale ese mismo día y lo tienes al día siguiente por la mañana. No repartimos en domingo ni lunes. El sábado, según zona y con un suplemento de 11,74 € (IVA incluido).' ),
+			array( '¿Cuándo me llega?', 'Si pides antes de las 12:00 de lunes a jueves, sale ese mismo día y llega al día siguiente antes de las 14:00. Si pides el viernes, llega el sábado antes de las 12:00 (según zona y con un suplemento de {sabado_envio}, IVA incluido) o el martes. No repartimos en domingo ni lunes.' ),
 			array( '¿Puedo pedir para otro día?', 'Sí: al pagar eliges cualquier día de los próximos 90 con reparto en tu zona, de martes a sábado (el sábado, según zona y con suplemento). Pídelo para el día que lo vas a usar: el hielo seco se va sublimando con las horas.' ),
 			array( '¿Puedo recogerlo en persona?', 'Sí, en nuestra nave de Mataró (Camí Ca La Madrona 19 D), de lunes a sábado, también festivos. Pagas un precio redondo con IVA incluido, el mismo en la web y en la nave: {pk} kg por {recogida:pk}, 10 kg por {recogida:10}, 15 kg por {recogida:15} y 20 kg por {recogida:20}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Te confirmamos la hora antes. Se paga en efectivo y con el importe exacto: no tenemos cambio.' ),
 			array( '¿Qué diferencia hay entre 3 mm y 16 mm?', 'Los pellets de 3 mm tienen más superficie: enfrían más rápido y hacen más niebla. Los nuggets de 16 mm tienen más masa por pieza y duran más, por eso se usan en transporte y muestras.' ),
@@ -108,7 +108,7 @@ return array(
 		),
 	),
 	'final' => array(
-		'titulo' => '¿Lo necesitas mañana?|<em>Pídelo antes de las 12:00.</em>',
+		'titulo' => '¿Lo necesitas pronto?|<em>Pídelo antes de las 12:00.</em>',
 		'boton'  => 'Hacer mi pedido',
 		'wa'     => 'Escríbenos por WhatsApp',
 	),

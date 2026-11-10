@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Gel sec per a festes i esdeveniments',
 	'seo'  => array(
 		'titulo'      => 'Gel sec per a festes i esdeveniments: boira baixa',
-		'descripcion' => 'Gel sec per a festes, casaments i Halloween: boira arran de terra des de {pk} kg. Demana abans de les 12:00 i demà el tens a casa, a punt per fer servir.',
+		'descripcion' => 'Gel sec per a festes, casaments i Halloween: boira arran de terra des de {pk} kg. Demana abans de les 12:00 i arriba l\'endemà abans de les 14:00.',
 	),
 	'migas' => array( 'Inici', 'Usos', 'Festes i esdeveniments' ),
 	'hero'  => array(
-		'titulo' => 'Gel sec per a festes:|boira arran de terra, <em>demà a la teva porta.</em>',
-		'texto'  => 'Vols aquella boira que cobreix el terra en el primer ball, a l\'escenari o a Halloween? Es fa amb aigua calenta i gel sec. Demana abans de les 12:00 i demà al matí el tens (de dimarts a dissabte), o tria el dia que vulguis. Des de {pk} kg.',
+		'titulo' => 'Gel sec per a festes:|boira arran de terra, <em>a la teva porta abans de les 14:00.</em>',
+		'texto'  => 'Vols aquella boira que cobreix el terra en el primer ball, a l\'escenari o a Halloween? Es fa amb aigua calenta i gel sec. Demana abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O tria el dia que vulguis. Des de {pk} kg.',
 		'boton'  => 'Fer la comanda',
 		'alt'    => 'Parella ballant en un casament sobre una capa de boira baixa de gel sec',
 	),
@@ -31,10 +31,11 @@ return array(
 		),
 	),
 	'halloween' => array(
-		'titulo' => 'Aquest any, Halloween cau en dissabte.',
-		'texto'  => 'Demana abans de les 12:00 del dijous 29 d\'octubre i el tens divendres 30. El vols el mateix dissabte? Demana\'l abans de les 12:00 de divendres: segons la zona i amb un suplement d\'11,74 €.',
+		// Surt de l'1/9 al 31/10 de cada any (plantillas/eventos.php): sense dates d'un any concret (el 2026 deia «DJ 29/10 · 12:00»)
+		'titulo' => 'Per Halloween, rep-lo la vigília.',
+		'texto'  => 'Demana\'l abans de les 12:00 del dia abans de l\'entrega, o reserva\'l abans i tria el dia en pagar: arriba abans de les 14:00. El vols el mateix dissabte? Segons la zona, arriba abans de les 12:00 i amb un suplement de {sabado_envio}.',
 		'enlace' => 'Gel sec per a Halloween',
-		'fecha'  => 'DJ 29/10 · 12:00',
+		'fecha'  => '', // rètol en mono amb l'última comanda de l'any (buit: no es mostra)
 	),
 	'seguridad' => array(
 		'titulo' => 'És segur|<em>amb convidats?</em>',
@@ -43,7 +44,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntes de festes i esdeveniments',
 		'lista'  => array(
-			array( 'Quan l\'he de demanar per a un casament en dissabte?', 'Demana\'l quan vulguis i tria que arribi divendres (l\'últim moment per fer-ho: dijous a les 12:00). Per rebre\'l el mateix dissabte, tria dissabte: depèn de la zona i porta un suplement d\'11,74 € (IVA inclòs). Com més a prop de l\'esdeveniment, millor: es va sublimant amb les hores.' ),
+			array( 'Quan l\'he de demanar per a un casament en dissabte?', 'Demana\'l quan vulguis i tria que arribi divendres (l\'últim moment per fer-ho: dijous a les 12:00). Per rebre\'l el mateix dissabte, tria dissabte: arriba abans de les 12:00, depèn de la zona i porta un suplement de {sabado_envio} (IVA inclòs). Com més a prop de l\'esdeveniment, millor: es va sublimant amb les hores.' ),
 			array( 'La boira mulla o taca?', 'No taca: és vapor d\'aigua condensat i CO₂. Amb molta boira seguida, el terra pot quedar humit: en una pista de ball, eixuga\'l entre tandes perquè ningú no rellisqui.' ),
 			array( 'Salta l\'alarma d\'incendis?', 'Els detectors de fum òptics poden reaccionar a la boira densa. Pregunta-ho al local abans de l\'esdeveniment.' ),
 		),
@@ -55,7 +56,7 @@ return array(
 		'boton'   => 'Demanar gel sec',
 		'semana'  => 'Dies d\'entrega',
 		'dias'    => array( array( 'Dl', 'Dilluns' ), array( 'Dt', 'Dimarts' ), array( 'Dc', 'Dimecres' ), array( 'Dj', 'Dijous' ), array( 'Dv', 'Divendres' ), array( 'Ds', 'Dissabte' ), array( 'Dg', 'Diumenge' ) ),
-		'estados' => array( 'si' => 'Repartiment al matí', 'zona' => 'Segons la zona, amb suplement', 'no' => 'Sense repartiment' ),
+		'estados' => array( 'si' => 'Repartiment abans de les 14:00', 'zona' => 'Segons la zona, amb suplement', 'no' => 'Sense repartiment' ),
 		'nota'    => 'En pagar només hi apareixen els dies amb repartiment a la teva zona.',
 	),
 );

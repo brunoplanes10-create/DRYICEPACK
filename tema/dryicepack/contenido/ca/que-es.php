@@ -64,5 +64,5 @@ return array(
 			array( 'Quant en necessito?', 'Depèn de l\'ús, de les hores i de l\'aïllament. Per fer boira, com a referència: a casa {pk} kg, en una festa gran 10 kg i en un bar o un esdeveniment de 15 a 20 kg. Per a transport o mostres, digues-nos quantes hores i quin volum i t\'ho calculem.' ),
 		),
 	),
-	'final' => array( 'titulo' => 'Ja saps què és. Demana\'l abans de les 12:00 i demà el tens.', 'boton' => 'Comprar gel sec' ),
+	'final' => array( 'titulo' => 'Ja saps què és. Demana\'l abans de les 12:00 i arriba l\'endemà abans de les 14:00.', 'boton' => 'Comprar gel sec' ),
 );

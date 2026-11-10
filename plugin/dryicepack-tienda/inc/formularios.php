@@ -3,6 +3,7 @@
  * Formularios propios (contacto, cuenta de empresa, presupuesto por volumen) protegidos contra spam sin captcha:
  * campo trampa, tiempo mínimo de relleno firmado, nonce, límite por IP y filtro de enlaces.
  * Cada envío se guarda en Escritorio → Dryicepack → Solicitudes y llega por email a la dirección de avisos.
+ * Las solicitudes se borran solas a los 12 meses (lo que dice la política de privacidad): ver más abajo.
  * Desde una solicitud de cuenta se crea el cliente con un clic.
  *
  * El tema pinta el HTML con dip_formulario_ocultos( $tipo ) y los nombres de campo de dip_formularios_tipos().
@@ -43,6 +44,77 @@ add_action( 'init', static function () {
 		'show_in_rest'    => false,
 	) );
 } );
+
+/* ---------- Borrado a los 12 meses (la política de privacidad dice que las solicitudes se guardan 1 año) ----------
+ * Tarea diaria de las 9:00 (dip_tarea_diaria): borra del todo, sin pasar por la papelera, las solicitudes de más de
+ * 12 meses con sus datos. Si algo falla, no para la tarea diaria ni la web: avisa por email al correo de avisos con
+ * la alternativa manual y lo vuelve a intentar al día siguiente. Los emails que ya llegaron al buzón no se tocan. */
+if ( ! defined( 'DIP_SOLICITUDES_MESES' ) ) define( 'DIP_SOLICITUDES_MESES', 12 );
+
+/** Fecha y hora (de Madrid, como post_date) antes de la que una solicitud se borra. */
+function dip_solicitudes_limite() {
+	return wp_date( 'Y-m-d H:i:s', strtotime( '-' . (int) DIP_SOLICITUDES_MESES . ' months' ) );
+}
+
+/** Borra las solicitudes de antes del límite, por tandas. Devuelve array( 'borradas' => n, 'fallos' => array( ID… ) ). */
+function dip_borrar_solicitudes_antiguas( $maximo = 1000 ) {
+	$limite   = dip_solicitudes_limite();
+	$borradas = 0;
+	$fallos   = array();
+	$vistas   = array(); // cada solicitud se intenta una sola vez por pasada: si no se borra, no se repite en bucle
+	while ( count( $vistas ) < $maximo ) {
+		$ids = get_posts( array(
+			'post_type'        => 'dip_solicitud',
+			'post_status'      => array( 'private', 'publish', 'draft', 'pending', 'future', 'trash' ),
+			'date_query'       => array( array( 'column' => 'post_date', 'before' => $limite ) ),
+			'post__not_in'     => $vistas,
+			'fields'           => 'ids',
+			'posts_per_page'   => 100,
+			'orderby'          => 'date',
+			'order'            => 'ASC',
+			'no_found_rows'    => true,
+			'suppress_filters' => true,
+		) );
+		if ( ! $ids ) break;
+		foreach ( $ids as $id ) {
+			$id       = (int) $id;
+			$vistas[] = $id;
+			if ( wp_delete_post( $id, true ) && ! get_post( $id ) ) {
+				$borradas++;
+			} else {
+				$fallos[] = $id;
+			}
+		}
+	}
+	return array( 'borradas' => $borradas, 'fallos' => $fallos );
+}
+
+function dip_tarea_borrar_solicitudes() {
+	$error = '';
+	try {
+		$r = dip_borrar_solicitudes_antiguas();
+		if ( $r['fallos'] ) $error = sprintf( 'No se han podido borrar %d solicitudes (ID %s).', count( $r['fallos'] ), implode( ', ', array_slice( $r['fallos'], 0, 20 ) ) );
+	} catch ( \Throwable $e ) {
+		$error = get_class( $e ) . ': ' . $e->getMessage();
+	}
+	if ( '' === $error ) return;
+	error_log( 'Dryicepack · borrado de solicitudes antiguas: ' . $error ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+	try {
+		$fecha = wp_date( 'j/n/Y', strtotime( '-' . (int) DIP_SOLICITUDES_MESES . ' months' ) );
+		wp_mail(
+			(string) dip_ajuste( 'email_avisos' ),
+			'[Web] No se han podido borrar las solicitudes antiguas de los formularios',
+			"La web borra cada día las solicitudes de los formularios (contacto, cuenta de empresa y presupuesto) de más de " . (int) DIP_SOLICITUDES_MESES . " meses, como dice la política de privacidad. Hoy ha fallado:\n\n" . $error . "\n\n"
+			. "Qué hacer:\n"
+			. "1. Bórralas a mano: Escritorio → Dryicepack → Solicitudes, filtra por fecha, marca las de antes del " . $fecha . ", «Mover a la papelera» y después «Vaciar papelera».\n"
+			. "2. La web lo vuelve a intentar sola mañana a las 9:00. Este aviso se repite una vez al día mientras dure el problema.\n\n"
+			. admin_url( 'edit.php?post_type=dip_solicitud' )
+		);
+	} catch ( \Throwable $e ) {
+		// el aviso tampoco puede romper la tarea diaria
+	}
+}
+add_action( 'dip_tarea_diaria', 'dip_tarea_borrar_solicitudes' );
 
 /* ---------- Campos ocultos anti-spam que el tema mete en cada formulario ---------- */
 function dip_formulario_ocultos( $tipo ) {

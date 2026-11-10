@@ -12,7 +12,7 @@ return array(
 	'vacio'        => 'Our first guides are coming soon.',
 	'lectura'      => '%d min read',
 	'indice'       => 'In this guide',
-	'cta'          => 'Need it tomorrow? Order before 12:00.',
+	'cta'          => 'Need it soon? Order before 12:00.',
 	'seguir'       => 'Read next',
 	'enlaces'      => array(
 		array( 'seguridad', 'How to handle dry ice safely' ),

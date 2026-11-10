@@ -4,11 +4,11 @@ return array(
 	'menu' => 'Comprar hielo seco',
 	'seo'  => array(
 		'titulo'      => 'Comprar hielo seco: {pk}, 10, 15 y 20 kg | DryIcePack',
-		'descripcion' => 'Compra hielo seco desde {pk} kg, en pellets de 3 mm o nuggets de 16 mm. Ves el total con envío antes de pagar. Pide antes de las 12:00 y llega mañana.',
+		'descripcion' => 'Compra hielo seco desde {pk} kg, en 3 mm o 16 mm, con el envío ya en el total. Pide antes de las 12:00 y llega al día siguiente antes de las 14:00.',
 	),
 	'migas'   => array( 'Inicio', 'Comprar hielo seco' ),
 	'titulo'  => 'Comprar hielo seco sin sorpresas en el envío',
-	'sub'     => 'Pide antes de las 12:00 y mañana por la mañana lo tienes (de martes a sábado), o elige el día que quieras. El total ya lleva el envío.',
+	'sub'     => 'Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elige el día que quieras. El total ya lleva el envío.',
 	'galeria' => array(
 		'3mm'  => array( array( 'caja-3mm', 'Caja de hielo seco en pellets de 3 mm abierta, con vapor' ), array( 'cenital-3mm', 'Pellets de hielo seco de 3 mm vistos desde arriba' ), array( 'caja-3mm-lateral', 'Caja EPS con pellets de 3 mm y la tapa apoyada' ) ),
 		'16mm' => array( array( 'caja-16mm-niebla', 'Caja de hielo seco en nuggets de 16 mm abierta, con vapor' ), array( 'cenital-16mm', 'Nuggets de hielo seco de 16 mm vistos desde arriba' ), array( 'cenital-caja-nuggets', 'Caja EPS abierta con nuggets de 16 mm, vista cenital' ) ),
@@ -33,13 +33,13 @@ return array(
 	'cp_no_valido' => 'Código postal no válido',
 	'cp_corto'     => 'Faltan cifras: son 5',
 	// Línea de entrega con el código postal (%1$s = "08301 · Barcelona", %2$s = fecha); "medida" termina en un enlace a WhatsApp; "fuera", no (no se envía)
-	'llega_cp_ok'     => '%1$s — te llega el %2$s por la mañana',
-	'llega_cp_sabado' => 'O el %1$s, según zona: +%2$s',
+	'llega_cp_ok'     => '%1$s — llega el %2$s antes de las 14:00',
+	'llega_cp_sabado' => 'O el %1$s antes de las 12:00, según zona: +%2$s',
 	'llega_cp_fuera'  => 'solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla.',
 	'llega_cp_medida' => 'más de 150 kg fuera de la provincia de Barcelona: pídelo por',
 	'llega_cp_error'  => 'El código postal %s no existe en España. Revisa las 5 cifras.',
-	'llega'     => 'Lo tienes el %s por la mañana',
-	'llega_hoy' => 'Si pides antes de las 12:00, lo tienes el %s por la mañana',
+	'llega'     => 'Llega el %s antes de las 14:00',
+	'llega_hoy' => 'Si pides antes de las 12:00, llega el %s antes de las 14:00',
 	'fuera'     => 'Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla.',
 	'precio'    => 'Hielo seco',
 	'envio'     => 'Envío',
@@ -50,6 +50,16 @@ return array(
 	'max'       => 'Hasta 250 kg por pedido. ¿Necesitas más? Escríbenos y te damos precio y día.',
 	'medida'    => 'Más de 150 kg fuera de la provincia de Barcelona: ese envío se prepara a medida. Escríbenos por',
 	'confianza' => array( 'Tarjeta, Apple Pay o Google Pay', 'Factura para empresas', 'Sin crear cuenta' ),
+	// Información de seguridad del producto junto al botón de compra (Reglamento (UE) 2023/988, art. 19)
+	'gpsr' => array(
+		'titulo' => 'Fabricante y seguridad del producto',
+		'filas'  => array(
+			array( 'Fabricante', 'INDUNOVA IMS S.L. (marca DryIcePack) · Ronda Alfonso X El Sabio 10, 2º 1ª, 08301 Mataró · info@dryicepack.es' ),
+			array( 'Producto', 'Dióxido de carbono sólido (hielo seco), UN 1845, en pellets de 3 mm o nuggets de 16 mm, en caja EPS.' ),
+			array( 'Advertencias', 'A −78,5 °C quema la piel: guantes térmicos o pinzas. Solo en sitios ventilados: el CO₂ desplaza el oxígeno. Nunca en un recipiente cerrado. No se come ni se bebe. Fuera del alcance de niños y mascotas. En coche, en el maletero y ventilando.' ),
+		),
+		'enlace' => 'Normas de seguridad y ficha de datos',
+	),
 	'caja' => array(
 		'titulo' => 'Así llega|<em>a tu puerta.</em>',
 		'capas'  => array(
@@ -88,11 +98,11 @@ return array(
 		'titulo'   => 'Antes de pagar',
 		'empresas' => 'Cuenta de empresa con factura mensual',
 		'lista'    => array(
-			array( '¿Cuándo llega?', 'Si pides antes de las 12:00 de lunes a jueves, sale ese mismo día y lo tienes al día siguiente por la mañana. Si pides el viernes, llega el sábado (según zona, con suplemento de 11,74 €) o el martes. No repartimos en domingo ni lunes. El día lo eliges al pagar.' ),
+			array( '¿Cuándo llega?', 'Si pides antes de las 12:00 de lunes a jueves, sale ese mismo día y llega al día siguiente antes de las 14:00. Si pides el viernes, llega el sábado antes de las 12:00 (según zona, con suplemento de {sabado_envio}) o el martes. No repartimos en domingo ni lunes. El día lo eliges al pagar.' ),
 			array( '¿Puedo pedir para otro día?', 'Sí: al pagar eliges cualquier día de los próximos 90 con reparto en tu zona, de martes a sábado (el sábado, según zona y con suplemento). Pídelo para el día que lo vas a usar: el hielo seco se va sublimando con las horas.' ),
 			array( '¿Cuánto dura el hielo en la caja?', 'Depende de la temperatura y de cuántas veces se abra la caja. Pídelo para el día que lo vas a usar y no la abras hasta entonces. Si lo necesitas para varios días, escríbenos y lo calculamos.' ),
 			array( '¿Y si necesito factura?', 'Si eres particular y el pedido es de hasta 400 € (IVA incluido), te llega la factura simplificada por email desde info@dryicepack.es, sin pedirla. Si compras para una empresa o como autónomo, marca la casilla al pagar y pon la razón social y el NIF: recibes la factura completa. Si se te olvida, te enviamos un enlace para pedirla.' ),
-			array( '¿Puedo devolverlo?', 'El hielo seco se sublima desde que sale, así que no tiene derecho de desistimiento. Si llega con cualquier problema, llámanos ese mismo día.' ),
+			array( '¿Puedo devolverlo?', 'El hielo seco se sublima desde que sale, así que no tiene derecho de desistimiento. Sí tiene garantía legal: si llega mal, te lo reponemos o te devolvemos el dinero, sin coste. Avísanos el mismo día, con fotos si puedes, y lo reponemos antes.' ),
 			array( '¿Cómo lo guardo al recibirlo?', 'Con guantes térmicos, nunca con la mano. En su caja, con la tapa puesta pero sin precintar, en un sitio ventilado y fuera del alcance de niños y mascotas. Nunca en el congelador ni en un recipiente hermético: la presión puede reventarlo. No se come ni se bebe. Y si lo llevas en coche, en el maletero y ventilando.' ),
 		),
 	),

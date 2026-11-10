@@ -31,6 +31,11 @@ function dip_ajustes_por_defecto() {
 		'serie_simplificada'   => 'W', // + año: W2026-00001
 		'recogida_sabados_sin_suplemento' => '2026-10-31', // sábados de recogida sin los 10 € (Halloween 2026); el envío en sábado lo paga siempre
 		'pack_pequeno'         => 'auto', // inc/pack-pequeno.php: 3 kg mientras quede, después 5 kg (03/10/2026)
+		// inc/avisos.php: avisos al cliente sobre su pedido (09/11/2026), de serie activados
+		'aviso_camino'         => 1,
+		'aviso_hoy'            => 1,
+		'aviso_recogida'       => 1,
+		'aviso_incidencia'     => 1,
 	);
 }
 
@@ -71,6 +76,10 @@ function dip_sanear_ajustes( $entrada ) {
 		'serie_simplificada'   => substr( (string) preg_replace( '/[^A-Z0-9]/', '', strtoupper( (string) ( $entrada['serie_simplificada'] ?? '' ) ) ), 0, 6 ) ?: 'W',
 		'recogida_sabados_sin_suplemento' => dip_sanear_fechas( (string) ( $entrada['recogida_sabados_sin_suplemento'] ?? '' ), true ),
 		'pack_pequeno'         => in_array( (string) ( $entrada['pack_pequeno'] ?? '' ), array( 'auto', '3', '5' ), true ) ? (string) $entrada['pack_pequeno'] : 'auto',
+		'aviso_camino'         => empty( $entrada['aviso_camino'] ) ? 0 : 1,
+		'aviso_hoy'            => empty( $entrada['aviso_hoy'] ) ? 0 : 1,
+		'aviso_recogida'       => empty( $entrada['aviso_recogida'] ) ? 0 : 1,
+		'aviso_incidencia'     => empty( $entrada['aviso_incidencia'] ) ? 0 : 1,
 	);
 }
 
@@ -114,7 +123,8 @@ function dip_pantalla_ajustes() {
 				<tr>
 					<th scope="row"><label for="dip-ga4">Google Analytics 4</label></th>
 					<td><input id="dip-ga4" name="dip_ajustes[ga4]" type="text" class="regular-text" value="<?php echo esc_attr( $a['ga4'] ); ?>" placeholder="G-XXXXXXXXXX">
-						<p class="description">ID de medición (empieza por G-). Se carga solo cuando el visitante acepta las cookies de análisis. Si lo pones aquí, desactiva en Site Kit la opción «Colocar el código de Analytics» para no medir dos veces.</p></td>
+						<p class="description">ID de medición (empieza por G-). Se carga solo cuando el visitante acepta las cookies de análisis.</p>
+						<p class="description">La etiqueta de Google Analytics de Site Kit está bloqueada por este plugin (se cargaba sin consentimiento). Para seguir viendo los datos en Site Kit, pon aquí el mismo ID de medición que usa Site Kit (G-…)<?php echo function_exists( 'dip_sitekit_id_medicion' ) && '' !== dip_sitekit_id_medicion() ? esc_html( ': ' . dip_sitekit_id_medicion() ) : ''; ?>.</p></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="dip-email">Correo de avisos</label></th>
@@ -175,13 +185,25 @@ function dip_pantalla_ajustes() {
 				<tr>
 					<th scope="row"><label for="dip-resenas">Enlace para reseñas de Google</label></th>
 					<td><input id="dip-resenas" name="dip_ajustes[resenas_url]" type="url" class="regular-text" value="<?php echo esc_attr( $a['resenas_url'] ); ?>" placeholder="https://g.page/r/…/review">
-						<p class="description">Ficha de Google → Pedir reseñas → Copiar enlace. Lo usan el email del día después de la entrega (abajo) y el email de pedido completado. Si lo dejas vacío, no se pide reseña.</p></td>
+						<p class="description">Ficha de Google → Pedir reseñas → Copiar enlace. Lo usa el email del día después de la entrega (abajo). Si lo dejas vacío, no se pide reseña.</p></td>
 				</tr>
 				<tr>
 					<th scope="row">Reseña por email</th>
 					<td><label><input name="dip_ajustes[resenas_email]" type="checkbox" value="1" <?php checked( $a['resenas_email'], 1 ); ?>> Pedir reseña por email el día después de la entrega</label>
-						<p class="description">Email «¿Qué tal llegó tu hielo seco?» a las 9:00 del día siguiente a la entrega o a la recogida (pedidos Procesando o Completados), en el idioma del pedido y de usted a empresas. Se pide a todos los clientes, sin filtrar y sin nada a cambio, como exige Google. Como mucho uno por email cada 6 meses, con enlace de baja. Si no sale, llega un aviso al correo de avisos. A mano: en el pedido, Acciones del pedido → Pedir reseña por email. Con la casilla activada, el email de pedido completado solo lleva la reseña si ese pedido no va a recibir este email.</p>
+						<p class="description">Email «¿Qué tal llegó tu hielo seco?» a las 9:00 del día siguiente a la entrega o a la recogida (pedidos Procesando o Completados), en el idioma del pedido y de usted a empresas. Se pide a todos los clientes, sin filtrar y sin nada a cambio, como exige Google. Como mucho uno por email cada 6 meses, con enlace de baja. Si no sale, llega un aviso al correo de avisos. A mano: en el pedido, Acciones del pedido → Pedir reseña por email.</p>
 						<?php if ( function_exists( 'dip_resenas_resumen_admin' ) ) : ?><p class="description"><strong><?php echo esc_html( dip_resenas_resumen_admin() ); ?></strong></p><?php endif; ?></td>
+				</tr>
+				<tr id="dip-avisos">
+					<th scope="row">Avisos al cliente</th>
+					<td><fieldset>
+						<label><input name="dip_ajustes[aviso_camino]" type="checkbox" value="1" <?php checked( $a['aviso_camino'], 1 ); ?>> «Va de camino», con el número de MRW, al guardarlo en «Envíos de hoy»</label><br>
+						<label><input name="dip_ajustes[aviso_hoy]" type="checkbox" value="1" <?php checked( $a['aviso_hoy'], 1 ); ?>> «Hoy llega» a las 8:00 del día de entrega (solo pedidos ya enviados)</label><br>
+						<label><input name="dip_ajustes[aviso_recogida]" type="checkbox" value="1" <?php checked( $a['aviso_recogida'], 1 ); ?>> Recordatorio de recogida a las 8:00 del día de recogida (dirección, hora e importe en efectivo)</label><br>
+						<label><input name="dip_ajustes[aviso_incidencia]" type="checkbox" value="1" <?php checked( $a['aviso_incidencia'], 1 ); ?>> «Avisar de una incidencia en la entrega» en Acciones del pedido (reembolso completo o recoger en Mataró)</label>
+						</fieldset>
+						<p class="description">En el idioma del pedido y de usted a empresas. Cada aviso sale una vez por pedido y queda anotado. Si uno no sale, llega un aviso al correo de avisos; si la pasada de las 8:00 deja de correr, también. A mano, siempre: en el pedido, Acciones del pedido → «Enviar aviso: va de camino / hoy llega / recordatorio de recogida».</p>
+						<p class="description"><strong>El email «Pedido completado» de WooCommerce no se envía</strong> (aunque en WooCommerce → Ajustes → Emails salga activado): el cliente ya sabe cómo va su pedido con estos avisos. La factura simplificada y el email «¿Necesitas factura?» siguen saliendo al completar el pedido, porque no dependen de él.</p>
+						<?php if ( function_exists( 'dip_avisos_resumen_admin' ) ) : ?><p class="description"><strong><?php echo esc_html( dip_avisos_resumen_admin() ); ?></strong></p><?php endif; ?></td>
 				</tr>
 			</table>
 			<?php submit_button( 'Guardar ajustes' ); ?>

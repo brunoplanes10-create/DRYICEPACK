@@ -4,25 +4,25 @@ return array(
 	'menu' => 'Zonas de entrega',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco cerca de Barcelona: zonas de entrega | DryIcePack',
-		'descripcion' => 'Hielo seco en Barcelona, el Maresme, el Vallès y el Baix Llobregat: pide antes de las 12:00 y llega mañana, o recógelo en Mataró desde {recogida:pk}. Busca tu zona.',
+		'descripcion' => 'Hielo seco en Barcelona, el Maresme, el Vallès y el Baix Llobregat: pide antes de las 12:00 y llega al día siguiente antes de las 14:00. Busca tu zona.',
 	),
 	'mapa'   => 'Mapa con la nave de Mataró en el centro, anillos cada 10 km y las zonas de entrega',
 	'indice' => array(
 		'migas'   => array( 'Inicio', 'Zonas de entrega' ),
-		'titulo'  => 'Hielo seco cerca de ti,|<em>mañana por la mañana.</em>',
-		'texto'   => 'Pide antes de las 12:00 y mañana por la mañana lo tienes (de martes a sábado), o elige el día que quieras. ¿Estás cerca de Mataró? Recógelo en la nave: {pk} kg por {recogida:pk}, IVA incluido. Busca tu zona y mira a cuántos kilómetros te queda nuestra nave.',
+		'titulo'  => 'Hielo seco cerca de ti,|<em>antes de las 14:00.</em>',
+		'texto'   => 'Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elige el día que quieras. ¿Estás cerca de Mataró? Recógelo en la nave: {pk} kg por {recogida:pk}, IVA incluido. Busca tu zona y mira a cuántos kilómetros te queda nuestra nave.',
 		'grupos'  => 'Por comarca',
-		'resto'   => '¿No ves tu zona? En el resto de la península también te llega al día siguiente por la mañana, de martes a sábado. Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla.',
+		'resto'   => '¿No ves tu zona? En el resto de la península también llega al día siguiente antes de las 14:00, de martes a viernes (el sábado, según zona, antes de las 12:00). Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla.',
 		'envios'  => 'Ver plazos y precios de envío',
 	),
 	'zona' => array(
-		'seo_titulo'      => 'Hielo seco en {nombre}: mañana en tu puerta | DryIcePack',
-		'seo_descripcion' => 'Hielo seco en {nombre}: pide antes de las 12:00 y mañana por la mañana lo tienes en caja aislante. O recógelo en Mataró, a {km} km: {pk} kg por {recogida:pk}.',
+		'seo_titulo'      => 'Hielo seco en {nombre}: antes de las 14:00 | DryIcePack',
+		'seo_descripcion' => 'Hielo seco en {nombre}: pide antes de las 12:00 y llega al día siguiente antes de las 14:00. O recógelo en Mataró, a {km} km: {pk} kg por {recogida:pk} con IVA.',
 		// Para nombres largos (la descripción no debe pasar de 155 caracteres)
-		'seo_descripcion_corta' => 'Hielo seco en {nombre}: pide antes de las 12:00 y mañana por la mañana lo tienes. O recógelo en Mataró, a {km} km: {pk} kg por {recogida:pk} con IVA.',
+		'seo_descripcion_corta' => 'Hielo seco en {nombre}: pide antes de las 12:00 y llega al día siguiente antes de las 14:00. O recógelo en la nave de Mataró, a {km} km.',
 		'migas'   => array( 'Inicio', 'Zonas', '{Nombre}' ),
-		'titulo'  => 'Hielo seco en {nombre},|<em>mañana en tu puerta.</em>',
-		'texto'   => 'Pide antes de las 12:00 y mañana por la mañana lo tienes en {nombre} (de martes a sábado), o elige el día que quieras. Desde {pk} kg y sin contratos. ¿Prefieres venir a buscarlo? Nuestra nave está en Mataró, a {km} km.',
+		'titulo'  => 'Hielo seco en {nombre},|<em>en tu puerta antes de las 14:00.</em>',
+		'texto'   => 'Pide antes de las 12:00, de lunes a jueves, y llega a {nombre} al día siguiente antes de las 14:00. O elige el día que quieras. Desde {pk} kg y sin contratos. ¿Prefieres venir a buscarlo? Nuestra nave está en Mataró, a {km} km.',
 		'boton'   => 'Hacer mi pedido',
 		'datos'   => array(
 			array( 'Distancia a la nave', '{km} km' ),
@@ -32,8 +32,8 @@ return array(
 		'entrega' => array(
 			'titulo' => '¿Cuándo llega a {nombre}?|<em>Y cuánto cuesta.</em>',
 			'filas'  => array(
-				array( 'Pedido antes de las 12:00', 'Lo tienes al día siguiente por la mañana, de martes a viernes. Domingo y lunes no hay reparto.' ),
-				array( 'Sábado', 'Si tu código postal tiene reparto en sábado, con un suplemento de 11,74 € (IVA incluido). Pídelo antes de las 12:00 del viernes.' ),
+				array( 'Pedido antes de las 12:00', 'Llega al día siguiente antes de las 14:00, de martes a viernes. Domingo y lunes no hay reparto.' ),
+				array( 'Sábado', 'Si tu código postal tiene reparto en sábado, llega antes de las 12:00, con un suplemento de {sabado_envio} (IVA incluido). Pídelo antes de las 12:00 del viernes.' ),
 				array( 'Recogida', 'En nuestra nave de Mataró, a {km} km, de lunes a sábado. Precio redondo con IVA incluido: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Tú eliges el día y te confirmamos la hora. En efectivo y con el importe exacto.' ),
 				array( 'Envío de 10 kg', '17,32 € con IVA, igual que en toda la península. Lo ves en el total antes de pagar: sin sorpresas en el último paso.' ),
 				array( 'Para empresas', 'Cuenta con contrato de suministro, descuento sobre tarifa según volumen, pedidos programados y una sola factura al mes, a 30 días.' ),
@@ -44,9 +44,9 @@ return array(
 			'lista'  => array( array( 'hosteleria', 'Hostelería' ), array( 'transporte', 'Transporte en frío' ), array( 'industria', 'Industria' ), array( 'laboratorios', 'Laboratorios' ), array( 'eventos', 'Fiestas y eventos' ) ),
 		),
 		'faq'     => array(
-			array( '¿Cuánto tarda en llegar el hielo seco a {nombre}?', 'Si pides antes de las 12:00 de lunes a jueves, lo tienes en {nombre} al día siguiente por la mañana. Si pides el viernes, llega el sábado (si tu código postal tiene reparto, con suplemento) o el martes. Domingo y lunes no hay reparto. Al pagar solo ves los días disponibles.' ),
+			array( '¿Cuánto tarda en llegar el hielo seco a {nombre}?', 'Si pides antes de las 12:00 de lunes a jueves, llega a {nombre} al día siguiente antes de las 14:00. Si pides el viernes, llega el sábado antes de las 12:00 (si tu código postal tiene reparto, con suplemento) o el martes. Domingo y lunes no hay reparto. Al pagar solo ves los días disponibles.' ),
 			array( '¿Puedo recogerlo si estoy en {nombre}?', 'Sí. Nuestra nave está en Mataró, a {km} km (unos {min} min en coche sin tráfico). Eliges el día al pedir, de lunes a sábado, y te confirmamos la hora por teléfono o WhatsApp. Precio redondo con IVA incluido, el mismo en la web y en la nave: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Se paga en efectivo y con el importe exacto: no tenemos cambio. En el coche, llévalo en el maletero y ventilando.' ),
-			array( '¿Hacéis entregas en sábado en {nombre}?', 'Depende del código postal. Si tu zona tiene reparto en sábado, te sale como opción al pagar, con un suplemento de 11,74 € (IVA incluido). Para recibirlo el sábado, pide antes de las 12:00 del viernes.' ),
+			array( '¿Hacéis entregas en sábado en {nombre}?', 'Depende del código postal. Si tu zona tiene reparto en sábado, te sale como opción al pagar, con un suplemento de {sabado_envio} (IVA incluido), y llega antes de las 12:00. Para recibirlo el sábado, pide antes de las 12:00 del viernes.' ),
 		),
 		'cerca'   => 'Zonas cercanas',
 		'fuente'  => 'Distancias y tiempos: OpenStreetMap y OSRM, sin tráfico.',

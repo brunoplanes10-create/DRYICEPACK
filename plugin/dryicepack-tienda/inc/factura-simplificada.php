@@ -936,8 +936,12 @@ function dip_fs_enviar( WC_Order $pedido, $pdf = null, $reenvio = false ) {
 	return true;
 }
 
-/** Email HTML con la marca: cabecera azul noche, ficha de la factura, líneas y total destacado. Estilos en línea. */
+/**
+ * Email HTML con la marca: ficha de la factura, líneas y total destacado. Estilos en línea.
+ * Con la envoltura común de los emails (inc/emails.php) si está; si no, la propia (cabecera azul noche).
+ */
 function dip_fs_html_email( WC_Order $pedido, array $datos, $idioma = 'es' ) {
+	if ( function_exists( 'dip_email_documento' ) ) return dip_fs_html_email_comun( $pedido, $datos, $idioma );
 	$t       = dip_fs_textos( $idioma );
 	$e       = dip_fs_emisor( $idioma );
 	$numero  = (string) $datos['numero'];
@@ -1062,6 +1066,53 @@ function dip_fs_html_email( WC_Order $pedido, array $datos, $idioma = 'es' ) {
 </html>
 	<?php
 	return (string) ob_get_clean();
+}
+
+/** El email de la factura con la envoltura común de todos los emails (inc/emails.php): mismo contenido, mismas piezas. */
+function dip_fs_html_email_comun( WC_Order $pedido, array $datos, $idioma = 'es' ) {
+	$t       = dip_fs_textos( $idioma );
+	$e       = dip_fs_emisor( $idioma );
+	$numero  = (string) $datos['numero'];
+	// Saludo con el nombre de pila (el checkout tiene un solo campo con nombre y apellidos), como el resto de emails
+	$nombre  = function_exists( 'dip_avisos_nombre' ) ? dip_avisos_nombre( $pedido, false ) : trim( (string) $pedido->get_billing_first_name() );
+	$entrega = function_exists( 'dip_texto_entrega' ) ? dip_texto_entrega( $pedido, $idioma ) : '';
+	$url     = function_exists( 'dip_url_factura' ) ? dip_url_factura( $pedido ) : '';
+	$pct     = dip_fs_porcentaje( $datos['tipo_iva'], $idioma );
+
+	$ficha = array(
+		array( $t['l_numero'], $numero ),
+		array( $t['l_expedicion'], dip_fs_fecha( $datos['fecha_expedicion'] ) ),
+		array( $t['l_pedido'], (string) $datos['pedido'] ),
+	);
+	if ( $datos['fecha_operacion'] ) $ficha[] = array( $t['l_operacion'], dip_fs_fecha( $datos['fecha_operacion'] ) . "\n" . dip_fs_nota_operacion( $datos, $t ) );
+	$filas = array();
+	foreach ( (array) $datos['lineas'] as $l ) {
+		list( $titulo, $detalle ) = dip_fs_texto_linea( $l, $idioma );
+		$filas[] = array( 'titulo' => $titulo, 'detalle' => $detalle, 'importe' => dip_fs_importe( $l['importe'], $idioma ), 'cantidad' => (int) ( $l['cantidad'] ?? 1 ) );
+	}
+	$bloques = array( array( 'p', ( $nombre ? sprintf( $t['hola'], $nombre ) : $t['hola_sin'] ) . ' ' . sprintf( $t['intro'], $datos['pedido'] ), 'grande' ) );
+	if ( $entrega ) $bloques[] = array( 'p', $entrega, 'fuerte' );
+	$bloques[] = array( 'ficha', $ficha );
+	$bloques[] = array(
+		'lineas',
+		$t['l_descripcion'],
+		$filas,
+		array( array( $t['base'], dip_fs_importe( $datos['base'], $idioma ) ), array( sprintf( $t['iva'], $pct ), dip_fs_importe( $datos['cuota'], $idioma ) ) ),
+		array( $t['total'], dip_fs_importe( $datos['total'], $idioma ) ),
+		array( $t['nota_iva_1'] . ' ' . sprintf( $t['nota_iva_2'], $pct ) ),
+		$t['l_importe'],
+	);
+	if ( $url ) $bloques[] = array( 'caja', $t['completa_titulo'], array( $t['completa_texto'] ), array( $t['completa_enlace'], $url ) );
+	$bloques[] = array( 'p', $t['seguridad'], 'suave', array( $t['seguridad_url'], 'https://' . $t['seguridad_url'] ) );
+	$bloques[] = array( 'p', sprintf( $t['dudas'], $e['telefono'], $e['whatsapp'] ), 'suave' );
+	$bloques[] = array( 'p', $datos['emisor']['razon'] . ' · NIF ' . $datos['emisor']['nif'] . ' · ' . $e['domicilio'] . ', ' . $e['cp_ciudad'], 'pequeno' );
+	return dip_email_documento( array(
+		'idioma'     => $idioma,
+		'previo'     => sprintf( $t['previo'], $datos['pedido'], dip_fs_importe( $datos['total'], $idioma ) ),
+		'antetitulo' => $t['titulo'] . ' · ' . $numero,
+		'titulo'     => $t['h1'],
+		'bloques'    => $bloques,
+	) );
 }
 
 /** La misma información en texto (parte alternativa del email). */

@@ -79,7 +79,7 @@ function dipt_schema_negocio() {
 		'name'        => 'DryIcePack',
 		'legalName'   => $c['empresa'],
 		'taxID'       => $c['cif'],
-		'description' => 'Venta de hielo seco en pellets de 3 mm y nuggets de 16 mm. Envío por mensajería a la península con entrega al día siguiente por la mañana si se pide antes de las 12:00, y recogida en la nave de Mataró de lunes a sábado, con pago en efectivo.',
+		'description' => 'Venta de hielo seco en pellets de 3 mm y nuggets de 16 mm. Envío por mensajería a la península con entrega al día siguiente antes de las 14:00 si se pide antes de las 12:00 de lunes a jueves, y recogida en la nave de Mataró de lunes a sábado, con pago en efectivo.',
 		'url'         => home_url( '/' ),
 		'telephone'   => '+34936737641',
 		'email'       => $c['email'],

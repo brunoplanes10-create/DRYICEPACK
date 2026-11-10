@@ -29,8 +29,21 @@
 .lg-texto ul { list-style: none; padding-left: 0; }
 .lg-texto ul > li { position: relative; padding-left: 1.5rem; }
 .lg-texto ul > li::before { content: ""; position: absolute; left: 0; top: .8em; width: .8rem; height: 2px; background: var(--c-marino); } /* guion corto, sin rombos */
-.lg-texto table { display: block; overflow-x: auto; border-top: 2px solid var(--c-tinta); }
+/* Tablas: región con scroll propio (nunca la página) y foco visible; en móvil, cada fila es una ficha con sus etiquetas */
+.lg-tabla { max-width: 100%; overflow-x: auto; border-top: 2px solid var(--c-tinta); }
+.lg-tabla:focus-visible { outline: 2px solid var(--c-marino); outline-offset: 4px; }
+.lg-texto table { width: 100%; }
 .lg-texto th { font-size: .8rem; font-weight: 600; color: var(--c-acero); }
+.lg-texto td { overflow-wrap: anywhere; } /* nombres largos de cookies (wp_woocommerce_session_*) */
+@media (max-width: 640px) {
+	.lg-texto table, .lg-texto tbody, .lg-texto tr, .lg-texto td { display: block; width: 100%; }
+	.lg-texto thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+	.lg-texto tr { padding: .9rem 0; border-bottom: 1px solid var(--c-linea-fuerte); }
+	.lg-texto td { padding: .15rem 0; border: 0; font-size: .95rem; }
+	.lg-texto td:first-child { font-weight: 600; }
+	.lg-texto td[data-label]::before { content: attr(data-label); display: block; margin-top: .45rem; font: 500 .72rem/1.4 var(--f-mono); letter-spacing: .04em; color: var(--c-acero); }
+	.lg-texto td:first-child::before { margin-top: 0; }
+}
 
 @media (max-width: 900px) {
 	.lg-cuerpo { grid-template-columns: minmax(0, 1fr); gap: 2.4rem; }

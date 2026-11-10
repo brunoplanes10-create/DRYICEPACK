@@ -73,6 +73,20 @@ $hw_whatsapp = 'https://wa.me/34686980471?text=' . rawurlencode( 'Hola, necesito
 $hw_limite_viernes = '2026-10-29T12:00:00+01:00';
 $hw_limite_sabado  = '2026-10-30T12:00:00+01:00';
 $hw_fin_campana    = '2026-11-01T00:00:00+01:00';
+// Fase en el servidor: a partir de $hw_fin_campana el HTML sale ya sin plazos de la campaña (cuenta atrás, «viernes 30»,
+// «jueves 29») y la página queda viva hasta la siguiente campaña: plazos generales y la fecha real de entrega del reloj del
+// tema (data-corte). Para 2027 basta con poner aquí las fechas nuevas: antes de $hw_fin_campana vuelve la versión con plazos.
+$hw_campana = time() < strtotime( $hw_fin_campana );
+
+$hw_faq_plazo = $hw_campana
+	? array(
+		'q' => '¿Hasta cuándo puedo pedir para Halloween?',
+		'a' => dipt_marcadores( 'Para recibirlo el viernes 30 de octubre antes de las 14:00, pide antes de las 12:00 del jueves 29. Para el sábado 31, pide antes de las 12:00 del viernes 30: la entrega en sábado depende de la zona, llega antes de las 12:00 y tiene un suplemento de {sabado_envio} (IVA incluido).' ),
+	)
+	: array(
+		'q' => '¿Cuándo tengo que pedirlo para Halloween?',
+		'a' => dipt_marcadores( 'Lo ideal es recibirlo la víspera de la fiesta. Pídelo antes de las 12:00 del día anterior a la entrega, o resérvalo antes y elige el día al pagar: llega antes de las 14:00. Para recibirlo en sábado, pide antes de las 12:00 del viernes: la entrega en sábado depende de la zona, llega antes de las 12:00 y tiene un suplemento de {sabado_envio} (IVA incluido).' ),
+	);
 
 $hw_faq = array(
 	array(
@@ -95,10 +109,7 @@ $hw_faq = array(
 		'q' => '¿Qué formato hace más niebla?',
 		'a' => 'El de 3 mm: al tener más superficie, suelta una niebla más densa y más rápido. El de 16 mm sublima más despacio, dura más y da una niebla más constante.',
 	),
-	array(
-		'q' => '¿Hasta cuándo puedo pedir para Halloween?',
-		'a' => 'Para recibirlo el viernes 30 de octubre, pide antes de las 12:00 del jueves 29. Para el sábado 31, pide antes de las 12:00 del viernes 30: la entrega en sábado depende de la zona y tiene un suplemento de 11,74 € (IVA incluido).',
-	),
+	$hw_faq_plazo, // con plazos de 2026 hasta el 31/10; después, la versión general (también en el schema FAQPage)
 	array(
 		'q' => '¿Puedo recogerlo en vuestro almacén?',
 		// Marcadores de inc/idiomas.php: precio de recogida con IVA, suplemento del sábado y el sábado 31/10 sin suplemento (desaparece solo después)
@@ -132,7 +143,8 @@ add_filter( 'body_class', static function ( $clases ) {
 
 // Fase de la campaña (viernes / sabado / cerrado / fin) en <html data-hw-fase>, antes del primer pintado.
 // El CSS muestra la versión de cada texto que toca; halloween.js la actualiza si cambia con la página abierta.
-add_action( 'wp_head', static function () use ( $hw_limite_viernes, $hw_limite_sabado, $hw_fin_campana ) {
+// Fuera de campaña no hace falta: el HTML ya sale sin los textos de cada fase.
+if ( $hw_campana ) add_action( 'wp_head', static function () use ( $hw_limite_viernes, $hw_limite_sabado, $hw_fin_campana ) {
 	printf(
 		'<script nowprocket data-cfasync="false">(function(){var t=Date.now(),f=t<%1$d?"viernes":t<%2$d?"sabado":t<%3$d?"cerrado":"fin";document.documentElement.setAttribute("data-hw-fase",f);})();</script>' . "\n",
 		(int) ( strtotime( $hw_limite_viernes ) * 1000 ),
@@ -248,21 +260,23 @@ get_header();
 		</div>
 
 		<div class="hw-wrap hw-hero__cuerpo">
-			<p class="hw-antetitulo">Halloween 2026 · Efecto niebla</p>
+			<p class="hw-antetitulo"><?php echo $hw_campana ? 'Halloween 2026 · Efecto niebla' : 'Halloween · Efecto niebla'; ?></p>
 			<h1 id="hw-h1">Hielo seco para Halloween: niebla de verdad en tu fiesta</h1>
-			<p class="hw-entrada">Pellets de hielo seco de 3 mm que hacen niebla densa en cuanto tocan agua caliente. Pide antes de las 12:00 y lo recibes el siguiente día laborable por la mañana, en caja EPS y listo para usar.</p>
+			<p class="hw-entrada">Pellets de hielo seco de 3 mm que hacen niebla densa en cuanto tocan agua caliente. Pide antes de las 12:00 y llega al día siguiente antes de las 14:00, en caja EPS y listo para usar.</p>
 			<div class="hw-botones">
 				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="#cantidad">Elegir cantidad</a>
 			</div>
 			<!-- Línea de ficha técnica: datos en mono separados por filetes verticales -->
 			<ul class="hw-ficha">
-				<li>Entrega en 24 h laborables</li>
+				<li>Entrega antes de las 14:00</li>
 				<li>Pellets 3 mm / nuggets 16 mm</li>
 				<li>Caja EPS incluida</li>
 			</ul>
-			<!-- El único destacado del hero: el último pedido -->
+			<?php if ( $hw_campana ) : ?>
+			<!-- El único destacado del hero: el último pedido (solo durante la campaña) -->
 			<p class="hw-ticket hw-solo-abierto"><span class="hw-ticket__et"><span class="hw-f-v">Último pedido para el viernes 30</span><span class="hw-f-s">Último pedido para el sábado 31 (según zona)</span></span><span class="hw-ticket__fecha"><span class="hw-f-v">Jue 29/10 · 12:00</span><span class="hw-f-s">Vie 30/10 · 12:00</span></span></p>
+			<?php endif; ?>
 		</div>
 	</section>
 
@@ -406,7 +420,8 @@ get_header();
 							<div class="hw-escala__opciones">
 								<?php foreach ( $hw_p['packs'] as $hw_i => $hw_kg ) : $hw_precio = dipt_precio_pack( $hw_kg ); ?>
 									<div class="hw-escala__opcion">
-										<p class="hw-escala__precio"><?php if ( count( $hw_p['packs'] ) > 1 ) : ?><b><?php echo (int) $hw_kg; ?> kg</b> <?php endif; ?><?php echo esc_html( dipt_euros( $hw_precio['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( $hw_precio['sin_iva'] ) ); ?> + IVA</small></p>
+										<?php // Precio por kilo con IVA junto a cada pack (RD 3423/2000), calculado con dipt_precio_pack() ?>
+										<p class="hw-escala__precio"><?php if ( count( $hw_p['packs'] ) > 1 ) : ?><b><?php echo (int) $hw_kg; ?> kg</b> <?php endif; ?><?php echo esc_html( dipt_euros( $hw_precio['con_iva'] ) ); ?> <small>IVA incl. · <?php echo esc_html( dipt_euros( $hw_precio['kilo'] ) ); ?>/kg · <?php echo esc_html( dipt_euros( $hw_precio['sin_iva'] ) ); ?> + IVA</small></p>
 										<a class="hw-btn<?php echo $hw_i > 0 ? ' hw-btn--linea' : ''; ?>" href="<?php echo esc_url( $hw_pedir( $hw_kg ) ); ?>">Pedir <?php echo (int) $hw_kg; ?> kg</a>
 									</div>
 								<?php endforeach; ?>
@@ -469,9 +484,10 @@ get_header();
 		</div>
 	</section>
 
-	<!-- 6 · FECHA LÍMITE -->
+	<!-- 6 · FECHA LÍMITE (campaña) o CUÁNDO PEDIR (fuera de campaña: sin cuenta atrás ni fechas de 2026) -->
 	<section class="hw-seccion" id="fecha" aria-labelledby="hw-fecha-t">
 		<div class="hw-wrap hw-fecha">
+			<?php if ( $hw_campana ) : ?>
 			<div class="hw-fecha__cuenta" data-hw-revela
 				data-hw-cuenta
 				data-limite-viernes="<?php echo esc_attr( $hw_limite_viernes ); ?>"
@@ -480,22 +496,45 @@ get_header();
 				<p class="hw-antetitulo">Fecha límite</p>
 				<h2 id="hw-fecha-t">¿Hasta cuándo puedo pedir?</h2>
 				<p class="hw-reloj" data-hw-reloj>Jue 29/10 · 12:00</p>
-				<p class="hw-reloj__pie" data-hw-reloj-pie>Último pedido para recibirlo el viernes 30 por la mañana.</p>
+				<p class="hw-reloj__pie" data-hw-reloj-pie>Último pedido para recibirlo el viernes 30 antes de las 14:00.</p>
 				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 			</div>
 			<ol class="hw-linea" data-hw-revela="grupo">
 				<li>
 					<p class="hw-linea__cuando">Jue 29/10 · 12:00</p>
-					<p>Último pedido para recibirlo el viernes 30 por la mañana.</p>
+					<p>Último pedido para recibirlo el viernes 30 antes de las 14:00.</p>
 				</li>
 				<li>
-					<p class="hw-linea__cuando">Vie 30/10 · mañana</p>
-					<p>Entrega con MRW en tu dirección, en caja EPS.</p>
+					<p class="hw-linea__cuando">Vie 30/10 · 14:00</p>
+					<p>Entrega con MRW en tu dirección, en caja EPS, antes de las 14:00.</p>
 				</li>
 				<li>
-					<p class="hw-linea__cuando">Sáb 31/10</p>
-					<p>Entrega en sábado según zona, con suplemento de 11,74 € (IVA incl.). Pide antes de las 12:00 del viernes 30. Confirma tu zona en <a href="<?php echo esc_url( home_url( '/envios-y-plazos/' ) ); ?>">envíos y plazos</a> o llámanos al <a href="<?php echo esc_url( $hw_tel ); ?>">936 73 76 41</a>.</p>
+					<p class="hw-linea__cuando">Sáb 31/10 · 12:00</p>
+					<p><?php echo esc_html( dipt_marcadores( 'Entrega en sábado según zona, antes de las 12:00 y con suplemento de {sabado_envio} (IVA incl.). Pide antes de las 12:00 del viernes 30.' ) ); ?> Confirma tu zona en <a href="<?php echo esc_url( home_url( '/envios-y-plazos/' ) ); ?>">envíos y plazos</a> o llámanos al <a href="<?php echo esc_url( $hw_tel ); ?>">936 73 76 41</a>.</p>
 				</li>
+			<?php else : $hw_e = dipt_primera_entrega(); ?>
+			<div class="hw-fecha__cuenta" data-hw-revela>
+				<p class="hw-antetitulo">Plazos</p>
+				<h2 id="hw-fecha-t">¿Cuándo lo pido para mi fiesta?</h2>
+				<p class="hw-reloj">12:00 → 14:00</p>
+				<?php // Fecha real de entrega: la pinta el reloj del tema (movimiento.js, data-corte) con la misma regla que el checkout ?>
+				<p class="hw-reloj__pie" data-corte data-t-antes="<?php echo esc_attr( dipt_t( 'corte_antes' ) ); ?>" data-t-despues="<?php echo esc_attr( dipt_t( 'corte_despues' ) ); ?>"><span data-corte-texto><?php echo esc_html( sprintf( dipt_t( 'corte_despues' ), $hw_e ? dipt_fecha_larga( $hw_e['fecha'] ) : '' ) ); ?></span>.</p>
+				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
+			</div>
+			<ol class="hw-linea" data-hw-revela="grupo">
+				<li>
+					<p class="hw-linea__cuando">Antes de las 12:00</p>
+					<p>De lunes a viernes, salvo festivos, sale de Mataró ese mismo día.</p>
+				</li>
+				<li>
+					<p class="hw-linea__cuando">Día siguiente · 14:00</p>
+					<p>Entrega con MRW en tu dirección, en caja EPS, de martes a viernes antes de las 14:00. O elige otro día al pagar.</p>
+				</li>
+				<li>
+					<p class="hw-linea__cuando">Sábado · 12:00</p>
+					<p><?php echo esc_html( dipt_marcadores( 'Entrega en sábado según zona, antes de las 12:00 y con suplemento de {sabado_envio} (IVA incl.). Pídelo antes de las 12:00 del viernes.' ) ); ?> Confirma tu zona en <a href="<?php echo esc_url( home_url( '/envios-y-plazos/' ) ); ?>">envíos y plazos</a> o llámanos al <a href="<?php echo esc_url( $hw_tel ); ?>">936 73 76 41</a>.</p>
+				</li>
+			<?php endif; ?>
 				<li>
 					<p class="hw-linea__cuando">Recogida en Mataró</p>
 					<p><?php echo esc_html( dipt_marcadores( 'De lunes a sábado, con hora confirmada. Precio redondo con IVA, en efectivo y con el importe exacto: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida}.{sabado_libre}' ) ); ?></p>
@@ -535,7 +574,7 @@ get_header();
 			<div class="hw-b2b__txt" data-hw-revela>
 				<p class="hw-b2b__para">Bares, discotecas y organizadores</p>
 				<h2 id="hw-b2b-t">¿Tiene un local o organiza un evento de Halloween?</h2>
-				<p>Díganos cuántos puntos de niebla va a tener y le orientamos sobre la cantidad. Entrega el siguiente día laborable en la península o recogida en nuestro almacén de Mataró (Maresme, Vallès y área de Barcelona).</p>
+				<p>Díganos cuántos puntos de niebla va a tener y le orientamos sobre la cantidad. Entrega en la península al día siguiente antes de las 14:00, si pide antes de las 12:00, o recogida en nuestro almacén de Mataró (Maresme, Vallès y área de Barcelona).</p>
 				<ul class="hw-lista">
 					<li>Pedidos de hasta 250 kg</li>
 					<li>Mismo precio en 3 mm y 16 mm</li>
@@ -580,8 +619,13 @@ get_header();
 			</div>
 		</div>
 		<div class="hw-wrap hw-final__cuerpo" data-hw-revela>
+			<?php if ( $hw_campana ) : ?>
 			<h2 id="hw-final-t"><span class="hw-f-v">Niebla de verdad, lista para el viernes 30</span><span class="hw-f-s">Niebla de verdad para tu Halloween</span><span class="hw-f-c">Niebla de verdad para tu próxima fiesta</span></h2>
-			<p><span class="hw-f-v">Pide antes de las 12:00 del jueves 29 de octubre.</span><span class="hw-f-s">Para el sábado 31, pide antes de las 12:00 del viernes 30 (según zona).</span><span class="hw-f-c">Pide antes de las 12:00 y lo recibes el siguiente día laborable.</span> Te llega en caja EPS, listo para usar. Antes de empezar, lee la <a href="<?php echo esc_url( home_url( '/seguridad-del-hielo-seco/' ) ); ?>">guía de seguridad</a>.</p>
+			<p><span class="hw-f-v">Pide antes de las 12:00 del jueves 29 de octubre.</span><span class="hw-f-s">Para el sábado 31, pide antes de las 12:00 del viernes 30 (según zona).</span><span class="hw-f-c">Pide antes de las 12:00 y llega al día siguiente antes de las 14:00.</span> Te llega en caja EPS, listo para usar.
+			<?php else : ?>
+			<h2 id="hw-final-t">Niebla de verdad para tu próxima fiesta</h2>
+			<p>Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. Te llega en caja EPS, listo para usar.
+			<?php endif; ?> Antes de empezar, lee la <a href="<?php echo esc_url( home_url( '/seguridad-del-hielo-seco/' ) ); ?>">guía de seguridad</a>.</p>
 			<div class="hw-botones">
 				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="<?php echo esc_url( $hw_tel ); ?>">Llamar</a>

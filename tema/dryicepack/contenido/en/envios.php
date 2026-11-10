@@ -3,15 +3,15 @@
 return array(
 	'menu' => 'Delivery times and costs',
 	'seo'  => array(
-		'titulo'      => 'Dry ice delivery in 24 h across mainland Spain | DryIcePack',
-		'descripcion' => 'Dry ice delivery across mainland Spain: order before 12:00 and have it tomorrow morning. Work out your delivery cost here or collect it in Mataró.',
+		'titulo'      => 'Dry ice delivery in mainland Spain before 14:00 | DryIcePack',
+		'descripcion' => 'Dry ice delivery across mainland Spain: order before 12:00 and it arrives the next day before 14:00. Work out your delivery cost or collect it in Mataró.',
 	),
 	'migas'  => array( 'Home', 'Delivery times and costs' ),
 	'hero'   => array(
-		'titulo'   => 'Dry ice delivery:|<em>order today, have it tomorrow.</em>',
+		'titulo'   => 'Dry ice delivery:|<em>order before 12:00, it arrives before 14:00.</em>',
 		'reloj'    => array( 'antes' => 'Time left to order today', 'despues' => 'Today’s order deadline has passed' ),
-		'llega'    => array( 'antes' => 'Order now and you’ll have it on the morning of %s.', 'despues' => 'Order now and you’ll have it on the morning of %s.' ),
-		'texto'    => 'Orders placed before 12:00 (Spanish time), Monday to Friday, leave the same day and arrive the next morning, Tuesday to Saturday (Saturday depending on the area). Or choose any day in the next 90 at checkout.',
+		'llega'    => array( 'antes' => 'Order now and it arrives on %s before 14:00.', 'despues' => 'Order now and it arrives on %s before 14:00.' ),
+		'texto'    => 'Orders placed before 12:00 (Spanish time), Monday to Friday, leave the same day and arrive the next day: Tuesday to Friday, before 14:00; on Saturday, depending on the area, before 12:00. Or choose any day in the next 90 at checkout.',
 		'alt'      => 'Courier loading a box of dry ice into the van',
 	),
 	'semana' => array(
@@ -24,9 +24,9 @@ return array(
 			array( 1, 2, '' ),
 			array( 2, 3, '' ),
 			array( 3, 4, '' ),
-			array( 4, 5, 'Saturday depending on area, +€11.74. Otherwise, Tuesday.' ),
+			array( 4, 5, 'Saturday depending on area, before 12:00, +{sabado_envio}. Otherwise, Tuesday.' ),
 		),
-		'finde'  => 'Orders placed on Saturday or Sunday, or on Friday after 12:00, leave on Monday and arrive on Tuesday.',
+		'finde'  => 'Tuesday to Friday it arrives before 14:00; on Saturday, before 12:00. Orders placed on Saturday or Sunday, or on Friday after 12:00, leave on Monday and arrive on Tuesday.',
 		'festivos' => 'No orders leave on public holidays in Mataró, in Catalonia or across Spain, and there are no deliveries on the courier’s local holidays in your area. You don’t need to check: at checkout, you only see the days that are possible.',
 	),
 	'tarifa' => array(
@@ -76,7 +76,7 @@ return array(
 	),
 	'cobertura' => array(
 		'titulo' => 'Do you deliver to my area?',
-		'si'     => array( 'titulo' => 'Yes, the next morning', 'texto' => 'All of mainland Spain: from Girona to Huelva and from A Coruña to Murcia.' ),
+		'si'     => array( 'titulo' => 'Yes, the next day before 14:00', 'texto' => 'All of mainland Spain: from Girona to Huelva and from A Coruña to Murcia.' ),
 		'no'     => array( 'titulo' => 'Outside mainland Spain, no', 'texto' => 'We only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla, or outside Spain.' ),
 		'zonas'  => 'See delivery areas near Barcelona',
 		// Coverage map (redesign 14/10/2026)
@@ -88,9 +88,9 @@ return array(
 		'titulo' => 'Delivery questions',
 		'lista'  => array(
 			array( 'How is it packed?', 'In an EPS box with 40 mm walls, closed with its lid but not airtight, so the CO₂ can escape during the journey.' ),
-			array( 'Will the full weight I ordered arrive?', 'Dry ice sublimates from the moment it leaves the warehouse, so it loses some weight in transit. That’s why it leaves the day it’s packed and arrives the next morning: the shortest possible time on the road.' ),
-			array( 'What if I’m not in when it arrives?', 'It’s best to give an address where someone will be in during the morning. If you’re still out, the courier makes its usual redelivery attempts: let us know as soon as possible so we can track the parcel, because the ice won’t wait.' ),
-			array( 'Can I ask for a specific time?', 'Deliveries are in the morning and the exact time depends on the courier’s route. If you need to know the time, collect it in Mataró: we confirm it with you beforehand.' ),
+			array( 'Will the full weight I ordered arrive?', 'Dry ice sublimates from the moment it leaves the warehouse, so it loses some weight in transit. That’s why it leaves the day it’s packed and arrives the next day before 14:00: the shortest possible time on the road. If it arrives with more loss than normal, we replace it.' ),
+			array( 'What if I’m not in when it arrives?', 'It’s best to give an address where someone will be in until 14:00 (on Saturday, until 12:00). If you’re still out, MRW leaves a notice and tries again: let us know as soon as possible so we can track the parcel, because the ice won’t wait.' ),
+			array( 'Can I ask for a specific time?', 'MRW delivers before 14:00 (on Saturday, before 12:00); the exact time depends on its route. If you need to know the time, collect it in Mataró: we confirm it with you beforehand.' ),
 			array( 'Do you offer same-day delivery?', 'Not by courier. If you’re near Mataró, you can collect it the same day if you order before 12:00. We confirm the time by phone or WhatsApp.' ),
 		),
 	),

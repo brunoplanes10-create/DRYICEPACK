@@ -537,6 +537,8 @@ details summary::-webkit-details-marker { display: none; }
 .campo__error { color: #B3261E; font-size: .85rem; }
 .casilla { display: flex; gap: .65rem; align-items: flex-start; font-size: .9rem; }
 .casilla input { width: 20px; height: 20px; margin-top: .15rem; accent-color: var(--c-marino); flex: none; }
+/* Primera capa de privacidad bajo la casilla: alineada con su texto, más pequeña y sin caja; hereda el color del fondo */
+.form-capa { margin: -.35rem 0 0; padding-left: calc(20px + .65rem); font-size: .78rem; line-height: 1.5; }
 .dip-trampa { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .aviso-form { padding: 1rem 1.2rem; border-radius: var(--radio); font-weight: 500; }
 .aviso-form--ok { background: #E7F4EC; color: #0F5132; }

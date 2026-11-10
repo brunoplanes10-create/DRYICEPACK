@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Dry ice for hospitality',
 	'seo'  => array(
 		'titulo'      => 'Dry ice for cocktails, bars and restaurants | DryIcePack',
-		'descripcion' => 'Dry ice for cocktails, smoke when plating and cooling behind the bar, always with a double container. Order before 12:00 and it’s at your venue tomorrow.',
+		'descripcion' => 'Dry ice for cocktails, smoke when plating and cooling behind the bar, with a double container. Order before 12:00 and it arrives the next day before 14:00.',
 	),
 	'migas' => array( 'Home', 'Uses', 'Hospitality' ),
 	'hero'  => array(
-		'titulo' => 'Dry ice for cocktails and hospitality,|<em>at your venue tomorrow.</em>',
-		'texto'  => 'Smoke when plating, cocktails with fog and cooling behind the bar, without the dry ice ever touching the drink. Order before 12:00 (Spanish time) and you’ll have it tomorrow morning (Tuesday to Saturday), or choose any day you like.',
+		'titulo' => 'Dry ice for cocktails and hospitality,|<em>at your venue before 14:00.</em>',
+		'texto'  => 'Smoke when plating, cocktails with fog and cooling behind the bar, without the dry ice ever touching the drink. Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or choose any day you like.',
 		'boton'  => 'Place my order',
 		'alt'    => 'Waiter serving desserts on a tray with dry ice fog',
 	),
@@ -31,7 +31,7 @@ return array(
 		'titulo' => 'Need it for the weekend?|<em>Here’s how it arrives in time.</em>',
 		'pasos'  => array(
 			array( 'Thursday, before 12:00', 'Order by WhatsApp or online.' ),
-			array( 'Friday morning', 'It arrives at your venue in an insulated box, ready to use.' ),
+			array( 'Friday, before 14:00', 'It arrives at your venue in an insulated box, ready to use.' ),
 			array( 'Friday and Saturday', 'Use it at every service and close the box between uses: it lasts longer that way.' ),
 			array( 'The following week', 'Same again? With a business account you reorder by WhatsApp and pay with one invoice a month.' ),
 		),
@@ -64,7 +64,7 @@ return array(
 	),
 	// Shared closing section (redesign 13/10/2026): the home page headline and the real delivery date (as in Laboratories)
 	'final' => array(
-		'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>',
-		'corte'  => array( 'Order before 12:00 and you’ll have it on the morning of %s', '%s left to order today', 'Order now and you’ll have it on the morning of %s' ),
+		'titulo' => 'Need it soon?|<em>Order before 12:00.</em>',
+		'corte'  => array( 'Order before 12:00 and it arrives on %s before 14:00', '%s left to order today', 'Order now and it arrives on %s before 14:00' ),
 	),
 );

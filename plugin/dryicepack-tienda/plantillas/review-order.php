@@ -65,7 +65,8 @@ $dip_idioma = dip_idioma();
 				<tr class="woocommerce-shipping-totals shipping dip-resumen__envio">
 					<th><?php echo esc_html( 'recogida' === $dip_metodo ? $dip_t['fecha_recogida'] : $dip_t['fecha_entrega'] ); ?>
 						<?php if ( $dip_fecha ) : ?><small><?php echo esc_html( dip_fecha_larga( $dip_fecha, $dip_idioma ) ); ?></small><?php endif; ?></th>
-					<td><?php echo $dip_coste > 0 ? wp_kses_post( wc_price( $dip_coste ) ) : esc_html( 'ca' === $dip_idioma ? 'Gratuït' : ( 'en' === $dip_idioma ? 'Free' : 'Gratis' ) ); ?></td>
+					<?php // no «Gratis»: la recogida del sábado lleva suplemento (línea aparte); lo mismo que en el paso «Entrega» (inc/entrega.php) ?>
+					<td><?php echo $dip_coste > 0 ? wp_kses_post( wc_price( $dip_coste ) ) : esc_html( 'ca' === $dip_idioma ? 'Sense enviament' : ( 'en' === $dip_idioma ? 'No delivery charge' : 'Sin envío' ) ); ?></td>
 				</tr>
 			<?php endif; ?>
 			<?php do_action( 'woocommerce_review_order_after_shipping' ); ?>

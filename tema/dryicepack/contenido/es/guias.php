@@ -12,7 +12,7 @@ return array(
 	'vacio'        => 'Pronto publicaremos las primeras guías.',
 	'lectura'      => '%d min de lectura',
 	'indice'       => 'En esta guía',
-	'cta'          => '¿Lo necesitas mañana? Pídelo antes de las 12:00.',
+	'cta'          => '¿Lo necesitas pronto? Pídelo antes de las 12:00.',
 	'seguir'       => 'Para seguir',
 	'enlaces'      => array(
 		array( 'seguridad', 'Cómo manipular el hielo seco con seguridad' ),

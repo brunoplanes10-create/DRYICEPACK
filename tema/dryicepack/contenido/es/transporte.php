@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Hielo seco para transporte',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco para transporte de congelados | DryIcePack',
-		'descripcion' => 'Hielo seco para transporte de congelados y refrigerados: a −78,5 °C y sin agua en la caja. Pida antes de las 12:00 y llega mañana por la mañana.',
+		'descripcion' => 'Hielo seco para transporte de congelados: a −78,5 °C y sin agua en la caja. Pida antes de las 12:00 y llega al día siguiente antes de las 14:00.',
 	),
 	'migas' => array( 'Inicio', 'Usos', 'Transporte en frío' ),
 	'hero'  => array(
-		'titulo' => 'Hielo seco para transporte de congelados,|<em>mañana en su almacén y sin agua en la caja.</em>',
-		'texto'  => 'A −78,5 °C, pasa de sólido a gas sin fundirse y mantiene el frío durante la ruta. Pida antes de las 12:00 y mañana por la mañana lo tiene (de martes a sábado), o elija el día que quiera. Con cuenta de empresa, una factura al mes.',
+		'titulo' => 'Hielo seco para transporte de congelados,|<em>en su almacén antes de las 14:00 y sin agua en la caja.</em>',
+		'texto'  => 'A −78,5 °C, pasa de sólido a gas sin fundirse y mantiene el frío durante la ruta. Pida antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elija el día que quiera. Con cuenta de empresa, una factura al mes.',
 		'boton'  => 'Abrir mi cuenta',
 		'datos'  => array( '−78,5 °C', '16 mm', 'Sin agua', 'Factura mensual' ),
 		'alt'    => 'Preparación de un pedido de alimentos congelados en caja isotérmica con hielo seco',
@@ -54,7 +54,7 @@ return array(
 			array( '¿3 mm o 16 mm para transporte?', '16 mm: más masa por pieza, así que aguanta más horas en ruta. Los 3 mm enfrían más rápido y sirven para bajar la temperatura al empezar.' ),
 			array( '¿Puedo llevarlo en la cabina de la furgoneta?', 'No. Siempre en la zona de carga y ventilando. En la cabina el CO₂ se acumula y desplaza el oxígeno que respira el conductor.' ),
 			array( '¿Sirve para producto refrigerado, no congelado?', 'Sí, con cuidado: separe el hielo seco del producto con cartón o una bandeja para que no lo congele. Le ayudamos a ajustar la cantidad.' ),
-			array( '¿Pueden entregar cada semana a la misma hora?', 'El mismo día cada semana, sí: con un pedido programado llega por la mañana sin que tenga que pedirlo. La hora exacta depende de la ruta de la mensajería. Si necesita una hora fija, recójalo en Mataró a la hora que le confirmemos.' ),
+			array( '¿Pueden entregar cada semana a la misma hora?', 'El mismo día cada semana, sí: con un pedido programado llega antes de las 14:00 sin que tenga que pedirlo. Dentro de ese margen, la hora exacta la marca la ruta de MRW. Si necesita una hora fija, recójalo en Mataró a la hora que le confirmemos.' ),
 		),
 	),
 	// Llamada final: hoja de ruta (de Mataró a su almacén) y botón al formulario de cuenta de empresa, con WhatsApp como alternativa
@@ -64,7 +64,7 @@ return array(
 		'boton'      => 'Pedir mi precio',
 		'wa'         => 'O escríbanos por WhatsApp',
 		'wa_mensaje' => 'Hola, necesitamos hielo seco para nuestras rutas de reparto. ¿Nos dais precio?',
-		'ruta'       => array( array( 'Mataró', 'Pedido antes de las 12:00' ), array( 'Su almacén', 'Por la mañana, de martes a sábado' ) ),
+		'ruta'       => array( array( 'Mataró', 'Pedido antes de las 12:00' ), array( 'Su almacén', 'Antes de las 14:00, de martes a viernes' ) ),
 		'carga'      => '16 mm · −78,5 °C',
 	),
 );

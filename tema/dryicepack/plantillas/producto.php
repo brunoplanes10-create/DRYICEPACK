@@ -105,11 +105,12 @@ if ( function_exists( 'wc_print_notices' ) ) {
 					<legend class="p-grupo__titulo"><?php echo esc_html( $c['kilos'] ); ?></legend>
 					<?php // Regleta continua: un tramo por pack (4 o 5), separados por filetes, con su marca arriba ?>
 					<div class="p-kilos<?php echo count( $packs ) > 4 ? ' p-kilos--cinco' : ''; ?>" style="--n:<?php echo (int) max( 1, count( $packs ) ); ?>">
-						<?php foreach ( $packs as $kg => $precio ) : ?>
+						<?php foreach ( $packs as $kg => $precio ) : $pp = dipt_precio_pack( (float) $kg ); // precio por kilo con IVA (RD 3423/2000), también del pack de 5 kg cuando sustituye al de 3 ?>
 							<label class="p-kilo">
 								<input type="radio" name="dipt_kg" value="<?php echo esc_attr( $kg ); ?>"<?php checked( (float) $kg, (float) $kg0 ); ?>>
 								<span class="p-kilo__n"><?php echo esc_html( $kg ); ?><small>kg</small></span>
-								<span class="p-kilo__precio"><?php echo esc_html( dipt_euros( $precio * $iva ) ); ?></span>
+								<span class="p-kilo__precio"><?php echo esc_html( dipt_euros( $pp['con_iva'] ) ); ?></span>
+								<span class="p-kilo__kilo"><?php echo esc_html( dipt_euros( $pp['kilo'] ) . dipt_t( 'por_kilo' ) ); ?></span>
 							</label>
 						<?php endforeach; ?>
 					</div>
@@ -154,6 +155,19 @@ if ( function_exists( 'wc_print_notices' ) ) {
 					<?php foreach ( $c['confianza'] as $x ) : ?><li><?php echo dipt_icono( 'check' ); // phpcs:ignore ?><?php echo esc_html( $x ); ?></li><?php endforeach; ?>
 				</ul>
 			</form>
+			<?php // Fabricante, identificación del producto y advertencias junto al botón de compra (Reglamento (UE) 2023/988, art. 19): ficha técnica en mono, sin caja
+			$gpsr = $c['gpsr'] ?? ( dipt_contenido( 'producto', 'es' )['gpsr'] ?? array() );
+			if ( ! empty( $gpsr['filas'] ) ) : ?>
+				<section class="p-gpsr" aria-labelledby="p-gpsr-t">
+					<h2 class="p-gpsr__titulo dato" id="p-gpsr-t"><?php echo esc_html( $gpsr['titulo'] ); ?></h2>
+					<dl class="p-gpsr__filas">
+						<?php foreach ( $gpsr['filas'] as $fila ) : ?>
+							<div><dt class="dato"><?php echo esc_html( $fila[0] ); ?></dt><dd><?php echo esc_html( $fila[1] ); ?></dd></div>
+						<?php endforeach; ?>
+					</dl>
+					<?php if ( ! empty( $gpsr['enlace'] ) ) : ?><p class="p-gpsr__enlace"><a href="<?php echo esc_url( dipt_url( 'seguridad' ) ); ?>"><?php echo esc_html( $gpsr['enlace'] ); ?></a></p><?php endif; ?>
+				</section>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>

@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Dry ice for transport',
 	'seo'  => array(
 		'titulo'      => 'Dry ice for cold-chain and frozen transport | DryIcePack',
-		'descripcion' => 'Dry ice for frozen and chilled transport: it’s at −78.5 °C and leaves no water in the box. Order before 12:00 and it arrives tomorrow morning.',
+		'descripcion' => 'Dry ice for frozen and chilled transport: at −78.5 °C, with no water in the box. Order before 12:00 and it arrives the next day before 14:00.',
 	),
 	'migas' => array( 'Home', 'Uses', 'Cold-chain transport' ),
 	'hero'  => array(
-		'titulo' => 'Dry ice for frozen transport:|<em>tomorrow at your warehouse,</em>|<em>no meltwater.</em>',
-		'texto'  => 'At −78.5 °C, it turns to gas without melting and keeps the load cold all along the route. Order before 12:00 (Spanish time) and you’ll have it tomorrow morning (Tuesday to Saturday), or choose any day you like.',
+		'titulo' => 'Dry ice for frozen transport:|<em>at your warehouse before 14:00,</em>|<em>no meltwater.</em>',
+		'texto'  => 'At −78.5 °C, it turns to gas without melting and keeps the load cold all along the route. Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or choose any day you like.',
 		'boton'  => 'Open my account',
 		'datos'  => array( '−78.5 °C', '16 mm', 'No water', 'Monthly invoice' ),
 		'alt'    => 'Packing an order of frozen food in an insulated box with dry ice',
@@ -54,7 +54,7 @@ return array(
 			array( '3 mm or 16 mm for transport?', '16 mm: more mass per piece, so it lasts longer on the road. 3 mm cools faster and helps bring the temperature down at the start.' ),
 			array( 'Can I carry it in the van cab?', 'No. Always in the load area, with ventilation. In the cab, the CO₂ builds up and displaces the oxygen the driver breathes.' ),
 			array( 'Does it work for chilled, not frozen, products?', 'Yes, with care: separate the dry ice from the product with cardboard or a tray so it doesn’t freeze it. We’ll help you get the quantity right.' ),
-			array( 'Can you deliver every week at the same time?', 'On the same day every week, yes: with a scheduled order it arrives in the morning without you having to ask. The exact time depends on the courier’s route. If you need a fixed time, collect it in Mataró at the time we confirm with you.' ),
+			array( 'Can you deliver every week at the same time?', 'On the same day every week, yes: with a scheduled order it arrives before 14:00 without you having to ask. Within that window, the exact time depends on MRW’s route. If you need a fixed time, collect it in Mataró at the time we confirm with you.' ),
 		),
 	),
 	// Final call to action: route sheet (from Mataró to your warehouse) and button to the business account form, with WhatsApp as an alternative
@@ -64,7 +64,7 @@ return array(
 		'boton'      => 'Get my price',
 		'wa'         => 'Or message us on WhatsApp',
 		'wa_mensaje' => 'Hi, we need dry ice for our delivery routes. Could you give us a price?',
-		'ruta'       => array( array( 'Mataró', 'Order before 12:00' ), array( 'Your warehouse', 'In the morning, Tuesday to Saturday' ) ),
+		'ruta'       => array( array( 'Mataró', 'Order before 12:00' ), array( 'Your warehouse', 'Before 14:00, Tuesday to Friday' ) ),
 		'carga'      => '16 mm · −78.5 °C',
 	),
 );

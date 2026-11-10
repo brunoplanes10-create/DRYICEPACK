@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Hielo seco para fiestas y eventos',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco para fiestas y eventos: niebla baja | DryIcePack',
-		'descripcion' => 'Hielo seco para fiestas, bodas y Halloween: niebla por el suelo desde {pk} kg. Pide antes de las 12:00 y mañana lo tienes en casa, listo para usar.',
+		'descripcion' => 'Hielo seco para fiestas, bodas y Halloween: niebla por el suelo desde {pk} kg. Pide antes de las 12:00 y llega al día siguiente antes de las 14:00.',
 	),
 	'migas' => array( 'Inicio', 'Usos', 'Fiestas y eventos' ),
 	'hero'  => array(
-		'titulo' => 'Hielo seco para fiestas:|niebla por el suelo, <em>mañana en tu puerta.</em>',
-		'texto'  => '¿Quieres esa niebla que cubre el suelo en el primer baile, en el escenario o en Halloween? Se hace con agua caliente y hielo seco. Pide antes de las 12:00 y mañana por la mañana lo tienes (de martes a sábado), o elige el día que quieras. Desde {pk} kg.',
+		'titulo' => 'Hielo seco para fiestas:|niebla por el suelo, <em>en tu puerta antes de las 14:00.</em>',
+		'texto'  => '¿Quieres esa niebla que cubre el suelo en el primer baile, en el escenario o en Halloween? Se hace con agua caliente y hielo seco. Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elige el día que quieras. Desde {pk} kg.',
 		'boton'  => 'Hacer mi pedido',
 		'alt'    => 'Pareja bailando en una boda sobre una capa de niebla baja de hielo seco',
 	),
@@ -31,10 +31,11 @@ return array(
 		),
 	),
 	'halloween' => array(
-		'titulo' => 'Halloween cae en sábado este año.',
-		'texto'  => 'Pide antes de las 12:00 del jueves 29 de octubre y lo tienes el viernes 30. ¿Lo quieres el mismo sábado? Pídelo antes de las 12:00 del viernes: según zona y con suplemento de 11,74 €.',
+		// Sale del 1/9 al 31/10 de cada año (plantillas/eventos.php): sin fechas de un año concreto (en 2026 decía «JUE 29/10 · 12:00»)
+		'titulo' => 'Para Halloween, recíbelo la víspera.',
+		'texto'  => 'Pídelo antes de las 12:00 del día anterior a la entrega, o resérvalo antes y elige el día al pagar: llega antes de las 14:00. ¿Lo quieres el mismo sábado? Según zona, llega antes de las 12:00 y con un suplemento de {sabado_envio}.',
 		'enlace' => 'Hielo seco para Halloween',
-		'fecha'  => 'JUE 29/10 · 12:00', // último pedido para recibirlo el viernes 30 (rótulo en mono)
+		'fecha'  => '', // rótulo en mono con el último pedido del año (vacío: no se muestra)
 	),
 	'seguridad' => array(
 		'titulo' => '¿Es seguro|<em>con invitados?</em>',
@@ -43,7 +44,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntas de fiestas y eventos',
 		'lista'  => array(
-			array( '¿Cuándo lo pido para una boda el sábado?', 'Pídelo cuando quieras y elige que llegue el viernes (último momento para eso: jueves a las 12:00). Para recibirlo el mismo sábado, elige sábado: depende de la zona y lleva un suplemento de 11,74 € (IVA incluido). Cuanto más cerca del evento, mejor: se va sublimando con las horas.' ),
+			array( '¿Cuándo lo pido para una boda el sábado?', 'Pídelo cuando quieras y elige que llegue el viernes (último momento para eso: jueves a las 12:00). Para recibirlo el mismo sábado, elige sábado: llega antes de las 12:00, depende de la zona y lleva un suplemento de {sabado_envio} (IVA incluido). Cuanto más cerca del evento, mejor: se va sublimando con las horas.' ),
 			array( '¿La niebla moja o mancha?', 'No mancha: es vapor de agua condensado y CO₂. Con mucha niebla seguida, el suelo puede quedar húmedo: en una pista de baile, sécalo entre tandas para que nadie resbale.' ),
 			array( '¿Salta la alarma de incendios?', 'Los detectores de humo ópticos pueden reaccionar a la niebla densa. Pregúntalo en el local antes del evento.' ),
 		),
@@ -55,7 +56,7 @@ return array(
 		'boton'   => 'Pedir hielo seco',
 		'semana'  => 'Días de entrega',
 		'dias'    => array( array( 'L', 'Lunes' ), array( 'M', 'Martes' ), array( 'X', 'Miércoles' ), array( 'J', 'Jueves' ), array( 'V', 'Viernes' ), array( 'S', 'Sábado' ), array( 'D', 'Domingo' ) ),
-		'estados' => array( 'si' => 'Reparto por la mañana', 'zona' => 'Según zona, con suplemento', 'no' => 'Sin reparto' ),
+		'estados' => array( 'si' => 'Reparto antes de las 14:00', 'zona' => 'Según zona, con suplemento', 'no' => 'Sin reparto' ),
 		'nota'    => 'Al pagar solo aparecen los días con reparto en tu zona.',
 	),
 );

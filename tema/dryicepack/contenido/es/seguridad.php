@@ -48,7 +48,7 @@ return array(
 		'apartados' => array( array( '01', 'Identificación' ), array( '02', 'Peligros' ), array( '04', 'Primeros auxilios' ), array( '07', 'Manipulación' ), array( '08', 'Protección' ), array( '14', 'Transporte' ) ),
 	),
 	// Cierre: el titular ya revisado de la portada
-	'final' => array( 'titulo' => '¿Lo necesitas mañana?|<em>Pídelo antes de las 12:00.</em>' ),
+	'final' => array( 'titulo' => '¿Lo necesitas pronto?|<em>Pídelo antes de las 12:00.</em>' ),
 	'faq' => array(
 		'titulo' => 'Más preguntas de seguridad',
 		'lista'  => array(

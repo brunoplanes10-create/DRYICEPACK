@@ -455,6 +455,8 @@ function dip_enviar_confirmacion_recogida( WC_Order $pedido ) {
 		. '<p>' . esc_html( sprintf( $t['recogida_lista_cambio'], $c['telefono'], $c['whatsapp'] ) ) . '</p>';
 	$mailer = WC()->mailer();
 	$asunto = sprintf( $t['recogida_lista_asunto'], $pedido->get_order_number() );
+	// Envoltura común de los emails (inc/emails.php) en el idioma del pedido
+	if ( function_exists( 'dip_email_contexto' ) ) dip_email_contexto( array( 'idioma' => $idioma, 'previo' => $cuando, 'antetitulo' => '' ) );
 	$html   = $mailer->wrap_message( $asunto, $cuerpo );
 	$ok     = $mailer->send( $pedido->get_billing_email(), $asunto, $html );
 	if ( $ok ) {
@@ -466,6 +468,8 @@ function dip_enviar_confirmacion_recogida( WC_Order $pedido ) {
 
 add_action( 'woocommerce_email_after_order_table', static function ( $pedido, $a_admin, $texto_plano ) {
 	if ( ! $pedido instanceof WC_Order ) return;
+	// El email de pedido recibido (inc/avisos.php) ya dice el día arriba, con la hora y el efectivo
+	if ( ! apply_filters( 'dip_email_linea_entrega', true, $pedido ) ) return;
 	$texto = dip_texto_entrega( $pedido, $a_admin ? 'es' : null );
 	if ( ! $texto ) return;
 	// Al cliente que recoge: se le avisa de que confirmamos la hora antes y de cuánto trae en efectivo (importe exacto)

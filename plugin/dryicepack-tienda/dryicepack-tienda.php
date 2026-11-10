@@ -53,6 +53,8 @@ register_deactivation_hook( __FILE__, static function () {
 	wp_clear_scheduled_hook( 'dip_tarea_diaria' );
 	wp_clear_scheduled_hook( 'dip_mrw_actualizar' );
 	wp_clear_scheduled_hook( 'dip_revisar_entregas' );
+	foreach ( array( 'dip_eh_aviso_sabado', 'dip_eh_aviso_reparto', 'dip_eh_aviso_sin_numero', 'dip_eh_reintentar' ) as $dip_tarea ) wp_unschedule_hook( $dip_tarea ); // inc/envios-hoy.php
+	wp_unschedule_hook( 'dip_avisos_diarios' ); // inc/avisos.php: «Hoy llega» y recordatorio de recogida a las 8:00
 	flush_rewrite_rules();
 } );
 
@@ -91,6 +93,12 @@ add_action( 'plugins_loaded', static function () {
 	require_once DIP_TIENDA_DIR . 'inc/informes.php';
 	require_once DIP_TIENDA_DIR . 'inc/seguimiento-entregas.php'; // revisión diaria: pedidos reservados con antelación que caen en un festivo de MRW
 	require_once DIP_TIENDA_DIR . 'inc/resenas.php';              // email «¿Qué tal llegó tu hielo seco?» el día después de la entrega (reseña en Google)
+	require_once DIP_TIENDA_DIR . 'inc/envios-hoy.php';           // «Envíos de hoy»: número de MRW, aviso «va de camino» y avisos internos de sábado y sin número
+	require_once DIP_TIENDA_DIR . 'inc/mi-pedido.php';            // «Mi pedido»: estado del pedido sin cuenta, con enlace firmado (/mi-pedido/, /ca/la-meva-comanda/, /en/my-order/)
+	require_once DIP_TIENDA_DIR . 'inc/avisos-textos.php';        // textos de los emails al cliente (ES/CA/EN, tú y usted)
+	require_once DIP_TIENDA_DIR . 'inc/emails.php';               // diseño común de todos los emails (plantillas de WooCommerce sustituidas)
+	require_once DIP_TIENDA_DIR . 'inc/avisos.php';               // pedido recibido y avisos: va de camino, hoy llega (8:00), recogida (8:00), incidencia
+	require_once DIP_TIENDA_DIR . 'inc/condiciones-pdf.php';      // condiciones de venta en PDF adjuntas al email de pedido recibido
 }, 20 );
 
 add_action( 'init', static function () {

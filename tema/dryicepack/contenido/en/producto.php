@@ -4,11 +4,11 @@ return array(
 	'menu' => 'Buy dry ice',
 	'seo'  => array(
 		'titulo'      => 'Buy dry ice online: {pk}, 10, 15 and 20 kg | DryIcePack',
-		'descripcion' => 'Buy dry ice from {pk} kg, as 3 mm pellets or 16 mm nuggets. See the total with delivery before you pay. Order before 12:00 and it arrives tomorrow.',
+		'descripcion' => 'Buy dry ice from {pk} kg, as 3 mm pellets or 16 mm nuggets, with delivery in the total. Order before 12:00 and it arrives the next day before 14:00.',
 	),
 	'migas'   => array( 'Home', 'Buy dry ice' ),
 	'titulo'  => 'Buy dry ice with no surprise delivery costs',
-	'sub'     => 'Order before 12:00 and you’ll have it tomorrow morning (Tuesday to Saturday), or pick any day you like. The total already includes delivery.',
+	'sub'     => 'Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or pick any day you like. The total already includes delivery.',
 	'galeria' => array(
 		'3mm'  => array( array( 'caja-3mm', 'Open box of 3 mm dry ice pellets, with vapour' ), array( 'cenital-3mm', 'Top view of 3 mm dry ice pellets' ), array( 'caja-3mm-lateral', 'EPS box of 3 mm pellets with the lid propped against it' ) ),
 		'16mm' => array( array( 'caja-16mm-niebla', 'Open box of 16 mm dry ice nuggets, with vapour' ), array( 'cenital-16mm', 'Top view of 16 mm dry ice nuggets' ), array( 'cenital-caja-nuggets', 'Open EPS box of 16 mm nuggets, seen from above' ) ),
@@ -33,13 +33,13 @@ return array(
 	'cp_no_valido' => 'Postcode not valid',
 	'cp_corto'     => 'Missing digits: 5 needed',
 	// Delivery line with the postcode (%1$s = "08301 · Barcelona", %2$s = date); "medida" ends with a WhatsApp link; "fuera" doesn't (no delivery)
-	'llega_cp_ok'     => '%1$s — arrives on the morning of %2$s',
-	'llega_cp_sabado' => 'Or %1$s in some areas: +%2$s',
+	'llega_cp_ok'     => '%1$s — arrives on %2$s before 14:00',
+	'llega_cp_sabado' => 'Or %1$s before 12:00, in some areas: +%2$s',
 	'llega_cp_fuera'  => 'we only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla.',
 	'llega_cp_medida' => 'over 150 kg outside the province of Barcelona: order via',
 	'llega_cp_error'  => 'Postcode %s does not exist in Spain. Check the 5 digits.',
-	'llega'     => 'You’ll have it on the morning of %s',
-	'llega_hoy' => 'Order before 12:00 (Spanish time) and you’ll have it on the morning of %s',
+	'llega'     => 'It arrives on %s before 14:00',
+	'llega_hoy' => 'Order before 12:00 (Spanish time) and it arrives on %s before 14:00',
 	'fuera'     => 'We only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla.',
 	'precio'    => 'Dry ice',
 	'envio'     => 'Delivery',
@@ -50,6 +50,16 @@ return array(
 	'max'       => 'Up to 250 kg per order. Need more? Message us and we’ll give you a price and a day.',
 	'medida'    => 'Over 150 kg outside the province of Barcelona: that delivery is arranged individually. Message us on',
 	'confianza' => array( 'Card, Apple Pay or Google Pay', 'Invoices for businesses', 'No account needed' ),
+	// Información de seguridad del producto junto al botón de compra (Reglamento (UE) 2023/988, art. 19)
+	'gpsr' => array(
+		'titulo' => 'Manufacturer and product safety',
+		'filas'  => array(
+			array( 'Manufacturer', 'INDUNOVA IMS S.L. (DryIcePack brand) · Ronda Alfonso X El Sabio 10, 2º 1ª, 08301 Mataró, Spain · info@dryicepack.es' ),
+			array( 'Product', 'Solid carbon dioxide (dry ice), UN 1845, as 3 mm pellets or 16 mm nuggets, in an EPS box.' ),
+			array( 'Warnings', 'At −78.5 °C it burns the skin: use thermal gloves or tongs. Only in ventilated spaces: CO₂ displaces oxygen. Never in a closed container. Never eat or drink it. Keep out of reach of children and pets. In the car, in the boot and with ventilation.' ),
+		),
+		'enlace' => 'Safety rules and data sheet',
+	),
 	'caja' => array(
 		'titulo' => 'How it arrives|<em>at your door.</em>',
 		'capas'  => array(
@@ -88,11 +98,11 @@ return array(
 		'titulo'   => 'Before you pay',
 		'empresas' => 'Business account with monthly invoicing',
 		'lista'    => array(
-			array( 'When will it arrive?', 'If you order before 12:00, Monday to Thursday, it leaves the same day and you have it the next morning. Order on Friday and it arrives on Saturday (depending on the area, with an €11.74 surcharge) or on Tuesday. We don’t deliver on Sunday or Monday. You choose the day at checkout.' ),
+			array( 'When will it arrive?', 'If you order before 12:00, Monday to Thursday, it leaves the same day and arrives the next day before 14:00. Order on Friday and it arrives on Saturday before 12:00 (depending on the area, with a {sabado_envio} surcharge) or on Tuesday. We don’t deliver on Sunday or Monday. You choose the day at checkout.' ),
 			array( 'Can I order for another day?', 'Yes: at checkout you can choose any day in the next 90 with delivery to your area, Tuesday to Saturday (Saturday depending on the area, with a surcharge). Order it for the day you’ll use it: dry ice sublimates over time.' ),
 			array( 'How long does the ice last in the box?', 'It depends on the temperature and how often the box is opened. Order it for the day you’ll use it and keep it closed until then. If you need it for several days, message us and we’ll work it out.' ),
 			array( 'What if I need an invoice?', 'If you’re an individual and the order is up to €400 (VAT included), the simplified invoice reaches you by email from info@dryicepack.es, without asking. If you’re buying for a company or as self-employed, tick the box at checkout and enter the company name and tax ID: you get the full invoice. If you forget, we’ll send you a link to request it.' ),
-			array( 'Can I return it?', 'Dry ice sublimates from the moment it leaves us, so there is no right of withdrawal. If there’s a problem when it arrives, call us the same day.' ),
+			array( 'Can I return it?', 'Dry ice sublimates from the moment it leaves us, so there is no right of withdrawal. It does have a legal guarantee: if it arrives in poor condition, we replace it or refund you, at no cost. Let us know the same day, with photos if you can, and we’ll replace it sooner.' ),
 			array( 'How do I store it when it arrives?', 'With thermal gloves, never with bare hands. In its box, with the lid on but not taped shut, somewhere ventilated and out of reach of children and pets. Never in the freezer or an airtight container: the pressure can burst it. It must never be eaten or drunk. And if you take it by car, put it in the boot and keep the car ventilated.' ),
 		),
 	),

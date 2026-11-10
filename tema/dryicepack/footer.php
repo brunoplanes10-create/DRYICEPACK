@@ -9,7 +9,8 @@ if ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url()
 <footer class="pie-enfocado">
 	<div class="envoltura">
 		<span><?php echo esc_html( dipt_t( 'derechos' ) ); ?></span>
-		<nav aria-label="Legal"><?php foreach ( dipt_t( 'legales' ) as $dipt_e ) : ?><a href="<?php echo esc_url( dipt_url( $dipt_e[0] ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $dipt_e[1] ); ?></a><?php endforeach; ?></nav>
+		<?php // «Configurar cookies» también en el pago: vuelve a abrir el aviso del plugin (data-dip-cookies), como en el pie normal ?>
+		<nav aria-label="Legal"><?php foreach ( dipt_t( 'legales' ) as $dipt_e ) : ?><a href="<?php echo esc_url( dipt_url( $dipt_e[0] ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $dipt_e[1] ); ?></a><?php endforeach; ?><button type="button" data-dip-cookies><?php echo esc_html( dipt_t( 'config_cookies' ) ); ?></button></nav>
 	</div>
 </footer>
 <?php wp_footer(); ?>

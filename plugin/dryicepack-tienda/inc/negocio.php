@@ -5,7 +5,7 @@
  * Tarifa de transporte del 31/08/2026 (igual en toda la península, sin IVA):
  *   hasta 2 kg 8,53 € · hasta 5 kg 10,32 € · hasta 10 kg 13,19 € · cada kg de más 1,12 €
  * Peso facturable = hielo + 1 kg por caja (medido el 31/08/2026), redondeado al alza.
- * Corte a las 12:00 (Madrid). Sale de lunes a viernes y llega al día siguiente por la mañana.
+ * Corte a las 12:00 (Madrid). Sale de lunes a viernes y llega al día siguiente antes de las 14:00 (sábado, antes de las 12:00).
  * Sin entregas en domingo ni lunes. Sábado según zona con suplemento de 9,70 € + IVA.
  * Festivos: la lista manual de Ajustes (Mataró, Cataluña, España) y, por encima, los de MRW (inc/festivos-mrw.php):
  * sin salida si cierra MRW Mataró y sin entrega si cierra MRW en el destino.
@@ -21,6 +21,10 @@ if ( ! defined( 'DIP_PRODUCT_SLUG' ) )                 define( 'DIP_PRODUCT_SLUG
 if ( ! defined( 'DIP_SATURDAY_SURCHARGE_EXCL_TAX' ) )  define( 'DIP_SATURDAY_SURCHARGE_EXCL_TAX', 9.70 );
 if ( ! defined( 'DIP_CUTOFF_HOUR' ) )                  define( 'DIP_CUTOFF_HOUR', 12 );
 if ( ! defined( 'DIP_CUTOFF_MINUTE' ) )                define( 'DIP_CUTOFF_MINUTE', 0 );
+// MRW entrega antes de las 14:00 entre semana y antes de las 12:00 el sábado (09/11/2026). Una sola pareja para toda la
+// tienda: «Envíos de hoy», «Mi pedido» y los avisos al cliente (inc/envios-hoy.php, inc/mi-pedido.php, inc/avisos.php).
+if ( ! defined( 'DIP_HORA_ENTREGA' ) )                 define( 'DIP_HORA_ENTREGA', '14:00' );
+if ( ! defined( 'DIP_HORA_ENTREGA_SABADO' ) )          define( 'DIP_HORA_ENTREGA_SABADO', '12:00' );
 if ( ! defined( 'DIP_TARIFA_HASTA_2' ) )               define( 'DIP_TARIFA_HASTA_2', 8.53 );
 if ( ! defined( 'DIP_TARIFA_HASTA_5' ) )               define( 'DIP_TARIFA_HASTA_5', 10.32 );
 if ( ! defined( 'DIP_TARIFA_HASTA_10' ) )              define( 'DIP_TARIFA_HASTA_10', 13.19 );

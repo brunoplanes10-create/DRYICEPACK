@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Hielo seco para laboratorios',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco para transporte de muestras | DryIcePack',
-		'descripcion' => 'Hielo seco para transporte de muestras a −78,5 °C, en pellets de 3 mm o nuggets de 16 mm. Pida antes de las 12:00 y lo tiene mañana por la mañana.',
+		'descripcion' => 'Hielo seco para transporte de muestras, en pellets de 3 mm o nuggets de 16 mm. Pida antes de las 12:00 y llega al día siguiente antes de las 14:00.',
 	),
 	'migas' => array( 'Inicio', 'Usos', 'Laboratorios' ),
 	'hero'  => array(
-		'titulo' => 'Hielo seco para transporte de muestras,|<em>mañana por la mañana.</em>',
-		'texto'  => 'Muestras, reactivos y kits a −78,5 °C, sin humedad en la caja. Pida antes de las 12:00 y lo tiene mañana (de martes a sábado), o elija otro día.',
+		'titulo' => 'Hielo seco para transporte de muestras,|<em>en su laboratorio antes de las 14:00.</em>',
+		'texto'  => 'Muestras, reactivos y kits a −78,5 °C, sin humedad en la caja. Pida antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elija otro día.',
 		'boton'  => 'Abrir mi cuenta',
 		'alt'    => 'Tubos de muestras rodeados de hielo seco en una caja aislante',
 	),
@@ -52,14 +52,14 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntas de laboratorio',
 		'lista'  => array(
-			array( '¿A qué hora llega?', 'Por la mañana del día siguiente, si pide antes de las 12:00. Entregamos de martes a viernes, y el sábado según zona y con suplemento. La hora exacta depende de la ruta de la mensajería.' ),
+			array( '¿A qué hora llega?', 'Antes de las 14:00 del día siguiente, si pide antes de las 12:00. Entregamos de martes a viernes y, según zona, el sábado antes de las 12:00, con suplemento. Dentro de ese margen, la hora exacta la marca la ruta de MRW.' ),
 			array( '¿Puedo guardarlo en el ultracongelador?', 'No. En un congelador cerrado el gas genera presión y puede dañar el equipo. Consérvelo en su caja de EPS, en un sitio ventilado.' ),
 			array( '¿Cuánto hielo seco pongo por caja?', 'Depende de las horas de viaje, del tamaño de la caja y de la temperatura exterior. Díganos la ruta y el tipo de caja y le orientamos.' ),
 		),
 	),
 	// Cierre común (rediseño 13/10/2026): el titular de la portada pasado a usted y la fecha real de entrega, de usted
 	'final' => array(
-		'titulo' => '¿Lo necesita mañana?|<em>Pídalo antes de las 12:00.</em>',
-		'corte'  => array( 'Pida antes de las 12:00 y lo tiene el %s por la mañana', 'Quedan %s para pedir hoy', 'Si pide ahora, lo tiene el %s por la mañana' ),
+		'titulo' => '¿Lo necesita pronto?|<em>Pídalo antes de las 12:00.</em>',
+		'corte'  => array( 'Pida antes de las 12:00 y llega el %s antes de las 14:00', 'Quedan %s para pedir hoy', 'Si pide ahora, llega el %s antes de las 14:00' ),
 	),
 );

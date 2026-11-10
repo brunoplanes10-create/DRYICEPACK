@@ -64,5 +64,5 @@ return array(
 			array( 'How much do I need?', 'It depends on the use, the hours and the insulation. For fog, as a guide: {pk} kg at home, 10 kg for a big party and 15 to 20 kg for a bar or an event. For transport or samples, tell us the hours and the volume and we’ll work it out.' ),
 		),
 	),
-	'final' => array( 'titulo' => 'Now you know what it is. Order before 12:00 and have it tomorrow.', 'boton' => 'Buy dry ice' ),
+	'final' => array( 'titulo' => 'Now you know what it is. Order before 12:00 and it arrives the next day before 14:00.', 'boton' => 'Buy dry ice' ),
 );

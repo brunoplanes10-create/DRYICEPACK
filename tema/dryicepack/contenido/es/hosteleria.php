@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Hielo seco para hostelería',
 	'seo'  => array(
 		'titulo'      => 'Hielo seco para cócteles y hostelería | DryIcePack',
-		'descripcion' => 'Hielo seco para cócteles, humo al emplatar y frío en barra, siempre con doble recipiente. Pida antes de las 12:00 y lo tiene mañana en su local.',
+		'descripcion' => 'Hielo seco para cócteles, humo al emplatar y frío en barra, con doble recipiente. Pida antes de las 12:00 y llega al día siguiente antes de las 14:00.',
 	),
 	'migas' => array( 'Inicio', 'Usos', 'Hostelería' ),
 	'hero'  => array(
-		'titulo' => 'Hielo seco para cócteles y hostelería,|<em>mañana en su local.</em>',
-		'texto'  => 'Humo al emplatar, cócteles con niebla y frío en barra, sin que el hielo seco toque nunca lo que se bebe. Pida antes de las 12:00 y mañana por la mañana lo tiene (de martes a sábado), o elija el día que quiera.',
+		'titulo' => 'Hielo seco para cócteles y hostelería,|<em>en su local antes de las 14:00.</em>',
+		'texto'  => 'Humo al emplatar, cócteles con niebla y frío en barra, sin que el hielo seco toque nunca lo que se bebe. Pida antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elija el día que quiera.',
 		'boton'  => 'Hacer mi pedido',
 		'alt'    => 'Camarero sirviendo postres sobre una bandeja con niebla de hielo seco',
 	),
@@ -31,7 +31,7 @@ return array(
 		'titulo' => '¿Lo necesita para el fin de semana?|<em>Así llega a tiempo.</em>',
 		'pasos'  => array(
 			array( 'Jueves, antes de las 12:00', 'Pida por WhatsApp o en la web.' ),
-			array( 'Viernes por la mañana', 'Llega a su local en caja aislante, listo para usar.' ),
+			array( 'Viernes, antes de las 14:00', 'Llega a su local en caja aislante, listo para usar.' ),
 			array( 'Viernes y sábado', 'Lo usa en cada servicio y cierra la caja entre uso y uso: así dura más.' ),
 			array( 'La semana siguiente', '¿Otra vez lo mismo? Con una cuenta de empresa lo repite por WhatsApp y paga con una factura al mes.' ),
 		),
@@ -64,7 +64,7 @@ return array(
 	),
 	// Cierre común (rediseño 13/10/2026): el titular de la portada pasado a usted y la fecha real de entrega, de usted (como Laboratorios)
 	'final' => array(
-		'titulo' => '¿Lo necesita mañana?|<em>Pídalo antes de las 12:00.</em>',
-		'corte'  => array( 'Pida antes de las 12:00 y lo tiene el %s por la mañana', 'Quedan %s para pedir hoy', 'Si pide ahora, lo tiene el %s por la mañana' ),
+		'titulo' => '¿Lo necesita pronto?|<em>Pídalo antes de las 12:00.</em>',
+		'corte'  => array( 'Pida antes de las 12:00 y llega el %s antes de las 14:00', 'Quedan %s para pedir hoy', 'Si pide ahora, llega el %s antes de las 14:00' ),
 	),
 );

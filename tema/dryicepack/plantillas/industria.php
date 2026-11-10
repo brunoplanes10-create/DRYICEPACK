@@ -142,7 +142,8 @@ for ( $k = 10; $k < 400; $k += 10 ) {
 					<p class="campo"><label for="n-<?php echo esc_attr( $nombre ); ?>"><?php echo esc_html( $etq ); ?></label><input id="n-<?php echo esc_attr( $nombre ); ?>" name="<?php echo esc_attr( $nombre ); ?>" type="<?php echo esc_attr( $tipos[ $nombre ] ?? 'text' ); ?>"<?php echo $req; // phpcs:ignore ?>></p>
 				<?php endforeach; ?>
 			</div>
-			<label class="casilla"><input type="checkbox" name="privacidad" value="1" required> <span><?php echo wp_kses( sprintf( dipt_t( 'form_privacidad_usted' ), esc_url( dipt_url( 'privacidad' ) ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label>
+			<label class="casilla"><input type="checkbox" name="privacidad" value="1" required aria-describedby="n-form-capa"> <span><?php echo wp_kses( sprintf( dipt_t( 'form_privacidad_usted' ), esc_url( dipt_url( 'privacidad' ) ) ), array( 'a' => array( 'href' => array() ) ) ); ?></span></label>
+			<p class="form-capa" id="n-form-capa"><?php echo esc_html( dipt_t( 'form_capa_usted' ) ); // primera capa de privacidad (RGPD art. 13) ?></p>
 			<button type="submit" class="boton boton--hielo"><span><?php echo esc_html( $c['form']['boton'] ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></button>
 			<p class="aviso-form<?php echo $enviado ? ' aviso-form--ok' : ( $error ? ' aviso-form--error' : '' ); ?>" data-form-aviso role="status" tabindex="-1"<?php echo ( $enviado || $error ) ? '' : ' hidden'; ?>><?php echo esc_html( $enviado ? dipt_t( 'form_ok_usted' ) : ( $error ? dipt_t( 'form_error_usted' ) : '' ) ); ?></p>
 		</form>

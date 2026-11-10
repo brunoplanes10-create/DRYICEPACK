@@ -3,15 +3,15 @@
 return array(
 	'menu' => 'Enviaments i terminis',
 	'seo'  => array(
-		'titulo'      => 'Enviament de gel sec en 24 h a la península | DryIcePack',
-		'descripcion' => 'Enviament de gel sec a tota la península: demana abans de les 12:00 i demà al matí el tens. Calcula aquí el cost de l\'enviament o recull-lo a Mataró.',
+		'titulo'      => 'Enviament de gel sec: arriba abans de les 14:00 | DryIcePack',
+		'descripcion' => 'Enviament de gel sec a tota la península: demana abans de les 12:00 i arriba l\'endemà abans de les 14:00. Calcula l\'enviament o recull-lo a Mataró.',
 	),
 	'migas'  => array( 'Inici', 'Enviaments i terminis' ),
 	'hero'   => array(
-		'titulo'   => 'Enviament de gel sec:|<em>demanes avui, demà el tens.</em>',
+		'titulo'   => 'Enviament de gel sec:|<em>demanes abans de les 12:00, arriba abans de les 14:00.</em>',
 		'reloj'    => array( 'antes' => 'Temps per demanar avui', 'despues' => 'Per avui ja ha passat l\'hora límit' ),
-		'llega'    => array( 'antes' => 'Si demanes ara, el tens el %s al matí.', 'despues' => 'Si demanes ara, el tens el %s al matí.' ),
-		'texto'    => 'El que entra abans de les 12:00, de dilluns a divendres, surt aquell mateix dia i arriba l\'endemà al matí, de dimarts a dissabte (el dissabte, segons la zona). O tries en pagar qualsevol dia dels pròxims 90.',
+		'llega'    => array( 'antes' => 'Si demanes ara, arriba el %s abans de les 14:00.', 'despues' => 'Si demanes ara, arriba el %s abans de les 14:00.' ),
+		'texto'    => 'El que entra abans de les 12:00, de dilluns a divendres, surt aquell mateix dia i arriba l\'endemà: de dimarts a divendres, abans de les 14:00; el dissabte, segons la zona, abans de les 12:00. O tries en pagar qualsevol dia dels pròxims 90.',
 		'alt'      => 'Repartidor carregant una caixa de gel sec a la furgoneta',
 	),
 	'semana' => array(
@@ -24,9 +24,9 @@ return array(
 			array( 1, 2, '' ),
 			array( 2, 3, '' ),
 			array( 3, 4, '' ),
-			array( 4, 5, 'Dissabte segons la zona, +11,74 €. Si no, dimarts.' ),
+			array( 4, 5, 'Dissabte segons la zona, abans de les 12:00, +{sabado_envio}. Si no, dimarts.' ),
 		),
-		'finde'  => 'Les comandes de dissabte i diumenge, o de divendres després de les 12:00, surten dilluns i arriben dimarts.',
+		'finde'  => 'De dimarts a divendres arriba abans de les 14:00; el dissabte, abans de les 12:00. Les comandes de dissabte i diumenge, o de divendres després de les 12:00, surten dilluns i arriben dimarts.',
 		'festivos' => 'Si és festiu a Mataró, a Catalunya o a tot Espanya, no surten comandes, i tampoc no s\'entrega en un festiu de la missatgeria a la teva zona. No cal que ho miris: en pagar només apareixen els dies possibles.',
 	),
 	'tarifa' => array(
@@ -76,7 +76,7 @@ return array(
 	),
 	'cobertura' => array(
 		'titulo' => 'Arriba a la meva zona?',
-		'si'     => array( 'titulo' => 'Sí, l\'endemà al matí', 'texto' => 'Tota l\'Espanya peninsular: de Girona a Huelva i de la Corunya a Múrcia.' ),
+		'si'     => array( 'titulo' => 'Sí, l\'endemà abans de les 14:00', 'texto' => 'Tota l\'Espanya peninsular: de Girona a Huelva i de la Corunya a Múrcia.' ),
 		'no'     => array( 'titulo' => 'Fora de la península,&nbsp;no','texto' => 'Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla, ni fora d\'Espanya.' ),
 		'zonas'  => 'Veure les zones d\'entrega a prop de Barcelona',
 		// Mapa de cobertura (redisseny 14/10/2026)
@@ -88,9 +88,9 @@ return array(
 		'titulo' => 'Dubtes sobre l\'enviament',
 		'lista'  => array(
 			array( 'Com va embalat?', 'En caixa d\'EPS amb parets de 40 mm, tancada amb la tapa però no hermètica, perquè el CO₂ pugui sortir durant el viatge.' ),
-			array( 'Arriba el mateix pes que demano?', 'El gel sec se sublima des que surt de la nau, així que durant el viatge perd una mica de pes. Per això surt el mateix dia que es prepara i arriba l\'endemà al matí: el mínim temps possible en camí.' ),
-			array( 'I si no hi soc quan arriba?', 'El millor és donar una adreça on hi hagi algú al matí. Si així i tot no hi ets, la missatgeria ho torna a intentar: avisa\'ns com més aviat millor per seguir l\'enviament, perquè el gel no espera.' ),
-			array( 'Puc demanar una hora concreta?', 'El repartiment és al matí i l\'hora exacta la marca la ruta de la missatgeria. Si necessites saber l\'hora, recull-lo a Mataró: te la confirmem abans.' ),
+			array( 'Arriba el mateix pes que demano?', 'El gel sec se sublima des que surt de la nau, així que durant el viatge perd una mica de pes. Per això surt el mateix dia que es prepara i arriba l\'endemà abans de les 14:00: el mínim temps possible en camí. Si arriba amb més pèrdua de la normal, te\'l reposem.' ),
+			array( 'I si no hi soc quan arriba?', 'El millor és donar una adreça on hi hagi algú fins a les 14:00 (el dissabte, fins a les 12:00). Si així i tot no hi ets, MRW deixa un avís i ho torna a intentar: avisa\'ns com més aviat millor per seguir l\'enviament, perquè el gel no espera.' ),
+			array( 'Puc demanar una hora concreta?', 'MRW entrega abans de les 14:00 (el dissabte, abans de les 12:00); l\'hora exacta la marca la seva ruta. Si necessites saber l\'hora, recull-lo a Mataró: te la confirmem abans.' ),
 			array( 'Feu enviaments urgents el mateix dia?', 'No per missatgeria. Si ets a prop de Mataró, el pots recollir el mateix dia si demanes abans de les 12:00. Et confirmem l\'hora per telèfon o WhatsApp.' ),
 		),
 	),

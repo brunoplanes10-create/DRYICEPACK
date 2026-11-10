@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Gel sec per al transport',
 	'seo'  => array(
 		'titulo'      => 'Gel sec per al transport de congelats | DryIcePack',
-		'descripcion' => 'Gel sec per al transport de congelats i refrigerats: a −78,5 °C i sense aigua a la caixa. Demani abans de les 12:00 i el tindrà demà al matí.',
+		'descripcion' => 'Gel sec per al transport de congelats: a −78,5 °C i sense aigua a la caixa. Demani abans de les 12:00 i li arriba l\'endemà abans de les 14:00.',
 	),
 	'migas' => array( 'Inici', 'Usos', 'Transport en fred' ),
 	'hero'  => array(
-		'titulo' => 'Gel sec per al transport de congelats,|<em>demà al seu magatzem i sense aigua a la caixa.</em>',
-		'texto'  => 'A −78,5 °C, passa de sòlid a gas sense fondre\'s i manté el fred durant la ruta. Demani abans de les 12:00 i demà al matí el té (de dimarts a dissabte), o triï el dia que vulgui. Amb compte d\'empresa, una factura al mes.',
+		'titulo' => 'Gel sec per al transport de congelats,|<em>al seu magatzem abans de les 14:00 i sense aigua a la caixa.</em>',
+		'texto'  => 'A −78,5 °C, passa de sòlid a gas sense fondre\'s i manté el fred durant la ruta. Demani abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O triï el dia que vulgui. Amb compte d\'empresa, una factura al mes.',
 		'boton'  => 'Obrir un compte',
 		'datos'  => array( '−78,5 °C', '16 mm', 'Sense aigua', 'Factura mensual' ),
 		'alt'    => 'Preparació d\'una comanda d\'aliments congelats en caixa isotèrmica amb gel sec',
@@ -54,7 +54,7 @@ return array(
 			array( '3 mm o 16 mm per al transport?', '16 mm: més massa per peça, així que aguanta més hores en ruta. Els de 3 mm refreden més de pressa i serveixen per baixar la temperatura al començament.' ),
 			array( 'El puc portar a la cabina de la furgoneta?', 'No. Sempre a la zona de càrrega i ventilant. A la cabina el CO₂ s\'acumula i desplaça l\'oxigen que respira el conductor.' ),
 			array( 'Serveix per a producte refrigerat, no congelat?', 'Sí, amb compte: separi el gel sec del producte amb cartó o una safata perquè no el congeli. L\'ajudem a ajustar la quantitat.' ),
-			array( 'Poden entregar cada setmana a la mateixa hora?', 'El mateix dia cada setmana, sí: amb una comanda programada arriba al matí sense que l\'hagi de demanar. L\'hora exacta depèn de la ruta de la missatgeria. Si necessita una hora fixa, reculli-la a Mataró a l\'hora que li confirmem.' ),
+			array( 'Poden entregar cada setmana a la mateixa hora?', 'El mateix dia cada setmana, sí: amb una comanda programada arriba abans de les 14:00 sense que l\'hagi de demanar. Dins d\'aquest marge, l\'hora exacta la marca la ruta de MRW. Si necessita una hora fixa, reculli-la a Mataró a l\'hora que li confirmem.' ),
 		),
 	),
 	// Crida final: full de ruta (de Mataró al seu magatzem) i botó al formulari de compte d'empresa, amb WhatsApp com a alternativa
@@ -64,7 +64,7 @@ return array(
 		'boton'      => 'Demanar el preu',
 		'wa'         => 'O escrigui\'ns per WhatsApp',
 		'wa_mensaje' => 'Hola, necessitem gel sec per a les nostres rutes de repartiment. Ens doneu preu?',
-		'ruta'       => array( array( 'Mataró', 'Comanda abans de les 12:00' ), array( 'El seu magatzem', 'Al matí, de dimarts a dissabte' ) ),
+		'ruta'       => array( array( 'Mataró', 'Comanda abans de les 12:00' ), array( 'El seu magatzem', 'Abans de les 14:00, de dimarts a divendres' ) ),
 		'carga'      => '16 mm · −78,5 °C',
 	),
 );

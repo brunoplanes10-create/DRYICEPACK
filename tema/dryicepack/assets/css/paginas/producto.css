@@ -76,7 +76,10 @@
 .p-kilo__n small { font-family: var(--f-texto); font-weight: 600; font-size: .78rem; letter-spacing: 0; margin-left: .2rem; }
 .p-kilo__precio { font-family: var(--f-mono); font-size: .75rem; color: var(--c-acero); }
 .p-kilo:has(input:checked) .p-kilo__precio { color: var(--c-hielo); }
-@media (max-width: 480px) { .p-kilos--cinco .p-kilo__precio { font-size: .68rem; letter-spacing: -.03em; } .p-kilos--cinco .p-kilo__n { font-size: 1.45rem; } } /* 5 packs en una fila a 390 px */
+/* Precio por kilo con IVA (RD 3423/2000): una línea más pequeña debajo del precio del pack */
+.p-kilo__kilo { font-family: var(--f-mono); font-size: .66rem; line-height: 1.2; letter-spacing: -.01em; white-space: nowrap; color: var(--c-acero); }
+.p-kilo:has(input:checked) .p-kilo__kilo { color: var(--c-hielo); }
+@media (max-width: 480px) { .p-kilos--cinco .p-kilo__precio { font-size: .68rem; letter-spacing: -.03em; } .p-kilos--cinco .p-kilo__kilo { font-size: .6rem; letter-spacing: -.04em; } .p-kilos--cinco .p-kilo__n { font-size: 1.45rem; } } /* 5 packs en una fila a 390 px */
 
 .p-fila { display: grid; grid-template-columns: auto 1fr; gap: 1rem; }
 .p-cajas { display: inline-grid; grid-template-columns: 48px 56px 48px; height: 52px; border: 1px solid var(--c-linea-fuerte); border-radius: var(--radio); overflow: hidden; background: #fff; }
@@ -147,6 +150,16 @@
 .p-confianza { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; list-style: none; margin: 0; padding: 0; color: var(--c-acero); font-size: .85rem; font-weight: 500; }
 .p-confianza li { display: flex; align-items: center; gap: .35rem; }
 .p-confianza .ico { width: 16px; height: 16px; color: var(--c-marino); }
+/* Fabricante y seguridad (GPSR): ficha técnica sobria bajo el botón, separada por un filete, sin caja ni color de aviso */
+.p-gpsr { margin-top: 1.6rem; padding-top: 1.1rem; border-top: 1px solid var(--c-linea-fuerte); font-size: .8rem; line-height: 1.5; color: var(--c-acero); }
+.p-gpsr__titulo { margin: 0 0 .75rem; font-weight: 500; color: var(--c-tinta); }
+.p-gpsr__filas { display: grid; gap: .6rem; margin: 0; }
+.p-gpsr__filas div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: .9rem; }
+.p-gpsr dt { padding-top: .12rem; font-size: .7rem; color: var(--c-tinta); }
+.p-gpsr dd { margin: 0; }
+.p-gpsr__enlace { margin: .8rem 0 0; }
+.p-gpsr__enlace a { color: var(--c-marino); font-weight: 600; text-underline-offset: .15em; }
+@media (max-width: 480px) { .p-gpsr__filas div { grid-template-columns: minmax(0, 1fr); gap: .1rem; } }
 
 @media (max-width: 1000px) {
 	.p-compra { padding-top: calc(var(--alto-cabecera) + 1.25rem); }

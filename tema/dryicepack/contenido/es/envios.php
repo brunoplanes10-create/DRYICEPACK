@@ -3,15 +3,15 @@
 return array(
 	'menu' => 'Envíos y plazos',
 	'seo'  => array(
-		'titulo'      => 'Envío de hielo seco en 24 h a toda la península | DryIcePack',
-		'descripcion' => 'Envío de hielo seco a toda la península: pide antes de las 12:00 y mañana por la mañana lo tienes. Calcula aquí el envío o recógelo en Mataró.',
+		'titulo'      => 'Envío de hielo seco: llega antes de las 14:00 | DryIcePack',
+		'descripcion' => 'Envío de hielo seco a toda la península: pide antes de las 12:00 y llega al día siguiente antes de las 14:00. Calcula el envío o recógelo en Mataró.',
 	),
 	'migas'  => array( 'Inicio', 'Envíos y plazos' ),
 	'hero'   => array(
-		'titulo'   => 'Envío de hielo seco:|<em>pides hoy, mañana lo tienes.</em>',
+		'titulo'   => 'Envío de hielo seco:|<em>pides antes de las 12:00, llega antes de las 14:00.</em>',
 		'reloj'    => array( 'antes' => 'Tiempo para pedir hoy', 'despues' => 'Por hoy ya ha pasado la hora límite' ),
-		'llega'    => array( 'antes' => 'Si pides ahora, lo tienes el %s por la mañana.', 'despues' => 'Si pides ahora, lo tienes el %s por la mañana.' ),
-		'texto'    => 'Lo que entra antes de las 12:00, de lunes a viernes, sale ese mismo día y llega al siguiente por la mañana, de martes a sábado (el sábado, según zona). O eliges al pagar cualquier día de los próximos 90.',
+		'llega'    => array( 'antes' => 'Si pides ahora, llega el %s antes de las 14:00.', 'despues' => 'Si pides ahora, llega el %s antes de las 14:00.' ),
+		'texto'    => 'Lo que entra antes de las 12:00, de lunes a viernes, sale ese mismo día y llega al siguiente: de martes a viernes, antes de las 14:00; el sábado, según zona, antes de las 12:00. O eliges al pagar cualquier día de los próximos 90.',
 		'alt'      => 'Repartidor cargando una caja de hielo seco en la furgoneta',
 	),
 	'semana' => array(
@@ -24,9 +24,9 @@ return array(
 			array( 1, 2, '' ),
 			array( 2, 3, '' ),
 			array( 3, 4, '' ),
-			array( 4, 5, 'Sábado según zona, +11,74 €. Si no, el martes.' ),
+			array( 4, 5, 'Sábado según zona, antes de las 12:00, +{sabado_envio}. Si no, el martes.' ),
 		),
-		'finde'  => 'Pedidos del sábado y el domingo, o del viernes después de las 12:00: salen el lunes y llegan el martes.',
+		'finde'  => 'De martes a viernes llega antes de las 14:00; el sábado, antes de las 12:00. Pedidos del sábado y el domingo, o del viernes después de las 12:00: salen el lunes y llegan el martes.',
 		'festivos' => 'Si es festivo en Mataró, en Cataluña o en toda España, no salen pedidos, y tampoco se entrega en un festivo de la mensajería en tu zona. No tienes que mirarlo: al pagar solo aparecen los días posibles.',
 	),
 	'tarifa' => array(
@@ -76,7 +76,7 @@ return array(
 	),
 	'cobertura' => array(
 		'titulo' => '¿Llega a mi zona?',
-		'si'     => array( 'titulo' => 'Sí, al día siguiente por la mañana', 'texto' => 'Toda la España peninsular: de Girona a Huelva y de A Coruña a Murcia.' ),
+		'si'     => array( 'titulo' => 'Sí, al día siguiente antes de las 14:00', 'texto' => 'Toda la España peninsular: de Girona a Huelva y de A Coruña a Murcia.' ),
 		'no'     => array( 'titulo' => 'Fuera de la península,&nbsp;no', /* &nbsp;: el "no" no queda solo en móvil */ 'texto' => 'Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla, ni fuera de España.' ),
 		'zonas'  => 'Ver zonas de entrega cerca de Barcelona',
 		// Mapa de cobertura (rediseño 14/10/2026)
@@ -88,9 +88,9 @@ return array(
 		'titulo' => 'Dudas de envío',
 		'lista'  => array(
 			array( '¿Cómo va embalado?', 'En caja de EPS de 40 mm de pared, cerrada con su tapa pero no hermética, para que el CO₂ pueda salir durante el viaje.' ),
-			array( '¿Llega el mismo peso que pido?', 'El hielo seco se sublima desde que sale de la nave, así que durante el viaje pierde algo de peso. Por eso sale el mismo día que se prepara y llega a la mañana siguiente: el menor tiempo posible en camino.' ),
-			array( '¿Y si no estoy cuando llega?', 'Lo mejor es dar una dirección donde haya alguien por la mañana. Si aun así no estás, la mensajería aplica sus reintentos: avísanos cuanto antes para seguir el envío, porque el hielo no espera.' ),
-			array( '¿Puedo pedir una hora concreta?', 'El reparto es por la mañana y la hora exacta la marca la ruta de la mensajería. Si necesitas saber la hora, recógelo en Mataró: te la confirmamos antes.' ),
+			array( '¿Llega el mismo peso que pido?', 'El hielo seco se sublima desde que sale de la nave, así que durante el viaje pierde algo de peso. Por eso sale el mismo día que se prepara y llega al día siguiente antes de las 14:00: el menor tiempo posible en camino. Si llega con más pérdida de la normal, te lo reponemos.' ),
+			array( '¿Y si no estoy cuando llega?', 'Lo mejor es dar una dirección donde haya alguien hasta las 14:00 (el sábado, hasta las 12:00). Si aun así no estás, MRW deja un aviso y vuelve a intentarlo: avísanos cuanto antes para seguir el envío, porque el hielo no espera.' ),
+			array( '¿Puedo pedir una hora concreta?', 'MRW entrega antes de las 14:00 (el sábado, antes de las 12:00); la hora exacta la marca su ruta. Si necesitas saber la hora, recógelo en Mataró: te la confirmamos antes.' ),
 			array( '¿Hacéis envíos urgentes el mismo día?', 'No por mensajería. Si estás cerca de Mataró, puedes recogerlo el mismo día si pides antes de las 12:00. Te confirmamos la hora por teléfono o WhatsApp.' ),
 		),
 	),

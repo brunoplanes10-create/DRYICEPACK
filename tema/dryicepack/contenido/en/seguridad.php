@@ -46,7 +46,7 @@ return array(
 		'meta'   => 'PDF · Spanish',
 		'apartados' => array( array( '01', 'Identification' ), array( '02', 'Hazards' ), array( '04', 'First aid' ), array( '07', 'Handling' ), array( '08', 'Protection' ), array( '14', 'Transport' ) ),
 	),
-	'final' => array( 'titulo' => 'Need it tomorrow?|<em>Order before 12:00.</em>' ),
+	'final' => array( 'titulo' => 'Need it soon?|<em>Order before 12:00.</em>' ),
 	'faq' => array(
 		'titulo' => 'More safety questions',
 		'lista'  => array(

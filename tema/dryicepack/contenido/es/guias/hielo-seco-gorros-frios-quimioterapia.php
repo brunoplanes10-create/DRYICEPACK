@@ -37,16 +37,16 @@ return array(
 <h2>¿Cómo lo pido para que llegue a tiempo?</h2>
 <p>Puedes pedirlo con antelación y elegir el día de entrega en el pago.</p>
 <ul>
-<li><strong>Pedido antes de las 12:00, de lunes a jueves:</strong> llega al día siguiente por la mañana, en toda la península.</li>
-<li><strong>Pedido antes de las 12:00 del viernes:</strong> llega el sábado según zona, con un suplemento de 11,74 € (IVA incluido). Si no, el martes.</li>
+<li><strong>Pedido antes de las 12:00, de lunes a jueves:</strong> llega al día siguiente antes de las 14:00, en toda la península.</li>
+<li><strong>Pedido antes de las 12:00 del viernes:</strong> llega el sábado antes de las 12:00 según zona, con un suplemento de {sabado_envio} (IVA incluido). Si no, el martes.</li>
 <li><strong>Domingo y lunes no hay reparto.</strong> En festivos no salen pedidos: en el pago solo aparecen los días que se pueden elegir.</li>
-<li><strong>El reparto es por la mañana</strong>, pero la hora exacta la marca la ruta de la mensajería. Si tu sesión es a primera hora, pídelo para el día antes. El hielo seco se sublima con las horas: no abras la caja hasta que vayas a preparar la nevera y, si no sabes cuántos kilos pedir, escríbenos.</li>
+<li><strong>MRW entrega antes de las 14:00</strong> (el sábado, antes de las 12:00), pero la hora exacta la marca su ruta. Si tu sesión es a primera hora, pídelo para el día antes. El hielo seco se sublima con las horas: no abras la caja hasta que vayas a preparar la nevera y, si no sabes cuántos kilos pedir, escríbenos.</li>
 </ul>
 
 <h3>¿Y si la sesión es un lunes?</h3>
 <p>El lunes no hay reparto. Tienes dos opciones:</p>
 <ul>
-<li><strong>Entrega el sábado.</strong> Pídelo antes de las 12:00 del viernes, si tu zona tiene reparto en sábado (suplemento de 11,74 €, IVA incluido). El hielo pasará el fin de semana en su caja: escríbenos antes de pedir y calculamos los kilos.</li>
+<li><strong>Entrega el sábado.</strong> Pídelo antes de las 12:00 del viernes, si tu zona tiene reparto en sábado (llega antes de las 12:00, con un suplemento de {sabado_envio}, IVA incluido). El hielo pasará el fin de semana en su caja: escríbenos antes de pedir y calculamos los kilos.</li>
 <li><strong>Recogida en Mataró el mismo lunes.</strong> En nuestra nave (Camí Ca La Madrona 19 D), de lunes a sábado, también en festivos. Eliges el lunes al pagar y te confirmamos la hora por teléfono o WhatsApp; si tu sesión es temprano, dínoslo al hacer el pedido. No hay gastos de envío y el precio es redondo, con IVA incluido: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. Se paga en efectivo y con el importe exacto: no tenemos cambio.</li>
 </ul>
 

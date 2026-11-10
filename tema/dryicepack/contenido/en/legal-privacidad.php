@@ -1,5 +1,8 @@
 <?php
-/* Política de privacidad · inglés */
+/* Política de privacidad · inglés.
+   9/11/2026: emails de seguimiento, «Mi pedido», reclamaciones, antifraude (Sift) y destinatarios reales (auditoría M9).
+   [PENDIENTE: nombre del proveedor de envío de emails (el que usa WP Mail SMTP) para nombrarlo en «Who else sees your data».]
+   [PENDIENTE: revisar la fila de «Mi pedido» cuando el plugin publique la página (qué datos pide para consultarla).] */
 return array(
 	'seo'        => array(
 		'titulo'      => 'Privacy policy | DryIcePack',
@@ -11,6 +14,10 @@ return array(
 		array( 'Controller', '<ul><li><strong>INDUNOVA IMS S.L.</strong> · Tax ID (NIF) B66800103</li><li>Ronda Alfonso X El Sabio, 10, 2º 1ª, 08301 Mataró (Barcelona)</li><li>info@dryicepack.es · +34 936 73 76 41</li></ul>' ),
 		array( 'What data we process and why', '<table><thead><tr><th>Purpose</th><th>Data</th><th>Legal basis</th><th>How long</th></tr></thead><tbody>
 <tr><td>Managing your order, delivery and collection</td><td>Name, email, phone, address, order details and delivery day</td><td>Performance of the contract</td><td>For as long as the relationship lasts and then for the legal periods</td></tr>
+<tr><td>Keeping you updated by email on your order: order received, on its way (with the MRW tracking number), delivery day, collection reminder and any problems</td><td>Name, email, phone, order details, delivery day and tracking number</td><td>Performance of the contract</td><td>The same periods as the order</td></tr>
+<tr><td>‘My order’ page: checking the status, delivery day and tracking of your order</td><td>Order number, email, status, delivery day and tracking number</td><td>Performance of the contract</td><td>The same periods as the order</td></tr>
+<tr><td>Handling complaints and claims</td><td>Name, contact details, order and whatever you tell us</td><td>Legal obligation (consumer law)</td><td>Until it is resolved and then for as long as a claim can be made</td></tr>
+<tr><td>Preventing card payment fraud</td><td>Browser and device data, IP address and transaction details (we never see or store the card number)</td><td>Legitimate interest (preventing fraudulent payments)</td><td>As set by the payment gateway and its fraud prevention service</td></tr>
 <tr><td>Issuing the invoice</td><td>Company name, tax ID, billing address and amounts</td><td>Legal obligation</td><td>6 years (Spanish Commercial Code) and the tax periods</td></tr>
 <tr><td>Sending you the link to request an invoice with your details</td><td>Email and order number</td><td>Performance of the contract</td><td>Up to 30 days after the order</td></tr>
 <tr><td>Replying to forms, calls and WhatsApp messages</td><td>Name, email, phone and whatever you tell us</td><td>Consent and pre-contractual steps</td><td>Until the enquiry is resolved and for 1 more year</td></tr>
@@ -19,7 +26,7 @@ return array(
 <tr><td>Asking for your feedback on the order: after delivery we may send you a single email (at most one every 6 months)</td><td>Name, email, delivery day and order weight</td><td>Legitimate interest (customer relationship). You can object using the link in each email or by writing to info@dryicepack.es</td><td>For as long as the customer relationship lasts. If you object, we keep only a fingerprint of your email, which cannot be read back, so that we do not write to you again</td></tr>
 <tr><td>Measuring website use (Google Analytics)</td><td>Browsing data and shortened IP address</td><td>Consent (cookie notice)</td><td>As set out in the cookie policy</td></tr>
 </tbody></table>' ),
-		array( 'Who else sees your data', '<p>We do not sell or pass on your data. Only the providers we need to deliver the service have access, under a data processing agreement:</p><ul><li>Web hosting and website security (Arsys, Cloudflare).</li><li>Payment gateway (WooPayments, by Automattic, which uses Stripe): processes cards, Apple Pay and Google Pay.</li><li>The courier company that delivers the order.</li><li>Our accountants and their invoicing software.</li><li>Google (Analytics), only if you accept analytics cookies.</li></ul><p>Some of these providers may process data outside the European Economic Area with the safeguards of the GDPR (standard contractual clauses or adequacy decisions).</p>' ),
+		array( 'Who else sees your data', '<p>We do not sell or pass on your data. Only the providers we need to deliver the service have access, under a data processing agreement:</p><ul><li>Web hosting (Arsys) and website security and delivery (Cloudflare).</li><li>Payment gateway (WooPayments, by Automattic, which uses Stripe): processes cards, Apple Pay and Google Pay. To prevent fraud, the checkout page also uses Sift, the WooPayments fraud prevention service.</li><li>MRW, the courier that delivers the order: name, address, phone and order number.</li><li>The website’s email delivery provider, which delivers the order and form emails.</li><li>Our accountants and their invoicing software.</li><li>WhatsApp (Meta), only if you message us on WhatsApp: whatever you send us there is also processed by WhatsApp, under its own terms.</li><li>Google (Analytics), only if you accept analytics cookies.</li></ul><p>Some of these providers may process data outside the European Economic Area with the safeguards of the GDPR (standard contractual clauses or adequacy decisions).</p>' ),
 		array( 'Your rights', '<p>You can request access to, rectification, erasure, restriction and portability of your data, object to its processing, and withdraw your consent at any time by writing to info@dryicepack.es with a means of identifying yourself.</p><p>If you believe we have not handled your request properly, you can complain to the Spanish Data Protection Agency (www.aepd.es).</p>' ),
 		array( 'Security', '<p>We apply appropriate technical and organisational measures: encrypted connection, restricted access and backups. We do not store card details.</p>' ),
 	),

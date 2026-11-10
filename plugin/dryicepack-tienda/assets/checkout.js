@@ -234,13 +234,16 @@
 		avisoLejos();
 	});
 
-	/* Botón final con el importe: "Pagar 81,81 €". Con efectivo o factura mensual: "Confirmar pedido". */
+	/* Botón final: con tarjeta, el importe ("Pagar 81,81 €"); efectivo al recoger: "Pagar al recoger";
+	   factura mensual de cuenta de empresa: "Confirmar pedido"; sin total: "Pagar pedido" (lo mismo que pone el servidor). */
 	function textoBoton() {
 		var boton = document.getElementById('place_order');
 		if (!boton) return;
 		var metodo = $('input[name="payment_method"]:checked').val() || '';
 		var total = totalPedido();
-		var texto = (metodo === 'cod' || metodo === 'dip_factura_mensual' || !total.texto) ? C.confirmar : C.pagar + ' ' + total.texto;
+		var texto = metodo === 'dip_factura_mensual' ? C.confirmar
+			: metodo === 'cod' ? C.recoger
+			: total.texto ? C.pagar + ' ' + total.texto : C.pedido;
 		boton.textContent = texto;
 		boton.value = texto;
 		boton.setAttribute('data-value', texto);

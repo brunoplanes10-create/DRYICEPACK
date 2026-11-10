@@ -322,6 +322,21 @@ function dip_resenas_partes( WC_Order $pedido ) {
  * con el cuerpo dentro. Para cambiar el diseño, basta con cambiar esta función: los textos no se tocan.
  */
 function dip_resenas_html( array $p ) {
+	// Envoltura común de los emails (inc/emails.php): cabecera marino, botón a prueba de Outlook y pie de la marca
+	if ( function_exists( 'dip_email_documento' ) ) {
+		return dip_email_documento( array(
+			'idioma'  => $p['idioma'],
+			'previo'  => implode( ' ', (array) $p['cuerpo'] ),
+			'titulo'  => $p['titulo'],
+			'bloques' => array_merge(
+				array( array( 'p', $p['saludo'], 'grande' ) ),
+				array_map( static fn( $x ) => array( 'p', $x ), (array) $p['cuerpo'] ),
+				array( array( 'boton', $p['boton']['texto'], $p['boton']['url'] ) ),
+				array_map( static fn( $x ) => array( 'p', $x ), (array) $p['cierre'] ),
+				array( array( 'p', $p['pie']['texto'], 'pequeno', array( $p['pie']['enlace'], $p['pie']['url'] ) ) )
+			),
+		) );
+	}
 	$parrafos = static fn( $lista ) => implode( '', array_map( static fn( $x ) => '<p>' . esc_html( $x ) . '</p>', (array) $lista ) );
 	$cuerpo   = '<p>' . esc_html( $p['saludo'] ) . '</p>'
 		. $parrafos( $p['cuerpo'] )

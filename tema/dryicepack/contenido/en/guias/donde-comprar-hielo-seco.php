@@ -23,7 +23,7 @@ return array(
 
 <h2>So where can you buy it?</h2>
 <h3>Online shop with delivery</h3>
-<p>You choose the format and the kilos, see the total with delivery included, and pay. At DryIcePack, if you order before 12:00 (Spanish time), you have it the next morning in an insulated box, anywhere in mainland Spain. We deliver Tuesday to Saturday (Saturday depending on the area, with a surcharge).</p>
+<p>You choose the format and the kilos, see the total with delivery included, and pay. At DryIcePack, if you order before 12:00 (Spanish time), it arrives the next day before 14:00 in an insulated box, anywhere in mainland Spain. We deliver Tuesday to Friday and, depending on the area, on Saturday before 12:00, with a surcharge.</p>
 <h3>Collection from the warehouse</h3>
 <p>If you’re nearby, you save on delivery. Our warehouse is in Mataró (Barcelona) and you can collect Monday to Saturday, including public holidays: you choose the day when ordering and we confirm the time. Prices are round figures with VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You pay in cash, with the exact amount: we can’t give change.</p>
 <h3>Industrial gas suppliers</h3>

@@ -37,7 +37,7 @@ return array(
 	'wa_aria'         => 'Message us on WhatsApp: +34 686 980 471',
 	'idioma'          => 'Language',
 	// Pie
-	'pie_frase'       => 'Dry ice that arrives <em>cold</em> and on time.',
+	'pie_frase'       => 'Dry ice that arrives <em>cold</em>, before 14:00.',
 	'pie_tienda'      => 'Dry ice',
 	'pie_servicio'    => 'Service',
 	'pie_contacto'    => 'Let’s talk',
@@ -65,9 +65,10 @@ return array(
 	'config_cookies'  => 'Cookie settings',
 	'derechos'        => 'DryIcePack is a brand of INDUNOVA IMS S.L. · CIF B66800103',
 	// Entrega (reloj del corte)
-	'corte_antes'     => 'Order before 12:00 and you’ll have it on the morning of %s',
+	// MRW entrega antes de las 14:00 (sábado, antes de las 12:00; la primera entrega que se anuncia nunca es en sábado)
+	'corte_antes'     => 'Order before 12:00 and it arrives on %s before 14:00',
 	'corte_quedan'    => '%s left to order today',
-	'corte_despues'   => 'Order now and you’ll have it on the morning of %s',
+	'corte_despues'   => 'Order now and it arrives on %s before 14:00',
 	'horas'           => 'h',
 	'minutos'         => 'min',
 	// Seguridad: los seis avisos (se enlazan desde cualquier página que explica un uso)
@@ -95,6 +96,9 @@ return array(
 	'form_error'      => 'Your message could not be sent. Call us on +34 936 73 76 41.',
 	// B2B forms (business, industry): same wording, English has no formal "you"
 	'form_privacidad_usted' => 'I have read the <a href="%s">privacy policy</a>. We only use your details to reply to you.',
+	// Primera capa de información de privacidad, debajo de la casilla de cada formulario (RGPD art. 13)
+	'form_capa'       => 'Controller: INDUNOVA IMS S.L. Purpose: replying to your enquiry. Legal basis: your consent. We do not pass your data on to third parties unless required by law. Rights: access, rectification, erasure, objection and others, by writing to info@dryicepack.es.',
+	'form_capa_usted' => 'Controller: INDUNOVA IMS S.L. Purpose: replying to your enquiry or request. Legal basis: your consent and the pre-contractual steps you ask for. We do not pass your data on to third parties unless required by law. Rights: access, rectification, erasure, objection and others, by writing to info@dryicepack.es.',
 	'form_ok_usted'         => 'Received. We reply during office hours, usually the same day.',
 	'form_error_usted'      => 'Your message could not be sent. Call us on +34 936 73 76 41.',
 );

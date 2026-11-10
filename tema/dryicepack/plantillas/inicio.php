@@ -90,6 +90,7 @@ foreach ( $cinta as $e ) {
 					<button type="button" role="radio" class="i-kilo<?php echo (float) $kg === (float) $kg_ini ? ' activo' : ''; ?>" aria-checked="<?php echo (float) $kg === (float) $kg_ini ? 'true' : 'false'; ?>" data-kg="<?php echo esc_attr( $kg ); ?>">
 						<span class="i-kilo__n"><?php echo esc_html( $kg ); ?></span><span class="i-kilo__u">kg</span>
 						<span class="i-kilo__precio dato"><?php echo esc_html( dipt_euros( $pp['con_iva'] ) ); ?></span>
+						<span class="i-kilo__kilo dato"><?php echo esc_html( dipt_euros( $pp['kilo'] ) . dipt_t( 'por_kilo' ) ); // precio por kilo con IVA (RD 3423/2000) ?></span>
 					</button>
 				<?php endforeach; ?>
 				<span class="i-regla__barra" aria-hidden="true"><span></span></span>

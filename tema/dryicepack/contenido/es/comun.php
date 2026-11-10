@@ -37,7 +37,7 @@ return array(
 	'wa_aria'         => 'Escríbenos por WhatsApp al 686 980 471',
 	'idioma'          => 'Idioma',
 	// Pie
-	'pie_frase'       => 'Hielo seco que llega <em>frío</em> y a su hora.',
+	'pie_frase'       => 'Hielo seco que llega <em>frío</em> y antes de las 14:00.',
 	'pie_tienda'      => 'Hielo seco',
 	'pie_servicio'    => 'Servicio',
 	'pie_contacto'    => 'Hablemos',
@@ -65,9 +65,10 @@ return array(
 	'config_cookies'  => 'Configurar cookies',
 	'derechos'        => 'DryIcePack es una marca de INDUNOVA IMS S.L. · CIF B66800103',
 	// Entrega (reloj del corte)
-	'corte_antes'     => 'Pide antes de las 12:00 y lo tienes el %s por la mañana',
+	// MRW entrega antes de las 14:00 (sábado, antes de las 12:00; la primera entrega que se anuncia nunca es en sábado)
+	'corte_antes'     => 'Pide antes de las 12:00 y llega el %s antes de las 14:00',
 	'corte_quedan'    => 'Quedan %s para pedir hoy',
-	'corte_despues'   => 'Si pides ahora, lo tienes el %s por la mañana',
+	'corte_despues'   => 'Si pides ahora, llega el %s antes de las 14:00',
 	'horas'           => 'h',
 	'minutos'         => 'min',
 	// Seguridad: los seis avisos (se enlazan desde cualquier página que explica un uso)
@@ -95,6 +96,9 @@ return array(
 	'form_error'      => 'No se ha podido enviar. Llámanos al 936 73 76 41.',
 	// Formularios de las páginas B2B (empresas, industria): tratamiento de usted
 	'form_privacidad_usted' => 'He leído la <a href="%s">política de privacidad</a>. Usamos sus datos solo para responderle.',
+	// Primera capa de información de privacidad, debajo de la casilla de cada formulario (RGPD art. 13)
+	'form_capa'       => 'Responsable: INDUNOVA IMS S.L. Finalidad: responder a tu consulta. Base legal: tu consentimiento. No cedemos tus datos a terceros, salvo obligación legal. Derechos: acceso, rectificación, supresión, oposición y otros, escribiendo a info@dryicepack.es.',
+	'form_capa_usted' => 'Responsable: INDUNOVA IMS S.L. Finalidad: responder a su consulta o solicitud. Base legal: su consentimiento y las medidas precontractuales que pide. No cedemos sus datos a terceros, salvo obligación legal. Derechos: acceso, rectificación, supresión, oposición y otros, escribiendo a info@dryicepack.es.',
 	'form_ok_usted'         => 'Recibido. Le respondemos en horario laboral, normalmente el mismo día.',
 	'form_error_usted'      => 'No se ha podido enviar. Llámenos al 936 73 76 41.',
 );

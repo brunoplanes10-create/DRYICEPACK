@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Gel sec per a hostaleria',
 	'seo'  => array(
 		'titulo'      => 'Gel sec per a còctels i hostaleria | DryIcePack',
-		'descripcion' => 'Gel sec per a còctels, fum en emplatar i fred a la barra, sempre amb doble recipient. Demani abans de les 12:00 i demà el tindrà al seu local.',
+		'descripcion' => 'Gel sec per a còctels, fum en emplatar i fred a la barra, amb doble recipient. Demani abans de les 12:00 i arriba l\'endemà abans de les 14:00.',
 	),
 	'migas' => array( 'Inici', 'Usos', 'Hostaleria' ),
 	'hero'  => array(
-		'titulo' => 'Gel sec per a còctels i hostaleria,|<em>demà al seu local.</em>',
-		'texto'  => 'Fum en emplatar, còctels amb boira i fred a la barra, sense que el gel sec toqui mai el que es beu. Demani abans de les 12:00 i demà al matí el té (de dimarts a dissabte), o triï el dia que vulgui.',
+		'titulo' => 'Gel sec per a còctels i hostaleria,|<em>al seu local abans de les 14:00.</em>',
+		'texto'  => 'Fum en emplatar, còctels amb boira i fred a la barra, sense que el gel sec toqui mai el que es beu. Demani abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O triï el dia que vulgui.',
 		'boton'  => 'Fer la comanda',
 		'alt'    => 'Cambrer servint postres sobre una safata amb boira de gel sec',
 	),
@@ -31,7 +31,7 @@ return array(
 		'titulo' => 'El necessita per al cap de setmana?|<em>Així arriba a temps.</em>',
 		'pasos'  => array(
 			array( 'Dijous, abans de les 12:00', 'Demani per WhatsApp o al web.' ),
-			array( 'Divendres al matí', 'Arriba al seu local en caixa aïllant, a punt per fer servir.' ),
+			array( 'Divendres, abans de les 14:00', 'Arriba al seu local en caixa aïllant, a punt per fer servir.' ),
 			array( 'Divendres i dissabte', 'El fa servir a cada servei i tanca la caixa entre ús i ús: així dura més.' ),
 			array( 'La setmana següent', 'Una altra vegada el mateix? Amb un compte d\'empresa el repeteix per WhatsApp i paga amb una factura al mes.' ),
 		),
@@ -64,7 +64,7 @@ return array(
 	),
 	// Tancament comú (redisseny 13/10/2026): el titular de la portada amb vostè i la data real d'entrega (com Laboratoris)
 	'final' => array(
-		'titulo' => 'El necessita demà?|<em>Demani\'l abans de les 12:00.</em>',
-		'corte'  => array( 'Demani abans de les 12:00 i el té el %s al matí', 'Falten %s per demanar avui', 'Si demana ara, el té el %s al matí' ),
+		'titulo' => 'El necessita aviat?|<em>Demani\'l abans de les 12:00.</em>',
+		'corte'  => array( 'Demani abans de les 12:00 i arriba el %s abans de les 14:00', 'Falten %s per demanar avui', 'Si demana ara, arriba el %s abans de les 14:00' ),
 	),
 );

@@ -102,7 +102,7 @@
       aplicarFase(f);
       if (f === "viernes") {
         objetivo = tViernes;
-        texto = "de margen para pedir y recibirlo el viernes 30 por la mañana.";
+        texto = "de margen para pedir y recibirlo el viernes 30 antes de las 14:00.";
       } else if (f === "sabado") {
         objetivo = tSabado;
         texto = "de margen para pedir con entrega el sábado 31 (según zona, suplemento de 11,74 € IVA incl.).";
@@ -112,11 +112,12 @@
           pie.innerHTML = 'Llámanos antes de las 18:00 y vemos si podemos ayudarte: <a href="tel:+34936737641">936 73 76 41</a>.';
           return true; // a las 18:00 cambia el texto
         }
-        pie.textContent = "Para otras fechas: pide antes de las 12:00 y lo recibes el siguiente día laborable.";
+        pie.textContent = "Para otras fechas: pide antes de las 12:00 y llega al día siguiente antes de las 14:00.";
         return true; // el 1/11 pasa a la fase final
       } else {
-        reloj.textContent = "Hasta Halloween 2027";
-        pie.textContent = "Mientras tanto, hielo seco para cualquier fiesta con entrega en 24 h laborables.";
+        // Fuera de campaña la plantilla ya no pinta la cuenta atrás; esto solo cubre una página abierta (o en caché) desde antes
+        reloj.textContent = "12:00 → 14:00";
+        pie.textContent = "Pide antes de las 12:00 y llega al día siguiente antes de las 14:00.";
         return false;
       }
       var min = Math.max(0, Math.floor((objetivo - ahora) / 60000));

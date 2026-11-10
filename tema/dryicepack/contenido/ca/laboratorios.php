@@ -4,12 +4,12 @@ return array(
 	'menu' => 'Gel sec per a laboratoris',
 	'seo'  => array(
 		'titulo'      => 'Gel sec per al transport de mostres | DryIcePack',
-		'descripcion' => 'Gel sec per al transport de mostres a −78,5 °C, en pèl·lets de 3 mm o nuggets de 16 mm. Demani abans de les 12:00 i demà al matí el tindrà al laboratori.',
+		'descripcion' => 'Gel sec per al transport de mostres, en pèl·lets de 3 mm o nuggets de 16 mm. Demani abans de les 12:00 i arriba l\'endemà abans de les 14:00.',
 	),
 	'migas' => array( 'Inici', 'Usos', 'Laboratoris' ),
 	'hero'  => array(
-		'titulo' => 'Gel sec per al transport de mostres,|<em>demà al matí.</em>',
-		'texto'  => 'Mostres, reactius i kits a −78,5 °C, sense humitat a la caixa. Demani abans de les 12:00 i el té demà (de dimarts a dissabte), o triï un altre dia.',
+		'titulo' => 'Gel sec per al transport de mostres,|<em>al seu laboratori abans de les 14:00.</em>',
+		'texto'  => 'Mostres, reactius i kits a −78,5 °C, sense humitat a la caixa. Demani abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O triï un altre dia.',
 		'boton'  => 'Obrir un compte',
 		'alt'    => 'Tubs de mostres envoltats de gel sec en una caixa aïllant',
 	),
@@ -51,14 +51,14 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntes de laboratori',
 		'lista'  => array(
-			array( 'A quina hora arriba?', 'Al matí de l\'endemà, si demana abans de les 12:00. Entreguem de dimarts a divendres, i el dissabte segons la zona i amb suplement. L\'hora exacta depèn de la ruta de la missatgeria.' ),
+			array( 'A quina hora arriba?', 'Abans de les 14:00 de l\'endemà, si demana abans de les 12:00. Entreguem de dimarts a divendres i, segons la zona, el dissabte abans de les 12:00, amb suplement. Dins d\'aquest marge, l\'hora exacta la marca la ruta de MRW.' ),
 			array( 'El puc guardar a l\'ultracongelador?', 'No. En un congelador tancat el gas genera pressió i pot fer malbé l\'equip. Conservi\'l a la seva caixa d\'EPS, en un lloc ventilat.' ),
 			array( 'Quant gel sec poso per caixa?', 'Depèn de les hores de viatge, de la mida de la caixa i de la temperatura exterior. Digui\'ns la ruta i el tipus de caixa i l\'orientem.' ),
 		),
 	),
 	// Tancament comú (redisseny 13/10/2026): el titular de la portada amb vostè i la data real d'entrega
 	'final' => array(
-		'titulo' => 'El necessita demà?|<em>Demani\'l abans de les 12:00.</em>',
-		'corte'  => array( 'Demani abans de les 12:00 i el té el %s al matí', 'Falten %s per demanar avui', 'Si demana ara, el té el %s al matí' ),
+		'titulo' => 'El necessita aviat?|<em>Demani\'l abans de les 12:00.</em>',
+		'corte'  => array( 'Demani abans de les 12:00 i arriba el %s abans de les 14:00', 'Falten %s per demanar avui', 'Si demana ara, arriba el %s abans de les 14:00' ),
 	),
 );

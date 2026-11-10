@@ -7,6 +7,25 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 $clave = dipt_pagina_actual();
 $c     = dipt_contenido( 'legal-' . $clave );
+
+/*
+ * Tablas (finalidades de la privacidad, cookies): cada celda lleva el nombre de su columna en data-label y la tabla va
+ * dentro de una región con scroll y foco visible. En móvil (legal.css) cada fila se apila como una ficha con esas etiquetas,
+ * así la 4.ª columna no queda cortada a 390 px. Se aplica después de wp_kses_post (que quitaría tabindex).
+ */
+$dipt_tablas = static function ( $html, $nombre ) {
+	return preg_replace_callback( '#<table>(.*?)</table>#s', static function ( $t ) use ( $nombre ) {
+		preg_match_all( '#<th[^>]*>(.*?)</th>#s', $t[1], $th );
+		$cab = array_map( static fn( $x ) => trim( wp_strip_all_tags( $x ) ), $th[1] );
+		$cuerpo = preg_replace_callback( '#<tr>(.*?)</tr>#s', static function ( $tr ) use ( $cab ) {
+			$i = 0;
+			return '<tr>' . preg_replace_callback( '#<td>#', static function () use ( &$i, $cab ) {
+				return '<td data-label="' . esc_attr( $cab[ $i++ ] ?? '' ) . '">';
+			}, $tr[1] ) . '</tr>';
+		}, $t[1] );
+		return '<div class="lg-tabla" role="region" tabindex="0" aria-label="' . esc_attr( $nombre ) . '"><table>' . $cuerpo . '</table></div>';
+	}, $html );
+};
 get_header();
 ?>
 <article class="lg">
@@ -29,7 +48,7 @@ get_header();
 			<?php foreach ( (array) ( $c['secciones'] ?? array() ) as $i => $s ) : ?>
 				<section id="s<?php echo (int) $i + 1; ?>">
 					<h2><span class="dato"><?php echo esc_html( sprintf( '%02d', $i + 1 ) ); ?></span><?php echo esc_html( $s[0] ); ?></h2>
-					<?php echo wp_kses_post( $s[1] ); ?>
+					<?php echo $dipt_tablas( wp_kses_post( $s[1] ), $s[0] ); // phpcs:ignore -- HTML ya filtrado por wp_kses_post; data-label con esc_attr ?>
 				</section>
 			<?php endforeach; ?>
 			<?php

@@ -46,7 +46,7 @@ return array(
 		'meta'   => 'PDF · castellà',
 		'apartados' => array( array( '01', 'Identificació' ), array( '02', 'Perills' ), array( '04', 'Primers auxilis' ), array( '07', 'Manipulació' ), array( '08', 'Protecció' ), array( '14', 'Transport' ) ),
 	),
-	'final' => array( 'titulo' => 'El necessites demà?|<em>Demana\'l abans de les 12:00.</em>' ),
+	'final' => array( 'titulo' => 'El necessites aviat?|<em>Demana\'l abans de les 12:00.</em>' ),
 	'faq' => array(
 		'titulo' => 'Més preguntes de seguretat',
 		'lista'  => array(
