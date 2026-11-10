@@ -40,7 +40,7 @@ return array(
 			array( 'Fruta fresca', 'Mantener el frío en cajas camino de la central.', 'uso-agricultura' ),
 			array( 'Docencia', 'Prácticas de sublimación y demostraciones en clase.', 'uso-docencia' ),
 			array( 'Laboratorio', 'Conservación temporal de reactivos durante las sesiones.', 'uso-laboratorio-pinzas' ),
-			array( 'Limpieza criogénica', 'La hace INDUNOVA, la empresa de la que forma parte DryIcePack.', 'uso-industria-pala' ),
+			array( 'Limpieza criogénica', 'Pellets de 3 mm para su máquina. El servicio lo hace INDUNOVA, la empresa de la que forma parte DryIcePack.', 'uso-industria-pala', 'limpieza' ),
 		),
 		'indunova' => 'Limpieza criogénica en indunova.es',
 	),

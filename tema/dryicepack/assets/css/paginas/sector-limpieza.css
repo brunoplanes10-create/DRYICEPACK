@@ -1,0 +1,284 @@
+/* =========================================================================
+   Hielo seco para limpieza criogénica · K1 a K8 (10/11/2026)
+   Firma propia: «la pasada». Una franja de hollín que el chorro de pellets de 3 mm deja limpia: en el hero, tres carriles
+   de una placa de ensayo que dejan a la vista la ficha; entre kilos y suministro, una franja que se limpia al entrar.
+   Distinta de Industria (cruces de la retícula y cinta métrica). Comparte con las demás páginas solo preguntas y cierre.
+   Tonos: K1 noche · K2 papel · K3 noche · K4 blanco · franja · K5 escarcha · K6 marino · K7 noche · K8 blanco · cierre.
+   Movimiento: solo transform y opacity; con .quieto o reducir movimiento, todo limpio y en su estado final.
+   ========================================================================= */
+
+:root {
+	--cr-hollin: #39434D;   /* suciedad: hollín y grasa, en la gama fría de la marca (sin marrones) */
+	--cr-limpio: #E4ECF3;   /* metal limpio */
+	--cr-pellet: #F2F7FB;   /* pellet en vuelo */
+	--cr-pasada: cubic-bezier(.45, .05, .35, 1);
+}
+
+/* ---------- La pasada (pieza común de la página) ----------
+   <div class="pasada pasada--bucle|pasada--una"> texto debajo · capa sucia encima que se desplaza entera hacia la derecha.
+   El frente (borde comido + pellets que llegan en diagonal) va dentro de la capa sucia: un solo transform lo mueve todo. */
+.pasada { --alto: 58px; position: relative; height: var(--alto); overflow: hidden; background: var(--cr-limpio); color: var(--c-marino); isolation: isolate; }
+/* Metal cepillado: líneas finas de un dibujo propio (no es un degradado) */
+.pasada::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .55;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='24'%3E%3Cg stroke='%23B8CADA' stroke-width='1'%3E%3Cpath d='M0 3h90M110 3h130M0 9h40M60 9h180M0 15h150M170 15h70M0 21h70M95 21h145'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 240px 24px; }
+.pasada__texto { position: absolute; inset: 0; display: flex; align-items: center; gap: 1.6rem; padding-inline: 1.25rem; font: 500 .8125rem/1 var(--f-mono); letter-spacing: .02em; white-space: nowrap; }
+.pasada__texto b { font-weight: 500; color: var(--c-tinta); }
+/* Hollín: ruido fractal en dos escalas (manchas y polvo) sobre el gris de la suciedad */
+.pasada__sucio { position: absolute; inset: 0; z-index: 2; background: var(--cr-hollin)
+	url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='a' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .15 0 0 0 2.4 -1'/%3E%3C/filter%3E%3Cfilter id='b' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .66 0 0 0 0 .72 0 0 0 1.5 -.78'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23a)'/%3E%3Crect width='240' height='240' filter='url(%23b)'/%3E%3C/svg%3E") 0 0 / 240px 240px;
+	transform: translate3d(calc(100% + 84px), 0, 0); will-change: transform; }
+/* Limpia = la capa sucia desplazada su ancho + 84 px: así el borde comido y los pellets del frente (hasta 81 px a su
+   izquierda) quedan fuera de la franja y no asoman por el borde derecho */
+.pasada__sucio::before { content: ""; position: absolute; top: 0; bottom: 0; left: -10px; width: 11px;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='72' preserveAspectRatio='none'%3E%3Cpath fill='%2339434D' d='M11 0H6l2 6-5 5 4 6-6 7 5 6-3 7 6 5-4 7 5 6-6 8 4 5-2 4h9z'/%3E%3C/svg%3E") 0 0 / 11px 100%; }
+.pasada__frente { position: absolute; top: 0; bottom: 0; left: -10px; width: 0; }
+.pasada__frente::before { content: ""; position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: var(--c-blanco); opacity: .9; }
+.pasada__frente i { position: absolute; left: -10px; top: calc(var(--y) * 1%); width: 7px; height: 3px; border-radius: 2px; background: var(--cr-pellet); opacity: 0; transform: rotate(32deg); }
+@keyframes cr-chorro {
+	0% { opacity: 0; transform: translate3d(-64px, -40px, 0) rotate(32deg); }
+	25% { opacity: 1; }
+	85% { opacity: 1; }
+	100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(32deg) scale(.4); }
+}
+/* Una pasada al entrar (.visto): sin JS la franja se ve limpia; con JS empieza sucia y la pasada la limpia.
+   El chorro, solo mientras barre. */
+.js .pasada--una .pasada__sucio { transform: translate3d(0, 0, 0); transition: transform 1.8s var(--cr-pasada) .2s; }
+.js .pasada--una.visto .pasada__sucio { transform: translate3d(calc(100% + 84px), 0, 0); }
+.anima .pasada--una.visto .pasada__frente i { animation: cr-chorro .55s linear 4; animation-delay: calc(.2s - var(--k) * 70ms); }
+/* En bucle (hero): la ficha se ve limpia al cargar (datos legibles y nada que se mueva mientras carga la página).
+   A los 3 s el hollín aparece con un fundido, la pasada lo barre y la ficha queda limpia hasta la siguiente vuelta.
+   Mientras la capa está fuera, los pellets del frente quedan fuera de la franja: no se ven. */
+.anima .pasada--bucle .pasada__sucio { opacity: 0; animation: cr-pasada 11s var(--cr-pasada) infinite backwards; animation-delay: calc(3s + var(--n, 0) * 1.1s); }
+.anima .pasada--bucle .pasada__frente i { animation: cr-chorro .55s linear infinite; animation-delay: calc(var(--k) * -70ms); }
+@keyframes cr-pasada {
+	0% { transform: translate3d(0, 0, 0); opacity: 0; }
+	9% { transform: translate3d(0, 0, 0); opacity: 1; }
+	42% { transform: translate3d(calc(100% + 84px), 0, 0); opacity: 1; }
+	100% { transform: translate3d(calc(100% + 84px), 0, 0); opacity: 1; }
+}
+
+/* ---------- K1 · Hero: texto + foto con la placa de ensayo montada encima ----------
+   La foto (LCP) no se anima ni lleva nada encima salvo la placa, que se monta sobre su borde inferior. */
+.cr-hero { position: relative; overflow: hidden; padding: calc(var(--alto-cabecera) + clamp(1.5rem, 4vw, 3rem)) 0 clamp(4rem, 8vw, 7rem); }
+.cr-hero__rej { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; margin-top: clamp(1.2rem, 3vw, 2.4rem); }
+.cr-hero__texto { display: grid; gap: 1.4rem; justify-items: start; }
+.cr-hero h1 { color: #fff; text-wrap: pretty; }
+.cr-hero .entrada { color: var(--c-hielo-claro); }
+.cr-hero__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; }
+.cr-hero__acciones .enlace-flecha { color: #fff; }
+.cr-hero__mesa { position: relative; }
+.cr-hero__foto { aspect-ratio: 16 / 11; overflow: hidden; border-radius: var(--radio); background: var(--c-noche-2); }
+.cr-hero__foto img { width: 100%; height: 100%; object-fit: cover; }
+/* Placa de ensayo: tres carriles; cada uno se limpia 1,1 s después del anterior */
+.cr-placa { position: relative; z-index: 2; width: 78%; margin: calc(-1 * var(--solape)) calc(-1 * clamp(0px, 2vw, 2rem)) 0 auto; border: 1px solid var(--c-hielo); border-radius: var(--radio); overflow: hidden; box-shadow: var(--sombra-3); }
+.cr-placa .pasada + .pasada { border-top: 1px solid rgba(15, 29, 41, .14); }
+.cr-placa .pasada__texto { justify-content: space-between; color: var(--c-acero); }
+.cr-placa .pasada__texto b { font-family: var(--f-display); font-weight: 800; font-size: 1.55rem; letter-spacing: -.03em; color: var(--c-tinta); }
+@media (max-width: 900px) {
+	.cr-hero { padding-bottom: clamp(3rem, 10vw, 4rem); }
+	.cr-hero__rej { grid-template-columns: 1fr; gap: 2rem; }
+	.cr-hero h1 { font-size: clamp(2rem, 8.6vw, 2.7rem); }
+	.cr-placa { width: 92%; margin-right: 0; }
+	.cr-placa .pasada { --alto: 52px; }
+	.cr-placa .pasada__texto b { font-size: 1.3rem; }
+}
+
+/* ---------- K2 · Por qué 3 mm: dibujo con la cota del diámetro montado sobre la foto real ---------- */
+.cr-calibre__rej { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+.cr-calibre__texto { display: grid; gap: 1.2rem; align-content: start; }
+.cr-calibre__texto p { max-width: 34rem; color: var(--c-acero); text-wrap: pretty; }
+.cr-calibre__texto p strong { color: var(--c-tinta); font-weight: 600; }
+.cr-calibre__no { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .9rem; padding-top: 1.1rem; border-top: 1px solid var(--c-linea-fuerte); font-size: .95rem; }
+.cr-calibre__no b { padding-top: .12rem; font-weight: 500; color: var(--c-tinta); }
+.cr-calibre__lamina { position: relative; padding-bottom: clamp(4rem, 9vw, 7rem); }
+.cr-calibre__foto { aspect-ratio: 4 / 3; }
+.cr-dibujo { position: absolute; left: -10%; bottom: 0; z-index: 3; width: min(64%, 27rem); margin: 0; padding: 1.2rem 1.4rem 1rem; background: var(--c-blanco); border: 1px solid var(--c-tinta); border-radius: var(--radio); box-shadow: var(--sombra-3); }
+.cr-dibujo svg { width: 100%; height: auto; overflow: visible; }
+.cr-p { fill: var(--cr-limpio); stroke: var(--c-marino); stroke-width: 1.5; }
+.cr-c { fill: var(--c-blanco); stroke: var(--c-marino); stroke-width: 1.5; }
+.cr-dibujo__cota path { fill: none; stroke: var(--c-tinta); stroke-width: 1; }
+.cr-dibujo__valor { font: 500 14px var(--f-mono); fill: var(--c-tinta); }
+.js .cr-dibujo__p { opacity: 0; transform: translate3d(0, -14px, 0); transition: opacity var(--d-larga) var(--e-salida), transform var(--d-larga) var(--e-salida); transition-delay: calc(var(--i) * 90ms + .2s); }
+.js .cr-dibujo.visto .cr-dibujo__p { opacity: 1; transform: none; }
+.js .cr-dibujo__cota, .js .cr-dibujo__valor { opacity: 0; transition: opacity var(--d-media) linear .6s; }
+.js .cr-dibujo.visto .cr-dibujo__cota, .js .cr-dibujo.visto .cr-dibujo__valor { opacity: 1; }
+@media (max-width: 900px) {
+	.cr-calibre__rej { grid-template-columns: 1fr; }
+	.cr-calibre__lamina { padding-bottom: 0; }
+	.cr-dibujo { position: relative; left: auto; width: 88%; margin: calc(-1 * var(--solape)) 0 0 auto; }
+}
+
+/* ---------- K3 · Pida hoy, limpie mañana: línea de 26 horas ---------- */
+.cr-llega__cab { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: var(--hueco); align-items: end; }
+.cr-llega__cab .entrada { max-width: 32rem; color: var(--c-hielo-claro); }
+.cr-linea { position: relative; height: 2px; margin-top: clamp(3rem, 6vw, 5rem); background: var(--c-linea-oscura); }
+.cr-linea__lleno { position: absolute; inset: 0; background: var(--c-hielo); transform-origin: 0 50%; }
+/* La caja va en el borde derecho de una capa del ancho de la línea: al moverse la capa, la caja recorre la línea */
+.cr-linea__mueve { position: absolute; left: 0; right: 0; top: -16px; height: 32px; }
+.cr-linea__caja { position: absolute; right: -16px; top: 0; display: grid; place-items: center; width: 32px; height: 32px; background: var(--c-noche); color: var(--c-hielo); }
+.js .cr-linea__lleno, .js .cr-linea__mueve { transition: transform 1.2s var(--e-suave) .2s; }
+.js .cr-linea:not(.visto) .cr-linea__lleno { transform: scaleX(0); }
+.js .cr-linea:not(.visto) .cr-linea__mueve { transform: translate3d(-100%, 0, 0); }
+.cr-hitos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--hueco); list-style: none; margin: 1.8rem 0 0; padding: 0; }
+.cr-hitos li { display: grid; gap: .45rem; align-content: start; }
+.cr-hitos li:nth-child(2) { justify-items: center; text-align: center; }
+.cr-hitos li:nth-child(3) { justify-items: end; text-align: right; }
+.cr-hitos__cifra { font-family: var(--f-display); font-weight: 800; font-size: var(--t-gigante); line-height: .9; letter-spacing: -.045em; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cr-hitos__cifra small { font-size: .34em; letter-spacing: -.01em; color: var(--c-hielo); }
+.cr-hitos strong { font-weight: 600; color: #fff; }
+.cr-hitos__texto { max-width: 20rem; font-size: .95rem; color: var(--c-niebla); }
+.cr-notas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--hueco); margin-top: clamp(3rem, 6vw, 4.5rem); padding-top: 1.4rem; border-top: 1px solid var(--c-linea-oscura); font-size: .92rem; color: var(--c-hielo-claro); }
+.cr-notas b { display: block; margin-bottom: .35rem; font-weight: 500; color: var(--c-hielo); }
+.cr-notas a { color: #fff; }
+@media (max-width: 900px) {
+	.cr-llega__cab, .cr-notas { grid-template-columns: 1fr; }
+	.cr-hitos { grid-template-columns: 1fr; gap: 1.8rem; }
+	.cr-hitos li:nth-child(n) { justify-items: start; text-align: left; }
+	.cr-hitos__cifra { font-size: clamp(3rem, 15vw, 4.4rem); }
+}
+
+/* ---------- K4 · Kilos: una fila por pack; la fila entera abre la compra con 3 mm y esos kilos ----------
+   Al pasar el ratón, con el foco o al cruzar el centro de la pantalla (.activo, uno a la vez), una franja de metal limpio
+   barre la fila: el eco de la pasada. */
+.cr-kilos__rej { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.cr-kilos__lado { position: sticky; top: calc(var(--alto-cabecera) + 2rem); display: grid; gap: 1.2rem; }
+.cr-kilos__lado p { max-width: 26rem; color: var(--c-acero); }
+.cr-filas { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--c-tinta); }
+.cr-fila { isolation: isolate; }
+.cr-fila a { position: relative; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(0, 3fr) auto; align-items: center; gap: 1rem; padding: 1.1rem .3rem; border-bottom: 1px solid var(--c-linea-fuerte); text-decoration: none; overflow: hidden; }
+.cr-fila a::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--cr-limpio); transform: translate3d(-101%, 0, 0); transition: transform var(--d-media) var(--cr-pasada); }
+.cr-fila a:hover::before, .cr-fila a:focus-visible::before, .cr-fila.activo a::before { transform: none; }
+.cr-fila__kg { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.4rem, 5vw, 4.4rem); line-height: .95; letter-spacing: -.045em; }
+.cr-fila__kg small { margin-left: .15em; font: 400 .9rem/1 var(--f-mono); letter-spacing: 0; color: var(--c-acero); }
+.cr-fila__p { font: 500 1.02rem/1.3 var(--f-mono); font-feature-settings: "tnum" 1; }
+.cr-fila__p small { display: block; font: 400 .78rem/1.4 var(--f-mono); color: var(--c-acero); }
+.cr-fila__ir { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--c-tinta); border-radius: 50%; transition: transform var(--d-corta) var(--e-salida); }
+.cr-fila__ir .ico { width: 18px; height: 18px; }
+.cr-fila a:hover .cr-fila__ir, .cr-fila a:focus-visible .cr-fila__ir, .cr-fila.activo .cr-fila__ir { transform: rotate(-45deg); }
+.cr-kilos__envio { margin-top: 1rem; font-size: .9rem; color: var(--c-acero); }
+.cr-limites { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--hueco); margin-top: 2.2rem; }
+.cr-limites p { padding-top: 1rem; border-top: 1px solid var(--c-linea-fuerte); font-size: .95rem; color: var(--c-acero); }
+.cr-limites strong { display: block; margin-bottom: .3rem; font-family: var(--f-display); font-weight: 800; font-size: 1.7rem; letter-spacing: -.03em; color: var(--c-tinta); }
+.cr-limites a { color: var(--c-marino); font-weight: 500; }
+.cr-limites a[href^="tel:"] { white-space: nowrap; }
+@media (max-width: 900px) {
+	.cr-kilos__rej { grid-template-columns: 1fr; }
+	.cr-kilos__lado { position: static; }
+	.cr-fila a { grid-template-columns: minmax(0, 1fr) auto auto; }
+	.cr-fila__p--kilo { display: none; }
+	.cr-limites { grid-template-columns: 1fr; }
+}
+
+/* ---------- Franja entre kilos y suministro ---------- */
+.cr-franja { --alto: clamp(56px, 6vw, 80px); }
+.cr-franja .pasada__texto { justify-content: center; gap: clamp(1.2rem, 5vw, 4.5rem); }
+@media (max-width: 600px) { .cr-franja .pasada__texto span:nth-child(2) { display: none; } }
+
+/* ---------- K5 · Suministro programado: calendario de ejemplo que cambia con el ritmo ---------- */
+.cr-sumi__rej { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.cr-sumi__texto { margin-top: 1.2rem; color: var(--c-acero); }
+/* El selector de ritmo solo tiene sentido con JS (sin JS, el calendario enseña el semanal) */
+.cr-ritmo { display: none; gap: .25rem; margin-top: 1.6rem; padding: .25rem; border: 1px solid var(--c-tinta); border-radius: 999px; }
+.js .cr-ritmo { display: inline-flex; }
+.cr-ritmo button { min-height: 44px; padding: 0 1.1rem; border: 0; border-radius: 999px; background: none; font-weight: 500; cursor: pointer; }
+.cr-ritmo button[aria-pressed="true"] { background: var(--c-marino); color: #fff; }
+.cr-cal { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; max-width: 30rem; margin-top: 1.4rem; }
+.cr-cal b { padding-bottom: .4rem; font: 400 .75rem/1 var(--f-mono); color: var(--c-acero); }
+.cr-dia { position: relative; aspect-ratio: 5 / 4; border: 1px solid var(--c-linea-fuerte); border-radius: 2px; background: var(--c-blanco); overflow: hidden; }
+.cr-dia::after { content: ""; position: absolute; inset: 0; background: var(--c-marino); opacity: 0; transform: scale(.3); transition: transform .35s var(--e-salida), opacity var(--d-corta) linear; transition-delay: calc(var(--s) * 60ms); }
+.cr-dia .ico { position: absolute; inset: 0; z-index: 1; width: 46%; height: 46%; margin: auto; color: #fff; opacity: 0; transition: opacity var(--d-corta) linear; transition-delay: calc(var(--s) * 60ms + .1s); }
+.cr-dia.on::after, .cr-dia.on .ico { opacity: 1; transform: none; }
+.js .cr-cal:not(.visto) .cr-dia::after, .js .cr-cal:not(.visto) .cr-dia .ico { opacity: 0; transform: scale(.3); }
+.cr-cal__nota { margin-top: .8rem; color: var(--c-acero); }
+.cr-cond { list-style: none; margin: 0; padding: 0; }
+.cr-cond li { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--c-linea-fuerte); }
+.cr-cond li:last-child { border-bottom: 1px solid var(--c-linea-fuerte); }
+.cr-cond strong { font-weight: 600; }
+.cr-cond span { font-size: .95rem; color: var(--c-acero); }
+.cr-sumi__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; margin-top: 1.8rem; }
+@media (max-width: 900px) {
+	.cr-sumi__rej { grid-template-columns: 1fr; }
+	.cr-cal { max-width: none; }
+}
+@media (max-width: 520px) { .cr-cond li { grid-template-columns: 1fr; gap: .2rem; } }
+
+/* ---------- K6 · Con máquina o sin ella: una línea que se parte en dos ---------- */
+.cr-indu__rej { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+.cr-indu__foto { aspect-ratio: 4 / 5; }
+.cr-via { position: relative; margin-top: 2rem; padding-left: 3.4rem; }
+.cr-via__trazo { position: absolute; left: 0; top: .6rem; width: 2.6rem; height: calc(100% - 1.2rem); overflow: visible; fill: none; stroke: var(--c-hielo); stroke-width: 1.5; }
+.cr-via__trazo path { vector-effect: non-scaling-stroke; }
+/* Un punto baja por el tronco, en bucle lento, mientras la sección está en pantalla */
+.cr-via__punto { position: absolute; left: -3px; top: .6rem; width: 8px; height: calc(100% - 1.2rem); overflow: hidden; pointer-events: none; }
+.cr-via__punto::after { content: ""; position: absolute; left: 0; top: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--c-hielo); opacity: 0; }
+.anima .cr-via.visto .cr-via__punto::after { animation: cr-baja 5s var(--e-suave) infinite; }
+.anima .cr-via:not(.en-pantalla) .cr-via__punto::after { animation-play-state: paused; }
+@keyframes cr-baja { 0% { opacity: 0; transform: translate3d(0, 0, 0); } 10% { opacity: 1; } 70% { opacity: 1; } 85%, 100% { opacity: 0; transform: translate3d(0, 300px, 0); } }
+.cr-rama { padding: .4rem 0 1.6rem; }
+.cr-rama + .cr-rama { padding-top: 1.4rem; border-top: 1px solid var(--c-linea-oscura); }
+.cr-rama__pre { color: var(--c-hielo); }
+.cr-rama h3 { margin: .25rem 0 .5rem; font-family: var(--f-display); font-weight: 800; font-size: clamp(1.4rem, 2.2vw, 1.9rem); line-height: 1.15; letter-spacing: -.02em; color: #fff; }
+.cr-rama p:not(.cr-rama__pre) { max-width: 32rem; color: var(--c-hielo-claro); }
+.cr-rama .enlace-flecha { margin-top: .9rem; color: #fff; }
+@media (max-width: 900px) {
+	.cr-indu__rej { grid-template-columns: 1fr; }
+	.cr-indu__foto { aspect-ratio: 16 / 10; }
+}
+
+/* ---------- K7 · Seguridad: la nave en corte ----------
+   Bucle de 10 s: con la puerta cerrada el CO₂ sube desde el suelo; se abre la puerta seccional, entra el aire y el CO₂ baja.
+   Quieto (sin animación): puerta abierta, aire saliendo y el CO₂ abajo, que es el mensaje. */
+.cr-seg__rej { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+/* En escritorio el dibujo acompaña a las reglas mientras se leen (la columna de texto es más alta) */
+.cr-nave { position: sticky; top: calc(var(--alto-cabecera) + 3rem); margin: 0; }
+.cr-nave svg { width: 100%; height: auto; overflow: visible; }
+.cr-nave text { font: 400 14px var(--f-mono); fill: var(--c-niebla); }
+.cr-nave__obra { fill: none; stroke: var(--c-hielo); stroke-width: 1.5; stroke-linejoin: round; }
+.cr-nave__raya { stroke: rgba(184, 208, 232, .38); stroke-width: 1.5; }
+.cr-nave__nivel path { fill: none; stroke: var(--c-hielo); stroke-width: 1; stroke-dasharray: 4 5; }
+.cr-nave__nivel text { fill: var(--c-hielo); }
+.cr-nave__maq { fill: var(--c-noche); stroke: var(--c-hielo-claro); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.cr-nave__maq .cr-manguera { fill: none; }
+.cr-nave__chorro circle { fill: var(--cr-pellet); opacity: 0; }
+.cr-nave__puerta { fill: var(--c-noche-2); stroke: var(--c-hielo); stroke-width: 1.5; }
+.cr-nave__aire path { fill: none; stroke: var(--c-hielo); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cr-nave__co2, .cr-nave__nivel, .cr-nave__puerta, .cr-nave__aire, .cr-nave__chorro circle { transform-box: view-box; }
+.cr-nave__co2 { transform-origin: 0 380px; transform: scaleY(.12); }
+.cr-nave__nivel { transform: translate3d(0, 113px, 0); }
+.cr-nave__puerta { transform: translate3d(0, -146px, 0); }
+.anima .cr-nave__co2 { animation: cr-co2 10s var(--e-suave) infinite; }
+.anima .cr-nave__nivel { animation: cr-nivel 10s var(--e-suave) infinite; }
+.anima .cr-nave__puerta { animation: cr-puerta 10s var(--e-suave) infinite; }
+.anima .cr-nave__aire { animation: cr-aire 10s linear infinite; }
+.anima .cr-nave__chorro circle { animation: cr-nave-chorro .6s linear infinite; animation-delay: calc(var(--k) * -86ms); }
+@keyframes cr-co2 { 0% { transform: scaleY(.12); } 38%, 50% { transform: scaleY(1); } 78%, 100% { transform: scaleY(.12); } }
+@keyframes cr-nivel { 0% { transform: translate3d(0, 113px, 0); } 38%, 50% { transform: translate3d(0, 0, 0); } 78%, 100% { transform: translate3d(0, 113px, 0); } }
+@keyframes cr-puerta { 0%, 44% { transform: translate3d(0, 0, 0); } 52%, 86% { transform: translate3d(0, -146px, 0); } 94%, 100% { transform: translate3d(0, 0, 0); } }
+@keyframes cr-aire { 0%, 52% { opacity: 0; transform: translate3d(-12px, 0, 0); } 58%, 82% { opacity: 1; transform: translate3d(0, 0, 0); } 90%, 100% { opacity: 0; transform: translate3d(12px, 0, 0); } }
+@keyframes cr-nave-chorro { 0% { opacity: 0; transform: translate3d(0, 0, 0); } 20% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translate3d(80px, 0, 0); } }
+.cr-seg__texto { margin-top: 1rem; color: var(--c-hielo-claro); }
+.cr-reglas { list-style: none; margin: 1.6rem 0 0; padding: 0; }
+.cr-reglas li { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: .15rem 1rem; padding: .95rem 0; border-top: 1px solid var(--c-linea-oscura); }
+.cr-reglas .ico { grid-row: span 2; width: 28px; height: 28px; color: var(--c-hielo); }
+.cr-reglas strong { font-weight: 600; color: #fff; }
+.cr-reglas span { font-size: .95rem; color: var(--c-niebla); }
+.cr-seg__enlace { margin-top: 1.4rem; }
+.cr-seg__enlace .enlace-flecha { color: #fff; }
+@media (max-width: 900px) {
+	.cr-seg__rej { grid-template-columns: 1fr; }
+	.cr-nave { position: static; order: 2; }
+	/* El dibujo se reduce a la mitad: los rótulos se agrandan para seguir leyéndose (unos 12 px en pantalla) */
+	.cr-nave text { font-size: 24px; }
+}
+
+/* ---------- Movimiento reducido: todo limpio y en su sitio ---------- */
+.quieto .pasada__sucio, .quieto .pasada__frente i { display: none; }
+.quieto .cr-dibujo__p, .quieto .cr-dibujo__cota, .quieto .cr-dibujo__valor, .quieto .cr-linea__lleno, .quieto .cr-linea__mueve,
+.quieto .cr-dia::after, .quieto .cr-dia .ico { transition: none !important; }
+.quieto .cr-dibujo__p, .quieto .cr-dibujo__cota, .quieto .cr-dibujo__valor, .quieto .cr-linea__lleno, .quieto .cr-linea__mueve { opacity: 1 !important; transform: none !important; }
+.quieto .cr-dia.on::after, .quieto .cr-dia.on .ico { opacity: 1 !important; transform: none !important; }
+@media (prefers-reduced-motion: reduce) {
+	.pasada__sucio, .pasada__frente i { display: none; }
+	.cr-dibujo__p, .cr-dibujo__cota, .cr-dibujo__valor, .cr-linea__lleno, .cr-linea__mueve { opacity: 1 !important; transform: none !important; }
+	.cr-dia.on::after, .cr-dia.on .ico { opacity: 1 !important; transform: none !important; }
+}

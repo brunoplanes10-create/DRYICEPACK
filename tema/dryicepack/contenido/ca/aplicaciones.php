@@ -40,7 +40,7 @@ return array(
 			array( 'Fruita fresca', 'Mantenir el fred a les caixes en el trajecte fins a la central.', 'uso-agricultura' ),
 			array( 'Docència', 'Pràctiques de sublimació i demostracions a classe.', 'uso-docencia' ),
 			array( 'Laboratori', 'Conservació temporal de reactius durant les sessions.', 'uso-laboratorio-pinzas' ),
-			array( 'Neteja criogènica', 'La fa INDUNOVA, l\'empresa de la qual forma part DryIcePack.', 'uso-industria-pala' ),
+			array( 'Neteja criogènica', 'Pèl·lets de 3 mm per a la seva màquina. El servei el fa INDUNOVA, l\'empresa de la qual forma part DryIcePack.', 'uso-industria-pala', 'limpieza' ),
 		),
 		'indunova' => 'Neteja criogènica a indunova.es',
 	),

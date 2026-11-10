@@ -21,7 +21,7 @@ return array(
 			array( 'A2', 'Montaje por contracción', 'La pieza enfriada encoge lo justo para encajar sin forzar.' ),
 			array( 'B1', 'Ensayos a baja temperatura', 'Comprobar cómo responden materiales y equipos a temperaturas de hasta −78,5 °C.' ),
 			array( 'B2', 'Producto sensible al calor', 'Adhesivos, resinas o componentes que no pueden calentarse en el envío.' ),
-			array( 'C1', 'Limpieza criogénica', 'Limpieza sin agua ni residuos. Es un servicio de INDUNOVA.' ),
+			array( 'C1', 'Limpieza criogénica', 'Sin agua ni residuos. Si tiene máquina, le servimos los <a href="' . esc_url( dipt_url( 'limpieza' ) ) . '">pellets de 3 mm para limpieza criogénica</a>; si no, el servicio lo hace INDUNOVA.' ),
 			array( 'C2', 'Paradas y mantenimiento', 'Lo programamos con sus revisiones: llega el día de la parada, sin pedirlo cada vez.' ),
 		),
 	),
@@ -64,7 +64,7 @@ return array(
 		'lista'  => array(
 			array( '¿3 mm o 16 mm para enfriar piezas?', 'Normalmente 3 mm: más superficie en contacto y enfría antes. Para mantener el frío muchas horas, 16 mm.' ),
 			array( '¿Pueden entregar un día concreto?', 'Sí. En la web elige el día al pagar: de martes a viernes, y el sábado según zona. Para pedidos de volumen, lo acordamos por teléfono.' ),
-			array( '¿Hacen limpieza criogénica?', 'La hace INDUNOVA, la empresa de la que forma parte DryIcePack. Le ponemos en contacto.' ),
+			array( '¿Hacen limpieza criogénica?', 'La hace INDUNOVA, la empresa de la que forma parte DryIcePack. Le ponemos en contacto. Si tiene máquina propia, le servimos el <a href="' . esc_url( dipt_url( 'limpieza' ) ) . '">hielo seco para limpieza criogénica</a>: pellets de 3 mm.' ),
 		),
 	),
 	// Cierre común (rediseño 13/10/2026): titular nuevo, pendiente de validar por el propietario

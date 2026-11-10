@@ -119,7 +119,7 @@ get_header();
 				<li class="a-contactos__item" data-revela data-activa style="--i:<?php echo (int) $i; ?>">
 					<div class="a-contactos__foto foto--lamina"><?php echo dipt_foto( $o[2], '', array( 'sizes' => '(max-width: 900px) 68vw, 20vw' ) ); // phpcs:ignore ?></div>
 					<span class="dato a-contactos__n" aria-hidden="true">0<?php echo (int) $i + 1; ?></span>
-					<strong><?php echo esc_html( $o[0] ); ?></strong>
+					<strong><?php echo ! empty( $o[3] ) && isset( dipt_paginas()[ $o[3] ] ) ? '<a href="' . esc_url( dipt_url( $o[3] ) ) . '">' . esc_html( $o[0] ) . '</a>' : esc_html( $o[0] ); // 4.º elemento opcional: página del registro ?></strong>
 					<span class="a-contactos__desc"><?php echo esc_html( $o[1] ); ?></span>
 				</li>
 			<?php endforeach; ?>

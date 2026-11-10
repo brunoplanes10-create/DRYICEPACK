@@ -18,6 +18,8 @@ function dipt_paginas( $recargar = false ) {
 		'hosteleria'   => array( 'plantilla' => 'hosteleria', 'es' => 'hielo-seco-hosteleria', 'ca' => 'ca/gel-sec-hostaleria', 'en' => 'en/dry-ice-for-bars-and-restaurants' ),
 		'transporte'   => array( 'plantilla' => 'transporte', 'es' => 'hielo-seco-transporte', 'ca' => 'ca/gel-sec-transport', 'en' => 'en/dry-ice-for-shipping' ),
 		'industria'    => array( 'plantilla' => 'industria', 'es' => 'hielo-seco-industria', 'ca' => 'ca/gel-sec-industria', 'en' => 'en/industrial-dry-ice' ),
+		// Uso B2B hermano de Industria (10/11/2026): pellets de 3 mm para máquinas de limpieza criogénica. Sin inglés.
+		'limpieza'     => array( 'plantilla' => 'limpieza', 'es' => 'hielo-seco-limpieza-criogenica', 'ca' => 'ca/gel-sec-neteja-criogenica' ),
 		'laboratorios' => array( 'plantilla' => 'laboratorios', 'es' => 'hielo-seco-laboratorios', 'ca' => 'ca/gel-sec-laboratoris', 'en' => 'en/dry-ice-for-laboratories' ),
 		'eventos'      => array( 'plantilla' => 'eventos', 'es' => 'hielo-seco-eventos', 'ca' => 'ca/gel-sec-festes', 'en' => 'en/dry-ice-for-events' ),
 		'halloween'    => array( 'plantilla' => 'halloween', 'es' => 'hielo-seco-halloween' ),

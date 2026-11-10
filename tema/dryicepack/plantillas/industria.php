@@ -47,7 +47,7 @@ get_header();
 				<article class="n-uso" data-activa data-revela style="--i:<?php echo (int) $i; ?>">
 					<details class="n-uso__d" open>
 						<summary><span class="n-uso__coord dato"><?php echo esc_html( $u[0] ); ?></span><h3><?php echo esc_html( $u[1] ); ?></h3><span class="n-uso__signo" aria-hidden="true"></span></summary>
-						<p><?php echo esc_html( $u[2] ); ?></p>
+						<p><?php echo dipt_kses( $u[2] ); // admite un enlace (C1 → limpieza criogénica) ?></p>
 					</details>
 					<i class="n-plano__cruz" aria-hidden="true"></i>
 				</article>

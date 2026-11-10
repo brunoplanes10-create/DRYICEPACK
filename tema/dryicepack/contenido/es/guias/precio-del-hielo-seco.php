@@ -92,7 +92,7 @@ return array(
 
 <h2>¿Qué incluye el precio?</h2>
 <ul>
-<li><strong>El hielo seco</strong>, en pellets de 3 mm o en nuggets de 16 mm. Los dos formatos cuestan lo mismo.</li>
+<li><strong>El hielo seco</strong>, en pellets de 3 mm o en nuggets de 16 mm. Los dos formatos cuestan lo mismo. Los de 3 mm son, además, el calibre habitual de las máquinas de chorreo: <a href="' . esc_url( dipt_url( 'limpieza' ) ) . '">hielo seco para limpieza criogénica</a>.</li>
 <li><strong>La caja de EPS de 40 mm</strong>, con su tapa. Aísla el hielo seco y frena la sublimación hasta que lo use.</li>
 <li><strong>El IVA (' . $dgp_ivp . ' %)</strong> se suma al precio del pack. En la tabla tiene las dos cifras.</li>
 <li><strong>El envío va aparte</strong> y se calcula con el peso del hielo más 1 kg por caja. La tarifa es la misma en toda la península: hasta 5 kg, ' . $dgp_dos( $dgp_t5 ) . ' + IVA; hasta 10 kg, ' . $dgp_dos( $dgp_t10 ) . ' + IVA; cada kilo de más, ' . $dgp_dos( $dgp_tkg ) . ' + IVA.</li>

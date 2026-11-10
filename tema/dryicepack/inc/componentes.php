@@ -75,6 +75,7 @@ function dipt_icono( $nombre, $clase = '' ) {
 		'guante'     => '<path d="M8.5 21v-5.2L5.7 11.6a1.6 1.6 0 012.6-1.9l1.2 1.4V4.9a1.5 1.5 0 013 0V10V3.9a1.5 1.5 0 013 0V10V5.4a1.5 1.5 0 013 0v8.1c0 2.9-1.3 4.7-3 6V21"/>',
 		'ventilar'   => '<path d="M3 8.5h10.5a2.8 2.8 0 10-2.8-2.8M3 15.5h14a2.8 2.8 0 11-2.8 2.8M3 12h7"/>',
 		'hermetico'  => '<rect x="6" y="9" width="12" height="11" rx="2"/><path d="M8.5 9V6.5a3.5 3.5 0 017 0V9"/><path d="M4 4l16 16"/>',
+		'gafas'      => '<path d="M2.5 9.5h19"/><path d="M3.5 9.5v3.2c0 2 1.3 3.3 3.3 3.3h1.8c1.4 0 2.2-.9 2.6-2.2l.3-.9h1l.3.9c.4 1.3 1.2 2.2 2.6 2.2h1.8c2 0 3.3-1.3 3.3-3.3V9.5"/>',
 		'no-beber'   => '<path d="M7 4h10l-1.2 16H8.2z"/><path d="M4 4l16 16"/>',
 		'nino'       => '<circle cx="12" cy="6" r="2.5"/><path d="M8 21v-6l-2-2 3-4h6l3 4-2 2v6M12 13v8"/>',
 		'coche'      => '<path d="M3 16v-4l2.5-5h13l2.5 5v4z"/><path d="M3 12h18"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/>',
