@@ -52,6 +52,8 @@
 	.z-hero + .z-mapa { padding-top: calc(clamp(2rem, 5vw, 4rem) + 3.5rem); }
 }
 @media (max-width: 900px) { .z-hero__in { grid-template-columns: 1fr; } }
+/* Provincias y ciudades (plantillas/provincia.php): dos botones, presupuesto de empresa y compra online */
+.z-hero__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1rem; }
 
 /* ---------- Z2 · De la nave a la zona: tres pasos en mono y el mapa ---------- */
 .z-mapa { padding: clamp(2rem, 5vw, 4rem) 0; overflow: hidden; }
@@ -103,6 +105,7 @@
 @media (max-width: 800px) { .z-entrega__in { grid-template-columns: 1fr; gap: 1.8rem; } .z-tabla div { grid-template-columns: 1fr; gap: .3rem; } }
 
 /* ---------- Z4 · Usos: tira de fotos de anchos distintos; carril con scroll-snap en móvil ---------- */
+.z-usos__intro { margin-top: 1.2rem; color: var(--c-acero); }
 .z-usos__tira { list-style: none; margin: 2rem 0 0; padding: 0; display: flex; gap: .6rem; height: clamp(16rem, 24vw, 21rem); }
 .z-usos__tira li { flex: 1 1 0; min-width: 0; }
 .z-usos__tira li:nth-child(1), .z-usos__tira li:nth-child(4) { flex-grow: 1.6; }

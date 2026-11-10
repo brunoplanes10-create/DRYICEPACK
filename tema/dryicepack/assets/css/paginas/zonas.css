@@ -49,4 +49,6 @@
 .zs-comarca a:hover span:first-child, .zs-comarca a:focus-visible span:first-child, .zs-comarca li.activo a span:first-child { transform: translate3d(.5rem, 0, 0); }
 .zs-comarca a:hover::after, .zs-comarca a:focus-visible::after, .zs-comarca li.activo a::after { transform: scaleX(1); }
 .zs-comarca .dato { flex: none; color: var(--c-acero); }
+/* Península: las ciudades con página, sangradas bajo su provincia */
+.zs-comarca li.zs-ciudad a { padding-left: 1rem; font-size: .95rem; }
 .zs-resto { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; align-items: center; padding-top: 1.6rem; border-top: 1px solid var(--c-linea-fuerte); }

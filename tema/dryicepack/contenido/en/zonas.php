@@ -3,17 +3,33 @@
 return array(
 	'menu' => 'Delivery areas',
 	'seo'  => array(
-		'titulo'      => 'Dry ice in Barcelona and nearby: delivery areas | DryIcePack',
-		'descripcion' => 'Dry ice in Barcelona, the Maresme, the Vallès and the Baix Llobregat: order by 12:00 and it arrives the next day before 14:00. Find your area.',
+		// National page (10/11/2026): where we deliver. Terms and delivery times are on /en/delivery/.
+		'titulo'      => 'Dry ice delivered across mainland Spain | DryIcePack',
+		'descripcion' => 'Dry ice delivered anywhere in mainland Spain, province by province: order by 12:00 and it arrives the next day before 14:00. Find your city or province.',
 	),
 	'mapa'   => 'Map with the Mataró warehouse at the centre, rings every 10 km and the delivery areas',
 	'indice' => array(
 		'migas'   => array( 'Home', 'Delivery areas' ),
-		'titulo'  => 'Dry ice near you,|<em>before 14:00.</em>',
-		'texto'   => 'Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or pick any day you like. Near Mataró? Collect it instead: {pk} kg for {recogida:pk}, VAT included. Find your area and see how far it is from our warehouse.',
-		'grupos'  => 'By district',
-		'resto'   => 'Can’t see your area? Anywhere else in mainland Spain, it still arrives the next day before 14:00, Tuesday to Friday (on Saturday, depending on the area, before 12:00). We only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla.',
+		'titulo'  => 'Dry ice delivered|<em>across mainland Spain.</em>',
+		'texto'   => 'Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00 at any postcode in mainland Spain. Or pick any day you like. Near Mataró? Collect it instead: {pk} kg for {recogida:pk}, VAT included.',
+		'provincias' => 'Mainland Spain, by region',
+		'grupos'  => 'Near Mataró, by district',
+		'resto'   => 'Can’t see your city? It still arrives at any postcode in mainland Spain the next day before 14:00, Tuesday to Friday (on Saturday, depending on the area, before 12:00). We don’t deliver to the Balearic or Canary Islands, Ceuta or Melilla.',
 		'envios'  => 'See delivery times and prices',
+		'faq'     => array(
+			array( 'Where can I buy dry ice near me?', 'Online, here, anywhere in mainland Spain: order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00 in an EPS box, or on the day you choose. Near Mataró? Collect it from our warehouse, Monday to Saturday: {pk} kg for {recogida:pk}, VAT included, cash only.' ),
+			array( 'Do you deliver to the Balearic or Canary Islands, Ceuta or Melilla?', 'No. We only deliver to mainland Spain, to any postcode on the mainland.' ),
+			array( 'Can I order for a specific day?', 'Yes: at checkout, choose any day in the next 90 with delivery in your area, Tuesday to Saturday (Saturday depending on the area, with a {sabado_envio} surcharge, VAT included).' ),
+		),
+	),
+	// Regions in English (key: the Spanish name, normalised by dipt_lugar_normal in inc/lugares.php)
+	'ccaa' => array(
+		'andalucia' => 'Andalusia', 'aragon' => 'Aragon', 'asturias' => 'Asturias', 'principado-de-asturias' => 'Asturias',
+		'cantabria' => 'Cantabria', 'castilla-y-leon' => 'Castile and León', 'castilla-la-mancha' => 'Castilla–La Mancha',
+		'cataluna' => 'Catalonia', 'catalunya' => 'Catalonia', 'comunidad-valenciana' => 'Valencian Community', 'comunitat-valenciana' => 'Valencian Community',
+		'extremadura' => 'Extremadura', 'galicia' => 'Galicia', 'rioja' => 'La Rioja', 'comunidad-de-madrid' => 'Community of Madrid', 'madrid' => 'Community of Madrid',
+		'region-de-murcia' => 'Region of Murcia', 'murcia' => 'Region of Murcia', 'navarra' => 'Navarre', 'comunidad-foral-de-navarra' => 'Navarre',
+		'pais-vasco' => 'Basque Country', 'euskadi' => 'Basque Country',
 	),
 	'zona' => array(
 		'seo_titulo'      => 'Dry ice in {nombre}: delivered before 14:00 | DryIcePack',

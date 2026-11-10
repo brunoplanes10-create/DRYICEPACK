@@ -23,6 +23,8 @@
  *   secundario   'telefono' (por defecto: teléfono grande) · 'whatsapp' · array( texto, url ) · false.
  *   corte        true (por defecto) pinta «Pide antes de las 12:00 y lo tienes el …» con la fecha real.
  *   corte_textos array( antes, quedan, despues ) con %s, para usar otros textos (p. ej. de usted).
+ *   entrega      Fecha (Y-m-d) de la primera entrega si no es la general: la de un destino (páginas de provincia y ciudad).
+ *   sin_reparto  Días (Y-m-d) en que MRW no reparte en ese destino: el reloj del tema también los salta (data-sin-reparto).
  *   seguridad    true (por defecto): enlace «Seguridad completa y ficha de datos». Solo se quita si la
  *                página ya enlaza a /seguridad-del-hielo-seco/ con los avisos completos más arriba.
  *   clase        Clases extra para la sección.
@@ -44,6 +46,8 @@ $dipt_a = wp_parse_args( isset( $args ) && is_array( $args ) ? $args : array(), 
 	'secundario'     => 'telefono',
 	'corte'          => true,
 	'corte_textos'   => array( dipt_t( 'corte_antes' ), dipt_t( 'corte_quedan' ), dipt_t( 'corte_despues' ) ),
+	'entrega'        => '',
+	'sin_reparto'    => array(),
 	'seguridad'      => true,
 	'clase'          => '',
 ) );
@@ -67,9 +71,10 @@ $dipt_clases   = trim( 'cierre tono-oscuro ' . ( $dipt_con_foto ? 'cierre--foto 
 		<?php endif; ?>
 		<?php if ( $dipt_a['corte'] ) :
 			list( $dipt_t_antes, $dipt_t_quedan, $dipt_t_despues ) = array_pad( (array) $dipt_a['corte_textos'], 3, '%s' );
-			$dipt_e = dipt_primera_entrega();
+			$dipt_e   = $dipt_a['entrega'] ? array( 'fecha' => (string) $dipt_a['entrega'] ) : dipt_primera_entrega();
+			$dipt_rep = array_filter( array_map( 'strval', (array) $dipt_a['sin_reparto'] ), static fn( $d ) => (bool) preg_match( '/^\d{4}-\d{2}-\d{2}$/', $d ) );
 			?>
-			<p class="cierre__corte dato" data-corte data-t-antes="<?php echo esc_attr( $dipt_t_antes ); ?>" data-t-quedan="<?php echo esc_attr( $dipt_t_quedan ); ?>" data-t-despues="<?php echo esc_attr( $dipt_t_despues ); ?>">
+			<p class="cierre__corte dato" data-corte data-t-antes="<?php echo esc_attr( $dipt_t_antes ); ?>" data-t-quedan="<?php echo esc_attr( $dipt_t_quedan ); ?>" data-t-despues="<?php echo esc_attr( $dipt_t_despues ); ?>"<?php echo $dipt_rep ? ' data-sin-reparto="' . esc_attr( implode( ',', $dipt_rep ) ) . '"' : ''; ?>>
 				<span class="cierre__reloj" aria-hidden="true"><?php echo dipt_icono( 'reloj' ); // phpcs:ignore ?></span>
 				<span data-corte-texto><?php echo esc_html( sprintf( $dipt_t_despues, $dipt_e ? dipt_fecha_larga( $dipt_e['fecha'] ) : '' ) ); ?></span>
 				<span class="cierre__quedan" data-corte-quedan hidden></span>

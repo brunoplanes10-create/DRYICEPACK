@@ -1,0 +1,1434 @@
+{
+  "fuentes_generales": [
+    "https://www.ine.es/dynt3/inebase/es/index.htm?padre=517&capsel=525",
+    "https://servicios.ine.es/wstempus/js/ES/DATOS_TABLA/{tabla}?nult=1",
+    "https://www.cartociudad.es/geocoder/api/geocoder/",
+    "https://nominatim.openstreetmap.org/",
+    "https://router.project-osrm.org/",
+    "https://es.wikipedia.org/"
+  ],
+  "nota": "Municipios: Cifras oficiales de población del INE a 1 de enero de 2025 (Revisión del Padrón municipal), sin la capital. Cuando el INE da doble nombre oficial (p. ej. «Alcoi/Alcoy»), se usa la forma castellana; si el único nombre oficial es catalán, gallego o vasco, ese. cp_capital: código postal del portal del ayuntamiento según CartoCiudad (IGN/CNIG). Distancias desde la nave de Mataró con OSRM, mismo método que herramientas/datos-zonas.mjs (2026-11-10).",
+  "pendientes": [
+    "Zamora: el pie de la web oficial del Ayuntamiento (zamora.es) y OpenStreetMap dan 49002 para la Plaza Mayor; CartoCiudad da 49004 para Plaza Mayor 1. Se ha puesto 49002.",
+    "Barcelona lleva intro aunque existe:true (no se crea página); revisar si la plantilla la usa.",
+    "Las intros se apoyan en es.wikipedia (enlazada en «fuentes» de cada provincia), no en fuentes primarias. No llevan cifras ni nombres de empresas."
+  ],
+  "provincias": {
+    "vitoria": {
+      "clave": "vitoria",
+      "ciudad": "Vitoria",
+      "ciudad_oficial": "Vitoria-Gasteiz",
+      "provincia": "Araba/Álava",
+      "provincia_corta": "Álava",
+      "ccaa": "País Vasco",
+      "cp": "01",
+      "cp_capital": "01001",
+      "municipios": [
+        "Llodio",
+        "Amurrio",
+        "Salvatierra",
+        "Iruña de Oca",
+        "Oyón"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Álava, el aeropuerto de Vitoria está especializado en carga aérea; para la mercancía que viaja congelada, el hielo seco da frío sin enchufe en el tramo por carretera. En las bodegas de la Rioja Alavesa sirve para enfriar la uva en vendimia. El campus de Álava de la universidad pública vasca suma laboratorios."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2854",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20Espa%C3%B1a%201%2C%20Vitoria-Gasteiz",
+        "https://es.wikipedia.org/wiki/Aeropuerto_de_Vitoria",
+        "https://es.wikipedia.org/wiki/Rioja_Alavesa",
+        "https://es.wikipedia.org/wiki/Universidad_del_País_Vasco"
+      ]
+    },
+    "albacete": {
+      "clave": "albacete",
+      "ciudad": "Albacete",
+      "ciudad_oficial": "Albacete",
+      "provincia": "Albacete",
+      "provincia_corta": "Albacete",
+      "ccaa": "Castilla-La Mancha",
+      "cp": "02",
+      "cp_capital": "02005",
+      "municipios": [
+        "Hellín",
+        "Villarrobledo",
+        "Almansa",
+        "La Roda",
+        "Caudete"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "Albacete es nudo logístico y de comunicaciones entre Madrid y el Mediterráneo: el hielo seco mantiene el congelado en las rutas de reparto sin camión frigorífico. El complejo hospitalario universitario trabaja con muestras que piden frío en el traslado. En septiembre, la Feria llena la hostelería de la capital."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2855",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20la%20Catedral%201%2C%20Albacete",
+        "https://es.wikipedia.org/wiki/Albacete",
+        "https://es.wikipedia.org/wiki/Complejo_Hospitalario_Universitario_de_Albacete",
+        "https://es.wikipedia.org/wiki/Feria_de_Albacete"
+      ]
+    },
+    "alicante": {
+      "clave": "alicante",
+      "ciudad": "Alicante",
+      "ciudad_oficial": "Alacant/Alicante",
+      "provincia": "Alicante/Alacant",
+      "provincia_corta": "Alicante",
+      "ccaa": "Comunidad Valenciana",
+      "cp": "03",
+      "cp_capital": "03002",
+      "municipios": [
+        "Elche",
+        "Torrevieja",
+        "Orihuela",
+        "Benidorm",
+        "Alcoy"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Alicante, el turrón y el helado de Xixona y el calzado de Elche y Elda marcan la industria. El hielo seco mantiene el helado y el congelado en ruta y conserva muestras en las universidades de Alicante y Miguel Hernández. En la Costa Blanca y en las Hogueras de San Juan sirve a hoteles, restaurantes y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20del%20Ayuntamiento%201%2C%20Alicante",
+        "https://es.wikipedia.org/wiki/Jijona",
+        "https://es.wikipedia.org/wiki/Elche",
+        "https://es.wikipedia.org/wiki/Elda",
+        "https://es.wikipedia.org/wiki/Universidad_Miguel_Hernández",
+        "https://es.wikipedia.org/wiki/San_Vicente_del_Raspeig",
+        "https://es.wikipedia.org/wiki/Fiesta_de_San_Juan"
+      ]
+    },
+    "almeria": {
+      "clave": "almeria",
+      "ciudad": "Almería",
+      "ciudad_oficial": "Almería",
+      "provincia": "Almería",
+      "provincia_corta": "Almería",
+      "ccaa": "Andalucía",
+      "cp": "04",
+      "cp_capital": "04003",
+      "municipios": [
+        "Roquetas de Mar",
+        "El Ejido",
+        "Níjar",
+        "Vícar",
+        "Adra"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Almería, El Ejido es el centro de la agricultura intensiva bajo invernadero, y la Universidad de Almería investiga en agroalimentación. El hielo seco conserva muestras en sus laboratorios y mantiene el congelado durante el transporte. En verano, la hostelería de la costa puede usarlo en coctelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2857",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20la%20Constituci%C3%B3n%203%2C%20Almer%C3%ADa",
+        "https://es.wikipedia.org/wiki/El_Ejido",
+        "https://es.wikipedia.org/wiki/Universidad_de_Almería"
+      ]
+    },
+    "avila": {
+      "clave": "avila",
+      "ciudad": "Ávila",
+      "ciudad_oficial": "Ávila",
+      "provincia": "Ávila",
+      "provincia_corta": "Ávila",
+      "ccaa": "Castilla y León",
+      "cp": "05",
+      "cp_capital": "05001",
+      "municipios": [
+        "Arévalo",
+        "Arenas de San Pedro",
+        "Las Navas del Marqués",
+        "Sotillo de la Adrada",
+        "Candeleda"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Ávila, la carne de Ávila y las judías de El Barco tienen indicación geográfica protegida. El hielo seco mantiene la carne congelada durante el reparto sin furgoneta frigorífica. En la capital, la hostelería que vive del turismo de la muralla puede usarlo en coctelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2858",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20del%20Mercado%20Chico%201%2C%20%C3%81vila",
+        "https://es.wikipedia.org/wiki/Carne_de_Ávila",
+        "https://es.wikipedia.org/wiki/Judías_de_El_Barco_de_Ávila",
+        "https://es.wikipedia.org/wiki/Muralla_de_Ávila"
+      ]
+    },
+    "badajoz": {
+      "clave": "badajoz",
+      "ciudad": "Badajoz",
+      "ciudad_oficial": "Badajoz",
+      "provincia": "Badajoz",
+      "provincia_corta": "Badajoz",
+      "ccaa": "Extremadura",
+      "cp": "06",
+      "cp_capital": "06002",
+      "municipios": [
+        "Mérida",
+        "Don Benito",
+        "Almendralejo",
+        "Villanueva de la Serena",
+        "Zafra"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Badajoz, las vegas regadas por el Plan Badajoz y la dehesa del cerdo ibérico son la base agraria de la provincia. El hielo seco mantiene bajo cero el producto congelado en ruta y conserva muestras en la Universidad de Extremadura. En Mérida, el Festival de Teatro Clásico llena de eventos julio y agosto."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2859",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20Espa%C3%B1a%201%2C%20Badajoz&municipio_filter=Badajoz",
+        "https://es.wikipedia.org/wiki/Plan_Badajoz",
+        "https://es.wikipedia.org/wiki/Dehesa_de_Extremadura",
+        "https://es.wikipedia.org/wiki/Universidad_de_Extremadura",
+        "https://es.wikipedia.org/wiki/Festival_Internacional_de_Teatro_Clásico_de_Mérida"
+      ]
+    },
+    "barcelona": {
+      "clave": "barcelona",
+      "ciudad": "Barcelona",
+      "ciudad_oficial": "Barcelona",
+      "provincia": "Barcelona",
+      "provincia_corta": "Barcelona",
+      "ccaa": "Cataluña",
+      "cp": "08",
+      "cp_capital": "08002",
+      "municipios": [
+        "L'Hospitalet de Llobregat",
+        "Terrassa",
+        "Badalona",
+        "Sabadell",
+        "Mataró"
+      ],
+      "catalunya": true,
+      "existe": true,
+      "intro": {
+        "es": "En la provincia de Barcelona, el puerto, el centro de carga del aeropuerto y el polígono de la Zona Franca concentran la logística del área. Hospitales y universidades envían muestras con hielo seco. La hostelería, el ocio nocturno y los eventos lo usan para coctelería y efectos de niebla.",
+        "ca": "A la província de Barcelona, el port, el centre de càrrega de l'aeroport i el polígon de la Zona Franca concentren la logística de l'àrea. Hospitals i universitats envien mostres amb gel sec. L'hostaleria, l'oci nocturn i els esdeveniments el fan servir per preparar còctels i fer efectes de boira."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Pla%C3%A7a%20de%20Sant%20Jaume%201%2C%20Barcelona",
+        "https://es.wikipedia.org/wiki/Puerto_de_Barcelona",
+        "https://es.wikipedia.org/wiki/Aeropuerto_Josep_Tarradellas_Barcelona-El_Prat",
+        "https://es.wikipedia.org/wiki/Zona_Franca_(Barcelona)"
+      ]
+    },
+    "burgos": {
+      "clave": "burgos",
+      "ciudad": "Burgos",
+      "ciudad_oficial": "Burgos",
+      "provincia": "Burgos",
+      "provincia_corta": "Burgos",
+      "ccaa": "Castilla y León",
+      "cp": "09",
+      "cp_capital": "09003",
+      "municipios": [
+        "Miranda de Ebro",
+        "Aranda de Duero",
+        "Briviesca",
+        "Medina de Pomar",
+        "Valle de Mena"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "Burgos tiene industria alimentaria con nombre propio, como la morcilla y el queso de Burgos. En la Ribera del Duero, alrededor de Aranda, el hielo seco enfría la uva en bodega durante la vendimia. También mantiene el congelado en el reparto y conserva muestras en los laboratorios de la Universidad de Burgos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2862",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Burgos",
+        "https://es.wikipedia.org/wiki/Morcilla_de_Burgos",
+        "https://es.wikipedia.org/wiki/Queso_de_Burgos",
+        "https://es.wikipedia.org/wiki/Ribera_del_Duero_(vino)",
+        "https://es.wikipedia.org/wiki/Universidad_de_Burgos"
+      ]
+    },
+    "caceres": {
+      "clave": "caceres",
+      "ciudad": "Cáceres",
+      "ciudad_oficial": "Cáceres",
+      "provincia": "Cáceres",
+      "provincia_corta": "Cáceres",
+      "ccaa": "Extremadura",
+      "cp": "10",
+      "cp_capital": "10003",
+      "municipios": [
+        "Plasencia",
+        "Navalmoral de la Mata",
+        "Coria",
+        "Miajadas",
+        "Trujillo"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Cáceres, el Valle del Jerte da cereza, la Vera su pimentón y el Casar su torta, estos dos con denominación de origen. El hielo seco mantiene el producto congelado en ruta y conserva muestras en el campus de la Universidad de Extremadura. En la ciudad monumental, la hostelería puede usarlo en coctelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2863",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20C%C3%A1ceres",
+        "https://es.wikipedia.org/wiki/Valle_del_Jerte",
+        "https://es.wikipedia.org/wiki/Pimentón_de_la_Vera",
+        "https://es.wikipedia.org/wiki/Torta_del_Casar",
+        "https://es.wikipedia.org/wiki/Universidad_de_Extremadura",
+        "https://es.wikipedia.org/wiki/Ciudad_monumental_de_Cáceres"
+      ]
+    },
+    "cadiz": {
+      "clave": "cadiz",
+      "ciudad": "Cádiz",
+      "ciudad_oficial": "Cádiz",
+      "provincia": "Cádiz",
+      "provincia_corta": "Cádiz",
+      "ccaa": "Andalucía",
+      "cp": "11",
+      "cp_capital": "11005",
+      "municipios": [
+        "Jerez de la Frontera",
+        "Algeciras",
+        "San Fernando",
+        "Chiclana de la Frontera",
+        "El Puerto de Santa María"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Cádiz están el puerto de Algeciras, las almadrabas del atún y las bodegas del marco de Jerez. El hielo seco mantiene el pescado congelado en el envío y conserva muestras en la Universidad de Cádiz. En Carnaval y en las ferias sirve también a la hostelería para coctelería y niebla."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2864",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20San%20Juan%20de%20Dios%201%2C%20C%C3%A1diz",
+        "https://es.wikipedia.org/wiki/Puerto_de_la_bahía_de_Algeciras",
+        "https://es.wikipedia.org/wiki/Almadraba",
+        "https://es.wikipedia.org/wiki/Jerez",
+        "https://es.wikipedia.org/wiki/Universidad_de_Cádiz",
+        "https://es.wikipedia.org/wiki/Carnaval_de_Cádiz"
+      ]
+    },
+    "castellon": {
+      "clave": "castellon",
+      "ciudad": "Castellón",
+      "ciudad_oficial": "Castelló de la Plana",
+      "provincia": "Castellón/Castelló",
+      "provincia_corta": "Castellón",
+      "ccaa": "Comunidad Valenciana",
+      "cp": "12",
+      "cp_capital": "12001",
+      "municipios": [
+        "Vila-real",
+        "Burriana",
+        "La Vall d'Uixó",
+        "Vinaròs",
+        "Benicarló"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Castellón, la industria cerámica de Vila-real, Onda y l'Alcora trabaja con prensas y moldes que se pueden limpiar con hielo seco, sin agua ni residuos. La Plana exporta naranja y el puerto mueve mercancía. La Universitat Jaume I suma laboratorios que conservan muestras en frío."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2865",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Castell%C3%B3%20de%20la%20Plana",
+        "https://es.wikipedia.org/wiki/Villarreal",
+        "https://es.wikipedia.org/wiki/Onda_(Castellón)",
+        "https://es.wikipedia.org/wiki/Alcora",
+        "https://es.wikipedia.org/wiki/Plana_Baja",
+        "https://es.wikipedia.org/wiki/Puerto_de_Castellón",
+        "https://es.wikipedia.org/wiki/Universidad_Jaime_I"
+      ]
+    },
+    "ciudad-real": {
+      "clave": "ciudad-real",
+      "ciudad": "Ciudad Real",
+      "ciudad_oficial": "Ciudad Real",
+      "provincia": "Ciudad Real",
+      "provincia_corta": "Ciudad Real",
+      "ccaa": "Castilla-La Mancha",
+      "cp": "13",
+      "cp_capital": "13001",
+      "municipios": [
+        "Puertollano",
+        "Tomelloso",
+        "Alcázar de San Juan",
+        "Valdepeñas",
+        "Manzanares"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "Ciudad Real es tierra de vino, con Valdepeñas y La Mancha, y Puertollano tiene complejo petroquímico. El hielo seco enfría la uva en bodega, limpia equipos industriales sin agua y conserva muestras de laboratorio. En julio, el Festival de Teatro Clásico de Almagro llena la hostelería de la zona."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2866",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Ciudad%20Real",
+        "https://es.wikipedia.org/wiki/Valdepeñas_(vino)",
+        "https://es.wikipedia.org/wiki/Puertollano",
+        "https://es.wikipedia.org/wiki/Festival_de_Teatro_Clásico_de_Almagro"
+      ]
+    },
+    "cordoba": {
+      "clave": "cordoba",
+      "ciudad": "Córdoba",
+      "ciudad_oficial": "Córdoba",
+      "provincia": "Córdoba",
+      "provincia_corta": "Córdoba",
+      "ccaa": "Andalucía",
+      "cp": "14",
+      "cp_capital": "14002",
+      "municipios": [
+        "Lucena",
+        "Puente Genil",
+        "Montilla",
+        "Priego de Córdoba",
+        "Palma del Río"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Córdoba, el vino de Montilla-Moriles tiene denominación de origen y la universidad tiene facultad de Veterinaria y un campus agroalimentario en Rabanales. En sus laboratorios y en el hospital universitario, el hielo seco conserva muestras. En mayo, el festival de los Patios llena la ciudad de visitantes y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2901",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Calle%20Capitulares%201%2C%20C%C3%B3rdoba",
+        "https://es.wikipedia.org/wiki/Montilla-Moriles",
+        "https://es.wikipedia.org/wiki/Universidad_de_Córdoba_(España)",
+        "https://es.wikipedia.org/wiki/Hospital_Universitario_Reina_Sofía",
+        "https://es.wikipedia.org/wiki/Festival_de_los_Patios_Cordobeses"
+      ]
+    },
+    "a-coruna": {
+      "clave": "a-coruna",
+      "ciudad": "A Coruña",
+      "ciudad_oficial": "A Coruña",
+      "provincia": "A Coruña",
+      "provincia_corta": "A Coruña",
+      "ccaa": "Galicia",
+      "cp": "15",
+      "cp_capital": "15001",
+      "municipios": [
+        "Santiago de Compostela",
+        "Ferrol",
+        "Narón",
+        "Oleiros",
+        "Arteixo"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En A Coruña, el puerto descarga pescado fresco y congelado, y Arteixo tiene el polígono industrial de Sabón. En Santiago, la universidad trabaja con muestras que viajan en frío. El hielo seco mantiene el congelado durante el reparto y sirve también a la hostelería del Camino."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2868",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Praza%20de%20Mar%C3%ADa%20Pita%201%2C%20A%20Coru%C3%B1a",
+        "https://es.wikipedia.org/wiki/Puerto_de_La_Coruña",
+        "https://es.wikipedia.org/wiki/Arteijo",
+        "https://es.wikipedia.org/wiki/Universidad_de_Santiago_de_Compostela",
+        "https://es.wikipedia.org/wiki/Santiago_de_Compostela"
+      ]
+    },
+    "cuenca": {
+      "clave": "cuenca",
+      "ciudad": "Cuenca",
+      "ciudad_oficial": "Cuenca",
+      "provincia": "Cuenca",
+      "provincia_corta": "Cuenca",
+      "ccaa": "Castilla-La Mancha",
+      "cp": "16",
+      "cp_capital": "16001",
+      "municipios": [
+        "Tarancón",
+        "Quintanar del Rey",
+        "San Clemente",
+        "Motilla del Palancar",
+        "Las Pedroñeras"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Cuenca, Las Pedroñeras se conoce como la capital del ajo. El hielo seco mantiene el frío en los envíos de producto congelado y conserva muestras en laboratorio. La capital, con su casco antiguo Patrimonio de la Humanidad, vive sobre todo del turismo y de su hostelería."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2869",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Cuenca",
+        "https://es.wikipedia.org/wiki/Las_Pedroñeras",
+        "https://es.wikipedia.org/wiki/Cuenca_(España)"
+      ]
+    },
+    "girona": {
+      "clave": "girona",
+      "ciudad": "Girona",
+      "ciudad_oficial": "Girona",
+      "provincia": "Girona",
+      "provincia_corta": "Girona",
+      "ccaa": "Cataluña",
+      "cp": "17",
+      "cp_capital": "17004",
+      "municipios": [
+        "Figueres",
+        "Lloret de Mar",
+        "Blanes",
+        "Olot",
+        "Salt"
+      ],
+      "catalunya": true,
+      "existe": false,
+      "intro": {
+        "es": "En Girona, la industria del Gironès y el aeropuerto conviven con el turismo de la Costa Brava. El hielo seco mantiene el congelado durante el transporte y conserva muestras en los laboratorios de la Universitat de Girona y del hospital Josep Trueta. En verano, sirve a hoteles, restaurantes y eventos de la costa.",
+        "ca": "A Girona, la indústria del Gironès i l'aeroport conviuen amb el turisme de la Costa Brava. El gel sec manté el congelat durant el transport i conserva mostres als laboratoris de la Universitat de Girona i de l'hospital Josep Trueta. A l'estiu, serveix a hotels, restaurants i esdeveniments de la costa."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2870",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Pla%C3%A7a%20del%20Vi%201%2C%20Girona",
+        "https://es.wikipedia.org/wiki/Gironés",
+        "https://es.wikipedia.org/wiki/Aeropuerto_de_Gerona",
+        "https://es.wikipedia.org/wiki/Costa_Brava",
+        "https://es.wikipedia.org/wiki/Universidad_de_Gerona",
+        "https://es.wikipedia.org/wiki/Hospital_Universitario_Doctor_Josep_Trueta",
+        "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Girona%2C%20Catalunya%2C%20Espa%C3%B1a",
+        "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;2.8199,41.9793?overview=false"
+      ],
+      "lat": 41.9793,
+      "lon": 2.8199,
+      "km": 68,
+      "min": 56
+    },
+    "granada": {
+      "clave": "granada",
+      "ciudad": "Granada",
+      "ciudad_oficial": "Granada",
+      "provincia": "Granada",
+      "provincia_corta": "Granada",
+      "ccaa": "Andalucía",
+      "cp": "18",
+      "cp_capital": "18009",
+      "municipios": [
+        "Motril",
+        "Almuñécar",
+        "Armilla",
+        "Las Gabias",
+        "Maracena"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Granada, el Parque Tecnológico de Ciencias de la Salud reúne hospital, facultades y laboratorios que conservan muestras en frío. En la Costa Tropical, Motril tiene puerto comercial y pesquero, y la chirimoya tiene denominación de origen. La hostelería de la capital y de Sierra Nevada puede usar hielo seco en coctelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2871",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20del%20Carmen%205%2C%20Granada",
+        "https://es.wikipedia.org/wiki/Parque_Tecnológico_de_la_Salud_(Granada)",
+        "https://es.wikipedia.org/wiki/Motril",
+        "https://es.wikipedia.org/wiki/Costa_Granadina",
+        "https://es.wikipedia.org/wiki/Estación_de_esquí_de_Sierra_Nevada"
+      ]
+    },
+    "guadalajara": {
+      "clave": "guadalajara",
+      "ciudad": "Guadalajara",
+      "ciudad_oficial": "Guadalajara",
+      "provincia": "Guadalajara",
+      "provincia_corta": "Guadalajara",
+      "ccaa": "Castilla-La Mancha",
+      "cp": "19",
+      "cp_capital": "19001",
+      "municipios": [
+        "Azuqueca de Henares",
+        "Alovera",
+        "El Casar",
+        "Cabanillas del Campo",
+        "Marchamalo"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Guadalajara, el Corredor del Henares mezcla logística, industria y alta tecnología junto a Madrid, con Azuqueca y Cabanillas. El hielo seco mantiene el congelado en la última milla sin frío mecánico. La Alcarria tiene su miel con denominación de origen."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2872",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Guadalajara&municipio_filter=Guadalajara",
+        "https://es.wikipedia.org/wiki/Corredor_del_Henares",
+        "https://es.wikipedia.org/wiki/Miel_de_la_Alcarria"
+      ]
+    },
+    "san-sebastian": {
+      "clave": "san-sebastian",
+      "ciudad": "San Sebastián",
+      "ciudad_oficial": "Donostia/San Sebastián",
+      "provincia": "Gipuzkoa",
+      "provincia_corta": "Gipuzkoa",
+      "ccaa": "País Vasco",
+      "cp": "20",
+      "cp_capital": "20003",
+      "municipios": [
+        "Irun",
+        "Errenteria",
+        "Eibar",
+        "Zarautz",
+        "Mondragón"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Gipuzkoa, Elgoibar fabrica máquina-herramienta y Getaria y Pasaia tienen tradición pesquera. El hielo seco limpia piezas y moldes sin agua y mantiene el pescado congelado en ruta. En Donostia, la gastronomía y el Festival de Cine suman coctelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2873",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Ijentea%20kalea%201%2C%20Donostia",
+        "https://es.wikipedia.org/wiki/Elgóibar",
+        "https://es.wikipedia.org/wiki/Guetaria",
+        "https://es.wikipedia.org/wiki/Pasajes",
+        "https://es.wikipedia.org/wiki/San_Sebastián",
+        "https://es.wikipedia.org/wiki/Festival_Internacional_de_Cine_de_San_Sebastián"
+      ]
+    },
+    "huelva": {
+      "clave": "huelva",
+      "ciudad": "Huelva",
+      "ciudad_oficial": "Huelva",
+      "provincia": "Huelva",
+      "provincia_corta": "Huelva",
+      "ccaa": "Andalucía",
+      "cp": "21",
+      "cp_capital": "21003",
+      "municipios": [
+        "Lepe",
+        "Almonte",
+        "Moguer",
+        "Aljaraque",
+        "Ayamonte"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Huelva, la fresa, el jamón de Jabugo y la gamba blanca tienen nombre propio, y el polo químico concentra industria junto a la capital. El hielo seco permite enviar fruta y marisco congelados sin cortar el frío y limpiar equipos industriales sin agua."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2874",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20la%20Constituci%C3%B3n%201%2C%20Huelva",
+        "https://es.wikipedia.org/wiki/Provincia_de_Huelva",
+        "https://es.wikipedia.org/wiki/Jabugo",
+        "https://es.wikipedia.org/wiki/Gastronomía_de_la_provincia_de_Huelva",
+        "https://es.wikipedia.org/wiki/Polo_Químico_de_Huelva"
+      ]
+    },
+    "huesca": {
+      "clave": "huesca",
+      "ciudad": "Huesca",
+      "ciudad_oficial": "Huesca",
+      "provincia": "Huesca",
+      "provincia_corta": "Huesca",
+      "ccaa": "Aragón",
+      "cp": "22",
+      "cp_capital": "22002",
+      "municipios": [
+        "Monzón",
+        "Barbastro",
+        "Fraga",
+        "Jaca",
+        "Binéfar"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Huesca, el Somontano tiene vino con denominación de origen y el Bajo Cinca, con Fraga, produce fruta dulce. El hielo seco enfría la uva durante la vendimia y mantiene la fruta congelada en el transporte. En invierno, la hostelería del Pirineo puede usarlo en eventos y coctelería."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2875",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20la%20Catedral%201%2C%20Huesca",
+        "https://es.wikipedia.org/wiki/Somontano_de_Barbastro",
+        "https://es.wikipedia.org/wiki/Bajo_Cinca"
+      ]
+    },
+    "jaen": {
+      "clave": "jaen",
+      "ciudad": "Jaén",
+      "ciudad_oficial": "Jaén",
+      "provincia": "Jaén",
+      "provincia_corta": "Jaén",
+      "ccaa": "Andalucía",
+      "cp": "23",
+      "cp_capital": "23002",
+      "municipios": [
+        "Linares",
+        "Andújar",
+        "Úbeda",
+        "Martos",
+        "Alcalá la Real"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "Jaén está rodeada de olivar y su universidad tiene un instituto de investigación en olivar y aceites de oliva. El hielo seco conserva muestras en esos laboratorios y limpia maquinaria sin agua ni disolventes. Úbeda y Baeza, Patrimonio de la Humanidad, suman hostelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2876",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20Santa%20Mar%C3%ADa%201%2C%20Ja%C3%A9n",
+        "https://es.wikipedia.org/wiki/Jaén",
+        "https://es.wikipedia.org/wiki/Universidad_de_Jaén",
+        "https://es.wikipedia.org/wiki/Conjuntos_monumentales_renacentistas_de_Úbeda_y_Baeza"
+      ]
+    },
+    "leon": {
+      "clave": "leon",
+      "ciudad": "León",
+      "ciudad_oficial": "León",
+      "provincia": "León",
+      "provincia_corta": "León",
+      "ccaa": "Castilla y León",
+      "cp": "24",
+      "cp_capital": "24001",
+      "municipios": [
+        "Ponferrada",
+        "San Andrés del Rabanedo",
+        "Villaquilambre",
+        "Astorga",
+        "La Bañeza"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En León, la cecina tiene indicación geográfica protegida y el Bierzo, su botillo. La Universidad de León nació de una escuela de Veterinaria y tiene laboratorios que trabajan con muestras en frío. El hielo seco mantiene el congelado durante el reparto y sirve a la hostelería de la capital en eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2877",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Avenida%20Ordo%C3%B1o%20II%2010%2C%20Le%C3%B3n",
+        "https://es.wikipedia.org/wiki/Cecina_de_León",
+        "https://es.wikipedia.org/wiki/Botillo_del_Bierzo",
+        "https://es.wikipedia.org/wiki/Universidad_de_León"
+      ]
+    },
+    "lleida": {
+      "clave": "lleida",
+      "ciudad": "Lleida",
+      "ciudad_oficial": "Lleida",
+      "provincia": "Lleida",
+      "provincia_corta": "Lleida",
+      "ccaa": "Cataluña",
+      "cp": "25",
+      "cp_capital": "25007",
+      "municipios": [
+        "Tàrrega",
+        "Balaguer",
+        "Mollerussa",
+        "La Seu d'Urgell",
+        "Alcarràs"
+      ],
+      "catalunya": true,
+      "existe": false,
+      "intro": {
+        "es": "En Lleida, el regadío del Segrià sostiene la agricultura y la ciudad tiene un parque científico y tecnológico agroalimentario. La Universitat de Lleida tiene un campus agroalimentario, forestal y veterinario que conserva muestras en frío. El hielo seco mantiene el congelado en ruta y, en el Pirineo, sirve a la hostelería de temporada.",
+        "ca": "A Lleida, el regadiu del Segrià sosté l'agricultura i la ciutat té un parc científic i tecnològic agroalimentari. La Universitat de Lleida té un campus agroalimentari, forestal i veterinari que conserva mostres en fred. El gel sec manté el congelat en ruta i, al Pirineu, serveix a l'hostaleria de temporada."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2878",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Pla%C3%A7a%20de%20la%20Paeria%201%2C%20Lleida",
+        "https://es.wikipedia.org/wiki/Segriá",
+        "https://es.wikipedia.org/wiki/Lérida",
+        "https://es.wikipedia.org/wiki/Universidad_de_Lérida",
+        "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Lleida%2C%20Catalunya%2C%20Espa%C3%B1a",
+        "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;0.6268,41.6148?overview=false"
+      ],
+      "lat": 41.6148,
+      "lon": 0.6268,
+      "km": 182,
+      "min": 132
+    },
+    "logrono": {
+      "clave": "logrono",
+      "ciudad": "Logroño",
+      "ciudad_oficial": "Logroño",
+      "provincia": "La Rioja",
+      "provincia_corta": "La Rioja",
+      "ccaa": "La Rioja",
+      "cp": "26",
+      "cp_capital": "26004",
+      "municipios": [
+        "Calahorra",
+        "Arnedo",
+        "Haro",
+        "Lardero",
+        "Alfaro"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En La Rioja, el hielo seco enfría la uva en bodega durante la vendimia, y Calahorra tiene industria conservera. La Universidad de La Rioja imparte Enología. En Logroño, las fiestas de San Mateo, de la Vendimia, y la hostelería de la calle Laurel suman eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2879",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Avenida%20de%20la%20Paz%2011%2C%20Logro%C3%B1o",
+        "https://es.wikipedia.org/wiki/Rioja_(vino)",
+        "https://es.wikipedia.org/wiki/Calahorra",
+        "https://es.wikipedia.org/wiki/Universidad_de_La_Rioja",
+        "https://es.wikipedia.org/wiki/Fiestas_de_San_Mateo_(Logroño)",
+        "https://es.wikipedia.org/wiki/Logroño"
+      ]
+    },
+    "lugo": {
+      "clave": "lugo",
+      "ciudad": "Lugo",
+      "ciudad_oficial": "Lugo",
+      "provincia": "Lugo",
+      "provincia_corta": "Lugo",
+      "ccaa": "Galicia",
+      "cp": "27",
+      "cp_capital": "27001",
+      "municipios": [
+        "Monforte de Lemos",
+        "Viveiro",
+        "Vilalba",
+        "Sarria",
+        "Foz"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Lugo, la ganadería da carne de vacuno y la Universidad de Santiago tiene campus en la ciudad. En la Mariña, Burela tiene puerto pesquero y flota propia. El hielo seco mantiene carne y pescado congelados en el envío y conserva muestras de laboratorio."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2880",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Praza%20Maior%201%2C%20Lugo",
+        "https://es.wikipedia.org/wiki/Gastronomía_de_la_provincia_de_Lugo",
+        "https://es.wikipedia.org/wiki/Universidad_de_Santiago_de_Compostela",
+        "https://es.wikipedia.org/wiki/Burela"
+      ]
+    },
+    "madrid": {
+      "clave": "madrid",
+      "ciudad": "Madrid",
+      "ciudad_oficial": "Madrid",
+      "provincia": "Madrid",
+      "provincia_corta": "Madrid",
+      "ccaa": "Comunidad de Madrid",
+      "cp": "28",
+      "cp_capital": "28014",
+      "municipios": [
+        "Móstoles",
+        "Alcalá de Henares",
+        "Leganés",
+        "Getafe",
+        "Fuenlabrada"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Madrid, el aeropuerto, con su carga aérea, y los polígonos del sur y del Corredor del Henares concentran logística y última milla. Hospitales, universidades y laboratorios envían muestras con hielo seco. La hostelería, el ocio nocturno y las ferias lo usan en coctelería y efectos de niebla."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20Cibeles%201%2C%20Madrid",
+        "https://es.wikipedia.org/wiki/Aeropuerto_Adolfo_Suárez_Madrid-Barajas",
+        "https://es.wikipedia.org/wiki/Corredor_del_Henares"
+      ]
+    },
+    "malaga": {
+      "clave": "malaga",
+      "ciudad": "Málaga",
+      "ciudad_oficial": "Málaga",
+      "provincia": "Málaga",
+      "provincia_corta": "Málaga",
+      "ccaa": "Andalucía",
+      "cp": "29",
+      "cp_capital": "29016",
+      "municipios": [
+        "Marbella",
+        "Mijas",
+        "Vélez-Málaga",
+        "Fuengirola",
+        "Estepona"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Málaga, el Parque Tecnológico de Andalucía y la Universidad reúnen empresas y laboratorios, y Vélez-Málaga cultiva aguacate y mango. El hielo seco conserva muestras y mantiene fruta y producto congelados en el envío. En la Costa del Sol, hoteles, restaurantes y eventos lo usan para coctelería y niebla."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Avenida%20de%20Cervantes%204%2C%20M%C3%A1laga",
+        "https://es.wikipedia.org/wiki/Málaga_TechPark_-_Parque_Tecnológico_de_Andalucía",
+        "https://es.wikipedia.org/wiki/Universidad_de_Málaga",
+        "https://es.wikipedia.org/wiki/Vélez-Málaga",
+        "https://es.wikipedia.org/wiki/Costa_del_Sol"
+      ]
+    },
+    "murcia": {
+      "clave": "murcia",
+      "ciudad": "Murcia",
+      "ciudad_oficial": "Murcia",
+      "provincia": "Murcia",
+      "provincia_corta": "Murcia",
+      "ccaa": "Región de Murcia",
+      "cp": "30",
+      "cp_capital": "30004",
+      "municipios": [
+        "Cartagena",
+        "Lorca",
+        "Molina de Segura",
+        "Alcantarilla",
+        "Torre-Pacheco"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Murcia, las vegas del Segura tienen industria conservera vegetal, con Molina de Segura como uno de sus centros, y Cartagena suma el valle industrial de Escombreras y la Universidad Politécnica. El hielo seco mantiene el congelado en ruta, limpia equipos sin agua y conserva muestras de laboratorio."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2883",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Glorieta%20de%20Espa%C3%B1a%201%2C%20Murcia",
+        "https://es.wikipedia.org/wiki/Región_de_Murcia",
+        "https://es.wikipedia.org/wiki/Molina_de_Segura",
+        "https://es.wikipedia.org/wiki/Escombreras_(Cartagena)",
+        "https://es.wikipedia.org/wiki/Universidad_Politécnica_de_Cartagena"
+      ]
+    },
+    "pamplona": {
+      "clave": "pamplona",
+      "ciudad": "Pamplona",
+      "ciudad_oficial": "Pamplona/Iruña",
+      "provincia": "Navarra",
+      "provincia_corta": "Navarra",
+      "ccaa": "Navarra",
+      "cp": "31",
+      "cp_capital": "31001",
+      "municipios": [
+        "Tudela",
+        "Valle de Egüés",
+        "Burlada",
+        "Barañáin",
+        "Zizur Mayor"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Navarra, la huerta de Tudela da alcachofa y verdura, Lodosa su pimiento del piquillo y Pamplona tiene industria de automoción. El hielo seco mantiene la verdura congelada en ruta y limpia moldes sin agua. En julio, los Sanfermines llenan la hostelería de la capital."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2884",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Consistorial%201%2C%20Pamplona",
+        "https://es.wikipedia.org/wiki/Tudela",
+        "https://es.wikipedia.org/wiki/Pimiento_del_piquillo",
+        "https://es.wikipedia.org/wiki/Pamplona",
+        "https://es.wikipedia.org/wiki/Sanfermines"
+      ]
+    },
+    "ourense": {
+      "clave": "ourense",
+      "ciudad": "Ourense",
+      "ciudad_oficial": "Ourense",
+      "provincia": "Ourense",
+      "provincia_corta": "Ourense",
+      "ccaa": "Galicia",
+      "cp": "32",
+      "cp_capital": "32005",
+      "municipios": [
+        "O Carballiño",
+        "Verín",
+        "O Barco de Valdeorras",
+        "Barbadás",
+        "Xinzo de Limia"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Ourense, el Ribeiro, Valdeorras y Monterrei tienen vino con denominación de origen, y el hielo seco sirve en bodega para enfriar la uva en vendimia. La ciudad tiene campus de la Universidad de Vigo y aguas termales en As Burgas, con balnearios y hostelería que suman eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2885",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Praza%20Maior%201%2C%20Ourense",
+        "https://es.wikipedia.org/wiki/Ribeiro",
+        "https://es.wikipedia.org/wiki/Valdeorras_(vino)",
+        "https://es.wikipedia.org/wiki/Monterrei_(vino)",
+        "https://es.wikipedia.org/wiki/Universidad_de_Vigo",
+        "https://es.wikipedia.org/wiki/Orense"
+      ]
+    },
+    "oviedo": {
+      "clave": "oviedo",
+      "ciudad": "Oviedo",
+      "ciudad_oficial": "Oviedo",
+      "provincia": "Asturias",
+      "provincia_corta": "Asturias",
+      "ccaa": "Asturias",
+      "cp": "33",
+      "cp_capital": "33009",
+      "municipios": [
+        "Gijón",
+        "Avilés",
+        "Siero",
+        "Langreo",
+        "Mieres"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Asturias, Avilés creció con la siderurgia y Gijón tiene el puerto de El Musel: equipos y moldes que se pueden limpiar con hielo seco, sin agua ni disolventes. La ganadería lechera pesa en el campo asturiano. El hielo seco conserva además muestras en la Universidad de Oviedo, con campus en Oviedo, Gijón y Mieres."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2886",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20la%20Constituci%C3%B3n%201%2C%20Oviedo",
+        "https://es.wikipedia.org/wiki/Avilés",
+        "https://es.wikipedia.org/wiki/Puerto_de_Gijón",
+        "https://es.wikipedia.org/wiki/Asturias",
+        "https://es.wikipedia.org/wiki/Universidad_de_Oviedo"
+      ]
+    },
+    "palencia": {
+      "clave": "palencia",
+      "ciudad": "Palencia",
+      "ciudad_oficial": "Palencia",
+      "provincia": "Palencia",
+      "provincia_corta": "Palencia",
+      "ccaa": "Castilla y León",
+      "cp": "34",
+      "cp_capital": "34001",
+      "municipios": [
+        "Aguilar de Campoo",
+        "Villamuriel de Cerrato",
+        "Venta de Baños",
+        "Guardo",
+        "Saldaña"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Palencia, Aguilar de Campoo tiene tradición galletera y Villamuriel de Cerrato, una fábrica de automóviles. El hielo seco limpia moldes y líneas de producción sin agua y mantiene el congelado en el transporte. En la capital sirve a la hostelería para coctelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2888",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Palencia&municipio_filter=Palencia",
+        "https://es.wikipedia.org/wiki/Aguilar_de_Campoo",
+        "https://es.wikipedia.org/wiki/Villamuriel_de_Cerrato"
+      ]
+    },
+    "pontevedra": {
+      "clave": "pontevedra",
+      "ciudad": "Pontevedra",
+      "ciudad_oficial": "Pontevedra",
+      "provincia": "Pontevedra",
+      "provincia_corta": "Pontevedra",
+      "ccaa": "Galicia",
+      "cp": "36",
+      "cp_capital": "36002",
+      "municipios": [
+        "Vigo",
+        "Vilagarcía de Arousa",
+        "Redondela",
+        "Cangas",
+        "Marín"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Pontevedra, el puerto de Vigo es base de la industria pesquera y del ultracongelado, y las rías crían mejillón en batea. El hielo seco mantiene el pescado congelado en ruta sin enchufe. En las Rías Baixas sirve también a las bodegas de albariño en vendimia."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2890",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Praza%20de%20Espa%C3%B1a%201%2C%20Pontevedra",
+        "https://es.wikipedia.org/wiki/Puerto_de_Vigo",
+        "https://es.wikipedia.org/wiki/Mytilus_galloprovincialis",
+        "https://es.wikipedia.org/wiki/Rías_Baixas_(vino)"
+      ]
+    },
+    "salamanca": {
+      "clave": "salamanca",
+      "ciudad": "Salamanca",
+      "ciudad_oficial": "Salamanca",
+      "provincia": "Salamanca",
+      "provincia_corta": "Salamanca",
+      "ccaa": "Castilla y León",
+      "cp": "37",
+      "cp_capital": "37002",
+      "municipios": [
+        "Santa Marta de Tormes",
+        "Béjar",
+        "Ciudad Rodrigo",
+        "Carbajosa de la Sagrada",
+        "Villamayor"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Salamanca, Guijuelo concentra industria del jamón y los embutidos. La Universidad y el hospital universitario trabajan con muestras que necesitan frío en el traslado, y el hielo seco cubre los dos casos. En la capital sirve a la hostelería y a los eventos de una ciudad universitaria."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2891",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Salamanca",
+        "https://es.wikipedia.org/wiki/Guijuelo",
+        "https://es.wikipedia.org/wiki/Universidad_de_Salamanca"
+      ]
+    },
+    "santander": {
+      "clave": "santander",
+      "ciudad": "Santander",
+      "ciudad_oficial": "Santander",
+      "provincia": "Cantabria",
+      "provincia_corta": "Cantabria",
+      "ccaa": "Cantabria",
+      "cp": "39",
+      "cp_capital": "39002",
+      "municipios": [
+        "Torrelavega",
+        "Castro-Urdiales",
+        "Camargo",
+        "Piélagos",
+        "El Astillero"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Cantabria, Santoña es tierra de anchoa en conserva, y la industria láctea, la química y la metalurgia pesan en la economía. Santander suma puerto y el hospital universitario Marqués de Valdecilla. El hielo seco mantiene el congelado en ruta, limpia equipos sin agua y conserva muestras de laboratorio."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2893",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20del%20Ayuntamiento%201%2C%20Santander",
+        "https://es.wikipedia.org/wiki/Santoña",
+        "https://es.wikipedia.org/wiki/Cantabria",
+        "https://es.wikipedia.org/wiki/Hospital_Universitario_Marqués_de_Valdecilla"
+      ]
+    },
+    "segovia": {
+      "clave": "segovia",
+      "ciudad": "Segovia",
+      "ciudad_oficial": "Segovia",
+      "provincia": "Segovia",
+      "provincia_corta": "Segovia",
+      "ccaa": "Castilla y León",
+      "cp": "40",
+      "cp_capital": "40001",
+      "municipios": [
+        "El Espinar",
+        "Cuéllar",
+        "Palazuelos de Eresma",
+        "Real Sitio de San Ildefonso",
+        "La Lastrilla"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Segovia, el chorizo de Cantimpalos tiene indicación geográfica protegida y el cochinillo es plato propio de la capital. El hielo seco mantiene la carne congelada en ruta sin camión frigorífico. La hostelería que vive del turismo del Acueducto puede usarlo en coctelería y eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2894",
+        "https://www.cartociudad.es/geocoder/api/geocoder/reverseGeocode?lon=-4.1243992&lat=40.9506489",
+        "https://es.wikipedia.org/wiki/Chorizo_de_Cantimpalos",
+        "https://es.wikipedia.org/wiki/Cochinillo_asado",
+        "https://es.wikipedia.org/wiki/Acueducto_de_Segovia"
+      ]
+    },
+    "sevilla": {
+      "clave": "sevilla",
+      "ciudad": "Sevilla",
+      "ciudad_oficial": "Sevilla",
+      "provincia": "Sevilla",
+      "provincia_corta": "Sevilla",
+      "ccaa": "Andalucía",
+      "cp": "41",
+      "cp_capital": "41001",
+      "municipios": [
+        "Dos Hermanas",
+        "Alcalá de Guadaíra",
+        "Utrera",
+        "Mairena del Aljarafe",
+        "La Rinconada"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Sevilla, la aceituna de mesa, el puerto del Guadalquivir y la industria aeronáutica junto al aeropuerto conviven con dos universidades públicas. El hielo seco mantiene el congelado en ruta, conserva muestras de laboratorio y limpia piezas sin agua. En la Feria de Abril y en la hostelería de la ciudad sirve para coctelería y niebla."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2895",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Nueva%201%2C%20Sevilla",
+        "https://es.wikipedia.org/wiki/Aceituna",
+        "https://es.wikipedia.org/wiki/Puerto_de_Sevilla",
+        "https://es.wikipedia.org/wiki/Sevilla",
+        "https://es.wikipedia.org/wiki/Universidad_Pablo_de_Olavide",
+        "https://es.wikipedia.org/wiki/Feria_de_Abril"
+      ]
+    },
+    "soria": {
+      "clave": "soria",
+      "ciudad": "Soria",
+      "ciudad_oficial": "Soria",
+      "provincia": "Soria",
+      "provincia_corta": "Soria",
+      "ccaa": "Castilla y León",
+      "cp": "42",
+      "cp_capital": "42002",
+      "municipios": [
+        "Almazán",
+        "El Burgo de Osma",
+        "Ólvega",
+        "Ágreda",
+        "Golmayo"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Soria, la mantequilla tiene denominación de origen y el torrezno, marca de garantía. El hielo seco mantiene el congelado en ruta sin camión frigorífico y conserva muestras de laboratorio. A finales de junio, las fiestas de San Juan llenan la hostelería de la capital."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2896",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%209%2C%20Soria",
+        "https://es.wikipedia.org/wiki/Mantequilla_de_Soria",
+        "https://es.wikipedia.org/wiki/Torrezno_de_Soria",
+        "https://es.wikipedia.org/wiki/Fiestas_de_San_Juan_o_de_la_Madre_de_Dios"
+      ]
+    },
+    "tarragona": {
+      "clave": "tarragona",
+      "ciudad": "Tarragona",
+      "ciudad_oficial": "Tarragona",
+      "provincia": "Tarragona",
+      "provincia_corta": "Tarragona",
+      "ccaa": "Cataluña",
+      "cp": "43",
+      "cp_capital": "43003",
+      "municipios": [
+        "Reus",
+        "El Vendrell",
+        "Cambrils",
+        "Tortosa",
+        "Calafell"
+      ],
+      "catalunya": true,
+      "existe": false,
+      "intro": {
+        "es": "En Tarragona, la industria química y el puerto tienen equipos que se pueden limpiar con hielo seco, sin agua ni disolventes. La Universitat Rovira i Virgili tiene centros en Tarragona y Reus, y el Priorat, bodegas con vino propio. En la Costa Daurada, hoteles, restaurantes y eventos de verano también lo aprovechan.",
+        "ca": "A Tarragona, la indústria química i el port tenen equips que es poden netejar amb gel sec, sense aigua ni dissolvents. La Universitat Rovira i Virgili té centres a Tarragona i Reus, i el Priorat, cellers amb vi propi. A la Costa Daurada, hotels, restaurants i esdeveniments d'estiu també l'aprofiten."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2900",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Pla%C3%A7a%20de%20la%20Font%201%2C%20Tarragona",
+        "https://es.wikipedia.org/wiki/Tarragona",
+        "https://es.wikipedia.org/wiki/Puerto_de_Tarragona",
+        "https://es.wikipedia.org/wiki/Universidad_Rovira_i_Virgili",
+        "https://es.wikipedia.org/wiki/Priorato_(vino)",
+        "https://es.wikipedia.org/wiki/Costa_Dorada_(España)",
+        "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Tarragona%2C%20Catalunya%2C%20Espa%C3%B1a",
+        "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;1.2546,41.1172?overview=false"
+      ],
+      "lat": 41.1172,
+      "lon": 1.2546,
+      "km": 137,
+      "min": 100
+    },
+    "teruel": {
+      "clave": "teruel",
+      "ciudad": "Teruel",
+      "ciudad_oficial": "Teruel",
+      "provincia": "Teruel",
+      "provincia_corta": "Teruel",
+      "ccaa": "Aragón",
+      "cp": "44",
+      "cp_capital": "44001",
+      "municipios": [
+        "Alcañiz",
+        "Andorra (Teruel)",
+        "Calamocha",
+        "Calanda",
+        "Alcorisa"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Teruel, el jamón y el melocotón de Calanda tienen denominación de origen. En julio, la Vaquilla del Ángel llena la hostelería de la ciudad."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2899",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20de%20la%20Catedral%201%2C%20Teruel",
+        "https://es.wikipedia.org/wiki/Jamón_de_Teruel",
+        "https://es.wikipedia.org/wiki/Melocotón_de_Calanda",
+        "https://es.wikipedia.org/wiki/Aeródromo_de_Teruel",
+        "https://es.wikipedia.org/wiki/La_Vaquilla_del_Ángel"
+      ]
+    },
+    "toledo": {
+      "clave": "toledo",
+      "ciudad": "Toledo",
+      "ciudad_oficial": "Toledo",
+      "provincia": "Toledo",
+      "provincia_corta": "Toledo",
+      "ccaa": "Castilla-La Mancha",
+      "cp": "45",
+      "cp_capital": "45002",
+      "municipios": [
+        "Talavera de la Reina",
+        "Illescas",
+        "Seseña",
+        "Ocaña",
+        "Torrijos"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Toledo, la Sagra tiene numerosos polígonos industriales cerca de Madrid, y el hielo seco mantiene ahí el congelado en la última milla. En la capital está el Hospital Nacional de Parapléjicos, donde el hielo seco sirve para conservar y enviar muestras en frío. El mazapán de Toledo tiene indicación geográfica protegida."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2902",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20del%20Consistorio%201%2C%20Toledo",
+        "https://es.wikipedia.org/wiki/La_Sagra",
+        "https://es.wikipedia.org/wiki/Hospital_Nacional_de_Parapléjicos_(Toledo)",
+        "https://es.wikipedia.org/wiki/Mazapán_de_Toledo"
+      ]
+    },
+    "valencia": {
+      "clave": "valencia",
+      "ciudad": "Valencia",
+      "ciudad_oficial": "València",
+      "provincia": "Valencia/València",
+      "provincia_corta": "Valencia",
+      "ccaa": "Comunidad Valenciana",
+      "cp": "46",
+      "cp_capital": "46002",
+      "municipios": [
+        "Torrent",
+        "Gandia",
+        "Paterna",
+        "Sagunto",
+        "Alzira"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Valencia, el puerto mueve contenedores, la chufa de la huerta da la horchata y el Parque Científico de la Universitat une ciencia y empresa. El hielo seco mantiene el congelado en ruta y conserva muestras de laboratorio. En Fallas y en la hostelería de la ciudad sirve para coctelería y niebla."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2903",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20del%20Ayuntamiento%201%2C%20Val%C3%A8ncia",
+        "https://es.wikipedia.org/wiki/Puerto_de_Valencia",
+        "https://es.wikipedia.org/wiki/Chufa_de_Valencia",
+        "https://es.wikipedia.org/wiki/Parque_Científico_de_la_Universidad_de_Valencia",
+        "https://es.wikipedia.org/wiki/Fallas_de_Valencia"
+      ]
+    },
+    "valladolid": {
+      "clave": "valladolid",
+      "ciudad": "Valladolid",
+      "ciudad_oficial": "Valladolid",
+      "provincia": "Valladolid",
+      "provincia_corta": "Valladolid",
+      "ccaa": "Castilla y León",
+      "cp": "47",
+      "cp_capital": "47001",
+      "municipios": [
+        "Laguna de Duero",
+        "Arroyo de la Encomienda",
+        "Medina del Campo",
+        "Cistérniga",
+        "Tudela de Duero"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "Valladolid creció con la fabricación de automóviles, una industria con moldes y piezas que se pueden limpiar con hielo seco, sin agua ni residuos. En las bodegas de Rueda y de la Ribera del Duero sirve para enfriar la uva en vendimia. La Universidad de Valladolid conserva muestras en sus laboratorios."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2904",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Mayor%201%2C%20Valladolid",
+        "https://es.wikipedia.org/wiki/Valladolid",
+        "https://es.wikipedia.org/wiki/Rueda_(vino)",
+        "https://es.wikipedia.org/wiki/Ribera_del_Duero_(vino)",
+        "https://es.wikipedia.org/wiki/Universidad_de_Valladolid"
+      ]
+    },
+    "bilbao": {
+      "clave": "bilbao",
+      "ciudad": "Bilbao",
+      "ciudad_oficial": "Bilbao",
+      "provincia": "Bizkaia",
+      "provincia_corta": "Bizkaia",
+      "ccaa": "País Vasco",
+      "cp": "48",
+      "cp_capital": "48007",
+      "municipios": [
+        "Barakaldo",
+        "Getxo",
+        "Santurtzi",
+        "Portugalete",
+        "Basauri"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Bizkaia, el puerto de Bilbao y la tradición siderometalúrgica dejan equipos que se pueden limpiar con hielo seco, sin agua ni disolventes. El Parque Científico y Tecnológico de Bizkaia y el campus de Leioa reúnen laboratorios. En Bilbao, la Aste Nagusia y la hostelería suman eventos."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2905",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20Ernesto%20Erkoreka%201%2C%20Bilbao",
+        "https://es.wikipedia.org/wiki/Puerto_de_Bilbao",
+        "https://es.wikipedia.org/wiki/Vizcaya",
+        "https://es.wikipedia.org/wiki/Parque_Científico_y_Tecnológico_de_Vizcaya",
+        "https://es.wikipedia.org/wiki/Campus_de_Vizcaya",
+        "https://es.wikipedia.org/wiki/Semana_Grande_de_Bilbao"
+      ]
+    },
+    "zamora": {
+      "clave": "zamora",
+      "ciudad": "Zamora",
+      "ciudad_oficial": "Zamora",
+      "provincia": "Zamora",
+      "provincia_corta": "Zamora",
+      "ccaa": "Castilla y León",
+      "cp": "49",
+      "cp_capital": "49002",
+      "municipios": [
+        "Benavente",
+        "Toro",
+        "Morales del Vino",
+        "Moraleja del Vino",
+        "Villaralbo"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Zamora, el queso zamorano y el vino de Toro tienen denominación de origen. El hielo seco sirve en bodega para enfriar la uva durante la vendimia y mantiene el congelado en el reparto."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2906",
+        "https://www.zamora.es/",
+        "https://es.wikipedia.org/wiki/Queso_zamorano",
+        "https://es.wikipedia.org/wiki/Toro_(vino)",
+        "https://es.wikipedia.org/wiki/Semana_Santa_en_Zamora"
+      ]
+    },
+    "zaragoza": {
+      "clave": "zaragoza",
+      "ciudad": "Zaragoza",
+      "ciudad_oficial": "Zaragoza",
+      "provincia": "Zaragoza",
+      "provincia_corta": "Zaragoza",
+      "ccaa": "Aragón",
+      "cp": "50",
+      "cp_capital": "50003",
+      "municipios": [
+        "Calatayud",
+        "Utebo",
+        "Ejea de los Caballeros",
+        "Cuarte de Huerva",
+        "Tarazona"
+      ],
+      "catalunya": false,
+      "existe": false,
+      "intro": {
+        "es": "En Zaragoza, la Plataforma Logística y las terminales de carga del aeropuerto mueven mercancía, y Figueruelas tiene una fábrica de automóviles. El hielo seco mantiene el congelado en ruta y limpia moldes sin agua. En octubre, las Fiestas del Pilar llenan la hostelería de la ciudad."
+      },
+      "fuentes": [
+        "https://www.ine.es/jaxiT3/Tabla.htm?t=2907",
+        "https://www.cartociudad.es/geocoder/api/geocoder/candidates?limit=3&q=Plaza%20del%20Pilar%2018%2C%20Zaragoza",
+        "https://es.wikipedia.org/wiki/Plataforma_logística_de_Zaragoza",
+        "https://es.wikipedia.org/wiki/Aeropuerto_de_Zaragoza",
+        "https://es.wikipedia.org/wiki/Figueruelas",
+        "https://es.wikipedia.org/wiki/Fiestas_del_Pilar"
+      ]
+    }
+  }
+}

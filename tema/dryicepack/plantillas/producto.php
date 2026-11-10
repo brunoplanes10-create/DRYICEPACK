@@ -251,6 +251,9 @@ if ( function_exists( 'wc_print_notices' ) ) {
 			<?php if ( ! empty( $c['tarifa']['enlace'] ) ) : ?>
 				<p data-revela style="--i:1"><?php echo dipt_enlace( $c['tarifa']['enlace'], dipt_url( 'envios' ) ); // phpcs:ignore ?></p>
 			<?php endif; ?>
+			<?php if ( ! empty( $c['tarifa']['zonas'] ) ) : // dónde llegamos: la página nacional con cada provincia ?>
+				<p data-revela style="--i:2"><?php echo dipt_enlace( $c['tarifa']['zonas'], dipt_url( 'zonas' ) ); // phpcs:ignore ?></p>
+			<?php endif; ?>
 		</div>
 		<div class="p-billete" data-revela="der">
 			<div class="p-billete__cuerpo">

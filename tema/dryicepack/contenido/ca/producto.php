@@ -93,6 +93,7 @@ return array(
 		'nota'   => 'Preus amb IVA inclòs. La recollida es paga en efectiu i amb l\'import exacte.',
 		'gratis' => '0 €', // fila de la recollida al taló d'enviament: no hi ha cost d'enviament (el gel es paga a preu de recollida)
 		'enlace' => 'Terminis d\'entrega, festius i recollida',
+		'zonas'  => 'Enviament a tota la península',
 	),
 	'faq' => array(
 		'titulo'   => 'Abans de pagar',

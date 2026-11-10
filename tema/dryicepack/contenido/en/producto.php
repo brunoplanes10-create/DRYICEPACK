@@ -93,6 +93,7 @@ return array(
 		'nota'   => 'Prices include VAT. Collection is paid in cash, with the exact amount.',
 		'gratis' => '€0', // collection row of the delivery table: no delivery cost (the ice is paid at the collection price)
 		'enlace' => 'Delivery times, holidays and collection',
+		'zonas'  => 'Delivery across mainland Spain',
 	),
 	'faq' => array(
 		'titulo'   => 'Before you pay',

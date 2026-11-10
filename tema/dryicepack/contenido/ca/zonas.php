@@ -3,17 +3,33 @@
 return array(
 	'menu' => 'Zones d\'entrega',
 	'seo'  => array(
-		'titulo'      => 'Gel sec a prop de Barcelona: zones d\'entrega | DryIcePack',
-		'descripcion' => 'Gel sec a Barcelona, al Maresme, al Vallès i al Baix Llobregat: demana abans de les 12:00 i arriba l\'endemà abans de les 14:00. Busca la teva zona.',
+		// Pàgina nacional (10/11/2026): on arribem. Les condicions i els terminis són d'/ca/enviaments/.
+		'titulo'      => 'Gel sec a domicili a tota la península | DryIcePack',
+		'descripcion' => 'Gel sec a domicili a tota la península, província per província: demana abans de les 12:00 i arriba l\'endemà abans de les 14:00. Busca la teva ciutat.',
 	),
 	'mapa'   => 'Mapa amb la nau de Mataró al centre, anells cada 10 km i les zones d\'entrega',
 	'indice' => array(
 		'migas'   => array( 'Inici', 'Zones d\'entrega' ),
-		'titulo'  => 'Gel sec a prop teu,|<em>abans de les 14:00.</em>',
-		'texto'   => 'Demana abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O tria el dia que vulguis. Ets a prop de Mataró? Recull-lo a la nau: {pk} kg per {recogida:pk}, IVA inclòs. Busca la teva zona i mira a quants quilòmetres tens la nostra nau.',
-		'grupos'  => 'Per comarca',
-		'resto'   => 'No hi veus la teva zona? A la resta de la península també arriba l\'endemà abans de les 14:00, de dimarts a divendres (el dissabte, segons la zona, abans de les 12:00). Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla.',
+		'titulo'  => 'Gel sec a domicili|<em>a tota la península.</em>',
+		'texto'   => 'Demana abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00 a qualsevol codi postal de la península. O tria el dia que vulguis. Ets a prop de Mataró? Recull-lo a la nau: {pk} kg per {recogida:pk}, IVA inclòs.',
+		'provincias' => 'Tota la península, per comunitat autònoma',
+		'grupos'  => 'A prop de Mataró, per comarca',
+		'resto'   => 'No hi veus la teva ciutat? Arriba igual a qualsevol codi postal de la península, l\'endemà abans de les 14:00, de dimarts a divendres (el dissabte, segons la zona, abans de les 12:00). No enviem a les Balears, les Canàries, Ceuta ni Melilla.',
 		'envios'  => 'Veure terminis i preus d\'enviament',
+		'faq'     => array(
+			array( 'On es pot comprar gel sec a prop meu?', 'En línia, en aquest web, siguis on siguis de la península: demana abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00 en caixa EPS, o el dia que triïs. Si ets a prop de Mataró, recull-lo a la nostra nau de dilluns a dissabte: {pk} kg per {recogida:pk}, IVA inclòs i en efectiu.' ),
+			array( 'Envieu a les Balears, les Canàries, Ceuta o Melilla?', 'No. Només enviem a l\'Espanya peninsular, a qualsevol codi postal de la península.' ),
+			array( 'Puc demanar-lo per a un dia concret?', 'Sí: en pagar tries qualsevol dia dels propers 90 amb repartiment a la teva zona, de dimarts a dissabte (el dissabte, segons la zona i amb un suplement de {sabado_envio}, IVA inclòs).' ),
+		),
+	),
+	// Comunitats autònomes en català (clau: el nom en castellà normalitzat, inc/lugares.php dipt_lugar_normal)
+	'ccaa' => array(
+		'andalucia' => 'Andalusia', 'aragon' => 'Aragó', 'asturias' => 'Astúries', 'principado-de-asturias' => 'Astúries',
+		'cantabria' => 'Cantàbria', 'castilla-y-leon' => 'Castella i Lleó', 'castilla-la-mancha' => 'Castella-la Manxa',
+		'cataluna' => 'Catalunya', 'catalunya' => 'Catalunya', 'comunidad-valenciana' => 'Comunitat Valenciana', 'comunitat-valenciana' => 'Comunitat Valenciana',
+		'extremadura' => 'Extremadura', 'galicia' => 'Galícia', 'rioja' => 'La Rioja', 'comunidad-de-madrid' => 'Comunitat de Madrid', 'madrid' => 'Comunitat de Madrid',
+		'region-de-murcia' => 'Regió de Múrcia', 'murcia' => 'Regió de Múrcia', 'navarra' => 'Navarra', 'comunidad-foral-de-navarra' => 'Navarra',
+		'pais-vasco' => 'País Basc', 'euskadi' => 'País Basc',
 	),
 	'zona' => array(
 		'seo_titulo'      => 'Gel sec a {nombre}: abans de les 14:00 | DryIcePack',

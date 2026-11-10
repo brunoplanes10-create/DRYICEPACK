@@ -124,6 +124,13 @@ Excepciones aceptadas por el plan: Producto, Envíos y Contacto terminan en clar
 - Duraciones fuera de la regla, decididas: termómetro del hero de la portada 1,2 s; línea de progreso de los pasos de Halloween 0,7 s (sigue al scroll, no es una entrada); spinner del producto 0,75 s.
 - Rótulos en mono y mayúsculas permitidos solo como etiqueta de un dato (reloj, kilos, código postal, «Por semana / Al mes»); nunca como antetítulo de sección.
 
+### Piezas añadidas el 10/11/2026
+
+- **Provincia y ciudad** (`plantillas/provincia.php`, `inc/lugares.php`, datos en `datos/provincias.json` y `datos/ciudades.json`): la plantilla de zona con el bloque de empresa arriba (usted), sectores por prioridad, entrega real del destino (`data-sin-reparto` en `movimiento.js`) y precios de las funciones. Ciudades detrás de la casilla «Crear también las páginas de ciudades».
+- **Guías** (`assets/css/paginas/guia.css`, al final): `.gu-compara` (tabla que en móvil pasa a un bloque por fila), `.gu-corte` (caja en corte con pines, envío de congelados), `.gu-esquema` (corte de plano con claves que se iluminan al hacer scroll: muestras y cuánto dura), `.gu-tarifa` (ficha de tarifa con cota: precio) y `.gu-plano` (lámina de montajes «Así no / Así sí»: bebidas y helados). Hay tres dibujos de caja en corte con estilos distintos (`.gu-corte`, `.gu-esquema` y el de helados): unificarlos en uno cuando se toque una de esas guías.
+- **Guías B2B**: `'cta'` propio de usted y `'aviso'` (índice del aviso de seguridad del margen) en el archivo de la guía.
+- **Plugin**: emails al cliente con plantilla común (`plantillas/emails/`), «Mi pedido» (`assets/mi-pedido.css`) y «Envíos de hoy» (`assets/envios-hoy.css`): etiquetas en minúscula, sin mono mayúsculas; mono solo para datos (número de MRW, fechas, importes).
+
 ---
 
 ## 6. Prohibido (rechazado por el propietario)

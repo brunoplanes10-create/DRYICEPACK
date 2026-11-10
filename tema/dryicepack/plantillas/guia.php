@@ -13,6 +13,8 @@ if ( $dipt_datos ) {
 		'html'   => $dipt_datos['contenido'],
 		'url'    => dipt_url( $dipt_clave ),
 	);
+	if ( ! empty( $dipt_datos['cta'] ) ) $dipt_g['cta'] = $dipt_datos['cta']; // cierre propio (de usted en las guías B2B)
+	if ( isset( $dipt_datos['aviso'] ) ) $dipt_g['aviso'] = $dipt_datos['aviso']; // aviso de seguridad del margen (índice en contenido/comun.php)
 	include DIPT_DIR . '/partes/guia-articulo.php';
 }
 get_footer();

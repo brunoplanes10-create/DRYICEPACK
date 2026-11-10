@@ -93,6 +93,7 @@ return array(
 		'nota'   => 'Precios con IVA incluido. La recogida se paga en efectivo y con el importe exacto.',
 		'gratis' => '0 €', // fila de la recogida en el talón de envío: no hay coste de envío (el hielo se paga a precio de recogida)
 		'enlace' => 'Plazos de entrega, festivos y recogida',
+		'zonas'  => 'Envío a toda la península',
 	),
 	'faq' => array(
 		'titulo'   => 'Antes de pagar',

@@ -7,9 +7,9 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-function dipt_paginas() {
+function dipt_paginas( $recargar = false ) {
 	static $paginas = null;
-	if ( null !== $paginas ) return $paginas;
+	if ( null !== $paginas && ! $recargar ) return $paginas;
 	$paginas = array(
 		'inicio'       => array( 'plantilla' => 'inicio', 'es' => '', 'ca' => 'ca', 'en' => 'en' ),
 		'producto'     => array( 'plantilla' => 'producto', 'es' => 'producto/hielo-seco', 'ca' => 'ca/comprar-gel-sec', 'en' => 'en/buy-dry-ice' ),
@@ -37,6 +37,25 @@ function dipt_paginas() {
 	if ( function_exists( 'dipt_zonas' ) ) {
 		foreach ( dipt_zonas() as $clave => $z ) {
 			$paginas[ 'zona-' . $clave ] = array( 'plantilla' => 'zona', 'es' => $z['es'], 'ca' => $z['ca'] ?? null, 'en' => $z['en'] ?? null, 'zona' => $clave );
+		}
+	}
+	// Provincias y ciudades de la península (inc/lugares.php): hielo-seco-<clave> y, en Cataluña, ca/gel-sec-<clave>. Sin inglés.
+	// Las ciudades, solo con el interruptor de Apariencia → Páginas Dryicepack. Una ruta ya registrada no se pisa.
+	if ( function_exists( 'dipt_provincias' ) ) {
+		$ocupadas = array();
+		foreach ( $paginas as $p ) {
+			foreach ( array( 'es', 'ca', 'en' ) as $i ) if ( ! empty( $p[ $i ] ) ) $ocupadas[ $p[ $i ] ] = true;
+		}
+		foreach ( array( 'provincia' => dipt_provincias(), 'ciudad' => dipt_ciudades() ) as $tipo => $lugares ) {
+			foreach ( $lugares as $clave => $l ) {
+				if ( $tipo . '-' . $clave !== $l['pagina'] ) continue; // Barcelona y las zonas ya tienen su página
+				$es = 'hielo-seco-' . $clave;
+				$ca = $l['catalunya'] ? 'ca/gel-sec-' . $clave : null;
+				if ( isset( $ocupadas[ $es ] ) || ( $ca && isset( $ocupadas[ $ca ] ) ) ) continue;
+				$paginas[ $l['pagina'] ] = array( 'plantilla' => 'provincia', 'es' => $es, 'ca' => $ca, 'en' => null, 'lugar' => array( $tipo, $clave ) );
+				$ocupadas[ $es ] = true;
+				if ( $ca ) $ocupadas[ $ca ] = true;
+			}
 		}
 	}
 	// Guías (contenido/{idioma}/guias/*.php): páginas hijas de /guias/, /ca/guies/ y /en/guides/ con su slug en cada idioma
@@ -149,6 +168,10 @@ add_action( 'admin_menu', static function () {
 
 function dipt_titulo_pagina( $clave, $idioma ) {
 	if ( 'guia' === dipt_paginas()[ $clave ]['plantilla'] ) return dipt_guia( dipt_paginas()[ $clave ]['guia'], $idioma )['titulo'] ?? $clave;
+	if ( 'provincia' === dipt_paginas()[ $clave ]['plantilla'] && function_exists( 'dipt_lugar_de_pagina' ) ) {
+		$l = dipt_lugar_de_pagina( $clave );
+		return $l ? wp_strip_all_tags( dipt_lugar_texto( array( 'es' => 'Hielo seco en {nombre}', 'ca' => 'Gel sec a {nombre}', 'en' => 'Dry ice in {nombre}' )[ $idioma ] ?? '{nombre}', $l, $idioma ) ) : $clave;
+	}
 	$c = dipt_contenido( dipt_paginas()[ $clave ]['plantilla'] === 'zona' ? 'zonas' : $clave, $idioma );
 	if ( 'zona' === dipt_paginas()[ $clave ]['plantilla'] && function_exists( 'dipt_zonas' ) ) {
 		$z = dipt_zonas()[ dipt_paginas()[ $clave ]['zona'] ];
@@ -187,14 +210,36 @@ function dipt_crear_paginas() {
 	return $creadas;
 }
 
+/**
+ * Interruptor de las páginas de ciudades (publicación escalonada, 10/11/2026): primero las provincias y, cuando se vea en
+ * Search Console cómo las indexa Google, las ciudades. Apagado: las rutas de ciudad no se registran ni se enlazan.
+ * Devuelve true si ha cambiado. Al cambiar se vacía la caché de WP Rocket (cambian los enlaces de provincias y /zonas/).
+ */
+function dipt_guardar_interruptor_ciudades( $activar ) {
+	$activar = $activar ? 1 : 0;
+	if ( (int) dipt_ciudades_activas() === $activar ) return false;
+	update_option( 'dipt_ciudades', $activar, true );
+	dipt_paginas( true );
+	if ( function_exists( 'rocket_clean_domain' ) ) rocket_clean_domain();
+	return true;
+}
+
 function dipt_pantalla_paginas() {
 	if ( ! current_user_can( 'edit_pages' ) ) return;
 	$creadas = null;
-	if ( isset( $_POST['dipt_crear'] ) && check_admin_referer( 'dipt_crear_paginas' ) ) $creadas = dipt_crear_paginas();
+	$cambio  = false;
+	if ( ( isset( $_POST['dipt_crear'] ) || isset( $_POST['dipt_guardar'] ) ) && check_admin_referer( 'dipt_crear_paginas' ) ) {
+		$cambio = function_exists( 'dipt_guardar_interruptor_ciudades' ) && dipt_guardar_interruptor_ciudades( ! empty( $_POST['dipt_ciudades'] ) );
+		if ( isset( $_POST['dipt_crear'] ) ) $creadas = dipt_crear_paginas();
+	}
+	$n_ciudades = function_exists( 'dipt_ciudades' ) ? count( dipt_ciudades( true ) ) : 0;
 	?>
 	<div class="wrap">
 		<h1>Páginas Dryicepack</h1>
 		<p>El diseño y los textos de estas páginas están en el tema. Aquí solo se comprueba que cada dirección exista en WordPress.</p>
+		<?php if ( $cambio ) : ?>
+			<div class="notice notice-info"><p><?php echo dipt_ciudades_activas() ? 'Páginas de ciudades activadas: ya se enlazan desde su provincia y desde /zonas/.' : 'Páginas de ciudades desactivadas: ya no se enlazan. Si estaban creadas, siguen en Páginas (bórralas o pásalas a borrador si no las quieres publicadas).'; ?></p></div>
+		<?php endif; ?>
 		<?php if ( null !== $creadas ) : ?>
 			<div class="notice notice-success"><p><?php echo $creadas ? esc_html( 'Creadas: ' . implode( ', ', $creadas ) ) : 'No faltaba ninguna.'; ?></p></div>
 		<?php endif; ?>
@@ -227,7 +272,10 @@ function dipt_pantalla_paginas() {
 		</table>
 		<form method="post" style="margin-top:1.5rem">
 			<?php wp_nonce_field( 'dipt_crear_paginas' ); ?>
+			<p><label><input type="checkbox" name="dipt_ciudades" value="1"<?php checked( dipt_ciudades_activas() ); ?>> Crear también las páginas de ciudades (<?php echo (int) $n_ciudades; ?> ciudades de más de 50.000 habitantes)</label><br>
+			<span class="description">Apagado: solo provincias. Al encenderlo, las ciudades se enlazan desde su provincia y desde /zonas/, y «Crear las que faltan» crea sus páginas.</span></p>
 			<button class="button button-primary" name="dipt_crear" value="1">Crear las que faltan</button>
+			<button class="button" name="dipt_guardar" value="1">Guardar sin crear</button>
 		</form>
 	</div>
 	<?php

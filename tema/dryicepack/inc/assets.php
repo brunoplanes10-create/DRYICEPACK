@@ -22,6 +22,7 @@ function dipt_hoja_pagina() {
 		$plantilla = dipt_paginas()[ $clave ]['plantilla'] ?? '';
 		if ( in_array( $plantilla, array( 'hosteleria', 'transporte', 'industria', 'laboratorios', 'eventos' ), true ) ) return 'sector-' . $plantilla;
 		if ( 'factura' === $plantilla ) return 'pagina';
+		if ( 'provincia' === $plantilla ) return 'zona'; // provincias y ciudades: las mismas piezas que la página de zona
 		return $plantilla;
 	}
 	if ( is_singular( 'post' ) ) return 'guia';

@@ -44,7 +44,7 @@ if ( $dipt_sin_rel ) $dipt_relacionadas = array();
 $dipt_siguiente = $dipt_relacionadas ? array_shift( $dipt_relacionadas ) : null;
 $dipt_foto_g    = $dipt_esta['foto'] ?? '';
 $dipt_formato   = $dipt_esta['formato'] ?? '';
-$dipt_aviso     = dipt_avisos_seguridad()[0] ?? null; // guantes y pinzas
+$dipt_aviso     = dipt_avisos_seguridad()[ (int) ( $dipt_g['aviso'] ?? 0 ) ] ?? ( dipt_avisos_seguridad()[0] ?? null ); // guantes y pinzas, u otro si la guía lo pide (0–5, contenido/comun.php)
 dipt_migas( array( array( dipt_t( 'inicio' ), dipt_url( 'inicio' ) ), array( $c['titulo_corto'] ?? 'Guías', dipt_url( 'guias' ) ), array( $dipt_g['titulo'], $dipt_g['url'] ) ) );
 ?>
 <article class="gu<?php echo $dipt_foto_g ? ' gu--foto' : ''; ?>">
@@ -111,7 +111,7 @@ dipt_migas( array( array( dipt_t( 'inicio' ), dipt_url( 'inicio' ) ), array( $c[
 		<div class="envoltura">
 			<div class="gu-compra__in tono-oscuro" data-revela>
 				<span class="gu-compra__ico" aria-hidden="true"><?php echo dipt_icono( 'reloj' ); // phpcs:ignore ?></span>
-				<p class="gu-compra__t t-h2"><?php echo esc_html( $c['cta'] ?? '' ); ?></p>
+				<p class="gu-compra__t t-h2"><?php echo esc_html( $dipt_g['cta'] ?? $c['cta'] ?? '' ); // la guía puede traer el suyo (de usted en las B2B) ?></p>
 				<?php echo dipt_boton( dipt_t( 'comprar' ), dipt_url( 'producto' ), 'hielo' ); // phpcs:ignore ?>
 			</div>
 		</div>

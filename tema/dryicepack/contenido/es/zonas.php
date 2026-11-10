@@ -3,17 +3,25 @@
 return array(
 	'menu' => 'Zonas de entrega',
 	'seo'  => array(
-		'titulo'      => 'Hielo seco cerca de Barcelona: zonas de entrega | DryIcePack',
-		'descripcion' => 'Hielo seco en Barcelona, el Maresme, el Vallès y el Baix Llobregat: pide antes de las 12:00 y llega al día siguiente antes de las 14:00. Busca tu zona.',
+		// Página nacional (10/11/2026): dónde llegamos. Las condiciones y los plazos son de /envios-y-plazos/.
+		'titulo'      => 'Hielo seco a domicilio en toda la península | DryIcePack',
+		'descripcion' => 'Hielo seco a domicilio en toda la península, provincia a provincia: pide antes de las 12:00 y llega al día siguiente antes de las 14:00. Busca tu ciudad.',
 	),
 	'mapa'   => 'Mapa con la nave de Mataró en el centro, anillos cada 10 km y las zonas de entrega',
 	'indice' => array(
 		'migas'   => array( 'Inicio', 'Zonas de entrega' ),
-		'titulo'  => 'Hielo seco cerca de ti,|<em>antes de las 14:00.</em>',
-		'texto'   => 'Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00. O elige el día que quieras. ¿Estás cerca de Mataró? Recógelo en la nave: {pk} kg por {recogida:pk}, IVA incluido. Busca tu zona y mira a cuántos kilómetros te queda nuestra nave.',
-		'grupos'  => 'Por comarca',
-		'resto'   => '¿No ves tu zona? En el resto de la península también llega al día siguiente antes de las 14:00, de martes a viernes (el sábado, según zona, antes de las 12:00). Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla.',
+		'titulo'  => 'Hielo seco a domicilio|<em>en toda la península.</em>',
+		'texto'   => 'Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00 a cualquier código postal de la península. O elige el día que quieras. ¿Estás cerca de Mataró? Recógelo en la nave: {pk} kg por {recogida:pk}, IVA incluido.',
+		'provincias' => 'Toda la península, por comunidad autónoma',
+		'grupos'  => 'Cerca de Mataró, por comarca',
+		'resto'   => '¿No ves tu ciudad? Llega igual a cualquier código postal de la península, al día siguiente antes de las 14:00, de martes a viernes (el sábado, según zona, antes de las 12:00). No enviamos a Baleares, Canarias, Ceuta ni Melilla.',
 		'envios'  => 'Ver plazos y precios de envío',
+		// Preguntas reales (Search Console: «donde comprar hielo seco cerca de mi», 377 impresiones en 12 meses)
+		'faq'     => array(
+			array( '¿Dónde comprar hielo seco cerca de mí?', 'Online, en esta web, estés donde estés de la península: pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00 en caja EPS, o el día que elijas. Si estás cerca de Mataró, recógelo en nuestra nave de lunes a sábado: {pk} kg por {recogida:pk}, IVA incluido y en efectivo.' ),
+			array( '¿Enviáis a Baleares, Canarias, Ceuta o Melilla?', 'No. Solo enviamos a la España peninsular, a cualquier código postal de la península.' ),
+			array( '¿Puedo pedirlo para un día concreto?', 'Sí: al pagar eliges cualquier día de los próximos 90 con reparto en tu zona, de martes a sábado (el sábado, según zona y con suplemento de {sabado_envio}, IVA incluido).' ),
+		),
 	),
 	'zona' => array(
 		'seo_titulo'      => 'Hielo seco en {nombre}: antes de las 14:00 | DryIcePack',

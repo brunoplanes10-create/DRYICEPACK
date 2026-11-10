@@ -78,7 +78,8 @@ return array(
 		'titulo' => 'Arriba a la meva zona?',
 		'si'     => array( 'titulo' => 'Sí, l\'endemà abans de les 14:00', 'texto' => 'Tota l\'Espanya peninsular: de Girona a Huelva i de la Corunya a Múrcia.' ),
 		'no'     => array( 'titulo' => 'Fora de la península,&nbsp;no','texto' => 'Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla, ni fora d\'Espanya.' ),
-		'zonas'  => 'Veure les zones d\'entrega a prop de Barcelona',
+		'zonas'  => 'Enviament a tota la península, província per província',
+		'provincias' => 'Per província:',
 		// Mapa de cobertura (redisseny 14/10/2026)
 		'mapa'    => 'Mapa: enviem des de Mataró a tota l\'Espanya peninsular; no a les Balears, les Canàries, Ceuta ni Melilla.',
 		'mapa_no' => 'No hi enviem',

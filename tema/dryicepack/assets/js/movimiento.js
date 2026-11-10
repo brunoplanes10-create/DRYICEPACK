@@ -238,8 +238,10 @@
 	function esLaborable(f) { var n = f.getUTCDay(); return n >= 1 && n <= 5 && !esFestivo(f); }
 	function saleEseDia(f) { return esLaborable(f) && sinSalida.indexOf(clave(f)) === -1; }
 	function antesCorte(a) { var c = CFG.corte || { hora: 12, minuto: 0 }; return a.h * 60 + a.mi < c.hora * 60 + c.minuto; }
-	/* Devuelve { entrega: Date, saleHoy: bool } */
-	function proximaEntrega() {
+	/* Devuelve { entrega: Date, saleHoy: bool }. sinReparto (opcional): días 'Y-m-d' en que MRW no reparte en un destino
+	   concreto (páginas de provincia y ciudad): esos días no se entrega allí, como en el checkout para ese código postal. */
+	function proximaEntrega(sinReparto) {
+		sinReparto = sinReparto || [];
 		var a = ahoraMadrid();
 		var dia = new Date(Date.UTC(a.y, a.m - 1, a.d));
 		var saleHoy = saleEseDia(dia) && antesCorte(a);
@@ -248,6 +250,7 @@
 			if (!saleEseDia(dia)) continue;
 			var llega = new Date(dia.getTime()); llega.setUTCDate(llega.getUTCDate() + 1);
 			if (llega.getUTCDay() === 6 || esFestivo(llega)) continue; // el sábado es opcional y con suplemento
+			if (sinReparto.length && sinReparto.indexOf(clave(llega)) !== -1) continue; // cierra MRW en el destino
 			return { entrega: llega, saleHoy: saleHoy && i === 0 };
 		}
 		return null;
@@ -260,11 +263,15 @@
 	}
 	w.dipEntrega = { proxima: proximaEntrega, texto: fechaTexto, ahora: ahoraMadrid };
 
-	/* Reloj del corte: [data-corte] con data-t-antes, data-t-quedan y data-t-despues (%s = fecha o tiempo) */
+	/* Reloj del corte: [data-corte] con data-t-antes, data-t-quedan y data-t-despues (%s = fecha o tiempo).
+	   Con data-sin-reparto="Y-m-d,Y-m-d" la fecha es la de ese destino (salta los días en que MRW no reparte allí). */
 	function pintarCorte() {
-		var r = proximaEntrega(); if (!r) return;
+		var general = proximaEntrega();
 		var a = ahoraMadrid();
 		d.querySelectorAll('[data-corte]').forEach(function (el) {
+			var propios = (el.getAttribute('data-sin-reparto') || '').split(',').filter(Boolean);
+			var r = propios.length ? proximaEntrega(propios) : general;
+			if (!r) return;
 			var fecha = fechaTexto(r.entrega);
 			var dest = el.querySelector('[data-corte-texto]') || el;
 			var quedan = el.querySelector('[data-corte-quedan]');

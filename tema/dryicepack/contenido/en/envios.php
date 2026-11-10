@@ -78,7 +78,8 @@ return array(
 		'titulo' => 'Do you deliver to my area?',
 		'si'     => array( 'titulo' => 'Yes, the next day before 14:00', 'texto' => 'All of mainland Spain: from Girona to Huelva and from A Coruña to Murcia.' ),
 		'no'     => array( 'titulo' => 'Outside mainland Spain, no', 'texto' => 'We only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla, or outside Spain.' ),
-		'zonas'  => 'See delivery areas near Barcelona',
+		'zonas'  => 'Delivery across mainland Spain, province by province',
+		'provincias' => 'By province:',
 		// Coverage map (redesign 14/10/2026)
 		'mapa'    => 'Map: we deliver from Mataró to all of mainland Spain; not to the Balearic or Canary Islands, Ceuta or Melilla.',
 		'mapa_no' => 'No delivery',

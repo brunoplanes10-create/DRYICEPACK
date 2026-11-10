@@ -167,3 +167,253 @@ img.f-uso-eventos { object-position: 0% 50%; transform-origin: 0% 38%; scale: 1.
 	.gu-compra__ico .ico { width: 26px; height: 26px; }
 	.gu-compra__in .boton { grid-column: 1 / -1; justify-content: space-between; }
 }
+
+/* =========================================================================
+   Piezas dentro del texto de una guía (10/11/2026). Bocetos en zz-bocetos/guia-compara-a/b/c.html y guia-capas-a/b.html:
+   elegidos la comparativa A (tabla que se apila, con la barra de la fila activa de B) y el corte B (plano con pines,
+   con el montaje de abajo arriba de A). Solo transform y opacity; con .quieto, todo quieto y visible.
+   ========================================================================= */
+
+/* Fuente de un dato citado, debajo de la tabla o de la cifra */
+.gu-texto .gu-fuente { font-size: .85rem; line-height: 1.55; color: var(--c-acero); }
+.gu-texto .gu-fuente a { color: inherit; }
+
+/* ---------- Comparativa: <figure class="gu-compara" data-vivo data-activa-grupo> con una <table> con roles ARIA ----------
+   Escritorio: ficha técnica con filete grueso y la fila en Inter Tight. Móvil (≤ 640 px): cada fila es un bloque y
+   cada celda lleva delante su columna (data-etiqueta); los roles ARIA mantienen la tabla para los lectores de pantalla.
+   Las filas entran escalonadas (style="--i:n") y la que cruza el centro de la pantalla (data-activa) lleva una
+   barra marino que se dibuja: el equivalente del hover en el móvil. */
+.gu-compara { margin-bottom: 1.6rem; }
+.gu-texto .gu-compara table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--c-tinta); font-size: .95rem; line-height: 1.5; }
+.gu-texto .gu-compara thead th { padding: .85rem .7rem .7rem; border-bottom: 1px solid var(--c-tinta); font: 600 .8rem/1.3 var(--f-texto); color: var(--c-acero); text-align: left; vertical-align: bottom; }
+.gu-texto .gu-compara thead th:first-child { width: 27%; padding-left: 1rem; }
+.gu-texto .gu-compara tbody th { position: relative; padding: .95rem .7rem .95rem 1rem; border-bottom: 1px solid var(--c-linea-fuerte); font: 700 1.02rem/1.3 var(--f-display); letter-spacing: -.01em; color: var(--c-tinta); text-align: left; vertical-align: top; }
+.gu-texto .gu-compara td, .gu-texto .gu-compara td:last-child { padding: .95rem .7rem; border-bottom: 1px solid var(--c-linea-fuerte); font-weight: 400; vertical-align: top; }
+.gu-compara td strong { font-weight: 600; }
+.gu-compara tbody th::before { content: ""; position: absolute; left: 0; top: .95rem; bottom: .95rem; width: 2px; background: var(--c-marino); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--d-media) var(--e-salida); }
+.gu-compara tr.activo th::before { transform: scaleY(1); }
+.gu-compara figcaption { margin-top: .8rem; font-size: .82rem; line-height: 1.5; color: var(--c-acero); }
+.js .gu-compara tbody tr { opacity: 0; transform: translate3d(0, 12px, 0); transition: opacity var(--d-larga) var(--e-salida), transform var(--d-larga) var(--e-salida); transition-delay: calc(var(--i, 0) * var(--escalon)); }
+.js .gu-compara.visto tbody tr { opacity: 1; transform: none; }
+@media (max-width: 640px) {
+	.gu-compara table, .gu-compara tbody, .gu-compara tr, .gu-compara th, .gu-compara td { display: block; }
+	.gu-compara thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+	.gu-compara tbody tr { position: relative; padding: .95rem 0 .85rem 1rem; border-bottom: 1px solid var(--c-linea-fuerte); }
+	.gu-texto .gu-compara tbody th { position: static; padding: 0 0 .45rem; border: 0; font-size: 1.1rem; }
+	.gu-compara tbody th::before { top: .95rem; bottom: .85rem; }
+	.gu-texto .gu-compara td, .gu-texto .gu-compara td:last-child { display: grid; grid-template-columns: 6.4rem minmax(0, 1fr); gap: .75rem; padding: .28rem 0; border: 0; }
+	.gu-compara td::before { content: attr(data-etiqueta); font-size: .8rem; font-weight: 600; line-height: 1.85; color: var(--c-acero); }
+}
+
+/* ---------- Corte de la caja: <figure class="gu-corte" data-vivo data-pausa> con un dibujo de plano (SVG propio) y la leyenda ----------
+   Capas (.gu-corte__capa, style="--i:n") que bajan a su sitio de abajo arriba; después, los pines numerados.
+   Con la caja cerrada, el gas sale por la junta de la tapa y cae (bucle de 15 s, parado fuera de pantalla). */
+.gu-corte { margin-bottom: 1.6rem; }
+.gu-corte svg { display: block; width: 100%; max-width: 30rem; height: auto; margin-inline: auto; overflow: visible; }
+.gu-corte__linea { fill: none; stroke: var(--c-tinta); stroke-width: 1.2; }
+.gu-corte__eps { fill: var(--c-blanco); stroke: var(--c-tinta); stroke-width: 1.2; }
+.gu-corte__grano { fill: var(--c-niebla); }
+.gu-corte__hueco { fill: var(--c-papel); stroke: var(--c-tinta); stroke-width: 1.2; }
+.gu-corte__prod { fill: var(--c-marino); }
+.gu-corte__prod2 { fill: var(--c-marino-2); }
+.gu-corte__hielo { fill: var(--c-hielo-claro); }
+.gu-corte__pel { fill: none; stroke: var(--c-marino); stroke-width: .9; }
+.gu-corte__rel { fill: none; stroke: var(--c-acero); stroke-width: .9; opacity: .65; }
+.gu-corte__cota { fill: var(--c-acero); font: 400 9px var(--f-mono); }
+.gu-corte__gas { fill: none; stroke: var(--c-acero); stroke-width: 1.2; stroke-linecap: round; opacity: 0; }
+.gu-corte__pin circle { fill: var(--c-noche); }
+.gu-corte__pin text { fill: var(--c-blanco); font: 500 10px var(--f-mono); text-anchor: middle; dominant-baseline: central; }
+.gu-texto .gu-corte ol { margin-top: 1.2rem; padding: 0; border-top: 2px solid var(--c-tinta); }
+.gu-texto .gu-corte ol > li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .8rem; min-height: 0; margin: 0; padding: .7rem 0; border-bottom: 1px solid var(--c-linea-fuerte); font-size: .95rem; line-height: 1.5; }
+.gu-texto .gu-corte ol > li::before, .gu-texto .gu-corte ol > li::after { content: none; }
+.gu-corte__n { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--c-noche); color: var(--c-blanco); font: 500 .75rem/1 var(--f-mono); }
+.js .gu-corte__capa { opacity: 0; transform: translate3d(0, -14px, 0); transition: opacity var(--d-larga) var(--e-salida), transform var(--d-larga) var(--e-salida); transition-delay: calc(var(--i, 0) * 2 * var(--escalon)); }
+.js .gu-corte__pin { opacity: 0; transform: scale(.6); transform-box: fill-box; transform-origin: center; transition: opacity var(--d-media) var(--e-salida), transform var(--d-media) var(--e-salida); transition-delay: calc(.75s + var(--i, 0) * var(--escalon)); }
+.js .gu-corte.visto .gu-corte__capa, .js .gu-corte.visto .gu-corte__pin { opacity: 1; transform: none; }
+.anima .gu-corte.visto.en-pantalla .gu-corte__gas--izq { animation: gu-gas-izq 15s var(--e-suave) 1.6s infinite; }
+.anima .gu-corte.visto.en-pantalla .gu-corte__gas--der { animation: gu-gas-der 15s var(--e-suave) 9s infinite; }
+@keyframes gu-gas-izq { 0%, 6% { opacity: 0; transform: translate3d(8px, -2px, 0); } 14% { opacity: .9; } 40%, 100% { opacity: 0; transform: translate3d(-6px, 8px, 0); } }
+@keyframes gu-gas-der { 0%, 6% { opacity: 0; transform: translate3d(-8px, -2px, 0); } 14% { opacity: .9; } 40%, 100% { opacity: 0; transform: translate3d(6px, 8px, 0); } }
+
+.quieto .gu-compara tbody tr, .quieto .gu-corte__capa, .quieto .gu-corte__pin { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+/* =========================================================================
+   Piezas propias de algunas guías (10/11/2026). Van dentro del texto de la guía (contenido/es/guias/*.php).
+   Solo transform y opacity; sin JS o con .quieto, todo se ve en su estado final.
+   - .gu-tarifa: tabla de precios por pack (guía de precio). Bocetos zz-bocetos/guia-tarifa-a|b|c.html, elegido el C:
+     ficha de tarifa con la cota del precio por kilo, que se dibuja pack a pack. En móvil, un bloque por pack.
+   - .gu-plano: dibujos de línea sobre papel (guías de bebidas y de helados). Bocetos zz-bocetos/guia-montajes-a|b|c.html,
+     elegido el A: lámina de montajes a la misma escala con «Así no» delante; la caja de helados usa el mismo lenguaje.
+     Cada dibujo se arma al entrar y la niebla se mueve en un bucle de 15 s que se para fuera de pantalla (data-pausa).
+   ========================================================================= */
+
+/* ---------- Tabla de precios ---------- */
+.gu-texto .gu-tarifa { margin-top: 1.6rem; }
+.gu-texto .gu-tarifa table { border-top: 2px solid var(--c-tinta); font-size: .95rem; }
+.gu-tarifa caption { caption-side: top; padding-bottom: .75rem; text-align: left; font-size: .9rem; line-height: 1.5; color: var(--c-acero); }
+.gu-texto .gu-tarifa thead th { padding: .75rem .6rem .6rem 0; font-size: .78rem; line-height: 1.3; vertical-align: bottom; }
+.gu-texto .gu-tarifa tbody th, .gu-texto .gu-tarifa td { padding: 1rem .6rem 1.05rem 0; vertical-align: top; }
+.gu-texto .gu-tarifa td:last-child { font-weight: 400; }
+.gu-tarifa tbody th { position: relative; font: 800 1.55rem/1 var(--f-display); letter-spacing: -.03em; color: var(--c-tinta); white-space: nowrap; }
+/* Marca marino junto al pack que cruza el centro de la pantalla (data-activa) o que está bajo el ratón */
+.gu-tarifa tbody th::before { content: ""; position: absolute; left: -.9rem; top: .9rem; bottom: .9rem; width: 2px; background: var(--c-marino); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--d-corta) var(--e-salida); }
+.gu-tarifa tbody tr.activo th::before { transform: scaleY(1); }
+@media (hover: hover) { .gu-tarifa tbody tr:hover th::before { transform: scaleY(1); } }
+.gu-tarifa b { display: block; font: 500 1rem/1.25 var(--f-mono); letter-spacing: -.01em; font-feature-settings: "tnum" 1; color: var(--c-tinta); white-space: nowrap; }
+.gu-tarifa__kilo b { font-size: 1.15rem; }
+.gu-tarifa small { display: block; margin-top: .2rem; font-size: .78rem; line-height: 1.35; color: var(--c-acero); }
+/* Cota del precio por kilo: mide el kilo de ese pack frente al del pack más pequeño y se dibuja al entrar (escalón --i) */
+.gu-tarifa .cota { display: grid; margin-top: .6rem; color: var(--c-marino); }
+.gu-tarifa .cota__linea::before { top: 3.5px; height: 2px; }
+.js .gu-tarifa .cota__linea::before { transition-delay: calc(.2s + var(--i, 0) * var(--escalon)); }
+.gu-texto .gu-tarifa tfoot td { padding: .85rem 0 0; border-bottom: 0; font-size: .82rem; line-height: 1.5; color: var(--c-acero); }
+@media (max-width: 700px) {
+	.gu-tarifa table, .gu-tarifa caption, .gu-tarifa tbody, .gu-tarifa tfoot, .gu-tarifa tfoot tr { display: block; }
+	.gu-texto .gu-tarifa table { border-top: 0; }
+	.gu-tarifa tbody { border-top: 2px solid var(--c-tinta); }
+	.gu-tarifa thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+	/* Un bloque por pack: los kilos y el precio por kilo arriba; el pack, con envío y en Mataró, debajo */
+	.gu-tarifa tbody tr { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem .9rem; padding: 1.1rem 0 1.2rem; border-bottom: 1px solid var(--c-linea-fuerte); }
+	.gu-tarifa tbody tr::before { content: ""; position: absolute; left: -.6rem; top: 1.1rem; bottom: 1.2rem; width: 2px; background: var(--c-marino); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--d-corta) var(--e-salida); }
+	.gu-tarifa tbody tr.activo::before { transform: scaleY(1); }
+	.gu-tarifa tbody th::before { content: none; }
+	.gu-texto .gu-tarifa tbody th, .gu-texto .gu-tarifa td { display: block; padding: 0; border: 0; }
+	.gu-tarifa tbody th { grid-column: 1; grid-row: 1; padding-top: .15rem; font-size: 1.65rem; }
+	.gu-tarifa__kilo { grid-column: 2 / -1; grid-row: 1; }
+	.gu-tarifa__kilo b { font-size: 1.3rem; }
+	.gu-tarifa b { font-size: .95rem; }
+	.gu-tarifa td::before { content: attr(data-t); display: block; margin-bottom: .25rem; font-size: .74rem; font-weight: 600; line-height: 1.3; color: var(--c-acero); }
+	.gu-texto .gu-tarifa tfoot td { display: block; padding-top: .9rem; }
+}
+
+/* ---------- Plano: dibujos de línea sobre papel (tinta, agua en hielo claro, lo que se bebe o se come en marino) ---------- */
+.gu-texto .gu-plano { margin-top: 1.8rem; }
+.pl-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.pl-suelo { fill: none; stroke: var(--c-acero); stroke-width: 1; stroke-dasharray: 2 5; }
+.pl-mesa { fill: none; stroke: var(--c-tinta); stroke-width: 1.4; }
+.pl-pared { fill: none; stroke: var(--c-tinta); stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+.pl-vidrio, .pl-eps { fill: var(--c-blanco); stroke: var(--c-tinta); stroke-width: 1.4; stroke-linejoin: round; }
+.pl-hueco { fill: var(--c-papel); stroke: var(--c-tinta); stroke-width: 1; }
+.pl-bebida, .pl-helado { fill: var(--c-marino); }
+.pl-agua { fill: var(--c-hielo-claro); }
+.pl-carton { fill: var(--c-niebla); stroke: var(--c-tinta); stroke-width: .8; }
+.pl-pellets circle, .pl-nuggets rect { fill: var(--c-blanco); stroke: var(--c-acero); stroke-width: .9; }
+.pl-pellets--mal circle { stroke: var(--c-tinta); }
+.pl-cazo { fill: none; stroke: var(--c-tinta); stroke-width: 2.2; stroke-linecap: round; }
+.pl-cazo--copa { fill: var(--c-blanco); stroke-width: 1.4; }
+.pl-aspa { fill: none; stroke: var(--c-senal); stroke-width: 4; stroke-linecap: round; transform-box: fill-box; transform-origin: 50% 50%; }
+/* Cotas del corte (las de Hostelería, en claro): halo papel, guía fina, punto y número en mono */
+.pl-halo { fill: none; stroke: var(--c-papel); stroke-width: 5; }
+.pl-guia { fill: none; stroke: var(--c-tinta); stroke-width: 1; }
+.pl-punto { fill: var(--c-tinta); stroke: var(--c-papel); stroke-width: 1.5; }
+.pl-num { fill: var(--c-tinta); font-family: var(--f-mono); font-size: 16px; font-weight: 500; }
+/* Niebla: volutas a trazos que rebosan y caen (también por la junta de la tapa: el CO2 pesa más que el aire) o ruedan por la
+   mesa. Seis volutas desfasadas 2,5 s en un bucle de 15 s: siempre se mueve alguna. Sin movimiento, quietas y visibles. */
+.pl-humo path { fill: none; stroke: var(--c-niebla); stroke-width: 1.5; stroke-dasharray: 3 4; stroke-linecap: round; opacity: .55; }
+.pl-rueda { transform-box: fill-box; transform-origin: 100% 50%; }
+.pl-rueda--der { transform-origin: 0 50%; }
+.anima .pl-humo path { animation: pl-cae 15s linear infinite; animation-delay: calc(var(--k, 0) * -2.5s); }
+.anima .pl-humo .pl-rueda { animation-name: pl-rueda; }
+@keyframes pl-cae { 0% { transform: translate3d(0, -6px, 0); opacity: 0; } 15% { opacity: .9; } 70% { opacity: .65; } 100% { transform: translate3d(0, 64px, 0); opacity: 0; } }
+@keyframes pl-rueda { 0% { transform: scaleX(.4); opacity: 0; } 20% { opacity: .9; } 100% { transform: scaleX(1.7); opacity: 0; } }
+/* Se arma al entrar: el agua, los pellets y lo de dentro (montajes, con el escalón --i de cada uno); las capas de la caja, de abajo arriba */
+.pl-agua, .pl-pellets, .pl-dentro, .pl-aspa, .pl-capa { transition: opacity var(--d-larga) var(--e-salida), transform var(--d-larga) var(--e-salida); }
+.pl-agua { transition-delay: calc(var(--i, 0) * var(--escalon) + .1s); }
+.pl-pellets { transition-delay: calc(var(--i, 0) * var(--escalon) + .22s); }
+.pl-dentro, .pl-aspa { transition-delay: calc(var(--i, 0) * var(--escalon) + .34s); }
+.js .gu-plano li:not(.visto) .pl-agua { opacity: 0; }
+.js .gu-plano li:not(.visto) .pl-pellets { opacity: 0; transform: translate3d(0, -14px, 0); }
+.js .gu-plano li:not(.visto) .pl-dentro { opacity: 0; transform: translate3d(0, -18px, 0); }
+.js .gu-plano li:not(.visto) .pl-aspa { opacity: 0; transform: scale(.6); }
+.pl-capa--helado { transition-delay: .15s; } .pl-capa--carton { transition-delay: .3s; } .pl-capa--hielo { transition-delay: .45s; } .pl-capa--tapa { transition-delay: .6s; }
+.js .gu-plano--corte:not(.visto) .pl-capa--helado { opacity: 0; transform: translate3d(0, 12px, 0); }
+.js .gu-plano--corte:not(.visto) .pl-capa--carton { opacity: 0; transform: translate3d(-24px, 0, 0); }
+.js .gu-plano--corte:not(.visto) .pl-capa--hielo { opacity: 0; transform: translate3d(0, -16px, 0); }
+.js .gu-plano--corte:not(.visto) .pl-capa--tapa { opacity: 0; transform: translate3d(0, -18px, 0); }
+
+/* Lámina de montajes en fila: cada dibujo ocupa su ancho real (--w, del viewBox), así todos van a la misma escala
+   y los suelos y los pies quedan a la misma altura */
+.gu-plano__fila { display: flex; align-items: flex-start; gap: clamp(.8rem, 2vw, 1.4rem); margin: 0; padding: 0; list-style: none; }
+.gu-texto .gu-plano__fila > li { flex: var(--w) 1 0; min-width: 0; margin: 0; padding: 0; }
+.gu-texto .gu-plano__fila > li::before, .gu-texto .gu-plano__fila > li::after { content: none; }
+.gu-plano__pie { margin-top: .8rem; padding-top: .75rem; border-top: 2px solid var(--c-tinta); font-size: .86rem; line-height: 1.45; color: var(--c-acero); }
+.gu-plano__no .gu-plano__pie { border-top-color: var(--c-senal); }
+.gu-plano__pie .dato { display: block; margin-bottom: .3rem; }
+.gu-plano__pie strong { display: block; margin-bottom: .2rem; font-family: var(--f-display); font-weight: 700; font-size: 1rem; line-height: 1.25; letter-spacing: -.01em; color: var(--c-tinta); }
+.gu-plano__leyenda { margin-top: 1rem; font-size: .84rem; line-height: 1.5; color: var(--c-acero); }
+.gu-plano--corte .pl-svg { max-width: 30rem; }
+@media (max-width: 700px) {
+	/* Uno debajo de otro: el dibujo a su escala (62 %) y el pie a su lado; el que cruza el centro de la pantalla, entero */
+	.gu-plano__fila { flex-direction: column; gap: 1.5rem; }
+	.gu-texto .gu-plano__fila > li { flex: none; display: grid; grid-template-columns: calc(var(--w) * .62px) minmax(0, 1fr); align-items: end; gap: 0 1rem; }
+	.gu-plano__pie { margin-top: 0; }
+	.gu-plano__fila .pl-svg { transition: opacity var(--d-media) var(--e-salida); }
+	.gu-plano__fila[data-activo] > li:not(.activo) .pl-svg { opacity: .5; }
+	.gu-plano--corte .pl-svg { margin-inline: auto; }
+}
+
+/* ---------- Esquema: corte técnico de un bulto o una caja (SVG propio) con claves numeradas ----------
+   Guías de muestras (triple embalaje) y de cuánto dura (la caja por dentro). Bocetos zz-bocetos/guia-triple-a|b|c.html,
+   elegido el A: corte de plano con las piezas en el orden de montaje. La clave que cruza el centro de la pantalla
+   (data-activa-grupo → data-activo) enciende su capa ([data-capa]) y su pin; las demás se atenúan (solo opacidad).
+   Móvil: el dibujo se queda arriba (sticky) mientras pasan las claves. Escritorio: dibujo a la izquierda, fijo.
+   El CO₂ sale por la junta de la tapa en volutas (7 s) y el calor entra en ondas (6 s), solo con la página cargada
+   (.anima) y en pantalla (data-pausa). Sin JS o con .quieto: todo visible y quieto. Los rótulos nunca se atenúan. */
+.gu-texto .gu-esquema { display: grid; gap: 1.2rem 1.6rem; margin-block: 2rem; }
+.gu-esquema__lienzo { position: sticky; top: 0; z-index: 1; padding-block: .9rem; background: var(--c-papel); border-bottom: 1px solid var(--c-linea-fuerte); }
+.gu-esquema__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.gu-esquema figcaption { grid-column: 1 / -1; padding-top: .8rem; border-top: 1px solid var(--c-linea-fuerte); font-size: var(--t-peq); line-height: 1.5; color: var(--c-acero); }
+.gu-texto .gu-esquema__claves > li { font-size: .98rem; line-height: 1.55; }
+.gu-texto .gu-esquema__claves > li.activo::before { background: var(--c-marino); border-color: var(--c-marino); box-shadow: 0 2px 0 var(--c-noche); color: var(--c-blanco); }
+@media (max-height: 640px) { .gu-esquema__lienzo { position: static; } }
+@media (min-width: 701px) {
+	.gu-texto .gu-esquema { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+	.gu-esquema__lienzo { top: calc(var(--alto-cabecera) + 1.5rem); padding: 0; border: 0; }
+}
+.ge-linea { stroke: var(--c-tinta); stroke-width: 1.6; stroke-linejoin: round; }
+.ge-blanco, .ge-eps-fondo, .ge-aire, .ge-placa { fill: var(--c-blanco); }
+.ge-bolas { fill: none; stroke: var(--c-linea-fuerte); stroke-width: 1; }
+.ge-hielo-fondo { fill: var(--c-hielo-claro); }
+.ge-pellet { fill: var(--c-blanco); stroke: var(--c-niebla); stroke-width: 1; }
+.ge-sop-fondo { fill: var(--c-escarcha); }
+.ge-raya { stroke: var(--c-niebla); stroke-width: 2; }
+.ge-raya-fina { fill: none; stroke: var(--c-acero); stroke-width: 1; }
+.ge-liquido { fill: var(--c-marino); opacity: .24; }
+.ge-brillo { stroke: var(--c-blanco); stroke-width: 2; stroke-linecap: round; opacity: .8; }
+.ge-gas { fill: none; stroke: var(--c-marino); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.ge-gas--suave { stroke: var(--c-acero); }
+.ge-calor path { fill: none; stroke: var(--c-marino-2); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ge-cota { font-family: var(--f-mono); font-size: 21px; font-weight: 500; fill: var(--c-acero); }
+.ge-rotulo { font-family: var(--f-texto); font-size: 21px; fill: var(--c-acero); }
+.ge-pin rect { fill: var(--c-blanco); stroke: var(--c-tinta); stroke-width: 1.6; }
+.ge-pin text { font-family: var(--f-mono); font-size: 16px; font-weight: 600; fill: var(--c-tinta); text-anchor: middle; dominant-baseline: central; }
+.gu-esquema .ge-capa { transition: opacity var(--d-media) var(--e-salida); }
+.gu-esquema[data-activo] .ge-capa { opacity: .38; }
+.gu-esquema[data-activo="0"] .ge-capa[data-capa~="0"], .gu-esquema[data-activo="1"] .ge-capa[data-capa~="1"], .gu-esquema[data-activo="2"] .ge-capa[data-capa~="2"],
+.gu-esquema[data-activo="3"] .ge-capa[data-capa~="3"], .gu-esquema[data-activo="4"] .ge-capa[data-capa~="4"], .gu-esquema[data-activo="5"] .ge-capa[data-capa~="5"] { opacity: 1; }
+.gu-esquema[data-activo="0"] .ge-pin[data-n="0"] rect, .gu-esquema[data-activo="1"] .ge-pin[data-n="1"] rect, .gu-esquema[data-activo="2"] .ge-pin[data-n="2"] rect,
+.gu-esquema[data-activo="3"] .ge-pin[data-n="3"] rect, .gu-esquema[data-activo="4"] .ge-pin[data-n="4"] rect, .gu-esquema[data-activo="5"] .ge-pin[data-n="5"] rect { fill: var(--c-marino); stroke: var(--c-marino); }
+.gu-esquema[data-activo="0"] .ge-pin[data-n="0"] text, .gu-esquema[data-activo="1"] .ge-pin[data-n="1"] text, .gu-esquema[data-activo="2"] .ge-pin[data-n="2"] text,
+.gu-esquema[data-activo="3"] .ge-pin[data-n="3"] text, .gu-esquema[data-activo="4"] .ge-pin[data-n="4"] text, .gu-esquema[data-activo="5"] .ge-pin[data-n="5"] text { fill: var(--c-blanco); }
+/* Entrada: las piezas llegan en el orden en que se monta el bulto (--e); la tapa y el secundario bajan a su sitio */
+.js .gu-esquema [data-entra] { opacity: 0; transform: translate3d(0, 10px, 0); transition: opacity var(--d-larga) var(--e-salida), transform var(--d-larga) var(--e-salida); transition-delay: calc(var(--e, 0) * 130ms + 120ms); }
+.js .gu-esquema [data-entra].ge-baja { transform: translate3d(0, -26px, 0); }
+.js .gu-esquema.visto [data-entra] { opacity: 1; transform: none; }
+.ge-voluta { fill: none; stroke: var(--c-niebla); stroke-width: 1.6; stroke-linecap: round; opacity: 0; }
+.anima .gu-esquema.visto .ge-voluta { animation: ge-voluta 7s var(--e-suave) infinite; animation-delay: calc(var(--v, 0) * -2.3s); }
+.anima .gu-esquema.visto .ge-calor { animation: ge-calor 6s var(--e-suave) infinite; animation-delay: calc(var(--v, 0) * -1s); }
+@keyframes ge-voluta { 0% { opacity: 0; transform: translate3d(0, 8px, 0); } 25% { opacity: .9; } 100% { opacity: 0; transform: translate3d(var(--vx, 0px), -34px, 0); } }
+@keyframes ge-calor { 0%, 100% { opacity: .5; transform: translate3d(calc(var(--cx, 0px) * -1), calc(var(--cy, 0px) * -1), 0); } 50% { opacity: 1; transform: translate3d(var(--cx, 0px), var(--cy, 0px), 0); } }
+@media (prefers-reduced-motion: reduce) { .js .gu-esquema [data-entra] { opacity: 1 !important; transform: none !important; } }
+.quieto .gu-esquema [data-entra] { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+/* ---------- Tablas de las guías de muestras y de cuánto dura ---------- */
+/* Matriz de requisitos: la primera columna es el texto; las demás, «Sí», «No» o «—», centradas y en negrita */
+.gu-texto .gu-matriz td:first-child { font-weight: 400; }
+.gu-texto .gu-matriz td:not(:first-child) { text-align: center; white-space: nowrap; font-weight: 600; }
+.gu-texto .gu-matriz th:not(:first-child) { text-align: center; }
+/* Tabla de texto: el sitio en negrita y la explicación normal */
+.gu-texto .gu-tabla-texto td:first-child { font-weight: 600; }
+.gu-texto .gu-tabla-texto td:last-child { font-weight: 400; }
+/* Encuadre de la foto de la caja con niebla (casi cuadrada) en 4:3: se quedan los nuggets y el vapor de arriba */
+img.f-caja-16mm-niebla { object-position: 50% 30%; }

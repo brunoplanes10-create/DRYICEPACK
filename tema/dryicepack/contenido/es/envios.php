@@ -78,7 +78,8 @@ return array(
 		'titulo' => '¿Llega a mi zona?',
 		'si'     => array( 'titulo' => 'Sí, al día siguiente antes de las 14:00', 'texto' => 'Toda la España peninsular: de Girona a Huelva y de A Coruña a Murcia.' ),
 		'no'     => array( 'titulo' => 'Fuera de la península,&nbsp;no', /* &nbsp;: el "no" no queda solo en móvil */ 'texto' => 'Solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla, ni fuera de España.' ),
-		'zonas'  => 'Ver zonas de entrega cerca de Barcelona',
+		'zonas'  => 'Envío a toda la península, provincia a provincia',
+		'provincias' => 'Por provincia:',
 		// Mapa de cobertura (rediseño 14/10/2026)
 		'mapa'    => 'Mapa: enviamos desde Mataró a toda la España peninsular; no a Baleares, Canarias, Ceuta ni Melilla.',
 		'mapa_no' => 'No enviamos',

@@ -285,7 +285,21 @@ $v_json = wp_json_encode( $v_paradas, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | J
 				<div class="v-cobertura__si" data-revela><span class="v-cobertura__marca" aria-hidden="true"><?php echo dipt_icono( 'check' ); // phpcs:ignore ?></span><h3><?php echo esc_html( $c['cobertura']['si']['titulo'] ); ?></h3><p><?php echo esc_html( $c['cobertura']['si']['texto'] ); ?></p></div>
 				<div class="v-cobertura__no" data-revela style="--i:1"><span class="v-cobertura__marca" aria-hidden="true"><?php echo dipt_icono( 'cerrar' ); // phpcs:ignore ?></span><h3><?php echo esc_html( $c['cobertura']['no']['titulo'] ); ?></h3><p><?php echo esc_html( $c['cobertura']['no']['texto'] ); ?></p></div>
 			</div>
-			<p><?php echo dipt_enlace( $c['cobertura']['zonas'], dipt_url( 'zonas' ) ); // phpcs:ignore ?></p>
+			<?php
+			// Provincias con más búsquedas con ciudad (Search Console, 12 meses a 30/09/2026): enlace directo si tienen página
+			$v_prov = array();
+			foreach ( array( 'madrid', 'barcelona', 'valladolid', 'valencia', 'sevilla', 'malaga', 'zaragoza' ) as $v_k ) {
+				$v_l  = function_exists( 'dipt_provincias' ) ? ( dipt_provincias()[ $v_k ] ?? null ) : null;
+				$v_kp = $v_l ? dipt_lugar_pagina( $v_l ) : null;
+				if ( $v_kp ) $v_prov[] = '<a href="' . esc_url( dipt_url( $v_kp ) ) . '">' . esc_html( $v_l['provincia_corta'] ) . '</a>';
+			}
+			?>
+			<div class="texto">
+				<p><?php echo dipt_enlace( $c['cobertura']['zonas'], dipt_url( 'zonas' ) ); // phpcs:ignore ?></p>
+				<?php if ( count( $v_prov ) >= 2 && ! empty( $c['cobertura']['provincias'] ) ) : ?>
+					<p><?php echo esc_html( $c['cobertura']['provincias'] ); ?> <?php echo implode( ' · ', $v_prov ); // phpcs:ignore -- escapado arriba ?></p>
+				<?php endif; ?>
+			</div>
 		</div>
 		<div class="v-cobertura__mapa" data-vivo>
 			<?php get_template_part( 'partes/mapa-peninsula', null, array( 'variante' => 'cobertura', 'titulo' => $c['cobertura']['mapa'] ?? '', 'islas' => $c['cobertura']['islas'] ?? array(), 'no' => $c['cobertura']['mapa_no'] ?? '' ) ); ?>

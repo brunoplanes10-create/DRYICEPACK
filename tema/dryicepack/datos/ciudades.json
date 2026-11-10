@@ -1,0 +1,1968 @@
+{
+ "fuentes_generales": [
+  "https://www.ine.es/dynt3/inebase/es/index.htm?padre=517&capsel=525",
+  "https://servicios.ine.es/wstempus/js/ES/DATOS_TABLA/{tabla}?nult=1",
+  "https://www.cartociudad.es/geocoder/api/geocoder/find?id={cp}&type=Codpost",
+  "https://www.cartociudad.es/geocoder/api/geocoder/reverseGeocode?lon={lon}&lat={lat}",
+  "https://www.cartociudad.es/geocoder/api/geocoder/candidates?q=calle&cod_postal_filter={cp}",
+  "https://api.zippopotam.us/es/{cp}",
+  "https://nominatim.openstreetmap.org/",
+  "https://router.project-osrm.org/",
+  "https://es.wikipedia.org/"
+ ],
+ "nota": "Municipios peninsulares de más de 50.000 habitantes según las Cifras oficiales de población del INE a 1 de enero de 2025, sin capitales de provincia ni los que ya tienen página en zonas.json. CP: se han recorrido todos los códigos de cada provincia en CartoCiudad (IGN/CNIG, datos postales de Correos); un CP entra si su centroide cae en el municipio o si CartoCiudad tiene portales o puntos de interés del municipio con ese CP, y se ha contrastado con GeoNames (zippopotam). Puede incluir CP compartidos con un municipio vecino. Distancias de las catalanas con OSRM desde la nave de Mataró (2026-11-10).",
+ "pendientes": [
+  "CP que solo da GeoNames y CartoCiudad no confirma (fuera de la lista): elche 03291, orihuela 03318, alcoy 03739, san-vicente-del-raspeig 03699, jerez-de-la-frontera 11591, ponferrada 24416, cartagena 30369, molina-de-segura 30627, siero 33189. El 03739 GeoNames lo sitúa en realidad en Xàbia; el 30627 agrupa pedanías de Molina de Segura (Fenazar, La Hurona, Campotéjar).",
+  "CP descartados aunque el centroide de CartoCiudad cae en el municipio: 28830 (es el de San Fernando de Henares, no Torrejón), 28120 (Ciudad Santo Domingo, Algete; no Colmenar Viejo), 30890 (Puerto Lumbreras; no Lorca).",
+  "CP compartidos incluidos: 03316 (Orihuela y Benferri), 08505 (Vic y Santa Eulàlia de Riuprimer), 30380 (Cartagena y San Javier, La Manga), 24390 y 24448 (Ponferrada con Carracedelo y Priaranza del Bierzo), 29719 y 29792 (Vélez-Málaga con Benamocarra e Iznate).",
+  "En las provincias 03, 04, 06 y 08 el servicio find de CartoCiudad devuelve error 500: la existencia del CP se ha comprobado con candidates y el municipio con portales y puntos de interés dentro del CP.",
+  "Wikidata da 28230 para Las Rozas, pero CartoCiudad dice que no existe: fuera.",
+  "Intro vacía por falta de un dato propio y comprobable: vilanova-i-la-geltru, san-fernando, la-linea-de-la-concepcion, rivas-vaciamadrid, boadilla-del-monte, pinto, utrera, talavera-de-la-reina."
+ ],
+ "ciudades": {
+  "elche": {
+   "clave": "elche",
+   "nombre": "Elche",
+   "nombre_oficial": "Elx/Elche",
+   "provincia": "alicante",
+   "cp": [
+    "03139",
+    "03194",
+    "03195",
+    "03201",
+    "03202",
+    "03203",
+    "03204",
+    "03205",
+    "03206",
+    "03207",
+    "03208",
+    "03290",
+    "03292",
+    "03293",
+    "03294",
+    "03295",
+    "03296",
+    "03320"
+   ],
+   "poblacion": 245557,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Elche tiene industria del calzado, la Universidad Miguel Hernández y, en El Altet, el aeropuerto de Alicante-Elche. El hielo seco sirve para mover congelado, conservar muestras de laboratorio y limpiar moldes sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+    "https://es.wikipedia.org/wiki/Elche",
+    "https://es.wikipedia.org/wiki/Universidad_Miguel_Hernández",
+    "https://es.wikipedia.org/wiki/Aeropuerto_de_Alicante-Elche_Miguel_Hernández"
+   ]
+  },
+  "torrevieja": {
+   "clave": "torrevieja",
+   "nombre": "Torrevieja",
+   "nombre_oficial": "Torrevieja",
+   "provincia": "alicante",
+   "cp": [
+    "03181",
+    "03182",
+    "03183",
+    "03184",
+    "03185",
+    "03186",
+    "03188"
+   ],
+   "poblacion": 98533,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Torrevieja vive sobre todo del turismo residencial y de los servicios. Su hostelería puede usar hielo seco en coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+    "https://es.wikipedia.org/wiki/Torrevieja"
+   ]
+  },
+  "orihuela": {
+   "clave": "orihuela",
+   "nombre": "Orihuela",
+   "nombre_oficial": "Orihuela",
+   "provincia": "alicante",
+   "cp": [
+    "03189",
+    "03300",
+    "03311",
+    "03312",
+    "03313",
+    "03314",
+    "03315",
+    "03316",
+    "03317",
+    "03319",
+    "03321"
+   ],
+   "poblacion": 84560,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Orihuela, la vega cultiva cítricos y hortalizas, y la Universidad Miguel Hernández tiene campus en Desamparados. El hielo seco mantiene el congelado en ruta y conserva muestras de laboratorio."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+    "https://es.wikipedia.org/wiki/Orihuela"
+   ]
+  },
+  "benidorm": {
+   "clave": "benidorm",
+   "nombre": "Benidorm",
+   "nombre_oficial": "Benidorm",
+   "provincia": "alicante",
+   "cp": [
+    "03501",
+    "03502",
+    "03503"
+   ],
+   "poblacion": 77327,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Benidorm vive del turismo y de sus hoteles. Hostelería, ocio nocturno y eventos pueden usar hielo seco para coctelería y efectos de niebla."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+    "https://es.wikipedia.org/wiki/Benidorm"
+   ]
+  },
+  "alcoy": {
+   "clave": "alcoy",
+   "nombre": "Alcoy",
+   "nombre_oficial": "Alcoi/Alcoy",
+   "provincia": "alicante",
+   "cp": [
+    "03801",
+    "03802",
+    "03803",
+    "03804"
+   ],
+   "poblacion": 61468,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Alcoy tiene industria textil y metalúrgica y una escuela politécnica universitaria: el hielo seco limpia maquinaria sin agua y conserva muestras. Las fiestas de Moros y Cristianos suman eventos y hostelería."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+    "https://es.wikipedia.org/wiki/Alcoy"
+   ]
+  },
+  "san-vicente-del-raspeig": {
+   "clave": "san-vicente-del-raspeig",
+   "nombre": "San Vicente del Raspeig",
+   "nombre_oficial": "Sant Vicent del Raspeig/San Vicente del Raspeig",
+   "provincia": "alicante",
+   "cp": [
+    "03690"
+   ],
+   "poblacion": 60247,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En San Vicente del Raspeig está el campus de la Universidad de Alicante, con laboratorios que conservan y envían muestras en frío con hielo seco."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+    "https://es.wikipedia.org/wiki/San_Vicente_del_Raspeig"
+   ]
+  },
+  "elda": {
+   "clave": "elda",
+   "nombre": "Elda",
+   "nombre_oficial": "Elda",
+   "provincia": "alicante",
+   "cp": [
+    "03600"
+   ],
+   "poblacion": 55222,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Elda tiene industria del calzado, con moldes y maquinaria que se pueden limpiar con hielo seco, sin agua ni residuos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2856",
+    "https://es.wikipedia.org/wiki/Elda"
+   ]
+  },
+  "roquetas-de-mar": {
+   "clave": "roquetas-de-mar",
+   "nombre": "Roquetas de Mar",
+   "nombre_oficial": "Roquetas de Mar",
+   "provincia": "almeria",
+   "cp": [
+    "04720",
+    "04740",
+    "04741",
+    "04743"
+   ],
+   "poblacion": 111240,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Roquetas de Mar combina agricultura de invernadero y turismo de costa. Su hostelería puede usar hielo seco en coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2857",
+    "https://es.wikipedia.org/wiki/Roquetas_de_Mar"
+   ]
+  },
+  "el-ejido": {
+   "clave": "el-ejido",
+   "nombre": "El Ejido",
+   "nombre_oficial": "El Ejido",
+   "provincia": "almeria",
+   "cp": [
+    "04700",
+    "04710",
+    "04711",
+    "04712",
+    "04715",
+    "04716",
+    "04717"
+   ],
+   "poblacion": 91440,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "El Ejido vive de la agricultura intensiva bajo invernadero. El hielo seco mantiene el congelado durante el transporte y conserva muestras de laboratorio."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2857",
+    "https://es.wikipedia.org/wiki/El_Ejido"
+   ]
+  },
+  "merida": {
+   "clave": "merida",
+   "nombre": "Mérida",
+   "nombre_oficial": "Mérida",
+   "provincia": "badajoz",
+   "cp": [
+    "06800",
+    "06893"
+   ],
+   "poblacion": 60225,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Mérida es la capital de Extremadura. En julio y agosto, el Festival de Teatro Clásico en el teatro romano llena la hostelería y los eventos de la ciudad."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2859",
+    "https://es.wikipedia.org/wiki/Mérida_(España)",
+    "https://es.wikipedia.org/wiki/Festival_Internacional_de_Teatro_Clásico_de_Mérida"
+   ]
+  },
+  "santa-coloma-de-gramenet": {
+   "clave": "santa-coloma-de-gramenet",
+   "nombre": "Santa Coloma de Gramenet",
+   "nombre_oficial": "Santa Coloma de Gramenet",
+   "provincia": "barcelona",
+   "cp": [
+    "08921",
+    "08922",
+    "08923"
+   ],
+   "poblacion": 123981,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "En Santa Coloma de Gramenet, el recinto de Torribera es campus de la Universidad de Barcelona, de la Autónoma de Barcelona y de la UNED. El hielo seco sirve en sus laboratorios para conservar muestras en frío.",
+    "ca": "A Santa Coloma de Gramenet, el recinte de Torribera és campus de la Universitat de Barcelona, de l'Autònoma de Barcelona i de la UNED. El gel sec serveix als laboratoris per conservar mostres en fred."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+    "https://es.wikipedia.org/wiki/Santa_Coloma_de_Gramanet",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;2.2081,41.4519?overview=false"
+   ],
+   "lat": 41.4519,
+   "lon": 2.2081,
+   "km": 28,
+   "min": 24
+  },
+  "manresa": {
+   "clave": "manresa",
+   "nombre": "Manresa",
+   "nombre_oficial": "Manresa",
+   "provincia": "barcelona",
+   "cp": [
+    "08241",
+    "08242",
+    "08243"
+   ],
+   "poblacion": 80974,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "Manresa marca el límite entre el área industrial de Barcelona y la Cataluña central, y tiene escuela politécnica de ingeniería y universidad. El hielo seco sirve para limpiar maquinaria sin agua y conservar muestras.",
+    "ca": "Manresa marca el límit entre l'àrea industrial de Barcelona i la Catalunya central, i té escola politècnica d'enginyeria i universitat. El gel sec serveix per netejar maquinària sense aigua i conservar mostres."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+    "https://es.wikipedia.org/wiki/Manresa",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;1.8287,41.7289?overview=false"
+   ],
+   "lat": 41.7289,
+   "lon": 1.8287,
+   "km": 83,
+   "min": 64
+  },
+  "vilanova-i-la-geltru": {
+   "clave": "vilanova-i-la-geltru",
+   "nombre": "Vilanova i la Geltrú",
+   "nombre_oficial": "Vilanova i la Geltrú",
+   "provincia": "barcelona",
+   "cp": [
+    "08800"
+   ],
+   "poblacion": 71641,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "",
+    "ca": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;1.7256,41.2242?overview=false"
+   ],
+   "lat": 41.2242,
+   "lon": 1.7256,
+   "km": 82,
+   "min": 72
+  },
+  "castelldefels": {
+   "clave": "castelldefels",
+   "nombre": "Castelldefels",
+   "nombre_oficial": "Castelldefels",
+   "provincia": "barcelona",
+   "cp": [
+    "08860"
+   ],
+   "poblacion": 70057,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "Castelldefels tiene campus de la Universidad Politécnica de Cataluña en el Parque Mediterráneo de la Tecnología, y playa. Su hostelería de verano puede usar hielo seco en coctelería.",
+    "ca": "Castelldefels té campus de la Universitat Politècnica de Catalunya al Parc Mediterrani de la Tecnologia, i platja. La seva hostaleria d'estiu pot fer servir gel sec per preparar còctels."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+    "https://es.wikipedia.org/wiki/Castelldefels",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;1.9824,41.2861?overview=false"
+   ],
+   "lat": 41.2861,
+   "lon": 1.9824,
+   "km": 58,
+   "min": 50
+  },
+  "viladecans": {
+   "clave": "viladecans",
+   "nombre": "Viladecans",
+   "nombre_oficial": "Viladecans",
+   "provincia": "barcelona",
+   "cp": [
+    "08840"
+   ],
+   "poblacion": 67587,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "Viladecans pasó de pueblo agrícola a ciudad fundamentalmente industrial. El hielo seco limpia maquinaria sin agua y mantiene el congelado durante el transporte.",
+    "ca": "Viladecans va passar de poble agrícola a ciutat fonamentalment industrial. El gel sec neteja maquinària sense aigua i manté el congelat durant el transport."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+    "https://es.wikipedia.org/wiki/Viladecans",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;2.0156,41.3163?overview=false"
+   ],
+   "lat": 41.3163,
+   "lon": 2.0156,
+   "km": 55,
+   "min": 49
+  },
+  "cerdanyola-del-valles": {
+   "clave": "cerdanyola-del-valles",
+   "nombre": "Cerdanyola del Vallès",
+   "nombre_oficial": "Cerdanyola del Vallès",
+   "provincia": "barcelona",
+   "cp": [
+    "08193",
+    "08290"
+   ],
+   "poblacion": 58528,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "En Cerdanyola del Vallès, el parque tecnológico del Vallès tiene un sincrotrón, el ALBA. El hielo seco sirve en laboratorios para conservar y enviar muestras en frío.",
+    "ca": "A Cerdanyola del Vallès, el parc tecnològic del Vallès té un sincrotró, l'ALBA. El gel sec serveix als laboratoris per conservar i enviar mostres en fred."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+    "https://es.wikipedia.org/wiki/Sardañola_del_Vallés",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;2.1406,41.491?overview=false"
+   ],
+   "lat": 41.491,
+   "lon": 2.1406,
+   "km": 37,
+   "min": 33
+  },
+  "vic": {
+   "clave": "vic",
+   "nombre": "Vic",
+   "nombre_oficial": "Vic",
+   "provincia": "barcelona",
+   "cp": [
+    "08500",
+    "08505"
+   ],
+   "poblacion": 50796,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "Vic es conocida por sus embutidos, tiene universidad propia y es ciudad de ferias y mercados. El hielo seco mantiene la carne congelada durante el transporte y conserva muestras en los laboratorios universitarios.",
+    "ca": "Vic és coneguda pels seus embotits, té universitat pròpia i és ciutat de fires i mercats. El gel sec manté la carn congelada durant el transport i conserva mostres als laboratoris universitaris."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2861",
+    "https://es.wikipedia.org/wiki/Vic",
+    "https://es.wikipedia.org/wiki/Universidad_de_Vic_-_Universidad_Central_de_Cataluña",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;2.2546,41.9302?overview=false"
+   ],
+   "lat": 41.9302,
+   "lon": 2.2546,
+   "km": 61,
+   "min": 57
+  },
+  "jerez-de-la-frontera": {
+   "clave": "jerez-de-la-frontera",
+   "nombre": "Jerez de la Frontera",
+   "nombre_oficial": "Jerez de la Frontera",
+   "provincia": "cadiz",
+   "cp": [
+    "11400",
+    "11401",
+    "11402",
+    "11403",
+    "11404",
+    "11405",
+    "11406",
+    "11407",
+    "11408",
+    "11570",
+    "11579",
+    "11592",
+    "11593",
+    "11594",
+    "11595"
+   ],
+   "poblacion": 213634,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Jerez tiene bodegas, aeropuerto y circuito de velocidad, y su Feria del Caballo es conocida. El hielo seco enfría la uva en vendimia y sirve a la hostelería en ferias y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2864",
+    "https://es.wikipedia.org/wiki/Jerez_de_la_Frontera",
+    "https://es.wikipedia.org/wiki/Jerez"
+   ]
+  },
+  "algeciras": {
+   "clave": "algeciras",
+   "nombre": "Algeciras",
+   "nombre_oficial": "Algeciras",
+   "provincia": "cadiz",
+   "cp": [
+    "11201",
+    "11202",
+    "11203",
+    "11204",
+    "11205",
+    "11206",
+    "11207"
+   ],
+   "poblacion": 126589,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Algeciras vive de su puerto marítimo de mercancías. El hielo seco mantiene el congelado en el transporte por carretera que sale de él."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2864",
+    "https://es.wikipedia.org/wiki/Algeciras",
+    "https://es.wikipedia.org/wiki/Puerto_de_la_bahía_de_Algeciras"
+   ]
+  },
+  "san-fernando": {
+   "clave": "san-fernando",
+   "nombre": "San Fernando",
+   "nombre_oficial": "San Fernando",
+   "provincia": "cadiz",
+   "cp": [
+    "11100"
+   ],
+   "poblacion": 93338,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2864"
+   ]
+  },
+  "chiclana-de-la-frontera": {
+   "clave": "chiclana-de-la-frontera",
+   "nombre": "Chiclana de la Frontera",
+   "nombre_oficial": "Chiclana de la Frontera",
+   "provincia": "cadiz",
+   "cp": [
+    "11130",
+    "11138",
+    "11139"
+   ],
+   "poblacion": 90864,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Chiclana vive de su industria y del turismo de playa, con La Barrosa y Sancti Petri. Hoteles y restaurantes pueden usar hielo seco en coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2864",
+    "https://es.wikipedia.org/wiki/Chiclana_de_la_Frontera"
+   ]
+  },
+  "el-puerto-de-santa-maria": {
+   "clave": "el-puerto-de-santa-maria",
+   "nombre": "El Puerto de Santa María",
+   "nombre_oficial": "El Puerto de Santa María",
+   "provincia": "cadiz",
+   "cp": [
+    "11500"
+   ],
+   "poblacion": 89983,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "El Puerto de Santa María tiene bodegas de vino y turismo de playa en Valdelagrana. El hielo seco sirve en bodega y en la hostelería para coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2864",
+    "https://es.wikipedia.org/wiki/El_Puerto_de_Santa_María"
+   ]
+  },
+  "sanlucar-de-barrameda": {
+   "clave": "sanlucar-de-barrameda",
+   "nombre": "Sanlúcar de Barrameda",
+   "nombre_oficial": "Sanlúcar de Barrameda",
+   "provincia": "cadiz",
+   "cp": [
+    "11540"
+   ],
+   "poblacion": 70012,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Sanlúcar es conocida por la manzanilla y el langostino. El hielo seco mantiene el marisco congelado en los envíos y sirve en bodega."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2864",
+    "https://es.wikipedia.org/wiki/Sanlúcar_de_Barrameda"
+   ]
+  },
+  "la-linea-de-la-concepcion": {
+   "clave": "la-linea-de-la-concepcion",
+   "nombre": "La Línea de la Concepción",
+   "nombre_oficial": "La Línea de la Concepción",
+   "provincia": "cadiz",
+   "cp": [
+    "11300",
+    "11315"
+   ],
+   "poblacion": 64499,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2864"
+   ]
+  },
+  "vila-real": {
+   "clave": "vila-real",
+   "nombre": "Vila-real",
+   "nombre_oficial": "Vila-real",
+   "provincia": "castellon",
+   "cp": [
+    "12540"
+   ],
+   "poblacion": 53623,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Vila-real tiene industria cerámica de pavimento, revestimiento y gres, con prensas y moldes que se pueden limpiar con hielo seco, sin agua ni residuos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2865",
+    "https://es.wikipedia.org/wiki/Villarreal"
+   ]
+  },
+  "santiago-de-compostela": {
+   "clave": "santiago-de-compostela",
+   "nombre": "Santiago de Compostela",
+   "nombre_oficial": "Santiago de Compostela",
+   "provincia": "a-coruna",
+   "cp": [
+    "15701",
+    "15702",
+    "15703",
+    "15704",
+    "15705",
+    "15706",
+    "15707",
+    "15820",
+    "15884",
+    "15890",
+    "15892",
+    "15893",
+    "15896",
+    "15897",
+    "15898",
+    "15899"
+   ],
+   "poblacion": 100965,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Santiago de Compostela tiene universidad y es destino de peregrinación del Camino. El hielo seco conserva muestras en laboratorio y sirve a la hostelería en eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2868",
+    "https://es.wikipedia.org/wiki/Santiago_de_Compostela",
+    "https://es.wikipedia.org/wiki/Universidad_de_Santiago_de_Compostela"
+   ]
+  },
+  "ferrol": {
+   "clave": "ferrol",
+   "nombre": "Ferrol",
+   "nombre_oficial": "Ferrol",
+   "provincia": "a-coruna",
+   "cp": [
+    "15401",
+    "15402",
+    "15403",
+    "15404",
+    "15405",
+    "15406",
+    "15490",
+    "15590",
+    "15592",
+    "15593",
+    "15594",
+    "15595"
+   ],
+   "poblacion": 64367,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Ferrol tiene puerto pesquero y comercial, astilleros civiles y militares e instalaciones de la Armada. El hielo seco mantiene el pescado congelado en ruta y limpia piezas y equipos sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2868",
+    "https://es.wikipedia.org/wiki/Ferrol"
+   ]
+  },
+  "motril": {
+   "clave": "motril",
+   "nombre": "Motril",
+   "nombre_oficial": "Motril",
+   "provincia": "granada",
+   "cp": [
+    "18600",
+    "18613",
+    "18730"
+   ],
+   "poblacion": 59862,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Motril tiene puerto comercial y pesquero en la Costa Tropical, donde la chirimoya tiene denominación de origen. El hielo seco mantiene el pescado y la fruta congelados en el envío."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2871",
+    "https://es.wikipedia.org/wiki/Motril",
+    "https://es.wikipedia.org/wiki/Costa_Granadina"
+   ]
+  },
+  "irun": {
+   "clave": "irun",
+   "nombre": "Irun",
+   "nombre_oficial": "Irun",
+   "provincia": "san-sebastian",
+   "cp": [
+    "20301",
+    "20302",
+    "20303",
+    "20304",
+    "20305"
+   ],
+   "poblacion": 63835,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Irun hace frontera con Francia y es nudo comercial, ferroviario, de carretera y logístico, con su propio centro de transportes. El hielo seco mantiene el congelado en tránsito sin enchufe."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2873",
+    "https://es.wikipedia.org/wiki/Irún"
+   ]
+  },
+  "linares": {
+   "clave": "linares",
+   "nombre": "Linares",
+   "nombre_oficial": "Linares",
+   "provincia": "jaen",
+   "cp": [
+    "23700",
+    "23713"
+   ],
+   "poblacion": 55633,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Linares tiene un campus científico-tecnológico de la Universidad de Jaén, con laboratorios que conservan muestras en frío."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2876",
+    "https://es.wikipedia.org/wiki/Linares_(Jaén)"
+   ]
+  },
+  "ponferrada": {
+   "clave": "ponferrada",
+   "nombre": "Ponferrada",
+   "nombre_oficial": "Ponferrada",
+   "provincia": "leon",
+   "cp": [
+    "24390",
+    "24401",
+    "24402",
+    "24403",
+    "24404",
+    "24411",
+    "24414",
+    "24415",
+    "24448",
+    "24490",
+    "24491"
+   ],
+   "poblacion": 63186,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Ponferrada es la capital del Bierzo, con vino de denominación de origen. El hielo seco sirve en bodega para enfriar la uva y mantiene el congelado en ruta."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2877",
+    "https://es.wikipedia.org/wiki/Ponferrada",
+    "https://es.wikipedia.org/wiki/Bierzo_(vino)"
+   ]
+  },
+  "mostoles": {
+   "clave": "mostoles",
+   "nombre": "Móstoles",
+   "nombre_oficial": "Móstoles",
+   "provincia": "madrid",
+   "cp": [
+    "28931",
+    "28932",
+    "28933",
+    "28934",
+    "28935",
+    "28936",
+    "28937",
+    "28938"
+   ],
+   "poblacion": 214817,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Móstoles tiene el campus tecnológico y la sede central de la Universidad Rey Juan Carlos. El hielo seco conserva muestras en sus laboratorios y mantiene el congelado en el reparto."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Móstoles"
+   ]
+  },
+  "alcala-de-henares": {
+   "clave": "alcala-de-henares",
+   "nombre": "Alcalá de Henares",
+   "nombre_oficial": "Alcalá de Henares",
+   "provincia": "madrid",
+   "cp": [
+    "28801",
+    "28802",
+    "28803",
+    "28804",
+    "28805",
+    "28806",
+    "28807"
+   ],
+   "poblacion": 203208,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Alcalá de Henares es núcleo del Corredor del Henares y tiene la Universidad de Alcalá, con campus universitario y hospitalario. El hielo seco sirve en la logística de congelado y en sus laboratorios."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Alcalá_de_Henares",
+    "https://es.wikipedia.org/wiki/Corredor_del_Henares"
+   ]
+  },
+  "leganes": {
+   "clave": "leganes",
+   "nombre": "Leganés",
+   "nombre_oficial": "Leganés",
+   "provincia": "madrid",
+   "cp": [
+    "28911",
+    "28912",
+    "28913",
+    "28914",
+    "28915",
+    "28916",
+    "28917",
+    "28918",
+    "28919"
+   ],
+   "poblacion": 195734,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Leganés tiene campus de la Universidad Carlos III y polígonos industriales. El hielo seco conserva muestras de laboratorio y limpia maquinaria sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Leganés"
+   ]
+  },
+  "getafe": {
+   "clave": "getafe",
+   "nombre": "Getafe",
+   "nombre_oficial": "Getafe",
+   "provincia": "madrid",
+   "cp": [
+    "28901",
+    "28902",
+    "28903",
+    "28904",
+    "28905",
+    "28906",
+    "28907",
+    "28909"
+   ],
+   "poblacion": 193238,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Getafe tiene base aérea, polígonos industriales con tecnología avanzada y campus de la Universidad Carlos III. El hielo seco limpia piezas y moldes sin agua y conserva muestras de laboratorio."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Getafe"
+   ]
+  },
+  "fuenlabrada": {
+   "clave": "fuenlabrada",
+   "nombre": "Fuenlabrada",
+   "nombre_oficial": "Fuenlabrada",
+   "provincia": "madrid",
+   "cp": [
+    "28941",
+    "28942",
+    "28943",
+    "28944",
+    "28945",
+    "28946",
+    "28947"
+   ],
+   "poblacion": 190076,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Fuenlabrada tiene polígonos industriales, campus de la Universidad Rey Juan Carlos y hospital universitario. El hielo seco mantiene el congelado en la última milla y conserva muestras."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Fuenlabrada"
+   ]
+  },
+  "alcorcon": {
+   "clave": "alcorcon",
+   "nombre": "Alcorcón",
+   "nombre_oficial": "Alcorcón",
+   "provincia": "madrid",
+   "cp": [
+    "28921",
+    "28922",
+    "28923",
+    "28924",
+    "28925"
+   ],
+   "poblacion": 175719,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Alcorcón tiene la Facultad de Ciencias de la Salud de la Universidad Rey Juan Carlos y el Hospital Universitario Fundación Alcorcón. El hielo seco conserva y transporta muestras biológicas en frío."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Alcorcón"
+   ]
+  },
+  "torrejon-de-ardoz": {
+   "clave": "torrejon-de-ardoz",
+   "nombre": "Torrejón de Ardoz",
+   "nombre_oficial": "Torrejón de Ardoz",
+   "provincia": "madrid",
+   "cp": [
+    "28850"
+   ],
+   "poblacion": 143526,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Torrejón de Ardoz tiene base aérea y polígonos industriales. El hielo seco mantiene el congelado en el reparto y limpia equipos sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Torrejón_de_Ardoz"
+   ]
+  },
+  "parla": {
+   "clave": "parla",
+   "nombre": "Parla",
+   "nombre_oficial": "Parla",
+   "provincia": "madrid",
+   "cp": [
+    "28981",
+    "28982",
+    "28983",
+    "28984"
+   ],
+   "poblacion": 137471,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Parla está el Hospital Infanta Cristina. El hielo seco sirve para conservar y enviar muestras clínicas en frío."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Parla"
+   ]
+  },
+  "alcobendas": {
+   "clave": "alcobendas",
+   "nombre": "Alcobendas",
+   "nombre_oficial": "Alcobendas",
+   "provincia": "madrid",
+   "cp": [
+    "28100",
+    "28108",
+    "28109"
+   ],
+   "poblacion": 123342,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Alcobendas tiene polígonos industriales y el parque empresarial de La Moraleja. El hielo seco mantiene el congelado en la última milla y conserva muestras de laboratorio."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Alcobendas"
+   ]
+  },
+  "rivas-vaciamadrid": {
+   "clave": "rivas-vaciamadrid",
+   "nombre": "Rivas-Vaciamadrid",
+   "nombre_oficial": "Rivas-Vaciamadrid",
+   "provincia": "madrid",
+   "cp": [
+    "28521",
+    "28522",
+    "28523",
+    "28524"
+   ],
+   "poblacion": 103148,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881"
+   ]
+  },
+  "las-rozas": {
+   "clave": "las-rozas",
+   "nombre": "Las Rozas",
+   "nombre_oficial": "Las Rozas de Madrid",
+   "provincia": "madrid",
+   "cp": [
+    "28231",
+    "28232",
+    "28290"
+   ],
+   "poblacion": 99037,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Las Rozas tiene parque empresarial y la Ciudad del Fútbol. El hielo seco sirve en eventos de empresa y en el reparto de congelado."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Las_Rozas_de_Madrid"
+   ]
+  },
+  "san-sebastian-de-los-reyes": {
+   "clave": "san-sebastian-de-los-reyes",
+   "nombre": "San Sebastián de los Reyes",
+   "nombre_oficial": "San Sebastián de los Reyes",
+   "provincia": "madrid",
+   "cp": [
+    "28701",
+    "28702",
+    "28703",
+    "28706",
+    "28707",
+    "28708",
+    "28709"
+   ],
+   "poblacion": 96992,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "San Sebastián de los Reyes tiene el Hospital Infanta Sofía, y sus fiestas son conocidas por los encierros. El hielo seco conserva muestras clínicas y sirve a la hostelería en fiestas."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/San_Sebastián_de_los_Reyes"
+   ]
+  },
+  "pozuelo-de-alarcon": {
+   "clave": "pozuelo-de-alarcon",
+   "nombre": "Pozuelo de Alarcón",
+   "nombre_oficial": "Pozuelo de Alarcón",
+   "provincia": "madrid",
+   "cp": [
+    "28223",
+    "28224"
+   ],
+   "poblacion": 89770,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Pozuelo de Alarcón hay instalaciones de varias universidades públicas. El hielo seco conserva muestras en sus laboratorios."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Pozuelo_de_Alarcón"
+   ]
+  },
+  "valdemoro": {
+   "clave": "valdemoro",
+   "nombre": "Valdemoro",
+   "nombre_oficial": "Valdemoro",
+   "provincia": "madrid",
+   "cp": [
+    "28341",
+    "28342",
+    "28343"
+   ],
+   "poblacion": 85972,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Valdemoro tiene polígonos industriales y sedes logísticas de empresas nacionales e internacionales. El hielo seco mantiene el congelado en la última milla sin frío mecánico."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Valdemoro"
+   ]
+  },
+  "coslada": {
+   "clave": "coslada",
+   "nombre": "Coslada",
+   "nombre_oficial": "Coslada",
+   "provincia": "madrid",
+   "cp": [
+    "28821",
+    "28822",
+    "28823"
+   ],
+   "poblacion": 80512,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Coslada está el puerto seco de la Comunidad de Madrid, y buena parte del término son zonas industriales de logística y transporte. El hielo seco mantiene el congelado en tránsito y en la última milla."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Coslada"
+   ]
+  },
+  "majadahonda": {
+   "clave": "majadahonda",
+   "nombre": "Majadahonda",
+   "nombre_oficial": "Majadahonda",
+   "provincia": "madrid",
+   "cp": [
+    "28220",
+    "28221",
+    "28222"
+   ],
+   "poblacion": 73625,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Majadahonda está el Hospital Universitario Puerta de Hierro. El hielo seco sirve para conservar y enviar muestras clínicas en frío."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Majadahonda"
+   ]
+  },
+  "collado-villalba": {
+   "clave": "collado-villalba",
+   "nombre": "Collado Villalba",
+   "nombre_oficial": "Collado Villalba",
+   "provincia": "madrid",
+   "cp": [
+    "28400"
+   ],
+   "poblacion": 67274,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Collado Villalba, en la vertiente sur de la sierra de Guadarrama, tiene el Hospital Universitario General de Villalba. El hielo seco sirve para conservar y enviar muestras clínicas."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Collado_Villalba"
+   ]
+  },
+  "boadilla-del-monte": {
+   "clave": "boadilla-del-monte",
+   "nombre": "Boadilla del Monte",
+   "nombre_oficial": "Boadilla del Monte",
+   "provincia": "madrid",
+   "cp": [
+    "28660",
+    "28668",
+    "28669"
+   ],
+   "poblacion": 66349,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881"
+   ]
+  },
+  "aranjuez": {
+   "clave": "aranjuez",
+   "nombre": "Aranjuez",
+   "nombre_oficial": "Aranjuez",
+   "provincia": "madrid",
+   "cp": [
+    "28300",
+    "28310",
+    "28311",
+    "28312"
+   ],
+   "poblacion": 63040,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Aranjuez tiene huerta de regadío, con fresas y espárragos, y un patrimonio histórico que atrae turismo. El hielo seco mantiene la fruta congelada en ruta y sirve a la hostelería en eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Aranjuez"
+   ]
+  },
+  "arganda-del-rey": {
+   "clave": "arganda-del-rey",
+   "nombre": "Arganda del Rey",
+   "nombre_oficial": "Arganda del Rey",
+   "provincia": "madrid",
+   "cp": [
+    "28500"
+   ],
+   "poblacion": 60419,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Arganda del Rey tiene polígono industrial. El hielo seco limpia maquinaria sin agua y mantiene el congelado en el reparto."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Arganda_del_Rey"
+   ]
+  },
+  "colmenar-viejo": {
+   "clave": "colmenar-viejo",
+   "nombre": "Colmenar Viejo",
+   "nombre_oficial": "Colmenar Viejo",
+   "provincia": "madrid",
+   "cp": [
+    "28770"
+   ],
+   "poblacion": 58730,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Colmenar Viejo tiene los polígonos industriales Sur y La Mina, y tradición ganadera de vacuno. El hielo seco limpia maquinaria sin agua y mantiene la carne congelada en ruta."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Colmenar_Viejo"
+   ]
+  },
+  "pinto": {
+   "clave": "pinto",
+   "nombre": "Pinto",
+   "nombre_oficial": "Pinto",
+   "provincia": "madrid",
+   "cp": [
+    "28320"
+   ],
+   "poblacion": 56651,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881"
+   ]
+  },
+  "tres-cantos": {
+   "clave": "tres-cantos",
+   "nombre": "Tres Cantos",
+   "nombre_oficial": "Tres Cantos",
+   "provincia": "madrid",
+   "cp": [
+    "28760"
+   ],
+   "poblacion": 54592,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Tres Cantos es una ciudad planificada y sede de numerosas empresas. El hielo seco sirve en laboratorios y en el reparto de congelado."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2881",
+    "https://es.wikipedia.org/wiki/Tres_Cantos"
+   ]
+  },
+  "marbella": {
+   "clave": "marbella",
+   "nombre": "Marbella",
+   "nombre_oficial": "Marbella",
+   "provincia": "malaga",
+   "cp": [
+    "29601",
+    "29602",
+    "29603",
+    "29604",
+    "29660",
+    "29670"
+   ],
+   "poblacion": 159786,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Marbella recibe turismo internacional casi todo el año. Hoteles, restaurantes y eventos pueden usar hielo seco en coctelería y efectos de niebla."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Marbella"
+   ]
+  },
+  "mijas": {
+   "clave": "mijas",
+   "nombre": "Mijas",
+   "nombre_oficial": "Mijas",
+   "provincia": "malaga",
+   "cp": [
+    "29649",
+    "29650",
+    "29651"
+   ],
+   "poblacion": 95104,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Mijas es uno de los centros del turismo residencial de Andalucía. Su hostelería puede usar hielo seco en coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Mijas"
+   ]
+  },
+  "velez-malaga": {
+   "clave": "velez-malaga",
+   "nombre": "Vélez-Málaga",
+   "nombre_oficial": "Vélez-Málaga",
+   "provincia": "malaga",
+   "cp": [
+    "29700",
+    "29719",
+    "29740",
+    "29749",
+    "29751",
+    "29760",
+    "29790",
+    "29792"
+   ],
+   "poblacion": 86048,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Vélez-Málaga produce cultivos subtropicales: mango, chirimoya, níspero y, sobre todo, aguacate. El hielo seco mantiene la fruta congelada en el envío."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Vélez-Málaga"
+   ]
+  },
+  "fuengirola": {
+   "clave": "fuengirola",
+   "nombre": "Fuengirola",
+   "nombre_oficial": "Fuengirola",
+   "provincia": "malaga",
+   "cp": [
+    "29640"
+   ],
+   "poblacion": 85211,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Fuengirola vive del turismo de costa. Su hostelería puede usar hielo seco en coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Fuengirola"
+   ]
+  },
+  "estepona": {
+   "clave": "estepona",
+   "nombre": "Estepona",
+   "nombre_oficial": "Estepona",
+   "provincia": "malaga",
+   "cp": [
+    "29680",
+    "29688",
+    "29689",
+    "29693"
+   ],
+   "poblacion": 79621,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Estepona, el turismo creció sobre todo en la parte oriental del término. Hoteles y restaurantes pueden usar hielo seco en coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Estepona"
+   ]
+  },
+  "benalmadena": {
+   "clave": "benalmadena",
+   "nombre": "Benalmádena",
+   "nombre_oficial": "Benalmádena",
+   "provincia": "malaga",
+   "cp": [
+    "29630",
+    "29631",
+    "29639"
+   ],
+   "poblacion": 78338,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Benalmádena tiene puerto deportivo, casino, acuarios y teleférico, ligados al turismo. El hielo seco sirve a su hostelería y a sus eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Benalmádena"
+   ]
+  },
+  "torremolinos": {
+   "clave": "torremolinos",
+   "nombre": "Torremolinos",
+   "nombre_oficial": "Torremolinos",
+   "provincia": "malaga",
+   "cp": [
+    "29620"
+   ],
+   "poblacion": 71329,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Torremolinos tiene vida nocturna y oferta hotelera. El hielo seco sirve a bares, discotecas y hoteles para coctelería y efectos de niebla."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Torremolinos"
+   ]
+  },
+  "rincon-de-la-victoria": {
+   "clave": "rincon-de-la-victoria",
+   "nombre": "Rincón de la Victoria",
+   "nombre_oficial": "Rincón de la Victoria",
+   "provincia": "malaga",
+   "cp": [
+    "29720",
+    "29730",
+    "29738"
+   ],
+   "poblacion": 52454,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Rincón de la Victoria es municipio turístico de la Costa del Sol, con playas y tradición pesquera. Su hostelería puede usar hielo seco en coctelería."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2882",
+    "https://es.wikipedia.org/wiki/Rincón_de_la_Victoria"
+   ]
+  },
+  "cartagena": {
+   "clave": "cartagena",
+   "nombre": "Cartagena",
+   "nombre_oficial": "Cartagena",
+   "provincia": "murcia",
+   "cp": [
+    "30201",
+    "30202",
+    "30203",
+    "30204",
+    "30205",
+    "30300",
+    "30310",
+    "30319",
+    "30330",
+    "30350",
+    "30351",
+    "30353",
+    "30365",
+    "30366",
+    "30367",
+    "30368",
+    "30370",
+    "30380",
+    "30381",
+    "30382",
+    "30383",
+    "30384",
+    "30385",
+    "30389",
+    "30390",
+    "30391",
+    "30392",
+    "30393",
+    "30394",
+    "30395",
+    "30396",
+    "30397",
+    "30398",
+    "30399",
+    "30593",
+    "30594",
+    "30868"
+   ],
+   "poblacion": 220704,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Cartagena tiene puerto, Arsenal y el valle industrial de Escombreras, con refinería. El hielo seco limpia equipos industriales sin agua y conserva muestras en la Universidad Politécnica."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2883",
+    "https://es.wikipedia.org/wiki/Cartagena_(España)",
+    "https://es.wikipedia.org/wiki/Escombreras_(Cartagena)",
+    "https://es.wikipedia.org/wiki/Universidad_Politécnica_de_Cartagena"
+   ]
+  },
+  "lorca": {
+   "clave": "lorca",
+   "nombre": "Lorca",
+   "nombre_oficial": "Lorca",
+   "provincia": "murcia",
+   "cp": [
+    "30800",
+    "30810",
+    "30811",
+    "30812",
+    "30813",
+    "30814",
+    "30815",
+    "30816",
+    "30817",
+    "30818",
+    "30878",
+    "30893"
+   ],
+   "poblacion": 98969,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Lorca tiene ganadería porcina, chacinerías y curtidos, y su Semana Santa es de interés turístico internacional. El hielo seco mantiene la carne congelada en ruta y sirve en eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2883",
+    "https://es.wikipedia.org/wiki/Lorca"
+   ]
+  },
+  "molina-de-segura": {
+   "clave": "molina-de-segura",
+   "nombre": "Molina de Segura",
+   "nombre_oficial": "Molina de Segura",
+   "provincia": "murcia",
+   "cp": [
+    "30500",
+    "30506",
+    "30507",
+    "30508",
+    "30509"
+   ],
+   "poblacion": 78458,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Molina de Segura tiene tradición de industria conservera vegetal. El hielo seco mantiene la verdura congelada en ruta y limpia líneas de producción sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2883",
+    "https://es.wikipedia.org/wiki/Molina_de_Segura"
+   ]
+  },
+  "gijon": {
+   "clave": "gijon",
+   "nombre": "Gijón",
+   "nombre_oficial": "Gijón",
+   "provincia": "oviedo",
+   "cp": [
+    "33201",
+    "33202",
+    "33203",
+    "33204",
+    "33205",
+    "33206",
+    "33207",
+    "33208",
+    "33209",
+    "33210",
+    "33211",
+    "33212",
+    "33213",
+    "33290",
+    "33299",
+    "33350",
+    "33390",
+    "33391",
+    "33392",
+    "33393",
+    "33394",
+    "33691",
+    "33697"
+   ],
+   "poblacion": 269894,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Gijón tiene el puerto de El Musel, astilleros y un campus universitario con parque científico y tecnológico. El hielo seco limpia equipos industriales sin agua y conserva muestras de laboratorio."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2886",
+    "https://es.wikipedia.org/wiki/Gijón",
+    "https://es.wikipedia.org/wiki/Puerto_de_Gijón"
+   ]
+  },
+  "aviles": {
+   "clave": "aviles",
+   "nombre": "Avilés",
+   "nombre_oficial": "Avilés",
+   "provincia": "oviedo",
+   "cp": [
+    "33401",
+    "33402",
+    "33403",
+    "33410",
+    "33460",
+    "33490"
+   ],
+   "poblacion": 75517,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Avilés creció con la industria siderúrgica. El hielo seco limpia equipos y moldes sin agua ni disolventes."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2886",
+    "https://es.wikipedia.org/wiki/Avilés"
+   ]
+  },
+  "siero": {
+   "clave": "siero",
+   "nombre": "Siero",
+   "nombre_oficial": "Siero",
+   "provincia": "oviedo",
+   "cp": [
+    "33186",
+    "33187",
+    "33188",
+    "33199",
+    "33420",
+    "33429",
+    "33510",
+    "33519",
+    "33580",
+    "33936",
+    "33937",
+    "33938"
+   ],
+   "poblacion": 53049,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Siero tiene polígonos industriales y el mercado de ganado de la Pola. El hielo seco mantiene la carne congelada en ruta y limpia maquinaria sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2886",
+    "https://es.wikipedia.org/wiki/Siero"
+   ]
+  },
+  "vigo": {
+   "clave": "vigo",
+   "nombre": "Vigo",
+   "nombre_oficial": "Vigo",
+   "provincia": "pontevedra",
+   "cp": [
+    "36201",
+    "36202",
+    "36203",
+    "36204",
+    "36205",
+    "36206",
+    "36207",
+    "36208",
+    "36209",
+    "36210",
+    "36211",
+    "36212",
+    "36213",
+    "36214",
+    "36215",
+    "36216",
+    "36310",
+    "36312",
+    "36313",
+    "36314",
+    "36315",
+    "36317",
+    "36318",
+    "36330",
+    "36331",
+    "36390",
+    "36392"
+   ],
+   "poblacion": 294489,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Vigo, el puerto es base de la flota pesquera y la ciudad tiene industria del automóvil. El hielo seco mantiene el pescado congelado en ruta y limpia moldes sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2890",
+    "https://es.wikipedia.org/wiki/Vigo",
+    "https://es.wikipedia.org/wiki/Puerto_de_Vigo"
+   ]
+  },
+  "torrelavega": {
+   "clave": "torrelavega",
+   "nombre": "Torrelavega",
+   "nombre_oficial": "Torrelavega",
+   "provincia": "santander",
+   "cp": [
+    "39300",
+    "39315"
+   ],
+   "poblacion": 51796,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Torrelavega es ciudad industrial y comercial con tradición de ferias de ganado. El hielo seco limpia equipos sin agua y mantiene la carne congelada en ruta."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2893",
+    "https://es.wikipedia.org/wiki/Torrelavega"
+   ]
+  },
+  "dos-hermanas": {
+   "clave": "dos-hermanas",
+   "nombre": "Dos Hermanas",
+   "nombre_oficial": "Dos Hermanas",
+   "provincia": "sevilla",
+   "cp": [
+    "41089",
+    "41701",
+    "41702",
+    "41703",
+    "41704"
+   ],
+   "poblacion": 142519,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Dos Hermanas tiene polígonos industriales y el campus de la Universidad Loyola Andalucía. El hielo seco mantiene el congelado en el reparto y conserva muestras."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2895",
+    "https://es.wikipedia.org/wiki/Dos_Hermanas"
+   ]
+  },
+  "alcala-de-guadaira": {
+   "clave": "alcala-de-guadaira",
+   "nombre": "Alcalá de Guadaíra",
+   "nombre_oficial": "Alcalá de Guadaíra",
+   "provincia": "sevilla",
+   "cp": [
+    "41500"
+   ],
+   "poblacion": 77474,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Alcalá de Guadaíra tiene tradición panadera y polígonos industriales. El hielo seco mantiene la masa congelada en ruta y limpia maquinaria sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2895",
+    "https://es.wikipedia.org/wiki/Alcalá_de_Guadaíra"
+   ]
+  },
+  "utrera": {
+   "clave": "utrera",
+   "nombre": "Utrera",
+   "nombre_oficial": "Utrera",
+   "provincia": "sevilla",
+   "cp": [
+    "41710",
+    "41728"
+   ],
+   "poblacion": 52403,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2895"
+   ]
+  },
+  "reus": {
+   "clave": "reus",
+   "nombre": "Reus",
+   "nombre_oficial": "Reus",
+   "provincia": "tarragona",
+   "cp": [
+    "43201",
+    "43202",
+    "43203",
+    "43204",
+    "43205",
+    "43206"
+   ],
+   "poblacion": 111601,
+   "anio_padron": 2025,
+   "catalunya": true,
+   "intro": {
+    "es": "Reus tiene aeropuerto, campus de la Universitat Rovira i Virgili y tradición de vermut. El hielo seco conserva muestras de laboratorio y sirve a la hostelería para coctelería.",
+    "ca": "Reus té aeroport, campus de la Universitat Rovira i Virgili i tradició de vermut. El gel sec conserva mostres de laboratori i serveix a l'hostaleria per preparar còctels."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2900",
+    "https://es.wikipedia.org/wiki/Reus",
+    "https://es.wikipedia.org/wiki/Universidad_Rovira_i_Virgili",
+    "https://router.project-osrm.org/route/v1/driving/2.4528255,41.5533687;1.1076,41.1556?overview=false"
+   ],
+   "lat": 41.1556,
+   "lon": 1.1076,
+   "km": 148,
+   "min": 106
+  },
+  "talavera-de-la-reina": {
+   "clave": "talavera-de-la-reina",
+   "nombre": "Talavera de la Reina",
+   "nombre_oficial": "Talavera de la Reina",
+   "provincia": "toledo",
+   "cp": [
+    "45600",
+    "45613",
+    "45614",
+    "45694"
+   ],
+   "poblacion": 83803,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": ""
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2902"
+   ]
+  },
+  "torrent": {
+   "clave": "torrent",
+   "nombre": "Torrent",
+   "nombre_oficial": "Torrent",
+   "provincia": "valencia",
+   "cp": [
+    "46900",
+    "46901",
+    "46909"
+   ],
+   "poblacion": 90928,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Torrent tiene polígonos industriales. El hielo seco limpia maquinaria sin agua y mantiene el congelado en el reparto."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2903",
+    "https://es.wikipedia.org/wiki/Torrente_(Valencia)"
+   ]
+  },
+  "gandia": {
+   "clave": "gandia",
+   "nombre": "Gandia",
+   "nombre_oficial": "Gandia",
+   "provincia": "valencia",
+   "cp": [
+    "46701",
+    "46702",
+    "46728",
+    "46730"
+   ],
+   "poblacion": 83135,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Gandia tiene playas con turismo y campus de la Universitat Politècnica de València. El hielo seco conserva muestras de laboratorio y sirve a la hostelería de playa."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2903",
+    "https://es.wikipedia.org/wiki/Gandía"
+   ]
+  },
+  "paterna": {
+   "clave": "paterna",
+   "nombre": "Paterna",
+   "nombre_oficial": "Paterna",
+   "provincia": "valencia",
+   "cp": [
+    "46182",
+    "46980",
+    "46988",
+    "46989"
+   ],
+   "poblacion": 76019,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Paterna tiene el polígono Fuente del Jarro y el Parque Tecnológico de Valencia. El hielo seco limpia maquinaria sin agua, conserva muestras y mantiene el congelado en el reparto."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2903",
+    "https://es.wikipedia.org/wiki/Paterna"
+   ]
+  },
+  "sagunto": {
+   "clave": "sagunto",
+   "nombre": "Sagunto",
+   "nombre_oficial": "Sagunt/Sagunto",
+   "provincia": "valencia",
+   "cp": [
+    "46500",
+    "46520"
+   ],
+   "poblacion": 73031,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Sagunto, el puerto creció con la industria siderúrgica. El hielo seco limpia equipos industriales sin agua."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2903",
+    "https://es.wikipedia.org/wiki/Sagunto"
+   ]
+  },
+  "barakaldo": {
+   "clave": "barakaldo",
+   "nombre": "Barakaldo",
+   "nombre_oficial": "Barakaldo",
+   "provincia": "bilbao",
+   "cp": [
+    "48901",
+    "48902",
+    "48903"
+   ],
+   "poblacion": 102986,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "Barakaldo es sede de la Feria Internacional de Bilbao, con ferias y congresos. El hielo seco sirve en esos eventos para coctelería y efectos de niebla."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2905",
+    "https://es.wikipedia.org/wiki/Baracaldo"
+   ]
+  },
+  "getxo": {
+   "clave": "getxo",
+   "nombre": "Getxo",
+   "nombre_oficial": "Getxo",
+   "provincia": "bilbao",
+   "cp": [
+    "48930",
+    "48991",
+    "48992",
+    "48993"
+   ],
+   "poblacion": 75752,
+   "anio_padron": 2025,
+   "catalunya": false,
+   "intro": {
+    "es": "En Getxo está el Puente de Bizkaia, Patrimonio de la Humanidad. Su hostelería puede usar hielo seco en coctelería y eventos."
+   },
+   "fuentes": [
+    "https://www.ine.es/jaxiT3/Tabla.htm?t=2905",
+    "https://es.wikipedia.org/wiki/Guecho"
+   ]
+  }
+ }
+}

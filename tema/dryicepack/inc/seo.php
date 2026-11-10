@@ -5,6 +5,8 @@
  *   para que texto y metadatos no se desalineen. Rank Math sigue con canonical, sitemap, robots y Open Graph.
  * - Datos estructurados que Rank Math gratis no genera o no puede saber: LocalBusiness, FAQPage, BreadcrumbList
  *   y Product en las páginas de compra en catalán e inglés.
+ * - Product (el de Rank Math en castellano y el del tema en catalán e inglés): una oferta por pack y formato con el envío
+ *   real por peso, el plazo y la política de devolución (dipt_schema_ofertas).
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -20,6 +22,7 @@ function dipt_seo_actual() {
 	if ( ! $clave ) return null;
 	$p = dipt_paginas()[ $clave ];
 	if ( 'zona' === $p['plantilla'] && function_exists( 'dipt_seo_zona' ) ) return dipt_seo_zona( $p['zona'] );
+	if ( 'provincia' === $p['plantilla'] && function_exists( 'dipt_seo_lugar' ) ) return dipt_seo_lugar( $p['lugar'] ?? null );
 	if ( 'legal' === $p['plantilla'] ) return dipt_contenido( 'legal-' . $clave )['seo'] ?? null;
 	if ( 'guia' === $p['plantilla'] ) return dipt_guia( $p['guia'] )['seo'] ?? null;
 	return dipt_contenido( $p['plantilla'] === 'inicio' ? 'inicio' : $clave )['seo'] ?? null;
@@ -99,7 +102,9 @@ function dipt_schema_negocio() {
 			'opens'     => '09:00',
 			'closes'    => '18:00',
 		) ),
-		'areaServed'  => array( '@type' => 'Country', 'name' => 'Spain' ),
+		'geo'         => array( '@type' => 'GeoCoordinates', 'latitude' => dipt_zona_nave()[0], 'longitude' => dipt_zona_nave()[1] ),
+		// España peninsular: sin Baleares, Canarias, Ceuta ni Melilla (la descripción lo dice; aquí, el país)
+		'areaServed'  => array( '@type' => 'Country', 'name' => 'ES' ),
 		'contactPoint' => array( array(
 			'@type'             => 'ContactPoint',
 			'telephone'         => '+34936737641',
@@ -113,7 +118,30 @@ function dipt_schema_negocio() {
 add_action( 'wp_footer', static function () {
 	$clave = dipt_pagina_actual();
 
-	if ( in_array( $clave, array( 'inicio', 'contacto' ), true ) ) dipt_jsonld( dipt_schema_negocio() );
+	// Con Rank Math, el negocio va dentro de su grafo (filtro rank_math/json_ld, abajo): un solo negocio, no dos
+	if ( ! defined( 'RANK_MATH_VERSION' ) && in_array( $clave, array( 'inicio', 'contacto' ), true ) ) dipt_jsonld( dipt_schema_negocio() );
+
+	// Guías: Article con fechas reales y la marca como autora y editora
+	$pag = $clave ? ( dipt_paginas()[ $clave ] ?? null ) : null;
+	if ( $pag && 'guia' === $pag['plantilla'] && is_singular() ) {
+		$g = dipt_guia( $pag['guia'] );
+		if ( $g ) {
+			$org = array( '@type' => 'Organization', '@id' => home_url( defined( 'RANK_MATH_VERSION' ) ? '/#organization' : '/#negocio' ), 'name' => 'DryIcePack', 'url' => home_url( '/' ) );
+			dipt_jsonld( array(
+				'@context'         => 'https://schema.org',
+				'@type'            => 'Article',
+				'headline'         => wp_strip_all_tags( (string) $g['titulo'] ),
+				'description'      => wp_strip_all_tags( (string) ( $g['seo']['descripcion'] ?? $g['extracto'] ?? '' ) ),
+				'image'            => ! empty( $g['foto'] ) ? dipt_foto_url( $g['foto'], 1000 ) : dipt_foto_url( 'caja-16mm-niebla', 1000 ),
+				'datePublished'    => get_post_time( 'c', true, get_queried_object_id() ),
+				'dateModified'     => get_post_modified_time( 'c', true, get_queried_object_id() ),
+				'author'           => $org,
+				'publisher'        => $org,
+				'mainEntityOfPage' => get_permalink( get_queried_object_id() ),
+				'inLanguage'       => array( 'es' => 'es-ES', 'ca' => 'ca-ES', 'en' => 'en-GB' )[ dipt_idioma() ] ?? 'es-ES',
+			) );
+		}
+	}
 
 	$faq = $GLOBALS['dipt_faq_schema'] ?? array();
 	if ( count( $faq ) >= 2 ) {
@@ -137,24 +165,135 @@ add_action( 'wp_footer', static function () {
 
 	// Páginas de compra en catalán e inglés: son páginas normales, así que el producto lo describe el tema.
 	if ( 'producto' === $clave && 'es' !== dipt_idioma() && ! ( function_exists( 'is_product' ) && is_product() ) ) {
-		$packs  = dipt_packs();
-		$iva    = dipt_factor_iva();
-		$precios = array_map( static fn( $p ) => round( $p * $iva, 2 ), $packs );
 		dipt_jsonld( array(
 			'@context'    => 'https://schema.org',
 			'@type'       => 'Product',
 			'name'        => 'en' === dipt_idioma() ? 'Dry ice (3 mm pellets and 16 mm nuggets)' : 'Gel sec (pèl·lets de 3 mm i nuggets de 16 mm)',
 			'image'       => array( dipt_foto_url( 'caja-16mm-niebla', 1000 ), dipt_foto_url( 'cenital-3mm', 900 ) ),
 			'brand'       => array( '@type' => 'Brand', 'name' => 'DryIcePack' ),
-			'offers'      => array(
-				'@type'         => 'AggregateOffer',
-				'priceCurrency' => 'EUR',
-				'lowPrice'      => $precios ? min( $precios ) : null,
-				'highPrice'     => $precios ? max( $precios ) : null,
-				'offerCount'    => count( $precios ),
-				'availability'  => 'https://schema.org/InStock',
-				'url'           => dipt_url( 'producto' ),
-			),
+			// Una oferta por pack y formato, con envío y devoluciones (dipt_schema_ofertas, abajo)
+			'offers'      => dipt_schema_ofertas( dipt_url( 'producto' ) ),
 		) );
 	}
 }, 30 );
+
+/* ---------- Product: una oferta por pack y formato, con envío y devoluciones (10/11/2026) ----------
+ * Las fichas de comerciante de Google leen el envío y la devolución en cada Offer (no en un AggregateOffer).
+ * - Precio con IVA, el que se ve en la ficha; envío de la mensajería para el peso de ese pack (hielo + 1 kg de caja), con IVA.
+ * - Sale el mismo día laborable si se pide antes del corte (12:00, hora de Madrid) y llega al día siguiente: manipulación
+ *   0 días y tránsito 1 día, de lunes a viernes. Sin envío a Baleares, Canarias, Ceuta ni Melilla (doesNotShip).
+ * - Sin derecho de desistimiento: el hielo seco se sublima (condiciones de venta; «¿Puedo devolverlo?» de la ficha).
+ * En castellano el Product lo genera Rank Math: se amplía su entidad (sin crear otra) con sus filtros.
+ */
+function dipt_schema_devolucion() {
+	return array(
+		'@type'                => 'MerchantReturnPolicy',
+		'applicableCountry'    => 'ES',
+		'returnPolicyCategory' => 'https://schema.org/MerchantReturnNotPermitted',
+		'merchantReturnLink'   => dipt_url( 'condiciones' ),
+	);
+}
+
+function dipt_schema_envio( $kg ) {
+	$coste = round( dipt_coste_envio( (float) $kg, 1 ) * dipt_factor_iva(), 2 );
+	$corte = sprintf( '%02d:%02d:00', defined( 'DIP_CUTOFF_HOUR' ) ? (int) DIP_CUTOFF_HOUR : 12, defined( 'DIP_CUTOFF_MINUTE' ) ? (int) DIP_CUTOFF_MINUTE : 0 )
+		. ( new DateTimeImmutable( 'now', new DateTimeZone( 'Europe/Madrid' ) ) )->format( 'P' );
+	$dias  = array_map( static fn( $d ) => 'https://schema.org/' . $d, array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ) );
+	$fuera = array();
+	foreach ( array( '07', '35', '38', '51', '52' ) as $pre ) { // Baleares, Las Palmas, Santa Cruz de Tenerife, Ceuta y Melilla (dip_cp_fuera_de_peninsula)
+		$fuera[] = array( '@type' => 'DefinedRegion', 'addressCountry' => 'ES', 'postalCodeRange' => array( '@type' => 'PostalCodeRangeSpecification', 'postalCodeBegin' => $pre . '000', 'postalCodeEnd' => $pre . '999' ) );
+	}
+	return array(
+		array(
+			'@type'               => 'OfferShippingDetails',
+			'shippingRate'        => array( '@type' => 'MonetaryAmount', 'value' => number_format( $coste, 2, '.', '' ), 'currency' => 'EUR' ),
+			'shippingDestination' => array( '@type' => 'DefinedRegion', 'addressCountry' => 'ES' ),
+			'deliveryTime'        => array(
+				'@type'        => 'ShippingDeliveryTime',
+				'cutoffTime'   => $corte,
+				'businessDays' => array( '@type' => 'OpeningHoursSpecification', 'dayOfWeek' => $dias ),
+				'handlingTime' => array( '@type' => 'QuantitativeValue', 'minValue' => 0, 'maxValue' => 0, 'unitCode' => 'DAY' ),
+				'transitTime'  => array( '@type' => 'QuantitativeValue', 'minValue' => 1, 'maxValue' => 1, 'unitCode' => 'DAY' ),
+			),
+		),
+		array(
+			'@type'               => 'OfferShippingDetails',
+			'doesNotShip'         => true,
+			'shippingDestination' => $fuera,
+		),
+	);
+}
+
+/** Ofertas del Product: una por pack y formato que se vende ahora (dipt_variaciones: con stock y comprables). */
+function dipt_schema_ofertas( $url, $vendedor = null ) {
+	$base     = array( 'es' => 'Hielo seco', 'ca' => 'Gel sec', 'en' => 'Dry ice' )[ dipt_idioma() ] ?? 'Hielo seco';
+	$politica = dipt_schema_devolucion();
+	$ofertas  = array();
+	foreach ( dipt_variaciones() as $v ) {
+		$p = dipt_precio_pack( (float) $v['kg'] );
+		if ( $p['con_iva'] <= 0 ) continue;
+		$precio = number_format( $p['con_iva'], 2, '.', '' );
+		$o      = array(
+			'@type'                   => 'Offer',
+			'name'                    => $base . ' · ' . ( 0 + $v['kg'] ) . ' kg · ' . ( '16mm' === $v['formato'] ? '16 mm' : '3 mm' ),
+			'price'                   => $precio,
+			'priceCurrency'           => 'EUR',
+			'priceSpecification'      => array( '@type' => 'UnitPriceSpecification', 'price' => $precio, 'priceCurrency' => 'EUR', 'valueAddedTaxIncluded' => true ),
+			'availability'            => 'https://schema.org/InStock',
+			'itemCondition'           => 'https://schema.org/NewCondition',
+			'url'                     => $url,
+			'shippingDetails'         => dipt_schema_envio( (float) $v['kg'] ),
+			'hasMerchantReturnPolicy' => $politica,
+		);
+		if ( $vendedor ) $o['seller'] = $vendedor;
+		$ofertas[] = $o;
+	}
+	return $ofertas;
+}
+
+function dipt_schema_es_producto( $entidad ) {
+	return is_array( $entidad ) && in_array( 'Product', (array) ( $entidad['@type'] ?? '' ), true );
+}
+
+/** La entidad Product de Rank Math con las ofertas del tema (conserva su vendedor y su URL). Solo una vez. */
+function dipt_schema_ampliar_producto( $entidad ) {
+	if ( ! dipt_schema_es_producto( $entidad ) ) return $entidad;
+	$o = is_array( $entidad['offers'] ?? null ) ? $entidad['offers'] : array();
+	if ( isset( $o[0]['shippingDetails'] ) ) return $entidad;
+	$ofertas = dipt_schema_ofertas( ! empty( $o['url'] ) ? (string) $o['url'] : dipt_url( 'producto' ), $o['seller'] ?? null );
+	if ( $ofertas ) $entidad['offers'] = $ofertas;
+	// Nombre y descripción reales (Rank Math usaba el title guardado, «Comprar Hielo Seco – DryIcePack», y una descripción antigua)
+	$entidad['name']  = 'Hielo seco (pellets de 3 mm y nuggets de 16 mm)';
+	$entidad['brand'] = array( '@type' => 'Brand', 'name' => 'DryIcePack' );
+	$s = dipt_seo_actual();
+	if ( ! empty( $s['descripcion'] ) ) $entidad['description'] = wp_strip_all_tags( (string) $s['descripcion'] );
+	return $entidad;
+}
+
+/** Rank Math: su Organization pasa a ser el negocio del tema (mismo @id, para no romper sus referencias) y la portada, WebPage. */
+function dipt_schema_unificar_negocio( $nodo ) {
+	if ( ! is_array( $nodo ) ) return $nodo;
+	$tipos = (array) ( $nodo['@type'] ?? '' );
+	if ( array_intersect( $tipos, array( 'Organization', 'LocalBusiness', 'Store', 'Corporation' ) ) && false !== strpos( (string) ( $nodo['@id'] ?? '' ), '#organization' ) ) {
+		$negocio = dipt_schema_negocio();
+		unset( $negocio['@context'], $negocio['@id'] );
+		return array_merge( $nodo, $negocio );
+	}
+	if ( in_array( 'AboutPage', $tipos, true ) && is_front_page() ) $nodo['@type'] = 'WebPage';
+	return $nodo;
+}
+add_filter( 'rank_math/snippet/rich_snippet_product_entity', 'dipt_schema_ampliar_producto', 20 );
+add_filter( 'rank_math/json_ld', static function ( $datos ) {
+	if ( ! is_array( $datos ) ) return $datos;
+	foreach ( $datos as $k => $nodo ) {
+		if ( dipt_schema_es_producto( $nodo ) ) $datos[ $k ] = dipt_schema_ampliar_producto( $nodo );
+		else $datos[ $k ] = dipt_schema_unificar_negocio( $nodo );
+	}
+	if ( isset( $datos['@graph'] ) && is_array( $datos['@graph'] ) ) {
+		foreach ( $datos['@graph'] as $k => $nodo ) {
+			if ( dipt_schema_es_producto( $nodo ) ) $datos['@graph'][ $k ] = dipt_schema_ampliar_producto( $nodo );
+			else $datos['@graph'][ $k ] = dipt_schema_unificar_negocio( $nodo );
+		}
+	}
+	return $datos;
+}, 99 );
