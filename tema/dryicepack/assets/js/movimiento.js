@@ -397,7 +397,8 @@
 			var datos = new FormData(f); datos.append('ajax', '1');
 			f.querySelectorAll('.campo--error').forEach(function (c) { c.classList.remove('campo--error'); var m = c.querySelector('.campo__error'); if (m) m.remove(); });
 			if (boton) { boton.disabled = true; boton.setAttribute('data-texto', boton.textContent); boton.querySelector('span') ? boton.querySelector('span').textContent = f.getAttribute('data-enviando') || '…' : 0; }
-			fetch(f.action, { method: 'POST', body: datos, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+			// getAttribute: el campo oculto name="action" tapa f.action (daría «[object HTMLInputElement]» y un 404)
+			fetch(f.getAttribute('action'), { method: 'POST', body: datos, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
 				if (aviso) { aviso.hidden = false; aviso.className = 'aviso-form ' + (j.ok ? 'aviso-form--ok' : 'aviso-form--error'); aviso.textContent = j.mensaje; }
 				if (j.ok) {
 					f.classList.add('enviado');
