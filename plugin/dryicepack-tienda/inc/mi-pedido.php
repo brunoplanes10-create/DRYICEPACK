@@ -166,6 +166,8 @@ function dip_mp_responder() {
 	if ( '' === $idioma_url ) return;
 	dip_mp_cabeceras();
 	$pedido = dip_mp_pedido_del_enlace();
+	// «Repetir el pedido» (inc/ventas.php, 7.3): el mismo enlace firmado con &repetir=1 llena el carrito y lleva al checkout
+	if ( $pedido && isset( $_GET['repetir'] ) && function_exists( 'dip_repetir_pedido' ) ) dip_repetir_pedido( $pedido ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- la firma hace de credencial
 	if ( $pedido && dip_mp_idioma( $pedido ) !== $idioma_url ) {
 		wp_safe_redirect( dip_url_mi_pedido( $pedido ), 302 ); // siempre en el idioma del pedido
 		exit;
@@ -308,19 +310,21 @@ function dip_mp_situacion( WC_Order $p, $idioma, array $t ) {
 }
 
 /** Líneas de lo pedido: [ ['texto', 'detalle', 'importe'], … ] y el total. */
+/** «10 kg · pellets de 3 mm» (o el nombre guardado en el pedido si el producto ya no existe). */
+function dip_mp_nombre_linea( $l, $idioma, array $t ) {
+	$producto = $l->get_product();
+	$kg       = $producto ? (float) dip_kg_producto( $producto ) : 0.0;
+	$formato  = $producto ? (string) $producto->get_attribute( 'pa_formato' ) : (string) $l->get_meta( 'pa_formato' );
+	if ( $kg <= 0 ) return (string) $l->get_name();
+	$f = false !== strpos( $formato, '16' ) ? $t['formato_16'] : ( false !== strpos( $formato, '3' ) ? $t['formato_3'] : '' );
+	return $f ? sprintf( $t['linea'], dip_mp_num( $kg, $idioma ), $f ) : dip_mp_num( $kg, $idioma ) . ' kg';
+}
+
 function dip_mp_lineas( WC_Order $p, $idioma, array $t ) {
 	$lineas = array();
 	foreach ( $p->get_items() as $l ) {
-		$producto = $l->get_product();
-		$kg       = $producto ? (float) dip_kg_producto( $producto ) : 0.0;
-		$formato  = $producto ? (string) $producto->get_attribute( 'pa_formato' ) : (string) $l->get_meta( 'pa_formato' );
-		$nombre   = '';
-		if ( $kg > 0 ) {
-			$f      = false !== strpos( $formato, '16' ) ? $t['formato_16'] : ( false !== strpos( $formato, '3' ) ? $t['formato_3'] : '' );
-			$nombre = $f ? sprintf( $t['linea'], dip_mp_num( $kg, $idioma ), $f ) : dip_mp_num( $kg, $idioma ) . ' kg';
-		}
 		$lineas[] = array(
-			'texto'   => ( (int) $l->get_quantity() > 1 ? (int) $l->get_quantity() . "\u{00A0}× " : '' ) . ( $nombre ?: $l->get_name() ),
+			'texto'   => ( (int) $l->get_quantity() > 1 ? (int) $l->get_quantity() . "\u{00A0}× " : '' ) . dip_mp_nombre_linea( $l, $idioma, $t ),
 			'importe' => dip_mp_euros( (float) $l->get_total() + (float) $l->get_total_tax(), $idioma ),
 		);
 	}
@@ -447,6 +451,9 @@ function dip_mp_html( WC_Order $p ) {
 						<tr><th scope="row"><?php echo esc_html( $t['total'] ); ?> <small><?php echo esc_html( $t['iva'] ); ?></small></th><td><?php echo esc_html( dip_mp_euros( $p->get_total(), $idioma ) ); ?></td></tr>
 					</tfoot>
 				</table>
+				<?php if ( function_exists( 'dip_url_repetir_pedido' ) ) : // 7.3: mismos packs y misma dirección; el día se elige al pagar ?>
+					<p class="mp-repetir"><a class="boton boton--marino mp-repetir__boton" href="<?php echo esc_url( dip_url_repetir_pedido( $p ) ); ?>" rel="nofollow"><?php echo esc_html( $t['repetir'] ); ?></a><span class="mp-repetir__nota"><?php echo esc_html( $t['repetir_nota'] ); ?></span></p>
+				<?php endif; ?>
 			</section>
 
 			<section class="mp-problema" aria-labelledby="mp-problema-t">

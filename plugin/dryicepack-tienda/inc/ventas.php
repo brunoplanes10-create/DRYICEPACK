@@ -9,6 +9,15 @@
  *     - Envío: el precio de la hora y el destino elegidos (dip_precio_servicio), con IVA.
  *     - Recogida: los precios redondos de recogida en efectivo (inc/precios-recogida.php); el sábado suma lo mismo a los dos.
  *     - No se ofrece si el pack siguiente no se puede (sin existencias, más de 250 kg, sábado de más de 80 kg).
+ *
+ * 7.3 Repetir el pedido, en «Mi pedido»: el carrito con los mismos packs y la misma dirección, y al checkout, donde se elige
+ *     el día. La coherencia de quien ya compró: un clic en vez de volver a escribirlo todo.
+ *     - Es el enlace firmado de «Mi pedido» con &repetir=1: quien lo tiene ya veía la dirección y los packs. Por eso no se
+ *       rellenan el nombre, el email ni el teléfono, que esa página no enseña. Con la sesión de otro usuario, solo el carrito.
+ *     - Lo que ya no se vende (p. ej. el pack de 3 kg cuando se acaba) se avisa y no se añade.
+ *     - No va en los emails: un enlace para volver a comprar es publicidad, y a los clientes solo se les puede mandar si al
+ *       comprar pudieron decir que no (art. 21.2 de la LSSI).
+ *     - El pedido nuevo guarda _dip_repetido_de (el id del original) y una nota.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -105,4 +114,80 @@ add_action( 'wc_ajax_dip_cambiar_pack', static function () {
 		wp_send_json_error( array( 'motivo' => 'no se ha podido cambiar' ), 500 );
 	}
 	wp_send_json_success( array( 'kg' => $s['kg_siguiente'] ) );
+} );
+
+/* =========================================================
+ * 7.3 Repetir el pedido
+ * ========================================================= */
+
+/** Enlace de «Repetir el pedido»: el de «Mi pedido» (firmado) con &repetir=1. */
+function dip_url_repetir_pedido( WC_Order $p ) {
+	return add_query_arg( 'repetir', '1', dip_url_mi_pedido( $p ) );
+}
+
+/** Llena el carrito y la dirección con los del pedido y lleva al checkout (o a la ficha, si ya no queda nada a la venta). Sale. */
+function dip_repetir_pedido( WC_Order $p ) {
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) return; // sin WooCommerce: se queda en «Mi pedido»
+	$idioma = dip_mp_idioma( $p );
+	$t      = dip_textos_tienda( $idioma );
+	$tm     = dip_mp_textos( $idioma );
+	$cart   = WC()->cart;
+	$cart->empty_cart();
+	foreach ( $p->get_items() as $l ) {
+		if ( ! $l instanceof WC_Order_Item_Product ) continue;
+		$prod = $l->get_product();
+		$n    = (int) $l->get_quantity();
+		if ( $n < 1 ) continue;
+		$ok = $prod && $prod->is_purchasable() && $prod->is_in_stock()
+			&& $cart->add_to_cart( (int) $l->get_product_id(), $n, (int) $l->get_variation_id(), $prod instanceof WC_Product_Variation ? $prod->get_variation_attributes() : array() );
+		if ( ! $ok ) wc_add_notice( sprintf( $t['repetido_sin'], dip_mp_nombre_linea( $l, $idioma, $tm ) ), 'notice' );
+	}
+	// El checkout y sus avisos, en el idioma del pedido (la misma cookie que pone inc/textos.php)
+	if ( ! headers_sent() ) {
+		setcookie( 'dip_idioma', $idioma, array( 'expires' => time() + 90 * DAY_IN_SECONDS, 'path' => COOKIEPATH ?: '/', 'secure' => is_ssl(), 'httponly' => false, 'samesite' => 'Lax' ) );
+	}
+	if ( $cart->is_empty() ) {
+		wp_safe_redirect( function_exists( 'dipt_url' ) ? dipt_url( 'producto', $idioma ) : home_url( '/' ) );
+		exit;
+	}
+	$c = WC()->customer;
+	if ( $c && ( ! is_user_logged_in() || (int) $p->get_customer_id() === get_current_user_id() ) ) {
+		$cp = (string) $p->get_billing_postcode();
+		foreach ( array( 'billing', 'shipping' ) as $tipo ) {
+			$c->{"set_{$tipo}_address_1"}( (string) $p->get_billing_address_1() );
+			$c->{"set_{$tipo}_address_2"}( (string) $p->get_billing_address_2() );
+			$c->{"set_{$tipo}_postcode"}( $cp );
+			$c->{"set_{$tipo}_city"}( (string) $p->get_billing_city() );
+			$c->{"set_{$tipo}_state"}( (string) dip_provincia_por_cp( $cp ) );
+			$c->{"set_{$tipo}_country"}( 'ES' );
+		}
+		$c->save();
+	}
+	if ( WC()->session ) {
+		// Envío o recogida como en el pedido; el día y la hora, los de serie (el primer día posible, antes de las 14:00)
+		foreach ( $p->get_items( 'shipping' ) as $envio ) {
+			WC()->session->set( 'chosen_shipping_methods', array( $envio->get_method_id() . ( $envio->get_instance_id() ? ':' . $envio->get_instance_id() : '' ) ) );
+			break;
+		}
+		WC()->session->set( 'dip_fecha', '' );
+		WC()->session->set( 'dip_servicio', '14' );
+		WC()->session->set( 'dip_repetido_de', (int) $p->get_id() );
+		WC()->session->set_customer_session_cookie( true );
+	}
+	wc_add_notice( sprintf( $t['repetido'], $p->get_order_number() ), 'success' );
+	wp_safe_redirect( wc_get_checkout_url() );
+	exit;
+}
+
+/* El pedido nuevo recuerda de cuál viene, con una nota para el propietario */
+add_action( 'woocommerce_checkout_create_order', static function ( $pedido ) {
+	$de = function_exists( 'WC' ) && WC()->session ? (int) WC()->session->get( 'dip_repetido_de' ) : 0;
+	if ( $de ) $pedido->update_meta_data( '_dip_repetido_de', $de );
+} );
+add_action( 'woocommerce_checkout_order_created', static function ( $pedido ) {
+	$de = (int) $pedido->get_meta( '_dip_repetido_de' );
+	if ( ! $de ) return;
+	$original = wc_get_order( $de );
+	$pedido->add_order_note( sprintf( 'Repite el pedido %s (botón «Repetir el pedido» de «Mi pedido»).', $original ? $original->get_order_number() : $de ) );
+	if ( WC()->session ) WC()->session->set( 'dip_repetido_de', null );
 } );

@@ -49,6 +49,9 @@
 .mp-tabla th, .mp-tabla td { padding: .8rem 0; border-bottom: 1px solid var(--c-linea-fuerte, #C8D3DD); text-align: left; vertical-align: baseline; font-weight: 400; }
 .mp-tabla td { padding-left: 1rem; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .mp-tabla tfoot th, .mp-tabla tfoot td { border-bottom: 0; font-weight: 700; font-size: 1.1rem; }
+/* Repetir el pedido (inc/ventas.php, 7.3) */
+.mp-repetir { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin: 1.4rem 0 0; }
+.mp-repetir__nota { font-size: .88rem; color: var(--c-acero, #52657A); }
 .mp-tabla tfoot small { display: block; font-weight: 400; font-size: .82rem; color: var(--c-acero, #52657A); }
 
 /* Si hay un problema: las dos opciones numeradas en mono (como las cláusulas de las condiciones) */
