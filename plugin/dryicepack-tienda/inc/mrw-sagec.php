@@ -337,7 +337,7 @@ function dip_sagec_revisar( WC_Order $p, ?DateTimeImmutable $ahora = null, $forz
 	if ( 'ES' !== strtoupper( $d['pais'] ) ) $m[] = 'la dirección no es de España';
 	if ( '' === $d['linea1'] || ! preg_match( '/\pL/u', $d['linea1'] ) ) $m[] = 'falta la calle';
 	if ( 5 !== strlen( $d['cp'] ) ) $m[] = 'el código postal no tiene 5 cifras';
-	elseif ( function_exists( 'dip_cp_fuera_de_peninsula' ) && dip_cp_fuera_de_peninsula( $d['cp'] ) ) $m[] = 'el código postal es de ' . dip_cp_fuera_de_peninsula( $d['cp'] ) . ' (no enviamos)';
+	elseif ( function_exists( 'dip_cp_fuera_de_peninsula' ) && dip_cp_fuera_de_peninsula( $d['cp'] ) ) $m[] = 'el código postal es de ' . dip_cp_fuera_de_peninsula( $d['cp'] ) . ': solo enviamos a la península, este pedido no se envía (llama al cliente: corregir la dirección o reembolso)';
 	elseif ( '' === $d['provincia'] ) $m[] = 'el código postal no es de ninguna provincia de MRW';
 	if ( '' === $d['ciudad'] ) $m[] = 'falta la población';
 	if ( '' === $d['nombre'] ) $m[] = 'falta el nombre del destinatario';
