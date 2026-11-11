@@ -340,6 +340,13 @@ try {
 	ok( false !== strpos( $xs, '<EntregaSabado>S</EntregaSabado>' ) && false !== strpos( $xs, '<CodigoServicio>0120</CodigoServicio>' ) && false !== strpos( $xs, '<Fecha>04/12/2026</Fecha>' ), 'sábado: entrega en sábado, código del sábado y salida el viernes' );
 	update_option( 'dip_sagec', $conf, false );
 
+	// Sábado de más de 80 kg: el Ecommerce no lo admite en una expedición
+	$sabado_g = crear( array( 'clave' => 'sabado-grande', 'fecha' => '2026-12-05', 'kg' => 20, 'cantidad' => 4 ) );
+	$r        = dip_sagec_crear( $sabado_g, 'pasada', false, a_las( '2026-12-04 08:00' ) );
+	ok( 'mano' === $r['estado'] && false !== strpos( implode( ' ', $r['motivos'] ), '80 kg' ) && ! peticiones_de( $sabado_g ), 'sábado de 84 kg: hacer a mano (Ecommerce, 80 kg por envío)', $r );
+	$conf_def = dip_sagec_por_defecto();
+	ok( '0115' === $conf_def['servicio'] && '0800' === $conf_def['servicio_sabado'], 'de serie: 0115 entre semana y 0800 el sábado' );
+
 	// Etiquetas
 	$nb  = (string) fresco( $bien )->get_meta( '_dip_mrw_envio' );
 	$ne  = (string) fresco( $empresa )->get_meta( '_dip_mrw_envio' );

@@ -44,6 +44,7 @@ if ( ! defined( 'DIP_SAGEC_URL_PRUEBAS' ) ) define( 'DIP_SAGEC_URL_PRUEBAS', 'ht
 if ( ! defined( 'DIP_SAGEC_NS' ) )          define( 'DIP_SAGEC_NS', 'http://www.mrw.es/' );
 if ( ! defined( 'DIP_SAGEC_HORA_PASADA' ) ) define( 'DIP_SAGEC_HORA_PASADA', '08:00' ); // el día de salida
 if ( ! defined( 'DIP_SAGEC_KG_CAJA' ) )     define( 'DIP_SAGEC_KG_CAJA', 30 );           // como mucho, kilos por caja
+if ( ! defined( 'DIP_SAGEC_KG_SABADO' ) )   define( 'DIP_SAGEC_KG_SABADO', 80 );         // Ecommerce de MRW: 80 kg como mucho por expedición
 if ( ! defined( 'DIP_SAGEC_EN_ESPERA' ) )   define( 'DIP_SAGEC_EN_ESPERA', 'el pedido está «En espera»: el pago no está confirmado' );
 
 /* =========================================================
@@ -58,8 +59,11 @@ function dip_sagec_por_defecto() {
 		'departamento'      => '',
 		'usuario'           => '',
 		'clave'             => '', // cifrada (dip_sagec_cifrar)
-		'servicio'          => '', // urgente antes de las 14:00 (lo da MRW)
-		'servicio_sabado'   => '', // sábado antes de las 12:00; vacío = el mismo con EntregaSabado
+		// Servicios de la cuenta de INDUNOVA en MRW (web de clientes y tarifas de la comercial, 11/11/2026):
+		// 0115 Urgente 14 Expedición (de lunes a jueves, el de serie) · 0800 Ecommerce (sábado, sale el viernes) ·
+		// también 0105 Urgente 12 Expedición y 0015 Urgente 10 Expedición
+		'servicio'          => '0115',
+		'servicio_sabado'   => '0800', // siempre con EntregaSabado = S
 		'tipo_mercancia'    => '',
 		'servicio_especial' => '',
 		'tipo_etiqueta'     => '',
@@ -345,6 +349,7 @@ function dip_sagec_revisar( WC_Order $p, ?DateTimeImmutable $ahora = null, $forz
 	if ( $d['kg'] <= 0 || $d['cajas'] < 1 ) $m[] = 'no se saben los kilos o las cajas';
 	if ( defined( 'DIP_MAX_KG' ) && $d['kg'] > DIP_MAX_KG + 0.0001 ) $m[] = 'más de ' . DIP_MAX_KG . ' kg';
 	if ( $d['cajas'] > 0 && $d['kg'] / $d['cajas'] > DIP_SAGEC_KG_CAJA + 0.0001 ) $m[] = 'más de ' . DIP_SAGEC_KG_CAJA . ' kg por caja';
+	if ( $d['sabado'] && $d['peso'] > DIP_SAGEC_KG_SABADO ) $m[] = 'sábado con ' . $d['peso'] . ' kg: el Ecommerce de MRW admite como mucho ' . DIP_SAGEC_KG_SABADO . ' kg por envío (hay que partirlo)';
 	if ( function_exists( 'dip_envio_a_medida' ) && dip_envio_a_medida( $d['kg'], $d['cp'] ) ) $m[] = 'más de ' . DIP_KG_A_MEDIDA . ' kg fuera de la provincia de Barcelona: va a medida';
 	if ( '' !== $d['nota'] ) $m[] = 'el cliente ha dejado una nota: «' . mb_substr( $d['nota'], 0, 120 ) . '»';
 	if ( '' !== (string) $p->get_meta( '_dip_sagec_anulado' ) && ! $forzar ) $m[] = 'ya se anuló un envío de este pedido en MRW';
@@ -1039,8 +1044,8 @@ function dip_sagec_html_ajustes() {
 			$campo( 'departamento', 'Departamento', 'Solo si MRW te da uno. Si no, vacío.' );
 			$campo( 'usuario', 'Usuario del servicio web', 'El de SAGEC (no el de la web de clientes, si MRW te da otro).' );
 			$campo( 'clave', 'Contraseña', 'Se guarda cifrada y no se vuelve a enseñar. También se puede poner en wp-config.php: define( \'DIP_MRW_CLAVE\', \'…\' ); y lo mismo con DIP_MRW_FRANQUICIA, DIP_MRW_ABONADO, DIP_MRW_DEPARTAMENTO y DIP_MRW_USUARIO.', 'password' );
-			$campo( 'servicio', 'Código de servicio (entre semana)', 'El de tu contrato para el urgente antes de las 14:00. Pídeselo a MRW: sin él no se crea nada.' );
-			$campo( 'servicio_sabado', 'Código de servicio del sábado', 'Solo si el sábado antes de las 12:00 va con otro código. Si es el mismo con «entrega en sábado», vacío.' );
+			$campo( 'servicio', 'Código de servicio (entre semana)', 'De serie 0115, Urgente 14 Expedición (antes de las 14:00). En tu cuenta también están 0105 Urgente 12 y 0015 Urgente 10.' );
+			$campo( 'servicio_sabado', 'Código de servicio del sábado', 'De serie 0800, Ecommerce. La web marca siempre «entrega en sábado».' );
 			$campo( 'tipo_mercancia', 'Tipo de mercancía', 'Lo que MRW te diga para el hielo seco (UN 1845). Vacío si no hace falta.' );
 			$campo( 'servicio_especial', 'Servicio especial', 'Solo si MRW pide marcar el hielo seco así. Vacío si no.' );
 			$campo( 'tipo_etiqueta', 'Tipo de etiqueta', 'El que te diga MRW para el PDF de las etiquetas. Vacío: el de serie.' );
