@@ -590,9 +590,9 @@ function dip_resenas_pagina_baja() {
 	exit;
 }
 
-/** Página sencilla, sin el tema (no hace falta cargar nada más) y con los colores de la marca. */
-function dip_resenas_html_baja( $estado, $idioma, $usted, $accion ) {
-	$t      = dip_resenas_textos_baja( $idioma, $usted );
+/** Página sencilla, sin el tema (no hace falta cargar nada más) y con los colores de la marca. $t: otros textos (inc/ofertas.php). */
+function dip_resenas_html_baja( $estado, $idioma, $usted, $accion, ?array $t = null ) {
+	$t      = $t ?: dip_resenas_textos_baja( $idioma, $usted );
 	$titulo = $t[ $estado . '_titulo' ];
 	$inicio = home_url( 'es' === $idioma ? '/' : '/' . $idioma . '/' );
 	$boton  = 'confirmar' === $estado

@@ -57,6 +57,10 @@
 .dip-casilla-empresa, .woocommerce form .form-row.dip-casilla-empresa { margin-top: .6rem !important; padding: .9rem 1rem; border-radius: var(--radio); background: #fff; border: 1px solid var(--c-linea-fuerte); }
 .dip-casilla-empresa label { display: flex !important; gap: .7rem; align-items: center; margin: 0 !important; cursor: pointer; }
 .dip-casilla-empresa input { width: 20px; height: 20px; accent-color: var(--c-marino); }
+/* Casilla «No quiero recibir avisos ni ofertas» (plugin, inc/ofertas.php): discreta, justo debajo del email */
+.woocommerce form .form-row.dip-casilla-ofertas { margin: -.35rem 0 .95rem !important; }
+.dip-casilla-ofertas label { display: flex !important; gap: .55rem; align-items: flex-start; margin: 0 !important; font-size: .85rem; font-weight: 400; line-height: 1.4; color: var(--c-acero); cursor: pointer; }
+.dip-casilla-ofertas input { flex: none; width: 18px; height: 18px; margin: .05rem 0 0; accent-color: var(--c-marino); }
 .dip-fijada { border-color: var(--c-marino); }
 .woocommerce-additional-fields { margin-top: .4rem; }
 

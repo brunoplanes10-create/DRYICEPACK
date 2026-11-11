@@ -86,6 +86,7 @@
 .dip-aviso[hidden] { display: none; }
 
 .dip-casilla-empresa label { display: flex; gap: .6rem; align-items: flex-start; font-weight: 500; cursor: pointer; }
+.dip-casilla-ofertas label { display: flex; gap: .55rem; align-items: flex-start; font-size: .85rem; font-weight: 400; cursor: pointer; }
 .dip-fijada label { cursor: default; }
 
 .dip-pago-rapido { margin: 1.2rem 0 0; padding: 1rem 0 0; border-top: 1px solid var(--c-linea, #E1E7EC); }
