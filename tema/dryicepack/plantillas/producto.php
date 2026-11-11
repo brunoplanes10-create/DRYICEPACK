@@ -151,6 +151,9 @@ if ( function_exists( 'wc_print_notices' ) ) {
 				<?php if ( ! empty( $c['corte']['antes'] ) ) : // Reloj del corte (movimiento.js): solo antes de las 12:00 ?>
 					<p class="p-corte dato" data-corte data-ocultar-sin-texto data-t-antes="<?php echo esc_attr( $c['corte']['antes'] ); ?>" data-t-quedan="<?php echo esc_attr( $c['corte']['quedan'] ); ?>" data-t-despues="<?php echo esc_attr( $c['corte']['despues'] ); ?>" hidden><span data-corte-texto></span> <span data-corte-quedan hidden></span></p>
 				<?php endif; ?>
+				<?php if ( ! empty( $c['puente'] ) ) : // Aviso de puente (movimiento.js): solo si en los próximos 10 días hay días sin reparto por festivo ?>
+					<p class="p-puente" data-puente data-t-dias="<?php echo esc_attr( implode( '|', $c['puente']['dias'] ) ); ?>" data-t-antes="<?php echo esc_attr( $c['puente']['antes'] ); ?>" data-t-hoy="<?php echo esc_attr( $c['puente']['hoy'] ); ?>" data-t-despues="<?php echo esc_attr( $c['puente']['despues'] ); ?>" hidden><strong class="p-puente__marca dato"><?php echo esc_html( $c['puente']['marca'] ); ?></strong> <span data-puente-texto></span></p>
+				<?php endif; ?>
 				<p class="p-nota" data-recoge data-t-recoge="<?php echo esc_attr( $c['recoge_ahorro'] ?? '' ); ?>"><?php echo esc_html( $c['recogida'] ); ?></p>
 				<p class="p-nota p-nota--max" data-max hidden><?php echo esc_html( $c['max'] ); ?></p>
 				<p class="p-nota p-nota--max" data-medida hidden><?php echo esc_html( $c['medida'] ); ?> <a href="<?php echo esc_url( dipt_whatsapp_url() ); ?>" target="_blank" rel="noopener">WhatsApp</a></p>

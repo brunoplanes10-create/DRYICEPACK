@@ -90,3 +90,4 @@ Puntuación: impacto (I) y esfuerzo (E), de 1 a 3. ★ = elegida para hacer ya.
 | 1.º (11/11/2026) | 1.1 horas de la más cara a la más barata · 2.1 reloj del corte junto al botón · 5.2 recogida con lo que se ahorra | `inc/entrega.php` (plugin), `plantillas/producto.php`, `assets/js/movimiento.js` |
 | 2.º (11/11/2026) | 5.1 el pack siguiente en el checkout, con el kilo real y un botón para cambiarlo | `inc/ventas.php` (plugin) |
 | 3.º (11/11/2026) | 4.4 los 4 logos de clientes («Lo usan») bajo la lista de confianza de la ficha y bajo el botón de pagar | `dipt_html_logos_fila()` en `inc/componentes.php`, `inc/woocommerce.php` |
+| 4.º (11/11/2026) | 2.2 aviso de puente: días sin reparto por festivo en los próximos 10 días, con el último día para pedirlo antes y la recogida en Mataró, en la ficha (JS) y bajo los días del checkout (PHP), con la misma regla | `dip_puente_proximo()` en `inc/negocio.php` (plugin), `dipEntrega.puente` en `assets/js/movimiento.js` |

@@ -664,6 +664,59 @@ const escenarios = {
     }
   `,
 
+  'Aviso de puente: días sin reparto por festivo en los próximos 10 días (VENTAS-PSICOLOGIA 2.2)': String.raw`
+    $m = fn( $s ) => new DateTimeImmutable( $s, wp_timezone() );
+    $resumen = fn( $p ) => $p ? array( $p['dias'], $p['antes']['fecha'] ?? null, $p['antes']['sale'] ?? null, $p['siguiente']['fecha'] ?? null ) : null;
+    ok( null === dip_puente_proximo( $m( '2026-11-23 10:00' ) ), 'lunes 23/11: el martes 8/12 queda a 15 días, sin aviso' );
+    ok( null === dip_puente_proximo( $m( '2026-11-27 10:00' ) ), 'viernes 27/11: a 11 días, todavía sin aviso' );
+    $p = dip_puente_proximo( $m( '2026-11-28 10:00' ) );
+    ok( array( array( '2026-12-08', '2026-12-09' ), '2026-12-04', '2026-12-03', '2026-12-10' ) === $resumen( $p ), 'sábado 28/11 (a 10 días): martes 8 (festivo) y miércoles 9 (el 8 no sale nada); antes, el viernes 4 pidiendo el jueves 3; después, el jueves 10', $resumen( $p ) );
+    $p = dip_puente_proximo( $m( '2026-12-03 11:59' ) );
+    ok( '2026-12-03' === $p['antes']['sale'] && '2026-12-04' === $p['antes']['fecha'], 'jueves 3 a las 11:59: aún se puede pedir hoy para el viernes 4', $resumen( $p ) );
+    $p = dip_puente_proximo( $m( '2026-12-03 12:00' ) );
+    ok( array( array( '2026-12-08', '2026-12-09' ), null, null, '2026-12-10' ) === $resumen( $p ), 'jueves 3 a las 12:00: ya no llega nada entre semana antes del puente (el sábado no cuenta); la siguiente, el jueves 10', $resumen( $p ) );
+    $p = dip_puente_proximo( $m( '2026-12-07 09:00' ) );
+    ok( array( array( '2026-12-08', '2026-12-09' ), null, null, '2026-12-10' ) === $resumen( $p ), 'lunes 7: el puente empieza mañana, la siguiente entrega el jueves 10', $resumen( $p ) );
+    ok( null === dip_puente_proximo( $m( '2026-12-09 09:00' ) ), 'miércoles 9: mañana ya hay reparto, sin aviso (la Navidad queda a 16 días)' );
+    $p = dip_puente_proximo( $m( '2026-12-22 10:00' ) );
+    ok( array( array( '2026-12-25' ), '2026-12-24', '2026-12-23', '2026-12-29' ) === $resumen( $p ), 'martes 22/12: viernes 25 sin reparto; antes, el jueves 24 (pedido el 23); después, el martes 29', $resumen( $p ) );
+    $p = dip_puente_proximo( $m( '2026-12-28 10:00' ) );
+    ok( array( array( '2027-01-01' ), '2026-12-31', '2026-12-30', '2027-01-05' ) === $resumen( $p ), 'lunes 28/12: viernes 1 de enero; antes, el jueves 31 (Nochevieja, pedido el 30); después, el martes 5', $resumen( $p ) );
+    $p = dip_puente_proximo( $m( '2027-01-02 10:00' ) );
+    ok( array( array( '2027-01-06', '2027-01-07' ), '2027-01-05', '2027-01-04', '2027-01-08' ) === $resumen( $p ), 'sábado 2/1: miércoles 6 (Reyes) y jueves 7 (el 6 no sale nada); antes, el martes 5; después, el viernes 8', $resumen( $p ) );
+    $p = dip_puente_proximo( $m( '2026-10-05 10:00' ) );
+    ok( array( array( '2026-10-13' ), '2026-10-09', '2026-10-08', '2026-10-14' ) === $resumen( $p ), 'lunes 5/10: martes 13 sin reparto (el lunes 12 es festivo y no sale nada); antes, el viernes 9; después, el miércoles 14', $resumen( $p ) );
+    // Textos
+    ok( 'el martes 8 y el miércoles 9 de diciembre' === dip_texto_dias( array( '2026-12-08', '2026-12-09' ), 'es' ), 'ES, dos días del mismo mes: el mes solo al final' );
+    ok( 'el jueves 31 de diciembre y el viernes 1 de enero' === dip_texto_dias( array( '2026-12-31', '2027-01-01' ), 'es' ), 'ES, dos meses: el mes en los dos' );
+    ok( 'del martes 8 al jueves 10 de diciembre' === dip_texto_dias( array( '2026-12-08', '2026-12-09', '2026-12-10' ), 'es' ), 'ES, tres días: del … al …' );
+    ok( 'el divendres 25 de desembre' === dip_texto_dias( array( '2026-12-25' ), 'ca' ), 'CA, un día: ' . dip_texto_dias( array( '2026-12-25' ), 'ca' ) );
+    ok( 'el dimecres 6 i el dijous 7 de gener' === dip_texto_dias( array( '2027-01-06', '2027-01-07' ), 'ca' ), 'CA, dos días: ' . dip_texto_dias( array( '2027-01-06', '2027-01-07' ), 'ca' ) );
+    ok( 'on Wednesday 6 and Thursday 7 January' === dip_texto_dias( array( '2027-01-06', '2027-01-07' ), 'en' ), 'EN, dos días: ' . dip_texto_dias( array( '2027-01-06', '2027-01-07' ), 'en' ) );
+    $n = dip_texto_puente( array( 'cp' => '08013' ), 'es', $m( '2026-12-03 10:00' ) );
+    ok( 'El martes 8 y el miércoles 9 de diciembre no hay reparto. La recogida en Mataró sí abre.' === $n, 'checkout, Barcelona: con la recogida — ' . $n );
+    $n = dip_texto_puente( array( 'cp' => '28001' ), 'es', $m( '2026-12-03 10:00' ) );
+    ok( 'El martes 8 y el miércoles 9 de diciembre no hay reparto.' === $n, 'checkout, Madrid: sin la recogida — ' . $n );
+    $n = dip_texto_puente( array( 'cp' => '08301' ), 'ca', $m( '2026-12-03 10:00' ) );
+    ok( 'El dimarts 8 i el dimecres 9 de desembre no hi ha repartiment. La recollida a Mataró sí que obre.' === $n, 'checkout CA, Mataró: ' . $n );
+    $n = dip_texto_puente( null, 'en', $m( '2026-12-22 10:00' ) );
+    ok( 'No deliveries on Friday 25 December. Collection in Mataró stays open.' === $n, 'checkout EN sin código postal: ' . $n );
+    ok( '' === dip_texto_puente( array( 'cp' => '08013' ), 'es', $m( '2026-11-23 10:00' ) ), 'sin puente, sin nota' );
+    foreach ( array( 'es', 'ca', 'en' ) as $i ) {
+      $t = dip_textos_tienda( $i );
+      ok( isset( $t['puente_marca'], $t['puente'], $t['puente_recogida'], $t['dias_1'], $t['dias_2'], $t['dias_n'] ), "textos del puente en $i" );
+    }
+  `,
+
+  'Aviso de puente: cierre de MRW Mataró': String.raw`
+    // Cierre de MRW Mataró el martes 6/10: el miércoles 7 no llega nada (la víspera no sale)
+    $m = fn( $s ) => new DateTimeImmutable( $s, wp_timezone() );
+    $resumen = fn( $p ) => $p ? array( $p['dias'], $p['antes']['fecha'] ?? null, $p['antes']['sale'] ?? null, $p['siguiente']['fecha'] ?? null ) : null;
+    poner_dias( array( '2026-10-06' => array( array( 'BARCELONA', 'Mataro' ) ) ) );
+    $p = dip_puente_proximo( $m( '2026-10-05 10:00' ) );
+    ok( array( array( '2026-10-07' ), '2026-10-06', '2026-10-05', '2026-10-08' ) === $resumen( $p ), 'MRW Mataró cierra el martes 6: miércoles 7 sin reparto; antes, el martes 6 pidiendo hoy; después, el jueves 8', $resumen( $p ) );
+  `,
+
   'Comprobación automática (WP-Cron) y avisos por email': String.raw`
     $GLOBALS['http'] = http_mrw( function ( $ymd, $n ) {
       if ( 2 === $n ) return array( array( 'cerrada', 'Mataro', 'BARCELONA' ), array( 'abierta', 'Badalona', 'BARCELONA' ) );
@@ -1212,21 +1265,37 @@ for (const [nombre, esc] of Object.entries(escenarios)) {
 
 /* ---------- JavaScript del tema: "llega el …" con la configuración de dipt_config_js() ---------- */
 /** Primera entrega que calcula movimiento.js con esa configuración y el reloj parado en ts (segundos). */
-function entregaJs(config, ts) {
+// movimiento.js con el reloj parado en ts. elementos: { selector: [elementos falsos] } para lo que tenga que pintar.
+function contextoJs(config, ts, elementos = {}) {
   const fijo = ts * 1000;
   class FechaFija extends Date { constructor(...a) { super(...(a.length ? a : [fijo])); } static now() { return fijo; } }
   const nada = () => {};
-  const lista = () => [];
   const ctx = {
     DIPT: config, Date: FechaFija, setTimeout: nada, setInterval: nada, addEventListener: nada, console,
     matchMedia: () => ({ matches: false }),
-    document: { readyState: 'complete', cookie: '', querySelector: () => null, querySelectorAll: lista, addEventListener: nada,
+    document: { readyState: 'complete', cookie: '', querySelector: (s) => (elementos[s] || [])[0] || null, querySelectorAll: (s) => elementos[s] || [], addEventListener: nada,
       documentElement: { classList: { contains: () => false, add: nada, remove: nada, toggle: nada } } },
   };
   ctx.window = ctx;
   vm.runInNewContext(movimientoJs, ctx);
-  const r = ctx.dipEntrega.proxima();
+  return ctx;
+}
+function entregaJs(config, ts) {
+  const r = contextoJs(config, ts).dipEntrega.proxima();
   return r ? r.entrega.toISOString().slice(0, 10) : null;
+}
+const ymdJs = (f) => (f ? f.toISOString().slice(0, 10) : null);
+function puenteJs(config, ts) {
+  const p = contextoJs(config, ts).dipEntrega.puente(10);
+  return p ? [p.dias.map(ymdJs), p.antes ? ymdJs(p.antes.entrega) : null, p.antes ? ymdJs(p.antes.sale) : null, ymdJs(p.siguiente)] : null;
+}
+// El aviso tal como lo pinta la ficha (plantillas/producto.php, data-puente) con los textos de contenido/es/producto.php
+function avisoPuenteJs(config, ts, textos) {
+  const span = { textContent: '' };
+  const attrs = { 'data-t-dias': textos.dias.join('|'), 'data-t-antes': textos.antes, 'data-t-hoy': textos.hoy, 'data-t-despues': textos.despues };
+  const el = { hidden: true, getAttribute: (n) => (n in attrs ? attrs[n] : null), querySelector: (s) => (s === '[data-puente-texto]' ? span : null) };
+  contextoJs(config, ts, { '[data-puente]': [el] });
+  return el.hidden ? null : span.textContent;
 }
 console.log('\n— Tema: "llega el …" (movimiento.js) igual que el checkout');
 const casosJs = [
@@ -1260,6 +1329,57 @@ for (const c of casosJs) {
     lineas.push(`${viejo !== d.php ? 'OK   ' : 'FALLO'} con la lista mezclada de antes, el JS habría dicho ${viejo} en vez de ${d.php}`);
   }
   contar(lineas.join('\n'));
+}
+
+// Aviso de puente (VENTAS-PSICOLOGIA 2.2): el JS de la ficha (dipEntrega.puente) da lo mismo que dip_puente_proximo() del
+// plugin, día a día durante 75 días desde hoy, a las 10:00 y a las 13:00. Y los textos del aviso tal como se pintan.
+console.log('\n— Tema: aviso de puente (movimiento.js) igual que el plugin');
+{
+  const salida = await ejecutar('', String.raw`
+    function dipt_idioma() { return 'es'; }
+    require '/t/datos.php';
+    $hoy   = new DateTimeImmutable( 'today', wp_timezone() );
+    $casos = array();
+    for ( $i = 0; $i < 75; $i++ ) {
+      foreach ( array( '10:00', '13:00' ) as $h ) {
+        $ahora   = new DateTimeImmutable( $hoy->modify( '+' . $i . ' day' )->format( 'Y-m-d' ) . ' ' . $h, wp_timezone() );
+        $p       = dip_puente_proximo( $ahora );
+        $casos[] = array( 'ts' => $ahora->getTimestamp(), 'cuando' => $ahora->format( 'Y-m-d H:i' ), 'php' => $p ? array( $p['dias'], $p['antes']['fecha'] ?? null, $p['antes']['sale'] ?? null, $p['siguiente']['fecha'] ?? null ) : null );
+      }
+    }
+    $fijos = array();
+    foreach ( array( '2026-11-28 10:00', '2026-12-03 10:00', '2026-12-07 09:00', '2026-12-28 10:00', '2027-01-02 10:00' ) as $s ) $fijos[ $s ] = ( new DateTimeImmutable( $s, wp_timezone() ) )->getTimestamp();
+    echo json_encode( array( 'config' => dipt_config_js(), 'casos' => $casos, 'fijos' => $fijos ) );
+  `);
+  let d;
+  try { d = JSON.parse(salida); } catch { d = null; contar('FALLO aviso de puente: PHP no devuelve los casos  → ' + salida.slice(0, 300)); }
+  if (d) {
+    const distintos = d.casos.filter((c) => JSON.stringify(puenteJs(d.config, c.ts)) !== JSON.stringify(c.php));
+    const conPuente = d.casos.filter((c) => c.php).length;
+    contar(`${!distintos.length && conPuente >= 10 ? 'OK   ' : 'FALLO'} ${d.casos.length} momentos (75 días, 10:00 y 13:00): el JS da los mismos días, el mismo «antes» y la misma «siguiente» que el plugin; ${conPuente} con aviso`
+      + (distintos.length ? `\n        primero distinto: ${distintos[0].cuando} plugin ${JSON.stringify(distintos[0].php)} JS ${JSON.stringify(puenteJs(d.config, distintos[0].ts))}` : ''));
+    const es = {
+      dias: ['el %s', 'el %1$s y el %2$s', 'del %1$s al %2$s'],
+      antes: '%1$s no hay reparto. Para tenerlo antes, pide el %2$s antes de las 12:00 y llega el %3$s. La recogida en Mataró sí abre.',
+      hoy: '%1$s no hay reparto. Para tenerlo antes, pide hoy antes de las 12:00 y llega el %3$s. La recogida en Mataró sí abre.',
+      despues: '%1$s no hay reparto. La siguiente entrega es el %3$s. La recogida en Mataró sí abre.',
+    };
+    const fuente = readFileSync('tema/dryicepack/contenido/es/producto.php', 'utf8');
+    contar(`${[es.antes, es.hoy, es.despues].every((t) => fuente.includes(t)) ? 'OK   ' : 'FALLO'} los textos de la prueba son los de contenido/es/producto.php`);
+    const esperados = {
+      '2026-11-28 10:00': 'El martes 8 y el miércoles 9 de diciembre no hay reparto. Para tenerlo antes, pide el jueves 3 antes de las 12:00 y llega el viernes 4 de diciembre. La recogida en Mataró sí abre.',
+      '2026-12-03 10:00': 'El martes 8 y el miércoles 9 de diciembre no hay reparto. Para tenerlo antes, pide hoy antes de las 12:00 y llega el viernes 4 de diciembre. La recogida en Mataró sí abre.',
+      '2026-12-07 09:00': 'El martes 8 y el miércoles 9 de diciembre no hay reparto. La siguiente entrega es el jueves 10 de diciembre. La recogida en Mataró sí abre.',
+      '2026-12-28 10:00': 'El viernes 1 de enero no hay reparto. Para tenerlo antes, pide el miércoles 30 antes de las 12:00 y llega el jueves 31 de diciembre. La recogida en Mataró sí abre.',
+      '2027-01-02 10:00': 'El miércoles 6 y el jueves 7 de enero no hay reparto. Para tenerlo antes, pide el lunes 4 antes de las 12:00 y llega el martes 5 de enero. La recogida en Mataró sí abre.',
+    };
+    for (const [cuando, esperado] of Object.entries(esperados)) {
+      const real = avisoPuenteJs(d.config, d.fijos[cuando], es);
+      contar(`${real === esperado ? 'OK   ' : 'FALLO'} ficha, ${cuando}: «${real}»${real === esperado ? '' : `\n        esperado: «${esperado}»`}`);
+    }
+    const sinAviso = d.casos.find((c) => !c.php);
+    contar(`${sinAviso && avisoPuenteJs(d.config, sinAviso.ts, es) === null ? 'OK   ' : 'FALLO'} sin puente en los próximos 10 días, el aviso queda oculto (${sinAviso ? sinAviso.cuando : 'sin caso'})`);
+  }
 }
 
 // La app INDUNOVA Control copia dip_mrw_nombres() y dip_mrw_mismo_sitio() tal cual (03/10/2026): si cambian, hay que avisar.

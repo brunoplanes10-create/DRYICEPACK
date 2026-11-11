@@ -49,6 +49,13 @@ return array(
 	'recogida'  => 'Or collect it in Mataró, Monday to Saturday: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}, VAT included. On Saturday, +{sabado_recogida}.{sabado_libre} Cash only, exact amount.',
 	'recoge_ahorro' => 'Or collect it in Mataró: %1$s in cash, you save %2$s. Monday to Saturday; on Saturday, +{sabado_recogida}. Exact amount only.',
 	'corte'     => array( 'antes' => 'To get it on %s, order before 12:00 (Spanish time).', 'quedan' => 'Time left: %s.', 'despues' => '' ),
+	'puente'    => array(
+		'marca'   => 'Public holiday',
+		'dias'    => array( 'on %s', 'on %1$s and %2$s', 'from %1$s to %2$s' ),
+		'antes'   => 'No deliveries %1$s. To get it before, order on %2$s before 12:00 (Spanish time) and it arrives on %3$s. Collection in Mataró stays open.',
+		'hoy'     => 'No deliveries %1$s. To get it before, order today before 12:00 (Spanish time) and it arrives on %3$s. Collection in Mataró stays open.',
+		'despues' => 'No deliveries %1$s. The next delivery is on %3$s. Collection in Mataró stays open.',
+	),
 	'max'       => 'Up to 250 kg per order. Need more? Message us and we’ll give you a price and a day.',
 	'medida'    => 'Over 150 kg outside the province of Barcelona: that delivery is arranged individually. Message us on',
 	'confianza' => array( 'Card, Apple Pay or Google Pay', 'Invoices for businesses', 'No account needed' ),

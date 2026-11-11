@@ -51,6 +51,15 @@ return array(
 	'recoge_ahorro' => 'O recógelo en Mataró: %1$s en efectivo, te ahorras %2$s. De lunes a sábado; el sábado, +{sabado_recogida}. Con el importe exacto.',
 	// Junto al botón (movimiento.js, data-corte): solo antes del corte de las 12:00 (estrategia/VENTAS-PSICOLOGIA.md, 2.1)
 	'corte'     => array( 'antes' => 'Para recibirlo el %s, pide antes de las 12:00.', 'quedan' => 'Quedan %s.', 'despues' => '' ),
+	// Aviso de puente (movimiento.js, data-puente): solo si en los próximos 10 días hay días sin reparto por festivo (VENTAS-PSICOLOGIA, 2.2).
+	// %1$s los días, %2$s el día de pedirlo, %3$s el día que llega (o la siguiente entrega)
+	'puente'    => array(
+		'marca'   => 'Festivo',
+		'dias'    => array( 'el %s', 'el %1$s y el %2$s', 'del %1$s al %2$s' ),
+		'antes'   => '%1$s no hay reparto. Para tenerlo antes, pide el %2$s antes de las 12:00 y llega el %3$s. La recogida en Mataró sí abre.',
+		'hoy'     => '%1$s no hay reparto. Para tenerlo antes, pide hoy antes de las 12:00 y llega el %3$s. La recogida en Mataró sí abre.',
+		'despues' => '%1$s no hay reparto. La siguiente entrega es el %3$s. La recogida en Mataró sí abre.',
+	),
 	'max'       => 'Hasta 250 kg por pedido. ¿Necesitas más? Escríbenos y te damos precio y día.',
 	'medida'    => 'Más de 150 kg fuera de la provincia de Barcelona: ese envío se prepara a medida. Escríbenos por',
 	'confianza' => array( 'Tarjeta, Apple Pay o Google Pay', 'Factura para empresas', 'Sin crear cuenta' ),

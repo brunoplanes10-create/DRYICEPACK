@@ -49,6 +49,13 @@ return array(
 	'recogida'  => 'O recull-lo a Mataró, de dilluns a dissabte: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}, IVA inclòs. El dissabte, +{sabado_recogida}.{sabado_libre} En efectiu i amb l\'import exacte.',
 	'recoge_ahorro' => 'O recull-lo a Mataró: %1$s en efectiu, t\'estalvies %2$s. De dilluns a dissabte; el dissabte, +{sabado_recogida}. Amb l\'import exacte.',
 	'corte'     => array( 'antes' => 'Per rebre\'l el %s, demana abans de les 12:00.', 'quedan' => 'Queden %s.', 'despues' => '' ),
+	'puente'    => array(
+		'marca'   => 'Festiu',
+		'dias'    => array( 'el %s', 'el %1$s i el %2$s', 'del %1$s al %2$s' ),
+		'antes'   => '%1$s no hi ha repartiment. Per tenir-lo abans, demana\'l el %2$s abans de les 12:00 i arriba el %3$s. La recollida a Mataró sí que obre.',
+		'hoy'     => '%1$s no hi ha repartiment. Per tenir-lo abans, demana\'l avui abans de les 12:00 i arriba el %3$s. La recollida a Mataró sí que obre.',
+		'despues' => '%1$s no hi ha repartiment. La propera entrega és el %3$s. La recollida a Mataró sí que obre.',
+	),
 	'max'       => 'Fins a 250 kg per comanda. En necessites més? Escriu-nos i et donem preu i dia.',
 	'medida'    => 'Més de 150 kg fora de la província de Barcelona: aquest enviament es prepara a mida. Escriu-nos per',
 	'confianza' => array( 'Targeta, Apple Pay o Google Pay', 'Factura per a empreses', 'Sense crear cap compte' ),

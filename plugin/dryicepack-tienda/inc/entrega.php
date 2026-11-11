@@ -120,6 +120,23 @@ function dip_nota_festivos_destino( array $saltadas, $destino, $idioma = null ) 
 	return sprintf( count( $saltadas ) > 1 ? $t['mrw_festivos'] : $t['mrw_festivo'], $lista, $lugar );
 }
 
+/**
+ * Aviso de puente debajo de los días (estrategia/VENTAS-PSICOLOGIA.md, 2.2), sin la etiqueta «Festivo»: «El martes 8 y el
+ * miércoles 9 de diciembre no hay reparto.» Si el destino es de la provincia de Barcelona (o aún no se sabe), también que la
+ * recogida en Mataró sí abre (de lunes a sábado, también festivos). '' si no hay puente en los próximos 10 días.
+ */
+function dip_texto_puente( $destino = null, $idioma = null, ?DateTimeImmutable $ahora = null ) {
+	$puente = dip_puente_proximo( $ahora );
+	if ( ! $puente ) return '';
+	$idioma = $idioma ?: dip_idioma();
+	$t      = dip_textos_tienda( $idioma );
+	$texto  = sprintf( $t['puente'], dip_texto_dias( $puente['dias'], $idioma ) );
+	$texto  = mb_strtoupper( mb_substr( $texto, 0, 1 ) ) . mb_substr( $texto, 1 );
+	$cp     = preg_replace( '/\D/', '', (string) ( is_array( $destino ) ? ( $destino['cp'] ?? '' ) : '' ) );
+	if ( '' === $cp || '08' === substr( $cp, 0, 2 ) ) $texto .= ' ' . $t['puente_recogida'];
+	return $texto;
+}
+
 /* ---------- Guardar en la sesión lo que el cliente va eligiendo ---------- */
 add_action( 'woocommerce_checkout_update_order_review', static function ( $post_data ) {
 	parse_str( (string) $post_data, $datos );
@@ -347,7 +364,11 @@ function dip_html_entrega() {
 		if ( $nota_mrw ) echo ' ' . esc_html( $nota_mrw );
 		if ( $sin_sabado ) echo ' ' . esc_html( sprintf( $t['sabado_max'], (int) DIP_SABADO_MAX_KG ) );
 	}
-	echo '</p></fieldset>';
+	echo '</p>';
+	// Puente en los próximos 10 días: aviso propio, que no se pierda dentro de la nota
+	$puente = 'envio' === $metodo ? dip_texto_puente( $destino, $idioma ) : '';
+	if ( $puente ) printf( '<p class="dip-aviso dip-aviso--puente"><strong class="dip-aviso__marca">%1$s</strong> %2$s</p>', esc_html( $t['puente_marca'] ), esc_html( $puente ) );
+	echo '</fieldset>';
 	if ( 'envio' === $metodo && $fecha ) echo dip_html_horas( $fecha, $destino, $psab ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escapado en la función
 	echo '</div>';
 	return ob_get_clean();

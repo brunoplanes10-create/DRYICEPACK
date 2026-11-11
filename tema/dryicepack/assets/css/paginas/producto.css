@@ -151,6 +151,10 @@
 .p-corte { margin: .6rem 0 0; font-size: .88rem; color: var(--c-tinta); }
 .p-corte[hidden] { display: none; }
 .p-corte [data-corte-quedan] { font-weight: 600; color: var(--c-marino); }
+/* Aviso de puente (movimiento.js): días sin reparto por festivo en los próximos 10 días y la fecha real para tenerlo antes */
+.p-puente { margin: .7rem 0 0; padding: .6rem .8rem; border-left: 3px solid var(--c-senal); border-radius: 0 var(--radio) var(--radio) 0; background: var(--c-senal-fondo); color: var(--c-senal-texto); font-size: .88rem; line-height: 1.45; }
+.p-puente[hidden] { display: none; }
+.p-puente__marca { margin-right: .35rem; font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 .p-confianza { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; list-style: none; margin: 0; padding: 0; color: var(--c-acero); font-size: .85rem; font-weight: 500; }
 .p-confianza li { display: flex; align-items: center; gap: .35rem; }
 .p-confianza .ico { width: 16px; height: 16px; color: var(--c-marino); }

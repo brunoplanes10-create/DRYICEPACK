@@ -558,6 +558,72 @@ function dip_primera_entrega( ?DateTimeImmutable $ahora = null, $destino = null 
 }
 
 /**
+ * Próximo puente (estrategia/VENTAS-PSICOLOGIA.md, 2.2): días de martes a viernes sin reparto porque son festivo o porque
+ * la víspera no sale nada (festivo o cierre de MRW Mataró), si el primero cae en los próximos $vista días. Sirve para avisar
+ * con tiempo y con fechas reales. Sin destino: los festivos de MRW en el destino ya los avisa el checkout para ese código
+ * postal (dip_nota_festivos_destino). El sábado no cuenta: es opcional y según zona. La misma regla está en el JavaScript
+ * del tema (movimiento.js, dipEntrega.puente), que pinta el aviso en la ficha.
+ *
+ * @return array{dias: string[], antes: ?array, siguiente: ?array}|null 'antes': la última entrega entre semana que aún se
+ *         puede pedir antes del puente; 'siguiente': la primera después (entradas de dip_calendario_entrega()).
+ */
+function dip_puente_proximo( ?DateTimeImmutable $ahora = null, $vista = 10 ) {
+	$ahora = ( $ahora ?: new DateTimeImmutable( 'now' ) )->setTimezone( dip_zona_horaria() );
+	$hoy   = $ahora->setTime( 0, 0 );
+	$sin   = static function ( DateTimeImmutable $d ) {
+		$n = (int) $d->format( 'N' );
+		return $n >= 2 && $n <= 5 && ( dip_es_festivo( $d ) || ! dip_es_dia_de_salida( $d->modify( '-1 day' ) ) );
+	};
+	$dias = array();
+	for ( $i = 1; $i <= (int) $vista && ! $dias; $i++ ) {
+		$d = $hoy->modify( '+' . $i . ' day' );
+		if ( $sin( $d ) ) $dias[] = $d;
+	}
+	if ( ! $dias ) return null;
+	// Sigue mientras el siguiente día de reparto (de martes a viernes) tampoco tiene entrega
+	for ( $d = $dias[0]->modify( '+1 day' ), $j = 0; $j < 30; $d = $d->modify( '+1 day' ), $j++ ) {
+		$n = (int) $d->format( 'N' );
+		if ( $n < 2 || $n > 5 ) continue;
+		if ( ! $sin( $d ) ) break;
+		$dias[] = $d;
+	}
+	$dias    = array_map( static fn( $d ) => $d->format( 'Y-m-d' ), $dias );
+	$ultimo  = $dias[ count( $dias ) - 1 ];
+	$antes   = null;
+	$despues = null;
+	foreach ( dip_calendario_entrega( 'envio', $ahora )['fechas'] as $f ) {
+		if ( $f['sabado'] ) continue;
+		if ( $f['fecha'] < $dias[0] ) {
+			$antes = $f;
+		} elseif ( $f['fecha'] > $ultimo ) {
+			$despues = $f;
+			break;
+		}
+	}
+	return array( 'dias' => $dias, 'antes' => $antes, 'siguiente' => $despues );
+}
+
+/**
+ * Días seguidos como se dicen: «el martes 8 y el miércoles 9 de diciembre», «del viernes 25 al martes 29 de diciembre».
+ * El mes solo al final si es el mismo. Textos dias_1, dias_2 y dias_n de dip_textos_tienda().
+ */
+function dip_texto_dias( array $dias, $idioma = 'es' ) {
+	$dias = array_values( array_map( 'strval', $dias ) );
+	if ( ! $dias ) return '';
+	$n     = dip_nombres_fecha( $idioma );
+	$texto = static function ( $ymd, $mes ) use ( $n ) {
+		$d = DateTimeImmutable::createFromFormat( '!Y-m-d', $ymd, dip_zona_horaria() );
+		if ( ! $d ) return $ymd;
+		return $n['dias'][ (int) $d->format( 'N' ) - 1 ] . ' ' . $d->format( 'j' ) . ( $mes ? ' ' . $n['mde'][ (int) $d->format( 'n' ) - 1 ] : '' );
+	};
+	$t      = dip_textos_tienda( $idioma );
+	$ultimo = $dias[ count( $dias ) - 1 ];
+	if ( 1 === count( $dias ) ) return sprintf( $t['dias_1'], $texto( $ultimo, true ) );
+	$primero = $texto( $dias[0], substr( $dias[0], 0, 7 ) !== substr( $ultimo, 0, 7 ) );
+	return sprintf( 2 === count( $dias ) ? $t['dias_2'] : $t['dias_n'], $primero, $texto( $ultimo, true ) );
+}
+
+/**
  * Nombres de días y meses (es, ca, en), empezando por el lunes y por enero (índice 0). Los usan las fechas
  * de PHP y el calendario del checkout (JavaScript), para que digan lo mismo.
  * 'mde' = el mes como va detrás del número: "de octubre", "d'octubre", "October".

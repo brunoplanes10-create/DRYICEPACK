@@ -79,6 +79,9 @@
 @media (prefers-reduced-motion: reduce) { .dip-cal--entra { animation: none; } .dip-fecha:hover, .dip-otra-fecha:hover { transform: none; } }
 .quieto .dip-cal--entra { animation: none; }
 .dip-fechas__nota, .dip-nota-recogida, .dip-perecedero { font-size: .85rem; color: var(--c-acero, #56677A); margin: .7rem 0 0; }
+/* Aviso de puente bajo los días (dip_texto_puente): la etiqueta «Festivo» en mono, como en la ficha */
+.dip-aviso--puente { margin: .8rem 0 0; }
+.dip-aviso__marca { margin-right: .35rem; font-family: var(--f-mono, ui-monospace, monospace); font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 .dip-aviso { padding: .8rem 1rem; border-left: 3px solid var(--c-senal, #C27A12); background: #FFF6E8; color: #5A4526; border-radius: 0 var(--radio, 4px) var(--radio, 4px) 0; font-size: .9rem; }
 .dip-aviso[hidden] { display: none; }
 

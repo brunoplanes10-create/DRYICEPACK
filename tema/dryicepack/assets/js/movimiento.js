@@ -261,7 +261,57 @@
 		if (idioma === 'ca') { var m = f.getUTCMonth(); return dias[f.getUTCDay()] + ' ' + f.getUTCDate() + ([3, 7, 9].indexOf(m) !== -1 ? " d'" : ' de ') + meses[m]; }
 		return dias[f.getUTCDay()] + ' ' + f.getUTCDate() + ' de ' + meses[f.getUTCMonth()];
 	}
-	w.dipEntrega = { proxima: proximaEntrega, texto: fechaTexto, ahora: ahoraMadrid };
+	/* Próximo puente (estrategia/VENTAS-PSICOLOGIA.md, 2.2), misma regla que dip_puente_proximo() del plugin: días de martes
+	   a viernes sin reparto (festivo, o la víspera no sale nada) si el primero cae en los próximos `vista` días. El sábado no
+	   cuenta (es opcional, según zona). Devuelve { dias: [Date], antes: { entrega, sale, hoy } | null, siguiente: Date | null }:
+	   'antes' es la última entrega entre semana que aún se puede pedir antes del puente. */
+	function masDias(f, n) { var x = new Date(f.getTime()); x.setUTCDate(x.getUTCDate() + n); return x; }
+	function puenteProximo(vista) {
+		var a = ahoraMadrid(), hoy = new Date(Date.UTC(a.y, a.m - 1, a.d)), dias = [], i, f;
+		var entreSemana = function (x) { var n = x.getUTCDay(); return n >= 2 && n <= 5; };
+		var sinReparto = function (x) { return entreSemana(x) && (esFestivo(x) || !saleEseDia(masDias(x, -1))); };
+		for (i = 1; i <= (vista || 10) && !dias.length; i++) if (sinReparto(masDias(hoy, i))) dias.push(masDias(hoy, i));
+		if (!dias.length) return null;
+		for (f = masDias(dias[0], 1), i = 0; i < 30; f = masDias(f, 1), i++) {
+			if (!entreSemana(f)) continue;
+			if (!sinReparto(f)) break;
+			dias.push(f);
+		}
+		var primero = clave(dias[0]), ultimo = clave(dias[dias.length - 1]), antes = null, siguiente = null;
+		for (i = saleEseDia(hoy) && antesCorte(a) ? 0 : 1; i < 60; i++) {
+			var sale = masDias(hoy, i), llega = masDias(sale, 1);
+			if (!saleEseDia(sale) || llega.getUTCDay() === 6 || esFestivo(llega)) continue;
+			if (clave(llega) < primero) antes = { entrega: llega, sale: sale, hoy: i === 0 };
+			else if (clave(llega) > ultimo) { siguiente = llega; break; }
+		}
+		return { dias: dias, antes: antes, siguiente: siguiente };
+	}
+	w.dipEntrega = { proxima: proximaEntrega, texto: fechaTexto, ahora: ahoraMadrid, puente: puenteProximo };
+
+	/* Aviso de puente: [data-puente] con data-t-dias («el %s|el %1$s y el %2$s|del %1$s al %2$s»), data-t-antes, data-t-hoy y
+	   data-t-despues (%1$s los días, %2$s el día de pedirlo, %3$s el día que llega). Sin puente, oculto. */
+	function diaTexto(f, conMes) { return conMes ? fechaTexto(f) : (DIAS[idioma] || DIAS.es)[f.getUTCDay()] + ' ' + f.getUTCDate(); }
+	function pintarPuente() {
+		var p = puenteProximo(10);
+		d.querySelectorAll('[data-puente]').forEach(function (el) {
+			var dest = el.querySelector('[data-puente-texto]') || el, txt = '';
+			var llega = p ? (p.antes ? p.antes.entrega : p.siguiente) : null;
+			var t = p ? el.getAttribute(p.antes ? (p.antes.hoy ? 'data-t-hoy' : 'data-t-antes') : 'data-t-despues') : '';
+			if (llega && t) {
+				var l = (el.getAttribute('data-t-dias') || 'el %s|el %1$s y el %2$s|del %1$s al %2$s').split('|');
+				var n = p.dias.length, pr = p.dias[0], u = p.dias[n - 1];
+				var lista = n === 1 ? l[0].replace('%s', diaTexto(u, true))
+					: (n === 2 ? l[1] : l[2]).replace('%1$s', diaTexto(pr, pr.getUTCMonth() !== u.getUTCMonth())).replace('%2$s', diaTexto(u, true));
+				txt = t.replace('%1$s', lista)
+					.replace('%2$s', p.antes ? diaTexto(p.antes.sale, p.antes.sale.getUTCMonth() !== p.antes.entrega.getUTCMonth()) : '')
+					.replace('%3$s', fechaTexto(llega));
+				txt = txt.charAt(0).toUpperCase() + txt.slice(1);
+			}
+			dest.textContent = txt;
+			el.hidden = !txt;
+		});
+	}
+	if (d.querySelector('[data-puente]')) { pintarPuente(); setInterval(pintarPuente, 60000); }
 
 	/* Reloj del corte: [data-corte] con data-t-antes, data-t-quedan y data-t-despues (%s = fecha o tiempo).
 	   Con data-sin-reparto="Y-m-d,Y-m-d" la fecha es la de ese destino (salta los días en que MRW no reparte allí). */
