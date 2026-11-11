@@ -277,7 +277,8 @@ function dip_mp_situacion( WC_Order $p, $idioma, array $t ) {
 		return $r;
 	}
 
-	$salio    = $enviado || '' !== $numero;
+	// Un envío creado por la web (inc/mrw-sagec.php) tiene número desde las 8:00, pero no ha salido hasta que se avisa
+	$salio    = $enviado || ( '' !== $numero && ! ( function_exists( 'dip_sagec_pendiente_de_salir' ) && dip_sagec_pendiente_de_salir( $p ) ) );
 	$previsto = $dia ? sprintf( $t['previsto'], $dia, $limite ) : '';
 	if ( $fin ) {
 		$r['fase']    = 'entregado';
@@ -365,6 +366,7 @@ function dip_mp_html( WC_Order $p ) {
 	$recoge = dip_eh_es_recogida( $p );
 	$fecha  = dip_eh_fecha( $p );
 	$numero = (string) $p->get_meta( '_dip_mrw_envio' );
+	if ( function_exists( 'dip_sagec_pendiente_de_salir' ) && dip_sagec_pendiente_de_salir( $p ) ) $numero = ''; // aún en la nave: el número sale con el aviso
 	$c      = dip_contacto();
 	$creado = $p->get_date_created() ? wp_date( 'j/n/Y', $p->get_date_created()->getTimestamp(), dip_zona_horaria() ) : '';
 	$activo = ! in_array( $s['fase'], array( 'cancelado', 'reembolsado', 'sin_pagar' ), true );

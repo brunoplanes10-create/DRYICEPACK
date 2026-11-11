@@ -251,6 +251,9 @@ function dip_html_entrega() {
 	foreach ( $fechas as $f ) {
 		$corta = dip_fecha_corta( $f['fecha'], $idioma );
 		$extra = $f['sabado'] && ! in_array( $f['fecha'], $sin, true ) ? '+' . $sab : '';
+		// Día abierto por el enlace urgente (inc/urgente.php): su suplemento, sumado al del sábado si lo es
+		$urg   = 'envio' === $metodo && function_exists( 'dip_urgente_extra_fecha' ) ? dip_urgente_extra_fecha( $f['fecha'] ) : '';
+		if ( $urg ) $extra = $extra ? $extra . ' ' . $urg : $urg;
 		printf(
 			'<label class="dip-fecha%1$s"><input type="radio" name="dip_fecha" value="%2$s"%3$s><span class="dip-fecha__dia" aria-hidden="true">%4$s</span><span class="dip-fecha__num" aria-hidden="true">%5$s</span><span class="dip-fecha__mes" aria-hidden="true">%6$s</span>%7$s<span class="screen-reader-text">%8$s</span></label>',
 			( $extra ? ' dip-fecha--sabado' : '' ) . ( empty( $f['lejana'] ) ? '' : ' dip-fecha--lejana' ),
@@ -275,7 +278,8 @@ function dip_html_entrega() {
 	if ( 'recogida' === $metodo ) {
 		echo esc_html( $t['recogida_confirmar'] );
 	} else {
-		echo esc_html( $t['corte'] );
+		$nota_urgente = function_exists( 'dip_urgente_nota_cliente' ) ? dip_urgente_nota_cliente( $idioma ) : '';
+		echo esc_html( $nota_urgente ?: $t['corte'] );
 		if ( $hay_sabado ) echo ' ' . esc_html( $t['sabado_nota'] );
 		$nota_mrw = dip_nota_festivos_destino( $saltadas, $destino, $idioma );
 		if ( $nota_mrw ) echo ' ' . esc_html( $nota_mrw );

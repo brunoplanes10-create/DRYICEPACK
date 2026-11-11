@@ -248,9 +248,18 @@ function dip_es_dia_de_recogida( DateTimeInterface $dia ) {
 	return (int) $dia->format( 'N' ) <= 6;
 }
 
-function dip_antes_del_corte( ?DateTimeImmutable $ahora = null ) {
+/**
+ * Minuto del día del corte (12:00 = 720) para un método. Filtro dip_corte_minutos: el enlace urgente (inc/urgente.php)
+ * lo alarga hasta la hora límite para el envío, solo al cliente que tiene el enlace y solo ese día.
+ */
+function dip_corte_minutos( $metodo = 'envio', ?DateTimeImmutable $ahora = null ) {
+	$base = DIP_CUTOFF_HOUR * 60 + DIP_CUTOFF_MINUTE;
+	return function_exists( 'apply_filters' ) ? (int) apply_filters( 'dip_corte_minutos', $base, $metodo, $ahora ) : $base;
+}
+
+function dip_antes_del_corte( ?DateTimeImmutable $ahora = null, $metodo = 'envio' ) {
 	$ahora = ( $ahora ?: new DateTimeImmutable( 'now' ) )->setTimezone( dip_zona_horaria() ); // la hora de Madrid, venga en la zona que venga
-	return ( (int) $ahora->format( 'G' ) * 60 + (int) $ahora->format( 'i' ) ) < ( DIP_CUTOFF_HOUR * 60 + DIP_CUTOFF_MINUTE );
+	return ( (int) $ahora->format( 'G' ) * 60 + (int) $ahora->format( 'i' ) ) < dip_corte_minutos( $metodo, $ahora );
 }
 
 /**
@@ -275,7 +284,7 @@ function dip_calendario_entrega( $metodo = 'envio', ?DateTimeImmutable $ahora = 
 	$ahora   = ( $ahora ?: new DateTimeImmutable( 'now' ) )->setTimezone( dip_zona_horaria() );
 	$metodo  = 'recogida' === $metodo ? 'recogida' : 'envio';
 	$destino = 'envio' === $metodo ? dip_destino_normalizado( $destino ) : null;
-	$clave   = $metodo . '|' . $ahora->format( 'Y-m-d' ) . '|' . ( dip_antes_del_corte( $ahora ) ? '1' : '0' ) . '|' . ( $destino ? implode( '|', $destino ) : '' );
+	$clave   = $metodo . '|' . $ahora->format( 'Y-m-d' ) . '|' . ( dip_antes_del_corte( $ahora, $metodo ) ? '1' : '0' ) . '|' . ( $destino ? implode( '|', $destino ) : '' );
 	if ( ! isset( $memo[ $clave ] ) ) $memo[ $clave ] = dip_calcular_fechas( $metodo, $ahora, $destino );
 	return $memo[ $clave ];
 }
@@ -288,13 +297,13 @@ function dip_calcular_fechas( $metodo, DateTimeImmutable $ahora, $destino = null
 	$fechas   = array();
 	$saltadas = array();
 	if ( 'recogida' === $metodo ) {
-		if ( ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
+		if ( ! dip_antes_del_corte( $ahora, 'recogida' ) ) $dia = $dia->modify( '+1 day' );
 		for ( ; $dia->format( 'Y-m-d' ) <= $hasta; $dia = $dia->modify( '+1 day' ) ) {
 			if ( ! dip_es_dia_de_recogida( $dia ) ) continue;
 			$fechas[] = array( 'fecha' => $dia->format( 'Y-m-d' ), 'sabado' => 6 === (int) $dia->format( 'N' ), 'sale' => $dia->format( 'Y-m-d' ) );
 		}
 	} else {
-		if ( ! dip_es_dia_de_salida( $dia ) || ! dip_antes_del_corte( $ahora ) ) $dia = $dia->modify( '+1 day' );
+		if ( ! dip_es_dia_de_salida( $dia ) || ! dip_antes_del_corte( $ahora, 'envio' ) ) $dia = $dia->modify( '+1 day' );
 		for ( ; ; $dia = $dia->modify( '+1 day' ) ) {
 			$llega = $dia->modify( '+1 day' );
 			$ymd   = $llega->format( 'Y-m-d' );

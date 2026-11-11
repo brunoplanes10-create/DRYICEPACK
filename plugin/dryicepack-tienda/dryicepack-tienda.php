@@ -94,6 +94,8 @@ add_action( 'plugins_loaded', static function () {
 	require_once DIP_TIENDA_DIR . 'inc/seguimiento-entregas.php'; // revisión diaria: pedidos reservados con antelación que caen en un festivo de MRW
 	require_once DIP_TIENDA_DIR . 'inc/resenas.php';              // email «¿Qué tal llegó tu hielo seco?» el día después de la entrega (reseña en Google)
 	require_once DIP_TIENDA_DIR . 'inc/envios-hoy.php';           // «Envíos de hoy»: número de MRW, aviso «va de camino» y avisos internos de sábado y sin número
+	require_once DIP_TIENDA_DIR . 'inc/mrw-sagec.php';            // envíos en MRW con su servicio web: se crean el día de salida, número en el pedido y en AST, etiquetas
+	require_once DIP_TIENDA_DIR . 'inc/urgente.php';              // enlace de pedido urgente (comprar para mañana después de las 12:00) y «Adelantar a mañana»
 	require_once DIP_TIENDA_DIR . 'inc/mi-pedido.php';            // «Mi pedido»: estado del pedido sin cuenta, con enlace firmado (/mi-pedido/, /ca/la-meva-comanda/, /en/my-order/)
 	require_once DIP_TIENDA_DIR . 'inc/avisos-textos.php';        // textos de los emails al cliente (ES/CA/EN, tú y usted)
 	require_once DIP_TIENDA_DIR . 'inc/emails.php';               // diseño común de todos los emails (plantillas de WooCommerce sustituidas)

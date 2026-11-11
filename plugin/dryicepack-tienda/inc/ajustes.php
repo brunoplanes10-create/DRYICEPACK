@@ -36,6 +36,11 @@ function dip_ajustes_por_defecto() {
 		'aviso_hoy'            => 1,
 		'aviso_recogida'       => 1,
 		'aviso_incidencia'     => 1,
+		// inc/mrw-sagec.php e inc/urgente.php (11/11/2026): de lunes a viernes las cajas se llevan a MRW, cuya última
+		// furgoneta sale a las 18:30; para llegar, hasta las 17:30. El urgente cuesta lo mismo que el sábado.
+		'mrw_hora_limite'      => '17:30',
+		'mrw_hora_camino'      => '18:30',
+		'urgente_importe'      => 9.70,
 	);
 }
 
@@ -80,7 +85,17 @@ function dip_sanear_ajustes( $entrada ) {
 		'aviso_hoy'            => empty( $entrada['aviso_hoy'] ) ? 0 : 1,
 		'aviso_recogida'       => empty( $entrada['aviso_recogida'] ) ? 0 : 1,
 		'aviso_incidencia'     => empty( $entrada['aviso_incidencia'] ) ? 0 : 1,
+		'mrw_hora_limite'      => dip_sanear_hora( $entrada['mrw_hora_limite'] ?? '', '17:30' ),
+		'mrw_hora_camino'      => dip_sanear_hora( $entrada['mrw_hora_camino'] ?? '', '18:30' ),
+		'urgente_importe'      => round( max( 0, (float) str_replace( ',', '.', (string) ( $entrada['urgente_importe'] ?? 9.70 ) ) ), 2 ),
 	);
+}
+
+/** 'HH:MM' válida o la de serie. */
+function dip_sanear_hora( $hora, $defecto ) {
+	$hora = trim( (string) $hora );
+	if ( preg_match( '/^(\d{1,2}):(\d{2})$/', $hora, $m ) && (int) $m[1] < 24 && (int) $m[2] < 60 ) return sprintf( '%02d:%02d', $m[1], $m[2] );
+	return $defecto;
 }
 
 /** Fechas AAAA-MM-DD válidas, sin repetir y ordenadas, una por línea. $solo_sabados: descarta los demás días. */
@@ -205,6 +220,21 @@ function dip_pantalla_ajustes() {
 						<p class="description"><strong>El email «Pedido completado» de WooCommerce no se envía</strong> (aunque en WooCommerce → Ajustes → Emails salga activado): el cliente ya sabe cómo va su pedido con estos avisos. La factura simplificada y el email «¿Necesitas factura?» siguen saliendo al completar el pedido, porque no dependen de él.</p>
 						<?php if ( function_exists( 'dip_avisos_resumen_admin' ) ) : ?><p class="description"><strong><?php echo esc_html( dip_avisos_resumen_admin() ); ?></strong></p><?php endif; ?></td>
 				</tr>
+				<tr>
+					<th scope="row"><label for="dip-mrw-limite">Hora límite para MRW</label></th>
+					<td><input id="dip-mrw-limite" name="dip_ajustes[mrw_hora_limite]" type="time" style="width:8em" value="<?php echo esc_attr( $a['mrw_hora_limite'] ); ?>">
+						<p class="description">Hasta esta hora la web crea al momento los envíos que salen hoy y sirven los enlaces de pedido urgente. Después ya no se llega a la última furgoneta de MRW. De serie, 17:30.</p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="dip-mrw-camino">Hora de entrega a MRW</label></th>
+					<td><input id="dip-mrw-camino" name="dip_ajustes[mrw_hora_camino]" type="time" style="width:8em" value="<?php echo esc_attr( $a['mrw_hora_camino'] ); ?>">
+						<p class="description">A esta hora MRW ya tiene las cajas: los clientes de los envíos creados por la web reciben el aviso «va de camino». Si las llevas antes, en «Envíos de hoy» está «Ya están en MRW: avisar». De serie, 18:30.</p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="dip-urgente">Suplemento de pedido urgente</label></th>
+					<td><input id="dip-urgente" name="dip_ajustes[urgente_importe]" type="number" min="0" step="0.01" class="small-text" value="<?php echo esc_attr( number_format( (float) $a['urgente_importe'], 2, '.', '' ) ); ?>"> € sin IVA
+						<p class="description">Lo paga quien compra para mañana después de las 12:00 con el enlace urgente que le mandas desde «Envíos de hoy». De serie, como el sábado: 9,70 € + IVA (<?php echo esc_html( dip_euros( round( 9.70 * dip_factor_iva(), 2 ) ) ); ?>). En cada enlace lo puedes cambiar o poner a 0.</p></td>
+				</tr>
 			</table>
 			<?php submit_button( 'Guardar ajustes' ); ?>
 		</form>
@@ -220,6 +250,7 @@ function dip_pantalla_ajustes() {
 		</form>
 		<?php endif; ?>
 		<?php if ( function_exists( 'dip_mrw_html_estado' ) ) dip_mrw_html_estado(); ?>
+		<?php if ( function_exists( 'dip_sagec_html_ajustes' ) ) dip_sagec_html_ajustes(); ?>
 	</div>
 	<?php
 }

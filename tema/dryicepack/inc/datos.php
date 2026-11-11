@@ -170,7 +170,10 @@ function dipt_config_js() {
 		'recogida'    => dipt_precios_recogida(),
 		'recogidaSabado' => defined( 'DIP_RECOGIDA_SABADO_CON_IVA' ) ? (float) DIP_RECOGIDA_SABADO_CON_IVA : 10.0,
 		'pk'          => dipt_pk(),
-		'corte'       => array( 'hora' => defined( 'DIP_CUTOFF_HOUR' ) ? DIP_CUTOFF_HOUR : 12, 'minuto' => defined( 'DIP_CUTOFF_MINUTE' ) ? DIP_CUTOFF_MINUTE : 0 ),
+		// Con el enlace de pedido urgente del plugin (página sin caché), el corte es su hora límite: «llega mañana» cuadra con el checkout
+		'corte'       => function_exists( 'dip_corte_minutos' )
+			? array( 'hora' => intdiv( dip_corte_minutos( 'envio' ), 60 ), 'minuto' => dip_corte_minutos( 'envio' ) % 60 )
+			: array( 'hora' => defined( 'DIP_CUTOFF_HOUR' ) ? DIP_CUTOFF_HOUR : 12, 'minuto' => defined( 'DIP_CUTOFF_MINUTE' ) ? DIP_CUTOFF_MINUTE : 0 ),
 		'entrega'     => dipt_primera_entrega(),
 		// Lista manual (ni sale ni se entrega) y cierres de MRW Mataró (solo no sale): misma regla que el checkout
 		'festivos'    => $dias['festivos'],

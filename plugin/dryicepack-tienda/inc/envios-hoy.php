@@ -5,6 +5,9 @@
  * Por qué: un sábado falló una entrega porque la caja llevaba la cinta de urgente 14:00 de lunes y no la de sábado
  * antes de las 12:00. MRW no lo sabía y nadie avisó al cliente hasta que llamó. El número de MRW solo estaba en la
  * etiqueta: no hay acceso a los servicios web de MRW, solo a su web de clientes.
+ * Desde el 11/11/2026 la web crea los envíos con el servicio web de MRW (inc/mrw-sagec.php, con sus botones y su estado
+ * en esta pantalla) y el enlace de pedido urgente (inc/urgente.php) también vive aquí. Apuntar el número a mano sigue
+ * siendo la alternativa para los «Hacer a mano» y mientras MRW no esté conectado.
  *
  * 1. Pantalla «Envíos de hoy» (Dryicepack → Envíos de hoy, manage_woocommerce), pensada para el móvil en la nave:
  *    pedidos con envío, Procesando o En espera, cuyo día de salida es ayer, hoy o mañana. El día de salida es el
@@ -194,16 +197,23 @@ function dip_eh_guardar_numero( WC_Order $pedido, $numero, $avisar = true, $dond
 	if ( $nuevo === $antes ) return array( 'cambio' => 'igual', 'aviso' => 'no', 'error' => '' );
 
 	if ( '' === $nuevo ) {
-		$pedido->delete_meta_data( '_dip_mrw_envio' );
-		$pedido->delete_meta_data( '_dip_enviado' );
+		$web = '' !== (string) $pedido->get_meta( '_dip_sagec_creado' );
+		foreach ( array( '_dip_mrw_envio', '_dip_enviado', '_dip_sagec_creado', '_dip_sagec_huella', '_dip_sagec_revisar' ) as $k ) $pedido->delete_meta_data( $k );
 		$pedido->save_meta_data();
-		$pedido->add_order_note( sprintf( 'Número de MRW borrado (%s%s): era %s. El cliente no recibe ningún aviso.', $donde, $quien, $antes ) );
+		if ( function_exists( 'dip_ast_quitar' ) ) dip_ast_quitar( $pedido, $antes );
+		$pedido->add_order_note( sprintf( 'Número de MRW borrado (%s%s): era %s. El cliente no recibe ningún aviso.%s', $donde, $quien, $antes, $web ? ' Lo había creado la web en MRW: si no va a salir, anúlalo también en la web de clientes de MRW.' : '' ) );
 		return array( 'cambio' => 'borrado', 'aviso' => 'no', 'error' => '' );
 	}
 
 	$pedido->update_meta_data( '_dip_mrw_envio', $nuevo );
 	if ( '' === (string) $pedido->get_meta( '_dip_enviado' ) ) $pedido->update_meta_data( '_dip_enviado', dip_eh_ahora()->format( 'Y-m-d H:i:s' ) );
+	$pedido->delete_meta_data( '_dip_sagec_mano' ); // ya está hecho a mano
 	$pedido->save_meta_data();
+	// También en Advanced Shipment Tracking: de ahí lee el número la app INDUNOVA Control (inc/mrw-sagec.php)
+	if ( function_exists( 'dip_ast_poner' ) ) {
+		if ( $antes ) dip_ast_quitar( $pedido, $antes );
+		dip_ast_poner( $pedido, $nuevo );
+	}
 
 	$aviso = 'no';
 	$error = '';
@@ -314,6 +324,10 @@ function dip_eh_pantalla() {
 			echo '</div>';
 		}
 		foreach ( dip_eh_problemas() as $problema ) echo '<div class="notice notice-error"><p>' . esc_html( $problema ) . '</p></div>';
+		if ( function_exists( 'dip_sagec_problemas' ) ) {
+			foreach ( dip_sagec_problemas() as $problema ) echo '<div class="notice notice-error"><p>' . esc_html( $problema ) . '</p></div>';
+		}
+		$volver = '' === $clave ? dip_eh_url( '', $s ) : dip_eh_url( $clave );
 		?>
 		<p class="dip-eh__resumen">
 			<?php
@@ -335,6 +349,7 @@ function dip_eh_pantalla() {
 			}
 			?>
 		</p>
+		<?php if ( $pedidos && 'hoy' === $clave && function_exists( 'dip_sagec_html_botones' ) ) dip_sagec_html_botones( $pedidos, $volver ); ?>
 		<?php if ( $pedidos && $sabado ) : ?>
 			<p class="dip-eh__sabado"><strong>Sábado antes de las 12:00:</strong> cinta y servicio de sábado de MRW · comprobar con MRW que el CP tiene reparto en sábado. Si no lo tiene, llama hoy al cliente: reembolso completo o recogerlo en Mataró.</p>
 		<?php endif; ?>
@@ -345,18 +360,20 @@ function dip_eh_pantalla() {
 				<?php if ( '' === $clave ) : ?><input type="hidden" name="fecha" value="<?php echo esc_attr( $s ); ?>"><?php endif; ?>
 				<?php wp_nonce_field( 'dip_envios_hoy' ); ?>
 				<ol class="dip-eh__lista">
-					<?php foreach ( $pedidos as $p ) : dip_eh_html_pedido( $p ); endforeach; ?>
+					<?php foreach ( $pedidos as $p ) : dip_eh_html_pedido( $p, $volver ); endforeach; ?>
 				</ol>
-				<p class="dip-eh__ayuda">El número de MRW está en la etiqueta de cada caja y en la web de clientes de MRW. Al guardar, cada cliente con un número nuevo o cambiado recibe el aviso «va de camino» con su enlace de seguimiento.</p>
+				<p class="dip-eh__ayuda"><?php echo esc_html( function_exists( 'dip_sagec_modo' ) && 'real' === dip_sagec_modo() ? 'Los envíos que crea la web ya tienen su número. Apunta aquí solo los que hayas hecho a mano en la web de clientes de MRW: al guardar, cada cliente con un número nuevo o cambiado recibe el aviso «va de camino» con su enlace de seguimiento.' : 'El número de MRW está en la etiqueta de cada caja y en la web de clientes de MRW. Al guardar, cada cliente con un número nuevo o cambiado recibe el aviso «va de camino» con su enlace de seguimiento.' ); ?></p>
 				<p class="dip-eh__enviar"><button type="submit" class="button button-primary button-hero">Guardar y avisar a los clientes</button></p>
 			</form>
+			<?php if ( function_exists( 'dip_sagec_html_forms' ) ) dip_sagec_html_forms( $volver ); ?>
 		<?php endif; ?>
+		<?php if ( 'hoy' === $clave && function_exists( 'dip_urgente_html_panel' ) ) dip_urgente_html_panel(); ?>
 		<?php dip_eh_html_estado(); ?>
 	</div>
 	<?php
 }
 
-function dip_eh_html_pedido( WC_Order $p ) {
+function dip_eh_html_pedido( WC_Order $p, $volver = '' ) {
 	$id     = (int) $p->get_id();
 	$fecha  = dip_eh_fecha( $p );
 	$sabado = dip_eh_es_sabado( $fecha );
@@ -369,7 +386,8 @@ function dip_eh_html_pedido( WC_Order $p ) {
 		<?php if ( $sabado ) : ?>
 			<p class="dip-eh-p__sabado"><strong>Sábado antes de las 12:00:</strong> cinta y servicio de sábado de MRW · comprobar con MRW que el CP tiene reparto en sábado.<?php if ( $tel ) : ?> <a href="<?php echo esc_attr( 'tel:' . $tel ); ?>">Llamar al cliente</a><?php endif; ?></p>
 		<?php endif; ?>
-		<p class="dip-eh-p__datos"><span><?php echo esc_html( dip_eh_texto_kg( $p ) ); ?></span><span><?php echo esc_html( dip_eh_lugar( $p ) ?: '—' ); ?></span><span><?php echo esc_html( 'Entrega: ' . ( $fecha ? dip_fecha_larga( $fecha ) . ', antes de las ' . dip_hora_limite_entrega( $fecha ) : 'sin día' ) ); ?></span></p>
+		<p class="dip-eh-p__datos"><span><?php echo esc_html( dip_eh_texto_kg( $p ) ); ?></span><span><?php echo esc_html( dip_eh_lugar( $p ) ?: '—' ); ?></span><span><?php echo esc_html( 'Entrega: ' . ( $fecha ? dip_fecha_larga( $fecha ) . ', antes de las ' . dip_hora_limite_entrega( $fecha ) : 'sin día' ) ); ?></span><?php if ( '' !== (string) $p->get_meta( '_dip_urgente' ) ) : ?><span class="dip-eh-p__urgente">Urgente</span><?php endif; ?></p>
+		<?php if ( function_exists( 'dip_sagec_html_pedido' ) && dip_eh_salida_de( $fecha ) === dip_eh_ahora()->format( 'Y-m-d' ) ) dip_sagec_html_pedido( $p, $volver ); ?>
 		<label class="dip-eh-p__etiqueta" for="dip-mrw-<?php echo (int) $id; ?>">Número de MRW</label>
 		<input class="dip-eh-p__campo" id="dip-mrw-<?php echo (int) $id; ?>" name="dip_mrw[<?php echo (int) $id; ?>]" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="35" value="<?php echo esc_attr( $numero ); ?>">
 		<?php if ( $numero ) : ?>
@@ -605,7 +623,9 @@ function dip_eh_email_sabado( $salida, $sabado, array $pedidos ) {
 		. ' (si lo recoge el mismo sábado, del suplemento de sábado nos quedamos ' . dip_euros( DIP_RECOGIDA_SABADO_CON_IVA ) . " y le devolvemos la diferencia).\n\n"
 		. "PEDIDOS\n";
 	foreach ( $pedidos as $p ) $texto .= dip_eh_linea_email( $p );
-	$texto .= "\nCuando salgan, apunta el número de MRW de cada caja en «Envíos de hoy» y pulsa «Guardar y avisar a los clientes»: " . dip_eh_url( '', $salida ) . "\n";
+	$texto .= function_exists( 'dip_sagec_modo' ) && 'real' === dip_sagec_modo()
+		? "\nLa web crea estos envíos en MRW con «entrega en sábado»: comprueba que la etiqueta de cada caja lo dice. Los que queden «Hacer a mano» están en «Envíos de hoy»: " . dip_eh_url( '', $salida ) . "\n"
+		: "\nCuando salgan, apunta el número de MRW de cada caja en «Envíos de hoy» y pulsa «Guardar y avisar a los clientes»: " . dip_eh_url( '', $salida ) . "\n";
 	return array( 'asunto' => $asunto, 'texto' => $texto, 'pedidos' => array_map( static fn( $p ) => $p->get_order_number(), $pedidos ) );
 }
 

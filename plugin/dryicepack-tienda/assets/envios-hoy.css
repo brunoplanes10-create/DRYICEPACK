@@ -29,6 +29,32 @@
 .dip-eh__titulo-estado { margin-top: 32px; }
 .dip-eh__estado { margin: 8px 0; padding-left: 18px; list-style: disc; max-width: 60em; }
 .dip-eh__resultado p { font-size: 14px; }
+/* MRW (inc/mrw-sagec.php): modo, botones del día y estado de cada pedido */
+.dip-eh__mrw { margin: 12px 0; padding: 12px 14px; border: 1px solid var(--eh-linea); border-radius: 4px; background: #fff; }
+.dip-eh__mrw-modo { margin: 0 0 10px; font-size: 14px; max-width: 60em; }
+.dip-eh__mrw-form { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.dip-eh__mrw-form .button { min-height: 40px; line-height: 38px; }
+.dip-eh-p__mrw { margin: 0 0 12px; padding: 8px 10px; border-left: 4px solid var(--eh-linea); background: #F6F8FA; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.dip-eh-p__mrw--bien { border-left-color: #1E5E3A; background: #F2F7F4; color: #17462C; }
+.dip-eh-p__mrw--mal { border-left-color: #B32D2E; background: #FCF0F1; color: #6B1516; }
+.dip-eh-p__mrw--info { border-left-color: var(--eh-marino); }
+.dip-eh-p__mrw .button-small { margin-left: 4px; vertical-align: baseline; }
+.dip-eh-p__urgente { padding: 0 6px; border: 1px solid var(--eh-senal); border-radius: 3px; color: var(--eh-senal); font-weight: 600; }
+/* Pedido urgente para mañana (inc/urgente.php) */
+.dip-eh-urg { margin: 28px 0 0; padding: 14px; border: 1px solid var(--eh-linea); border-radius: 4px; background: #fff; max-width: 60em; }
+.dip-eh-urg h2 { margin-top: 0; }
+.dip-eh-urg__form label { display: block; margin-bottom: 4px; font-weight: 600; }
+.dip-eh-urg__form input[type="text"] { width: 100%; max-width: 24em; min-height: 40px; }
+.dip-eh-urg__form input[type="number"] { min-height: 40px; width: 7em; }
+.dip-eh-urg__lista { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
+.dip-eh-urg__enlace { margin: 0; padding: 10px 12px; border: 1px solid var(--eh-linea); border-radius: 4px; }
+.dip-eh-urg__enlace p { margin: 0 0 6px; }
+.dip-eh-urg__enlace--activo { border-color: var(--eh-senal); border-width: 2px; }
+.dip-eh-urg__enlace--caducado, .dip-eh-urg__enlace--anulado { color: var(--eh-acero); }
+.dip-eh-urg__enlace summary { cursor: pointer; font-weight: 600; min-height: 32px; line-height: 32px; }
+.dip-eh-urg__url { font-size: 13px; }
+.dip-eh-urg__botones { display: flex; flex-wrap: wrap; gap: 8px; }
+.dip-eh-urg__botones .button { min-height: 40px; line-height: 38px; }
 @media (min-width: 783px) {
 	.dip-eh-p { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 4px 20px; align-items: start; }
 	.dip-eh-p > :not(.dip-eh-p__etiqueta):not(.dip-eh-p__campo):not(.dip-eh-p__estado) { grid-column: 1; }
