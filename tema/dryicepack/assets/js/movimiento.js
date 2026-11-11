@@ -280,14 +280,17 @@
 				if (quedan) {
 					var min = (CFG.corte ? CFG.corte.hora : 12) * 60 - (a.h * 60 + a.mi);
 					var hh = Math.floor(min / 60), mm = min % 60;
-					quedan.textContent = (el.getAttribute('data-t-quedan') || '%s').replace('%s', (hh ? hh + ' h ' : '') + mm + ' min');
+					quedan.textContent = (el.getAttribute('data-t-quedan') || '%s').replace('%s', [hh ? hh + ' h' : '', mm || !hh ? mm + ' min' : ''].filter(Boolean).join(' ')); // «2 h», «1 h 15 min», «40 min»
 					quedan.hidden = false;
 				}
 			} else {
-				dest.textContent = (el.getAttribute('data-t-despues') || '%s').replace('%s', fecha);
+				var tDespues = el.getAttribute('data-t-despues'); // vacío = no decir nada después del corte (ficha del producto)
+				dest.textContent = (null === tDespues ? '%s' : tDespues).replace('%s', fecha);
 				if (quedan) quedan.hidden = true;
 			}
 			el.classList.add('corte-listo');
+			// Ficha del producto: la línea solo se ve mientras hay algo que decir (antes del corte de las 12:00)
+			if (el.hasAttribute('data-ocultar-sin-texto')) el.hidden = !dest.textContent.trim();
 		});
 	}
 	if (d.querySelector('[data-corte]')) { pintarCorte(); setInterval(pintarCorte, 30000); }

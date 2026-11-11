@@ -92,6 +92,13 @@
 			raiz.querySelector('[data-precio-pack]').textContent = euros(pack);
 			raiz.querySelector('[data-precio-envio]').textContent = euros(env);
 			document.querySelectorAll('[data-precio-total]').forEach(function (el) { el.textContent = euros(pack + env); });
+			// Recogida en Mataró con este pack: su precio redondo y lo que se ahorra frente al envío (VENTAS-PSICOLOGIA.md, 5.2)
+			var recoge = raiz.querySelector('[data-recoge]');
+			var recUd = CFG.recogida && CFG.recogida[String(estado.kg)];
+			if (recoge && recUd && recoge.getAttribute('data-t-recoge')) {
+				var rec = recUd * estado.cajas, ahorro = pack + env - rec;
+				if (ahorro > 0.005) recoge.textContent = recoge.getAttribute('data-t-recoge').replace('%1$s', euros(rec)).replace('%2$s', euros(ahorro));
+			}
 			campo('padre', v.padre || ''); campo('id', v.id); campo('peso', v.peso || ''); campo('fslug', v.fslug || '');
 			// Galería y caja de P2 del formato elegido. Al cambiar (no al cargar: es la imagen LCP), fundido de 400 ms.
 			var cambia = formatoPintado !== null && formatoPintado !== estado.formato;

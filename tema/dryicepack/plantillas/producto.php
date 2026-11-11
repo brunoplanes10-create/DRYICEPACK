@@ -148,7 +148,10 @@ if ( function_exists( 'wc_print_notices' ) ) {
 				</dl>
 
 				<button type="submit" class="boton boton--ancho p-comprar"><span><?php echo esc_html( $c['boton'] ); ?></span><span class="boton__flecha"><?php echo dipt_icono( 'flecha' ); // phpcs:ignore ?></span></button>
-				<p class="p-nota"><?php echo esc_html( $c['recogida'] ); ?></p>
+				<?php if ( ! empty( $c['corte']['antes'] ) ) : // Reloj del corte (movimiento.js): solo antes de las 12:00 ?>
+					<p class="p-corte dato" data-corte data-ocultar-sin-texto data-t-antes="<?php echo esc_attr( $c['corte']['antes'] ); ?>" data-t-quedan="<?php echo esc_attr( $c['corte']['quedan'] ); ?>" data-t-despues="<?php echo esc_attr( $c['corte']['despues'] ); ?>" hidden><span data-corte-texto></span> <span data-corte-quedan hidden></span></p>
+				<?php endif; ?>
+				<p class="p-nota" data-recoge data-t-recoge="<?php echo esc_attr( $c['recoge_ahorro'] ?? '' ); ?>"><?php echo esc_html( $c['recogida'] ); ?></p>
 				<p class="p-nota p-nota--max" data-max hidden><?php echo esc_html( $c['max'] ); ?></p>
 				<p class="p-nota p-nota--max" data-medida hidden><?php echo esc_html( $c['medida'] ); ?> <a href="<?php echo esc_url( dipt_whatsapp_url() ); ?>" target="_blank" rel="noopener">WhatsApp</a></p>
 				<ul class="p-confianza">

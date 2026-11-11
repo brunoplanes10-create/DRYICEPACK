@@ -366,7 +366,8 @@ function dip_html_horas( $fecha, $destino, $psab = null ) {
 		return '<p class="dip-horas__sabado">' . esc_html( sprintf( $t['sabado_precio'], DIP_HORA_ENTREGA_SABADO, dip_texto_euros( round( $psab['neto'] * $iva, 2 ) ) ) ) . '</p>';
 	}
 	$h = '<fieldset class="dip-horas"><legend class="dip-leyenda">' . esc_html( $t['que_hora'] ) . '</legend>';
-	foreach ( array( '14', '12', '10' ) as $s ) {
+	// De la más cara a la más barata (estrategia/VENTAS-PSICOLOGIA.md, 1.1): la de las 14:00, marcada de serie, se lee como lo que es
+	foreach ( array( '10', '12', '14' ) as $s ) {
 		$p = dip_precio_servicio_carrito( $s, $destino );
 		if ( ! $p ) continue;
 		$h .= sprintf(

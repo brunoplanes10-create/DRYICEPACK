@@ -147,6 +147,10 @@
 .p-comprar { min-height: 62px; font-size: 1.05rem; }
 .p-nota { font-size: .88rem; color: var(--c-acero); }
 .p-nota--max[hidden] { display: none; }
+/* Reloj del corte junto al botón (movimiento.js): solo antes de las 12:00 */
+.p-corte { margin: .6rem 0 0; font-size: .88rem; color: var(--c-tinta); }
+.p-corte[hidden] { display: none; }
+.p-corte [data-corte-quedan] { font-weight: 600; color: var(--c-marino); }
 .p-confianza { display: flex; flex-wrap: wrap; gap: .5rem 1.2rem; list-style: none; margin: 0; padding: 0; color: var(--c-acero); font-size: .85rem; font-weight: 500; }
 .p-confianza li { display: flex; align-items: center; gap: .35rem; }
 .p-confianza .ico { width: 16px; height: 16px; color: var(--c-marino); }

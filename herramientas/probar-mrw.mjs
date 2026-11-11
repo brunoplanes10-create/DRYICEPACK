@@ -518,7 +518,7 @@ const escenarios = {
     WC()->session->set( 'dip_servicio', '' );
     $html = dip_html_entrega();
     preg_match_all( '/name="dip_servicio" value="(\d+)"( checked)?/', $html, $h );
-    ok( array( '14', '12', '10' ) === $h[1] && ' checked' === $h[2][0], 'horas: 14:00 (marcada), 12:00 y 10:00', $h );
+    ok( array( '10', '12', '14' ) === $h[1] && ' checked' === $h[2][2] && '' === $h[2][0], 'horas de la más cara a la más barata: 10:00, 12:00 y 14:00 (marcada)', $h );
     // Barcelona, 11 kg: 14:00 14,31 → 17,32 € · 12:00 22,10 + 2,21 = 24,31 → 29,42 € · 10:00 24,52 + 2,45 = 26,97 → 32,63 € (con oficina: sin los 15,30 €)
     ok( false !== strpos( $html, '17,32' ) && false !== strpos( $html, '29,42' ) && false !== strpos( $html, '32,63' ) && false !== strpos( $html, 'La más barata' ), 'horas: precios con IVA para Barcelona (17,32 · 29,42 · 32,63) y «La más barata» en las 14:00', $html );
     WC()->session->set( 'dip_servicio', '10' );

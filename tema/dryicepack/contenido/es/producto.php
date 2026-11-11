@@ -47,6 +47,10 @@ return array(
 	'iva'       => 'IVA incluido',
 	'boton'     => 'Hacer mi pedido',
 	'recogida'  => 'O recógelo en Mataró, de lunes a sábado: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}, IVA incluido. El sábado, +{sabado_recogida}.{sabado_libre} En efectivo y con el importe exacto.',
+	// Con el pack elegido (producto.js): %1$s precio de recogida, %2$s lo que se ahorra frente al envío (estrategia/VENTAS-PSICOLOGIA.md, 5.2)
+	'recoge_ahorro' => 'O recógelo en Mataró: %1$s en efectivo, te ahorras %2$s. De lunes a sábado; el sábado, +{sabado_recogida}. Con el importe exacto.',
+	// Junto al botón (movimiento.js, data-corte): solo antes del corte de las 12:00 (estrategia/VENTAS-PSICOLOGIA.md, 2.1)
+	'corte'     => array( 'antes' => 'Para recibirlo el %s, pide antes de las 12:00.', 'quedan' => 'Quedan %s.', 'despues' => '' ),
 	'max'       => 'Hasta 250 kg por pedido. ¿Necesitas más? Escríbenos y te damos precio y día.',
 	'medida'    => 'Más de 150 kg fuera de la provincia de Barcelona: ese envío se prepara a medida. Escríbenos por',
 	'confianza' => array( 'Tarjeta, Apple Pay o Google Pay', 'Factura para empresas', 'Sin crear cuenta' ),
