@@ -452,7 +452,7 @@ function dip_mp_html( WC_Order $p ) {
 					</tfoot>
 				</table>
 				<?php if ( function_exists( 'dip_url_repetir_pedido' ) ) : // 7.3: mismos packs y misma dirección; el día se elige al pagar ?>
-					<p class="mp-repetir"><a class="boton boton--marino mp-repetir__boton" href="<?php echo esc_url( dip_url_repetir_pedido( $p ) ); ?>" rel="nofollow"><?php echo esc_html( $t['repetir'] ); ?></a><span class="mp-repetir__nota"><?php echo esc_html( $t['repetir_nota'] ); ?></span></p>
+					<p class="mp-repetir"><a class="boton boton--marino mp-repetir__boton" href="<?php echo esc_url( dip_url_repetir_pedido( $p ) ); ?>" rel="nofollow"><span><?php echo esc_html( $t['repetir'] ); ?></span><span class="boton__flecha"><?php echo dip_mp_icono( 'flecha' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG fijo ?></span></a><span class="mp-repetir__nota"><?php echo esc_html( $t['repetir_nota'] ); ?></span></p>
 				<?php endif; ?>
 			</section>
 

@@ -145,12 +145,15 @@ h1 .tramo, h2 .tramo, h3 .tramo { display: block; text-wrap: balance; }
    Elevación de 2 px en 200 ms, scale(.98) al pulsar y giro de la flecha. Sin barrido. */
 .boton {
 	--b-fondo: var(--c-accion); --b-texto: var(--c-noche); --b-anillo: rgba(11, 20, 28, .22);
-	position: relative; display: inline-flex; align-items: center; gap: .9rem; min-height: 56px; padding: .45rem .5rem .45rem 1.6rem;
+	position: relative; display: inline-flex; align-items: center; gap: .9rem; min-height: 56px; padding: .45rem 1.6rem;
 	border: 0; border-radius: 999px; background: var(--b-fondo); color: var(--b-texto); font: 600 1rem/1 var(--f-texto); letter-spacing: -.005em;
 	text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), var(--sombra-2);
 	transition: transform var(--d-corta) var(--e-salida);
 }
+/* Relleno igual a los dos lados; solo con la flecha en su círculo, el derecho es el del círculo. Así un botón sin flecha
+   nunca deja el texto pegado al borde (lo comprueba herramientas/revisar-botones.mjs). */
+.boton:has(> .boton__flecha) { padding-right: .5rem; }
 .boton:hover, .boton:focus-visible { transform: translateY(-2px); text-decoration: none; }
 .boton:active { transform: translateY(0) scale(.98); transition-duration: .12s; }
 .boton__flecha { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--b-anillo); background: rgba(255, 255, 255, .18); transition: transform var(--d-corta) var(--e-salida); }
