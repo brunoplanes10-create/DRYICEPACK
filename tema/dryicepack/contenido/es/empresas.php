@@ -94,7 +94,7 @@ return array(
 			array( '¿Qué precio tendré?', 'Un descuento sobre la tarifa de la web, según su volumen y su frecuencia. Se acuerda al abrir la cuenta. Complete la frase de arriba y le contestamos, normalmente el mismo día laborable.' ),
 			array( '¿Puedo cambiar kilos o frecuencia?', 'Sí, cuando lo necesite. Avísenos con antelación por WhatsApp, teléfono o email y lo ajustamos.' ),
 			array( '¿Emiten factura completa?', 'Sí, siempre, con sus datos fiscales. Con cuenta de empresa recibe una sola factura al mes con todos los pedidos.' ),
-			array( '¿Llegan fuera de Cataluña?', 'Sí, a toda la península por mensajería. Si pide antes de las 12:00 de lunes a jueves, llega al día siguiente antes de las 14:00. El sábado, según zona, llega antes de las 12:00 y con un suplemento de {sabado_envio} (IVA incluido). Más de 150 kg fuera de la provincia de Barcelona: escríbanos y se lo preparamos a medida.' ),
+			array( '¿Llegan fuera de Cataluña?', 'Sí, a toda la península por mensajería. Si pide antes de las 12:00 de lunes a jueves, llega al día siguiente antes de las 14:00. El sábado, según zona, llega antes de las 13:00 (como mucho 80 kg por pedido, contando las cajas) y con precio de sábado: lo ve al elegir el día. Más de 150 kg fuera de la provincia de Barcelona: escríbanos y se lo preparamos a medida.' ),
 			array( '¿Tienen ficha de datos de seguridad?', 'Sí. Puede descargarla en la página de seguridad, junto con las normas de manipulación para su equipo.' ),
 		),
 	),

@@ -51,7 +51,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Laboratory questions',
 		'lista'  => array(
-			array( 'What time does it arrive?', 'Before 14:00 the next day, if you order before 12:00 (Spanish time). We deliver Tuesday to Friday and, depending on the area, on Saturday before 12:00, with a surcharge. Within that window, the exact time depends on MRW’s route.' ),
+			array( 'What time does it arrive?', 'Before 14:00 the next day, if you order before 12:00 (Spanish time). If you need it earlier, at checkout you can choose delivery before 12:00 or before 10:00, each at its own price. We deliver Tuesday to Friday and, depending on the area, on Saturday before 13:00, at the Saturday rate. Within that window, the exact time depends on MRW’s route.' ),
 			array( 'Can I keep it in the ultra-low freezer?', 'No. In a closed freezer the gas builds up pressure and can damage the equipment. Keep it in its EPS box, somewhere ventilated.' ),
 			array( 'How much dry ice do I put in each box?', 'It depends on the journey time, the size of the box and the outside temperature. Tell us the route and the type of box and we’ll advise you.' ),
 		),

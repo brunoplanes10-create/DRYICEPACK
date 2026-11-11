@@ -39,6 +39,7 @@
 .dip-eh-p__mrw--mal { border-left-color: #B32D2E; background: #FCF0F1; color: #6B1516; }
 .dip-eh-p__mrw--info { border-left-color: var(--eh-marino); }
 .dip-eh-p__mrw .button-small { margin-left: 4px; vertical-align: baseline; }
+.dip-eh-p__hora { margin: 0 0 12px; padding: 10px 12px; border-left: 4px solid var(--eh-marino); background: #EAF1F7; color: var(--eh-tinta); font-size: 14px; line-height: 1.45; }
 .dip-eh-p__urgente { padding: 0 6px; border: 1px solid var(--eh-senal); border-radius: 3px; color: var(--eh-senal); font-weight: 600; }
 /* Pedido urgente para mañana (inc/urgente.php) */
 .dip-eh-urg { margin: 28px 0 0; padding: 14px; border: 1px solid var(--eh-linea); border-radius: 4px; background: #fff; max-width: 60em; }

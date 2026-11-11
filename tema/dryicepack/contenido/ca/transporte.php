@@ -37,7 +37,7 @@ return array(
 		'mes'         => 'Al mes',
 		'mes_calc'    => 'Per setmana × 4',
 		'nota'        => 'Càlcul orientatiu. Al mes, comptant 4 setmanes.',
-		'lunes'       => 'Els dilluns no hi ha repartiment: per a la ruta del dilluns, triï l\'entrega del dissabte (segons la zona, amb suplement) o reculli\'l el mateix dilluns a Mataró.',
+		'lunes'       => 'Els dilluns no hi ha repartiment. Per a la ruta del dilluns, triï l\'entrega del dissabte (segons la zona, amb preu de dissabte i com a màxim 80 kg per comanda, comptant-hi les caixes): el gel passa el cap de setmana a la caixa i li calculem els quilos. O reculli\'l el mateix dilluns a Mataró.',
 		'boton'  => 'Demanar el preu',
 	),
 	'cliente' => array(
@@ -54,7 +54,7 @@ return array(
 			array( '3 mm o 16 mm per al transport?', '16 mm: més massa per peça, així que aguanta més hores en ruta. Els de 3 mm refreden més de pressa i serveixen per baixar la temperatura al començament.' ),
 			array( 'El puc portar a la cabina de la furgoneta?', 'No. Sempre a la zona de càrrega i ventilant. A la cabina el CO₂ s\'acumula i desplaça l\'oxigen que respira el conductor.' ),
 			array( 'Serveix per a producte refrigerat, no congelat?', 'Sí, amb compte: separi el gel sec del producte amb cartó o una safata perquè no el congeli. L\'ajudem a ajustar la quantitat.' ),
-			array( 'Poden entregar cada setmana a la mateixa hora?', 'El mateix dia cada setmana, sí: amb una comanda programada arriba abans de les 14:00 sense que l\'hagi de demanar. Dins d\'aquest marge, l\'hora exacta la marca la ruta de MRW. Si necessita una hora fixa, reculli-la a Mataró a l\'hora que li confirmem.' ),
+			array( 'Poden entregar cada setmana a la mateixa hora?', 'El mateix dia cada setmana, sí: amb una comanda programada arriba abans de les 14:00 sense que l\'hagi de demanar. Si la necessita abans, també pot arribar abans de les 12:00 o abans de les 10:00, amb el seu preu. Dins d\'aquest marge, l\'hora exacta la marca la ruta de MRW. Si necessita una hora fixa, reculli-la a Mataró a l\'hora que li confirmem.' ),
 		),
 	),
 	// Crida final: full de ruta (de Mataró al seu magatzem) i botó al formulari de compte d'empresa, amb WhatsApp com a alternativa

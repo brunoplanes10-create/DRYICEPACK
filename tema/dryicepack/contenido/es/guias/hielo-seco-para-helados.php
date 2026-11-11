@@ -61,7 +61,7 @@ return array(
 <h2>¿Cuándo hay que pedirlo?</h2>
 <ul>
 <li><strong>Para el día que lo va a usar o el anterior.</strong> El hielo seco se sublima con las horas: pedirlo antes es pagar kilos que no llegará a usar.</li>
-<li><strong>Antes de las 12:00, de lunes a jueves:</strong> llega al día siguiente antes de las 14:00. Si pide el viernes antes de las 12:00, llega el sábado antes de las 12:00, según zona y con un suplemento de {sabado_envio} (IVA incluido), o el martes. Domingo y lunes no hay reparto.</li>
+<li><strong>Antes de las 12:00, de lunes a jueves:</strong> llega al día siguiente antes de las 14:00. Si pide el viernes antes de las 12:00, llega el sábado antes de las 13:00, según zona y con precio de sábado, o el martes. Domingo y lunes no hay reparto.</li>
 <li><strong>¿Feria el domingo o el lunes?</strong> Recójalo en nuestra nave de Mataró el sábado o el mismo lunes: puede recogerlo de lunes a sábado, también en festivos, y la hora se la confirmamos por teléfono o WhatsApp. {pk} kg por {recogida:pk} y 10 kg por {recogida:10}, IVA incluido, en efectivo y con el importe exacto. El sábado, +{sabado_recogida}.</li>
 <li><strong>En temporada:</strong> con una cuenta de empresa se lo programamos cada semana, cada quince días o cada mes, con descuento sobre tarifa según volumen y una factura al mes.</li>
 </ul>

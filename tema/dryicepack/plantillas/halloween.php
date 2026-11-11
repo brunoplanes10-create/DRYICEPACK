@@ -81,11 +81,11 @@ $hw_campana = time() < strtotime( $hw_fin_campana );
 $hw_faq_plazo = $hw_campana
 	? array(
 		'q' => '¿Hasta cuándo puedo pedir para Halloween?',
-		'a' => dipt_marcadores( 'Para recibirlo el viernes 30 de octubre antes de las 14:00, pide antes de las 12:00 del jueves 29. Para el sábado 31, pide antes de las 12:00 del viernes 30: la entrega en sábado depende de la zona, llega antes de las 12:00 y tiene un suplemento de {sabado_envio} (IVA incluido).' ),
+		'a' => dipt_marcadores( 'Para recibirlo el viernes 30 de octubre antes de las 14:00, pide antes de las 12:00 del jueves 29. Para el sábado 31, pide antes de las 12:00 del viernes 30: la entrega en sábado depende de la zona, llega antes de las 13:00 y tiene precio de sábado, que ves al elegir el día.' ),
 	)
 	: array(
 		'q' => '¿Cuándo tengo que pedirlo para Halloween?',
-		'a' => dipt_marcadores( 'Lo ideal es recibirlo la víspera de la fiesta. Pídelo antes de las 12:00 del día anterior a la entrega, o resérvalo antes y elige el día al pagar: llega antes de las 14:00. Para recibirlo en sábado, pide antes de las 12:00 del viernes: la entrega en sábado depende de la zona, llega antes de las 12:00 y tiene un suplemento de {sabado_envio} (IVA incluido).' ),
+		'a' => dipt_marcadores( 'Lo ideal es recibirlo la víspera de la fiesta. Pídelo antes de las 12:00 del día anterior a la entrega, o resérvalo antes y elige el día al pagar: llega antes de las 14:00. Para recibirlo en sábado, pide antes de las 12:00 del viernes: la entrega en sábado depende de la zona, llega antes de las 13:00 y tiene precio de sábado, que ves al elegir el día.' ),
 	);
 
 $hw_faq = array(
@@ -262,7 +262,7 @@ get_header();
 		<div class="hw-wrap hw-hero__cuerpo">
 			<p class="hw-antetitulo"><?php echo $hw_campana ? 'Halloween 2026 · Efecto niebla' : 'Halloween · Efecto niebla'; ?></p>
 			<h1 id="hw-h1">Hielo seco para Halloween: niebla de verdad en tu fiesta</h1>
-			<p class="hw-entrada">Pellets de hielo seco de 3 mm que hacen niebla densa en cuanto tocan agua caliente. Pide antes de las 12:00 y llega al día siguiente antes de las 14:00, en caja EPS y listo para usar.</p>
+			<p class="hw-entrada">Pellets de hielo seco de 3 mm que hacen niebla densa en cuanto tocan agua caliente. Pide antes de las 12:00, de lunes a jueves, y llega al día siguiente antes de las 14:00, en caja EPS y listo para usar.</p>
 			<div class="hw-botones">
 				<a class="hw-btn" href="<?php echo esc_url( $hw_pedir( $hw_pk ) ); ?>">Pedir hielo seco</a>
 				<a class="hw-btn hw-btn--linea" href="#cantidad">Elegir cantidad</a>
@@ -509,8 +509,8 @@ get_header();
 					<p>Entrega con MRW en tu dirección, en caja EPS, antes de las 14:00.</p>
 				</li>
 				<li>
-					<p class="hw-linea__cuando">Sáb 31/10 · 12:00</p>
-					<p><?php echo esc_html( dipt_marcadores( 'Entrega en sábado según zona, antes de las 12:00 y con suplemento de {sabado_envio} (IVA incl.). Pide antes de las 12:00 del viernes 30.' ) ); ?> Confirma tu zona en <a href="<?php echo esc_url( home_url( '/envios-y-plazos/' ) ); ?>">envíos y plazos</a> o llámanos al <a href="<?php echo esc_url( $hw_tel ); ?>">936 73 76 41</a>.</p>
+					<p class="hw-linea__cuando">Sáb 31/10 · 13:00</p>
+					<p><?php echo esc_html( dipt_marcadores( 'Entrega en sábado según zona, antes de las 13:00 y con precio de sábado: lo ves al elegir el día. Pide antes de las 12:00 del viernes 30.' ) ); ?> Confirma tu zona en <a href="<?php echo esc_url( home_url( '/envios-y-plazos/' ) ); ?>">envíos y plazos</a> o llámanos al <a href="<?php echo esc_url( $hw_tel ); ?>">936 73 76 41</a>.</p>
 				</li>
 			<?php else : $hw_e = dipt_primera_entrega(); ?>
 			<div class="hw-fecha__cuenta" data-hw-revela>
@@ -531,8 +531,8 @@ get_header();
 					<p>Entrega con MRW en tu dirección, en caja EPS, de martes a viernes antes de las 14:00. O elige otro día al pagar.</p>
 				</li>
 				<li>
-					<p class="hw-linea__cuando">Sábado · 12:00</p>
-					<p><?php echo esc_html( dipt_marcadores( 'Entrega en sábado según zona, antes de las 12:00 y con suplemento de {sabado_envio} (IVA incl.). Pídelo antes de las 12:00 del viernes.' ) ); ?> Confirma tu zona en <a href="<?php echo esc_url( home_url( '/envios-y-plazos/' ) ); ?>">envíos y plazos</a> o llámanos al <a href="<?php echo esc_url( $hw_tel ); ?>">936 73 76 41</a>.</p>
+					<p class="hw-linea__cuando">Sábado · 13:00</p>
+					<p><?php echo esc_html( dipt_marcadores( 'Entrega en sábado según zona, antes de las 13:00 y con precio de sábado: lo ves al elegir el día. Pídelo antes de las 12:00 del viernes.' ) ); ?> Confirma tu zona en <a href="<?php echo esc_url( home_url( '/envios-y-plazos/' ) ); ?>">envíos y plazos</a> o llámanos al <a href="<?php echo esc_url( $hw_tel ); ?>">936 73 76 41</a>.</p>
 				</li>
 			<?php endif; ?>
 				<li>
@@ -574,7 +574,7 @@ get_header();
 			<div class="hw-b2b__txt" data-hw-revela>
 				<p class="hw-b2b__para">Bares, discotecas y organizadores</p>
 				<h2 id="hw-b2b-t">¿Tiene un local o organiza un evento de Halloween?</h2>
-				<p>Díganos cuántos puntos de niebla va a tener y le orientamos sobre la cantidad. Entrega en la península al día siguiente antes de las 14:00, si pide antes de las 12:00, o recogida en nuestro almacén de Mataró (Maresme, Vallès y área de Barcelona).</p>
+				<p>Díganos cuántos puntos de niebla va a tener y le orientamos sobre la cantidad. Entrega en la península al día siguiente antes de las 14:00, si pide antes de las 12:00 de lunes a jueves, o recogida en nuestro almacén de Mataró (Maresme, Vallès y área de Barcelona).</p>
 				<ul class="hw-lista">
 					<li>Pedidos de hasta 250 kg</li>
 					<li>Mismo precio en 3 mm y 16 mm</li>

@@ -352,7 +352,8 @@ try {
 	$ok( $casi( $cart->get_subtotal(), 53.30 ), 'envío 10 kg: subtotal 53,30 € sin IVA', $cart->get_subtotal() );
 	$cart = $carrito( array( '10' => 1 ), 'envio', $e_sabado );
 	$fees = array_values( $cart->get_fees() );
-	$ok( 1 === count( $fees ) && $casi( $fees[0]->total, 9.70 ) && $casi( $fees[0]->tax, 2.04 ), "envío el sábado $e_sabado: 9,70 € + 2,04 € de IVA", array_map( static fn( $f ) => array( $f->id, $f->total, $f->tax ), $fees ) );
+	// Desde el 11/11/2026 el sábado va en su tarifa de envío (Ecommerce de MRW), sin línea de suplemento aparte
+	$ok( 0 === count( $fees ), "envío el sábado $e_sabado: sin línea de suplemento (va en la tarifa del sábado)", array_map( static fn( $f ) => array( $f->id, $f->total, $f->tax ), $fees ) );
 	// Recogida y después envío en la misma petición: vuelve al precio de la web
 	$cart = $carrito( array( '20' => 1 ), 'recogida', $r_semana );
 	WC()->session->set( 'chosen_shipping_methods', array( $rate_envio ) );
@@ -485,7 +486,7 @@ try {
 	$ok( 200 === $resp->get_status(), 'responde 200', $resp->get_status() );
 	$ok( 'public, max-age=600' === ( $resp->get_headers()['Cache-Control'] ?? '' ), 'Cache-Control: public, max-age=600', $resp->get_headers() );
 	$raw = (array) $resp->get_data();
-	$claves( $d, array( 'version', 'generado', 'iva', 'tarifa', 'sabado', 'recogida', 'max_kg', 'max_kg_fuera_barcelona', 'reservas_dias', 'corte', 'dias_salida', 'dias_entrega', 'festivos_salida', 'mrw' ), 'la respuesta' );
+	$claves( $d, array( 'version', 'generado', 'iva', 'tarifa', 'sabado', 'servicios', 'recogida', 'max_kg', 'max_kg_fuera_barcelona', 'reservas_dias', 'corte', 'dias_salida', 'dias_entrega', 'festivos_salida', 'mrw' ), 'la respuesta' );
 	$ok( is_int( $d['version'] ?? null ) && $d['version'] >= 1, 'version: entero', $d['version'] ?? null );
 	$ok( $es_iso( $d['generado'] ?? null ), 'generado: fecha ISO 8601 con zona', $d['generado'] ?? null );
 	$ok( is_float( $raw['iva'] ?? null ) && $casi( $raw['iva'], 0.21 ), 'iva: 0.21 (decimal)', $raw['iva'] ?? null );
@@ -494,10 +495,21 @@ try {
 		$ok( is_float( $raw['tarifa'][ $k ] ?? null ) && $casi( $raw['tarifa'][ $k ], $v ), "tarifa.$k = $v (decimal)", $raw['tarifa'][ $k ] ?? null );
 	}
 	$ok( 'al alza' === ( $d['tarifa']['redondeo'] ?? null ), 'tarifa.redondeo = «al alza»' );
-	$claves( $d['sabado'] ?? null, array( 'suplemento_sin_iva' ), 'sabado' );
-	$ok( is_float( $raw['sabado']['suplemento_sin_iva'] ?? null ) && $casi( $raw['sabado']['suplemento_sin_iva'], 9.70 ), 'sabado.suplemento_sin_iva = 9.70 (envío)' );
-	$claves( $d['recogida'] ?? null, array( 'dias', 'tambien_festivos', 'redondeo_con_iva', 'suplemento_sabado_con_iva', 'pago', 'sabados_sin_suplemento' ), 'recogida' );
-	$ok( 2 === ( $d['version'] ?? null ), 'version = 2 (desde el 15/10/2026: recogida.sabados_sin_suplemento)', $d['version'] ?? null );
+	$claves( $d['sabado'] ?? null, array( 'suplemento_sin_iva', 'suplemento_cerca_sin_iva', 'hora', 'max_kg' ), 'sabado' );
+	$ok( is_float( $raw['sabado']['suplemento_sin_iva'] ?? null ) && $casi( $raw['sabado']['suplemento_sin_iva'], 9.70 ), 'sabado.suplemento_sin_iva = 9.70 (a más de 25 km de la oficina de MRW)' );
+	$ok( $casi( $raw['sabado']['suplemento_cerca_sin_iva'] ?? 0, 5.45 ) && '13:00' === ( $d['sabado']['hora'] ?? '' ) && 80 === ( $d['sabado']['max_kg'] ?? null ), 'sabado: 5,45 € cerca, antes de las 13:00, 80 kg como mucho', $d['sabado'] ?? null );
+	// Versión 3 (11/11/2026): horas de entrega a elegir, con su código de MRW y sus tarifas
+	$sv = (array) ( $d['servicios'] ?? array() );
+	$ks = array_map( 'strval', array_keys( $sv ) ); // PHP convierte las claves "14", "12" y "10" en números
+	sort( $ks );
+	$ok( array( '10', '12', '14', 'sabado' ) === $ks, 'claves de servicios: 14, 12, 10 y sabado', $ks );
+	$ok( '14:00' === ( $sv['14']['hora'] ?? '' ) && '12:00' === ( $sv['12']['hora'] ?? '' ) && '10:00' === ( $sv['10']['hora'] ?? '' ) && '13:00' === ( $sv['sabado']['hora'] ?? '' ), 'servicios: 14:00, 12:00, 10:00 y sábado 13:00', $sv );
+	$ok( '0115' === ( $sv['14']['codigo_mrw'] ?? '' ) && '0105' === ( $sv['12']['codigo_mrw'] ?? '' ) && '0015' === ( $sv['10']['codigo_mrw'] ?? '' ) && '0800' === ( $sv['sabado']['codigo_mrw'] ?? '' ), 'servicios: códigos de MRW 0115, 0105, 0015 y 0800' );
+	$ok( $casi( $raw['servicios']['12']['tarifa']['peninsular']['hasta_5'] ?? 0, 21.06 ) && $casi( $raw['servicios']['10']['tarifa']['urbano']['kg_extra'] ?? 0, 1.78 ) && $casi( $raw['servicios']['10']['suplemento_lejos'] ?? 0, 15.30 ), 'servicios: tarifas de 12:00 y 10:00 por zona y suplemento de lejos' );
+	$ok( $casi( $raw['servicios']['sabado']['tarifa']['peninsular']['tramos'][3] ?? 0, 17.25 ) && 9 === count( (array) ( $sv['sabado']['tarifa']['tramos_kg'] ?? array() ) ), 'servicios: tarifa de sábado por tramos (hasta 15 kg península 17,25 €)' );
+	$claves( $d['recogida'] ?? null, array( 'dias', 'tambien_festivos', 'redondeo_con_iva', 'suplemento_sabado_con_iva', 'pago', 'sabados_sin_suplemento', 'horario' ), 'recogida' );
+	$ok( 3 === ( $d['version'] ?? null ), 'version = 3 (desde el 11/11/2026: servicios y recogida.horario)', $d['version'] ?? null );
+	$ok( array( '09:00', '18:00' ) === ( $d['recogida']['horario']['1'] ?? null ) && array( '09:00', '13:00' ) === ( $d['recogida']['horario']['6'] ?? null ) && ! isset( $d['recogida']['horario']['7'] ), 'recogida.horario: L–V 9–18, sábado 9–13, domingo no', $d['recogida']['horario'] ?? null );
 	$sss = $d['recogida']['sabados_sin_suplemento'] ?? null;
 	$ok( $es_lista( $sss ) && ! array_filter( (array) $sss, static fn( $f ) => ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', (string) $f ) || $f < $hoy ), 'recogida.sabados_sin_suplemento: lista de fechas de hoy en adelante', $sss );
 	if ( '2026-10-31' >= $hoy ) $ok( in_array( '2026-10-31', (array) $sss, true ), 'recogida.sabados_sin_suplemento incluye el 31/10/2026', $sss );

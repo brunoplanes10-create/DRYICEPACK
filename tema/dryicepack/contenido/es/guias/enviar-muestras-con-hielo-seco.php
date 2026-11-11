@@ -139,7 +139,7 @@ return array(
 <ul>
 <li>Confirme con el destinatario que alguien lo recibe ese día y tenga en cuenta festivos y cierres (Universidad de Oregón).</li>
 <li>Un bulto que pasa el fin de semana en un almacén necesita mucho más hielo: mejor que salga a principio de semana.</li>
-<li>Pida el hielo seco para el día en que prepara el envío. Si lo pide antes de las 12:00, le llega al día siguiente antes de las 14:00, de martes a viernes; el sábado, según zona y con un suplemento de {sabado_envio} (IVA incluido). También puede reservarlo para cualquier día de los próximos 90 o recogerlo en nuestra nave de Mataró.</li>
+<li>Pida el hielo seco para el día en que prepara el envío. Si lo pide antes de las 12:00, le llega al día siguiente antes de las 14:00, de martes a viernes; el sábado, según zona, antes de las 13:00 y con precio de sábado, que ve al elegir el día. También puede reservarlo para cualquier día de los próximos 90 o recogerlo en nuestra nave de Mataró.</li>
 </ul>
 
 <h2>¿Qué precauciones de seguridad hay que tomar?</h2>

@@ -7,8 +7,8 @@ return array(
 		'descripcion' => 'Gel sec en pèl·lets de 3 mm o nuggets de 16 mm, des de {pk} kg. Demana abans de les 12:00 i arriba l\'endemà abans de les 14:00, o recull-lo a Mataró.',
 	),
 	'hero' => array(
-		'titulo'    => 'Gel sec a la teva porta,|<em>abans de les 14:00.</em>',
-		'texto'     => 'Demana abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O tria el dia que vulguis. En caixa aïllant, des de {pk} kg i sense contractes. A prop de Mataró? Recull-lo a la nau: {pk} kg per {recogida:pk}, IVA inclòs.',
+		'titulo'    => 'Comprar gel sec|<em>a domicili.</em>',
+		'texto'     => 'Demana abans de les 12:00, de dilluns a dijous, i arriba l\'endemà abans de les 14:00. O tria el dia que vulguis i, entre setmana, si el vols abans de les 12:00 o de les 10:00. En caixa aïllant, des de {pk} kg i sense contractes. A prop de Mataró? Recull-lo a la nau: {pk} kg per {recogida:pk}, IVA inclòs.',
 		'boton'     => 'Fer la comanda',
 		'o_llama'   => 'o truca al',
 		'alt'       => 'Caixa de gel sec en nuggets de 16 mm, oberta i deixant anar vapor fred',
@@ -35,7 +35,7 @@ return array(
 		'pasos'  => array(
 			array( '12:00', 'Fas la comanda', 'Abans de les 12:00, de dilluns a divendres, excepte festius. Surt de Mataró aquell mateix dia.' ),
 			array( 'Avui', 'El preparem', 'En caixa EPS de 40 mm, tancada però no hermètica, i marxa amb MRW.' ),
-			array( '14:00', 'Arriba l\'endemà', 'Abans de les 14:00, de dimarts a divendres. El dissabte, segons la zona: abans de les 12:00 i amb un suplement de {sabado_envio}.' ),
+			array( '14:00', 'Arriba l\'endemà', 'Abans de les 14:00, de dimarts a divendres. El dissabte, segons la zona: abans de les 13:00 i amb preu de dissabte.' ),
 		),
 		'nota'   => 'Només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla. No entreguem ni diumenge ni dilluns.',
 		'enlace' => 'Enviaments i terminis',
@@ -99,8 +99,8 @@ return array(
 		'titulo' => 'El que més|ens <em>pregunten.</em>',
 		'lista'  => array(
 			array( 'Quant gel sec necessito?', 'Depèn de l\'ús i de quantes hores el necessitis. Per fer boira, com a referència: a casa {pk} kg, en una festa gran 10 kg i en un bar o un esdeveniment de 15 a 20 kg. Per a transport o mostres, digues-nos quantes hores i quin volum, i t\'ho calculem.' ),
-			array( 'Quan m\'arriba?', 'Si demanes abans de les 12:00 de dilluns a dijous, surt aquell mateix dia i arriba l\'endemà abans de les 14:00. Si demanes divendres, arriba dissabte abans de les 12:00 (segons la zona i amb un suplement de {sabado_envio}, IVA inclòs) o dimarts. No repartim ni diumenge ni dilluns.' ),
-			array( 'Puc demanar per a un altre dia?', 'Sí: en pagar tries qualsevol dia dels pròxims 90 amb repartiment a la teva zona, de dimarts a dissabte (el dissabte, segons la zona i amb suplement). Demana\'l per al dia que el faràs servir: el gel sec es va sublimant amb les hores.' ),
+			array( 'Quan m\'arriba?', 'Si demanes abans de les 12:00 de dilluns a dijous, surt aquell mateix dia i arriba l\'endemà abans de les 14:00. Si demanes divendres abans de les 12:00, arriba dissabte abans de les 13:00 (segons la zona i amb preu de dissabte, que veus en triar el dia) o dimarts. No repartim ni diumenge ni dilluns.' ),
+			array( 'Puc demanar per a un altre dia?', 'Sí: en pagar tries qualsevol dia dels pròxims 90 amb repartiment a la teva zona, de dimarts a dissabte (el dissabte, segons la zona i amb preu de dissabte). Demana\'l per al dia que el faràs servir: el gel sec es va sublimant amb les hores.' ),
 			array( 'El puc recollir en persona?', 'Sí, a la nostra nau de Mataró (Camí Ca La Madrona 19 D), de dilluns a dissabte, també festius. Pagues un preu rodó amb IVA inclòs, el mateix al web i a la nau: {pk} kg per {recogida:pk}, 10 kg per {recogida:10}, 15 kg per {recogida:15} i 20 kg per {recogida:20}. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre} Et confirmem l\'hora abans. Es paga en efectiu i amb l\'import exacte: no tenim canvi.' ),
 			array( 'Quina diferència hi ha entre 3 mm i 16 mm?', 'Els pèl·lets de 3 mm tenen més superfície: refreden més de pressa i fan més boira. Els nuggets de 16 mm tenen més massa per peça i duren més; per això es fan servir en transport i mostres.' ),
 			array( 'Feu factura a particulars i a empreses?', 'Sí. Si ets particular i la comanda és de fins a 400 € (IVA inclòs), la factura simplificada t\'arriba per correu electrònic des d\'info@dryicepack.es. Si compres per a una empresa o com a autònom, marca «Compro per a una empresa o autònom» en pagar i escriu la raó social i el NIF: reps la factura completa. Si ja has pagat sense marcar-ho, t\'enviem un enllaç per demanar-la. Els comptes d\'empresa reben una sola factura al mes, a 30 dies.' ),

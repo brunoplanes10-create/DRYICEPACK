@@ -27,7 +27,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! defined( 'DIP_AVISOS_EVENTO' ) )          define( 'DIP_AVISOS_EVENTO', 'dip_avisos_diarios' );
 if ( ! defined( 'DIP_AVISOS_HORA' ) )            define( 'DIP_AVISOS_HORA', '08:00' );   // hora de Madrid de la pasada diaria
 if ( ! defined( 'DIP_AVISOS_CADUCA' ) )          define( 'DIP_AVISOS_CADUCA', 26 );      // horas sin pasada antes de avisar (24 h + 2 h de margen de WP-Cron)
-// Hora límite de la entrega: DIP_HORA_ENTREGA (14:00) y DIP_HORA_ENTREGA_SABADO (12:00), en inc/negocio.php
+// Hora límite de la entrega: DIP_HORA_ENTREGA (14:00) y DIP_HORA_ENTREGA_SABADO (13:00), en inc/negocio.php; la de cada pedido
+// (antes de las 10:00 o de las 12:00 si la pagó) con dip_hora_entrega_pedido() de inc/envios-hoy.php
 if ( ! defined( 'DIP_AVISOS_LIMITE_RECOGIDA' ) ) define( 'DIP_AVISOS_LIMITE_RECOGIDA', '13:00' ); // si WP-Cron corre más tarde, ya no se manda el recordatorio
 
 /** Tipos de aviso y su nombre en el escritorio. */
@@ -112,7 +113,7 @@ function dip_avisos_es_sabado( $ymd ) {
 	return $d && 6 === (int) $d->format( 'N' );
 }
 
-/** Hora límite de la entrega: 14:00; el sábado, 12:00. */
+/** Hora límite de la entrega: 14:00; el sábado, 13:00. */
 function dip_avisos_hora_limite( $ymd ) {
 	return dip_avisos_es_sabado( $ymd ) ? DIP_HORA_ENTREGA_SABADO : DIP_HORA_ENTREGA;
 }
@@ -258,7 +259,7 @@ function dip_avisos_recibido_datos( WC_Order $pedido, $email = null ) {
 	$recoge   = dip_avisos_es_recogida( $pedido );
 	$efectivo = dip_avisos_efectivo( $pedido );
 	$fecha    = dip_avisos_fecha( $pedido );
-	$hora     = dip_avisos_hora_limite( $fecha );
+	$hora     = function_exists( 'dip_hora_entrega_pedido' ) && $fecha ? dip_hora_entrega_pedido( $pedido ) : dip_avisos_hora_limite( $fecha );
 	$larga    = dip_avisos_fecha_larga( $fecha, $idioma );
 	$total    = dip_avisos_euros( $pedido->get_total(), $idioma );
 	$nombre   = dip_avisos_nombre( $pedido, $usted );
@@ -439,7 +440,7 @@ function dip_avisos_partes( WC_Order $pedido, $tipo, array $extra = array() ) {
 	$t      = dip_avisos_textos( $idioma, $usted );
 	$n      = $pedido->get_order_number();
 	$fecha  = dip_avisos_fecha( $pedido );
-	$hora   = dip_avisos_hora_limite( $fecha );
+	$hora   = function_exists( 'dip_hora_entrega_pedido' ) && $fecha ? dip_hora_entrega_pedido( $pedido ) : dip_avisos_hora_limite( $fecha );
 	$larga  = dip_avisos_fecha_larga( $fecha, $idioma );
 	$ficha  = dip_avisos_fecha_ficha( $fecha, $idioma );
 	$url    = dip_avisos_url_pedido( $pedido );
@@ -525,12 +526,13 @@ function dip_avisos_partes( WC_Order $pedido, $tipo, array $extra = array() ) {
 			$pagado  = round( (float) $pedido->get_total() - (float) $pedido->get_total_refunded(), 2 );
 			$envio   = dip_avisos_importe_envio( $pedido );
 			$sup     = dip_avisos_suplemento_envio( $pedido );
-			$opcion2 = array( sprintf( $sup > 0 ? $t['i_op2_sabado'] : $t['i_op2'], dip_avisos_euros( $envio + $sup, $idioma ) ) );
-			if ( $sup > 0 && dip_avisos_es_sabado( $fecha ) ) {
-				// Si lo recoge el mismo sábado, se quedan los 10 € de la recogida en sábado y se devuelve la diferencia
+			$devolver = $envio + $sup; // todo lo que pagó por el envío (desde el 11/11/2026 el sábado va en la tarifa, sin línea aparte)
+			$opcion2  = array( sprintf( $sup > 0 ? $t['i_op2_sabado'] : $t['i_op2'], dip_avisos_euros( $devolver, $idioma ) ) );
+			if ( $devolver > 0 && dip_avisos_es_sabado( $fecha ) ) {
+				// Si lo recoge el mismo sábado, del envío nos quedamos los 10 € de la recogida en sábado y se devuelve el resto
 				$rec = dip_suplemento_sabado( 'recogida', $fecha );
-				$se  = $rec ? min( $sup, (float) $rec['con_iva'] ) : 0.0;
-				if ( $se > 0 ) $opcion2[] = sprintf( $t['i_op2_mismo_sabado'], dip_avisos_euros( $se, $idioma ), dip_avisos_euros( $envio + $sup - $se, $idioma ) );
+				$se  = $rec ? min( $devolver, (float) $rec['con_iva'] ) : 0.0;
+				if ( $se > 0 ) $opcion2[] = sprintf( $t['i_op2_mismo_sabado'], dip_avisos_euros( $se, $idioma ), dip_avisos_euros( $devolver - $se, $idioma ) );
 			}
 			$mensaje = trim( (string) ( $extra['mensaje'] ?? $pedido->get_meta( '_dip_incidencia_mensaje' ) ) );
 			$bloques = array( array( 'p', dip_avisos_con_saludo( $pedido, '' !== $fecha ? sprintf( $t['i_intro'], $larga ) : $t['i_intro_sin'], $idioma, $usted ), 'grande' ) );

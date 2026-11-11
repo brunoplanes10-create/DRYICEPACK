@@ -151,7 +151,7 @@ return array(
 <h2>¿Cuándo lo pido para que me dure lo justo?</h2>
 <p>Para el día en que lo vas a usar o el anterior, no antes: pagarías kilos que se van a sublimar.</p>
 <ul>
-<li>Si pides antes de las 12:00, llega al día siguiente antes de las 14:00, de martes a viernes. El sábado, según zona, antes de las 12:00 y con un suplemento de {sabado_envio} (IVA incluido).</li>
+<li>Si pides antes de las 12:00, llega al día siguiente antes de las 14:00, de martes a viernes. El sábado, según zona, antes de las 13:00 y con precio de sábado: lo ves al elegir el día.</li>
 <li>Puedes reservarlo para cualquier día de los próximos 90.</li>
 <li>O recógelo en nuestra nave de Mataró, de lunes a sábado: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}, IVA incluido. El sábado, +{sabado_recogida}. Se paga en efectivo y con el importe exacto.</li>
 </ul>

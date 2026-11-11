@@ -7,8 +7,8 @@ return array(
 		'descripcion' => 'Dry ice as 3 mm pellets or 16 mm nuggets, from {pk} kg. Order before 12:00 and it arrives the next day before 14:00, or collect it in Mataró (Barcelona).',
 	),
 	'hero' => array(
-		'titulo'    => 'Dry ice at your door,|<em>before 14:00.</em>',
-		'texto'     => 'Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or pick any day you like. In an insulated box, from {pk} kg, no contracts. Near Mataró? Collect it from the warehouse: {pk} kg for {recogida:pk}, VAT included.',
+		'titulo'    => 'Buy dry ice,|<em>delivered to your door.</em>',
+		'texto'     => 'Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00. Or pick any day and, on weekdays, delivery before 12:00 or 10:00. In an insulated box, from {pk} kg, no contracts. Near Mataró? Collect it from the warehouse: {pk} kg for {recogida:pk}, VAT included.',
 		'boton'     => 'Place my order',
 		'o_llama'   => 'or call',
 		'alt'       => 'Open box of 16 mm dry ice nuggets giving off cold vapour',
@@ -35,7 +35,7 @@ return array(
 		'pasos'  => array(
 			array( '12:00', 'You place your order', 'Before 12:00, Monday to Friday, except public holidays. It leaves Mataró the same day.' ),
 			array( 'Today', 'We pack it', 'In a 40 mm EPS box, closed but not airtight, and off it goes with MRW.' ),
-			array( '14:00', 'It arrives the next day', 'Before 14:00, Tuesday to Friday. On Saturday, depending on the area: before 12:00, with a {sabado_envio} surcharge.' ),
+			array( '14:00', 'It arrives the next day', 'Before 14:00, Tuesday to Friday. On Saturday, depending on the area: before 13:00, at the Saturday rate.' ),
 		),
 		'nota'   => 'We only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla. No deliveries on Sunday or Monday.',
 		'enlace' => 'Delivery times and costs',
@@ -99,8 +99,8 @@ return array(
 		'titulo' => 'What people|ask us <em>most.</em>',
 		'lista'  => array(
 			array( 'How much dry ice do I need?', 'It depends on the use and how many hours you need it for. For fog, as a guide: {pk} kg at home, 10 kg for a big party and 15 to 20 kg for a bar or an event. For transport or samples, tell us the hours and the volume and we’ll work it out.' ),
-			array( 'When will it arrive?', 'If you order before 12:00, Monday to Thursday, it leaves the same day and arrives the next day before 14:00. Order on Friday and it arrives on Saturday before 12:00 (depending on the area, with a {sabado_envio} surcharge, VAT included) or on Tuesday. We don’t deliver on Sunday or Monday.' ),
-			array( 'Can I order for another day?', 'Yes: at checkout you can choose any day in the next 90 with delivery to your area, Tuesday to Saturday (Saturday depending on the area, with a surcharge). Order it for the day you’ll use it: dry ice sublimates over time.' ),
+			array( 'When will it arrive?', 'If you order before 12:00, Monday to Thursday, it leaves the same day and arrives the next day before 14:00. Order before 12:00 on Friday and it arrives on Saturday before 13:00 (depending on the area, at the Saturday rate, shown when you choose the day) or on Tuesday. We don’t deliver on Sunday or Monday.' ),
+			array( 'Can I order for another day?', 'Yes: at checkout you can choose any day in the next 90 with delivery to your area, Tuesday to Saturday (Saturday depending on the area, at the Saturday rate). Order it for the day you’ll use it: dry ice sublimates over time.' ),
 			array( 'Can I collect it in person?', 'Yes, from our warehouse in Mataró (Camí Ca La Madrona 19 D), Monday to Saturday, including public holidays. You pay a round price with VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk}, 10 kg for {recogida:10}, 15 kg for {recogida:15} and 20 kg for {recogida:20}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} We confirm the time beforehand. Payment is in cash, with the exact amount: we can’t give change.' ),
 			array( 'What’s the difference between 3 mm and 16 mm?', '3 mm pellets have more surface area: they cool faster and make more fog. 16 mm nuggets have more mass per piece and last longer, which is why they’re used for transport and samples.' ),
 			array( 'Do you invoice individuals and businesses?', 'Yes. If you’re an individual and the order is up to €400 (VAT included), the simplified invoice reaches you by email from info@dryicepack.es. If you’re buying for a company or as self-employed, tick ‘I am buying for a company or as self-employed’ at checkout and enter the company name and tax ID (NIF/CIF): you get the full invoice. If you’ve already paid without ticking it, we’ll send you a link to request it. Business accounts get a single invoice a month, payable within 30 days.' ),

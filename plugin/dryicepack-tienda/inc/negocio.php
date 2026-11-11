@@ -6,7 +6,8 @@
  *   hasta 2 kg 8,53 € · hasta 5 kg 10,32 € · hasta 10 kg 13,19 € · cada kg de más 1,12 €
  * Peso facturable = hielo + 1 kg por caja (medido el 31/08/2026), redondeado al alza.
  * Corte a las 12:00 (Madrid). Sale de lunes a viernes y llega al día siguiente antes de las 14:00 (sábado, antes de las 12:00).
- * Sin entregas en domingo ni lunes. Sábado según zona con suplemento de 9,70 € + IVA.
+ * Sin entregas en domingo ni lunes. Sábado según zona, antes de las 13:00, con la tarifa del Ecommerce de MRW.
+ * Horas a elegir entre semana (11/11/2026): antes de las 14:00 (de serie), de las 12:00 o de las 10:00, a precio de MRW.
  * Festivos: la lista manual de Ajustes (Mataró, Cataluña, España) y, por encima, los de MRW (inc/festivos-mrw.php):
  * sin salida si cierra MRW Mataró y sin entrega si cierra MRW en el destino.
  * Recogida en la nave de lunes a sábado, también en festivos (la confirma la empresa), solo en efectivo y a precio redondo
@@ -24,7 +25,8 @@ if ( ! defined( 'DIP_CUTOFF_MINUTE' ) )                define( 'DIP_CUTOFF_MINUT
 // MRW entrega antes de las 14:00 entre semana y antes de las 12:00 el sábado (09/11/2026). Una sola pareja para toda la
 // tienda: «Envíos de hoy», «Mi pedido» y los avisos al cliente (inc/envios-hoy.php, inc/mi-pedido.php, inc/avisos.php).
 if ( ! defined( 'DIP_HORA_ENTREGA' ) )                 define( 'DIP_HORA_ENTREGA', '14:00' );
-if ( ! defined( 'DIP_HORA_ENTREGA_SABADO' ) )          define( 'DIP_HORA_ENTREGA_SABADO', '12:00' );
+// El sábado va con el Ecommerce de MRW: en teoría antes de las 12:00, como muy tarde a las 13:00 → se promete 13:00 (11/11/2026)
+if ( ! defined( 'DIP_HORA_ENTREGA_SABADO' ) )          define( 'DIP_HORA_ENTREGA_SABADO', '13:00' );
 if ( ! defined( 'DIP_TARIFA_HASTA_2' ) )               define( 'DIP_TARIFA_HASTA_2', 8.53 );
 if ( ! defined( 'DIP_TARIFA_HASTA_5' ) )               define( 'DIP_TARIFA_HASTA_5', 10.32 );
 if ( ! defined( 'DIP_TARIFA_HASTA_10' ) )              define( 'DIP_TARIFA_HASTA_10', 13.19 );
@@ -112,6 +114,209 @@ function dip_coste_transporte( $kg_hielo, $bultos = 1 ) {
 	if ( $facturable <= 5 ) return (float) DIP_TARIFA_HASTA_5;
 	if ( $facturable <= 10 ) return (float) DIP_TARIFA_HASTA_10;
 	return round( (float) DIP_TARIFA_HASTA_10 + ( ( $facturable - 10 ) * (float) DIP_TARIFA_KG_EXTRA ), 2 );
+}
+
+/* =========================================================
+ * Servicios de entrega (11/11/2026): el cliente elige la hora y paga lo que cobra MRW, sin margen
+ * Tarifas de la comercial de MRW Mataró, sin IVA (estrategia/MRW-TARIFAS.md):
+ * - Antes de las 14:00 (Urgente 14 Expedición, 0115): el de serie y el más barato, igual en toda la península
+ *   (dip_coste_transporte).
+ * - Antes de las 12:00 (Urgente 12 Expedición, 0105) y antes de las 10:00 (Urgente 10 Expedición, 0015): por zona;
+ *   el de las 10:00 lleva 15,30 € más si se entrega a más de 25 km de la oficina de MRW.
+ * - Sábado antes de las 13:00 (Ecommerce, 0800, sale el viernes): por zona y tramos de peso, +2 € por caja desde la 3.ª,
+ *   y el suplemento de sábado: 5,45 €, o 9,70 € a más de 25 km de la oficina de MRW. Como mucho 80 kg por envío.
+ * «A más de 25 km de la oficina de MRW»: distancia medida de cada código postal a la oficina de MRW más cercana
+ * (datos/mrw-cerca.json: posición exacta de las 351 oficinas de mrw.es y de cada población de GeoNames; cerca = todas sus
+ * poblaciones a 18 km o menos en línea recta ≈ 25 km por carretera). En la duda, lejos (decidido el 11/11/2026).
+ * Zonas desde Mataró (confirmadas con la comercial): urbano = Mataró (08301–08304); provincial = provincia de
+ * Barcelona; regional = Girona, Lleida y Tarragona; peninsular = el resto.
+ * ========================================================= */
+
+if ( ! defined( 'DIP_SABADO_SUPLEMENTO_CERCA' ) ) define( 'DIP_SABADO_SUPLEMENTO_CERCA', 5.45 );
+// El de lejos es DIP_SATURDAY_SURCHARGE_EXCL_TAX (9,70 €): el mismo importe de siempre
+if ( ! defined( 'DIP_SABADO_BULTO_EXTRA' ) )      define( 'DIP_SABADO_BULTO_EXTRA', 2.00 ); // por caja, desde la 3.ª
+if ( ! defined( 'DIP_SABADO_MAX_KG' ) )           define( 'DIP_SABADO_MAX_KG', 80 );        // kg facturables por envío
+if ( ! defined( 'DIP_SUPLEMENTO_10_LEJOS' ) )     define( 'DIP_SUPLEMENTO_10_LEJOS', 15.30 );
+
+/** Servicios por mensajería: hora de entrega y servicio de MRW (el código se puede cambiar en Ajustes → MRW). */
+function dip_servicios_envio() {
+	return array(
+		'14'     => array( 'hora' => DIP_HORA_ENTREGA, 'codigo' => '0115', 'mrw' => 'Urgente 14 Expedición' ),
+		'12'     => array( 'hora' => '12:00', 'codigo' => '0105', 'mrw' => 'Urgente 12 Expedición' ),
+		'10'     => array( 'hora' => '10:00', 'codigo' => '0015', 'mrw' => 'Urgente 10 Expedición' ),
+		'sabado' => array( 'hora' => DIP_HORA_ENTREGA_SABADO, 'codigo' => '0800', 'mrw' => 'Ecommerce (entrega en sábado)' ),
+	);
+}
+
+/** Servicio válido para un día de entrega: el sábado siempre 'sabado'; entre semana '14' (de serie), '12' o '10'. */
+function dip_servicio_para( $servicio, $ymd ) {
+	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', (string) $ymd, dip_zona_horaria() );
+	if ( $d && 6 === (int) $d->format( 'N' ) ) return 'sabado';
+	return in_array( (string) $servicio, array( '14', '12', '10' ), true ) ? (string) $servicio : '14';
+}
+
+/** Hora límite de entrega de un servicio ('14:00', '12:00', '10:00' o la del sábado). */
+function dip_hora_servicio( $servicio ) {
+	return dip_servicios_envio()[ (string) $servicio ]['hora'] ?? DIP_HORA_ENTREGA;
+}
+
+/** Zona de MRW desde Mataró: 'urbano' | 'provincial' | 'regional' | 'peninsular'. */
+function dip_zona_envio( $cp ) {
+	$cp = preg_replace( '/\D/', '', (string) $cp );
+	if ( 5 !== strlen( $cp ) ) return 'peninsular';
+	if ( in_array( $cp, array( '08301', '08302', '08303', '08304' ), true ) ) return 'urbano';
+	$p = substr( $cp, 0, 2 );
+	if ( '08' === $p ) return 'provincial';
+	if ( in_array( $p, array( '17', '25', '43' ), true ) ) return 'regional';
+	return 'peninsular';
+}
+
+/**
+ * Códigos postales cerca y lejos de una oficina de MRW (datos/mrw-cerca.json, herramientas/datos-mrw-cerca.mjs):
+ * cerca = todas las poblaciones del código (GeoNames) a 18 km o menos en línea recta de una oficina de MRW (posición
+ * exacta de mrw.es) ≈ 25 km por carretera. ['cerca' => [cp => i], 'lejos' => [cp => i], 'poblaciones' => [PROV => [nombres]]].
+ */
+function dip_mrw_cerca_datos() {
+	static $d = null;
+	if ( null !== $d ) return $d;
+	$d       = array( 'ok' => false, 'cerca' => array(), 'lejos' => array(), 'poblaciones' => array() );
+	$archivo = defined( 'DIP_TIENDA_DIR' ) ? DIP_TIENDA_DIR . 'datos/mrw-cerca.json' : '';
+	$j       = $archivo && file_exists( $archivo ) ? json_decode( (string) file_get_contents( $archivo ), true ) : null;
+	if ( ! is_array( $j ) || empty( $j['cerca'] ) ) return $d;
+	$d['ok']    = true;
+	$d['cerca'] = array_flip( str_split( (string) $j['cerca'], 5 ) );
+	$d['lejos'] = array_flip( str_split( (string) ( $j['lejos'] ?? '' ), 5 ) );
+	foreach ( (array) ( $j['poblaciones'] ?? array() ) as $p => $nombres ) {
+		$d['poblaciones'][ str_replace( ' ', '', dip_mrw_clave_provincia( $p ) ) ] = (array) $nombres;
+	}
+	return $d;
+}
+
+/**
+ * ¿El destino está a menos de 25 km de la oficina de MRW que entrega? (sábado 5,45 € en vez de 9,70 €; 10:00 sin +15,30 €)
+ * - Código postal en la lista «cerca» (distancia medida, con margen): sí. En la lista «lejos»: no.
+ * - Código que la lista no conoce (nuevo): sí solo si la población del cliente tiene oficina de MRW; si no, no.
+ * En la duda, «lejos»: se cobra el suplemento de lejos y no se pierde dinero (decidido el 11/11/2026).
+ */
+function dip_cerca_oficina_mrw( $destino ) {
+	$cp        = preg_replace( '/\D/', '', (string) ( $destino['cp'] ?? '' ) );
+	$poblacion = trim( (string) ( $destino['poblacion'] ?? '' ) );
+	if ( 'urbano' === dip_zona_envio( $cp ) ) return true; // Mataró: la oficina de MRW está en la ciudad
+	if ( 5 !== strlen( $cp ) || ! function_exists( 'dip_mrw_provincia_por_cp' ) ) return false;
+	$d = dip_mrw_cerca_datos();
+	if ( $d['ok'] ) {
+		if ( isset( $d['cerca'][ $cp ] ) ) return true;
+		if ( isset( $d['lejos'][ $cp ] ) ) return false;
+		$oficinas = (array) ( $d['poblaciones'][ str_replace( ' ', '', dip_mrw_clave_provincia( dip_mrw_provincia_por_cp( $cp ) ) ) ] ?? array() );
+	} else {
+		// Sin datos (archivo que falta): las poblaciones con oficina del calendario de festivos de MRW
+		$oficinas = function_exists( 'dip_mrw_oficinas' ) ? (array) ( dip_mrw_oficinas()[ dip_mrw_clave_provincia( dip_mrw_provincia_por_cp( $cp ) ) ]['nombres'] ?? array() ) : array();
+	}
+	$nombres = '' !== $poblacion ? dip_mrw_nombres( $poblacion ) : array();
+	if ( ! $nombres ) return false;
+	foreach ( $oficinas as $oficina ) {
+		if ( function_exists( 'dip_mrw_es_interna' ) && dip_mrw_es_interna( $oficina ) ) continue;
+		if ( dip_mrw_mismo_sitio( $nombres, dip_mrw_nombres( $oficina ) ) ) return true;
+	}
+	return false;
+}
+
+/** Tarifas de MRW por zona (sin IVA). Urgentes: [hasta 5 kg, hasta 10 kg, kg adicional]. Sábado: tramos y «cada 5 kg más». */
+function dip_tarifas_mrw() {
+	$sabado_cerca = array( 6.22, 7.54, 10.33, 12.44, 14.19, 16.63, 19.71, 21.68, 23.87, 2.90 ); // urbano = provincial
+	return array(
+		'12'     => array(
+			'urbano'     => array( 8.30, 16.60, 1.66 ),
+			'provincial' => array( 11.05, 22.10, 2.21 ),
+			'regional'   => array( 16.09, 32.18, 3.22 ),
+			'peninsular' => array( 21.06, 42.12, 4.21 ),
+		),
+		'10'     => array(
+			'urbano'     => array( 8.92, 17.84, 1.78 ),
+			'provincial' => array( 12.26, 24.52, 2.45 ),
+			'regional'   => array( 24.28, 48.56, 4.86 ),
+			'peninsular' => array( 26.53, 53.06, 5.31 ),
+		),
+		'sabado' => array(
+			'tramos'     => array( 2, 5, 10, 15, 20, 25, 30, 35, 40 ),
+			'urbano'     => $sabado_cerca,
+			'provincial' => $sabado_cerca,
+			'regional'   => array( 7.20, 9.37, 11.57, 13.80, 16.02, 19.87, 24.11, 26.53, 29.15, 4.06 ),
+			'peninsular' => array( 8.95, 11.71, 14.48, 17.25, 20.02, 24.86, 30.14, 33.14, 36.45, 5.11 ),
+		),
+	);
+}
+
+/** Peso facturable: hielo + 1 kg por caja, redondeado al alza (el mismo de la tarifa y de MRW). */
+function dip_peso_facturable( $kg_hielo, $bultos = 1 ) {
+	$kg_hielo = max( 0, (float) $kg_hielo );
+	return $kg_hielo > 0 ? (int) ceil( $kg_hielo + ( DIP_PESO_EMBALAJE * max( 1, (int) $bultos ) ) ) : 0;
+}
+
+/** Tarifa de MRW de un servicio concreto, sin IVA (sin elegir el más barato). null: sábado de más de 80 kg. */
+function dip_tarifa_mrw( $servicio, $peso, $bultos, $zona, $cerca ) {
+	if ( $peso <= 0 ) return 0.0;
+	if ( '14' === $servicio ) {
+		if ( $peso <= 2 ) return (float) DIP_TARIFA_HASTA_2;
+		if ( $peso <= 5 ) return (float) DIP_TARIFA_HASTA_5;
+		if ( $peso <= 10 ) return (float) DIP_TARIFA_HASTA_10;
+		return round( (float) DIP_TARIFA_HASTA_10 + ( $peso - 10 ) * (float) DIP_TARIFA_KG_EXTRA, 2 );
+	}
+	$t = dip_tarifas_mrw()[ $servicio ];
+	if ( 'sabado' === $servicio ) {
+		if ( $peso > DIP_SABADO_MAX_KG ) return null;
+		$fila = $t[ $zona ];
+		$neto = null;
+		foreach ( $t['tramos'] as $i => $hasta ) {
+			if ( $peso <= $hasta ) {
+				$neto = $fila[ $i ];
+				break;
+			}
+		}
+		if ( null === $neto ) $neto = $fila[8] + ceil( ( $peso - 40 ) / 5 ) * $fila[9]; // más de 40 kg: cada 5 kg (o parte)
+		if ( $bultos >= 3 ) $neto += ( $bultos - 2 ) * DIP_SABADO_BULTO_EXTRA;
+		$neto += $cerca ? DIP_SABADO_SUPLEMENTO_CERCA : (float) DIP_SATURDAY_SURCHARGE_EXCL_TAX;
+		return round( $neto, 2 );
+	}
+	list( $hasta5, $hasta10, $extra ) = $t[ $zona ];
+	$neto = $peso <= 5 ? $hasta5 : ( $peso <= 10 ? $hasta10 : $hasta10 + ( $peso - 10 ) * $extra );
+	if ( '10' === $servicio && ! $cerca ) $neto += DIP_SUPLEMENTO_10_LEJOS;
+	return round( $neto, 2 );
+}
+
+/**
+ * Precio del transporte sin IVA de la hora elegida. null si no se puede (sábado de más de 80 kg).
+ * Cada hora cuesta lo que cuesta el servicio de MRW más barato que llega a esa hora (sin margen, 11/11/2026): en Mataró
+ * y la provincia de Barcelona, con poco peso, el Urgente 12 es más barato que el 14 y entonces «antes de las 14:00» va
+ * por el Urgente 12, a su precio. Así la hora de serie (14:00) nunca es más cara que las otras.
+ * 'mrw' es el servicio con el que se crea el envío en MRW ('14', '12', '10' o 'sabado').
+ * $destino: ['cp' => …, 'poblacion' => …] (sin él: península y lejos de una oficina, el precio más alto).
+ *
+ * @return array{neto: float, servicio: string, mrw: string, zona: string, peso: int, cerca: bool}|null
+ */
+function dip_precio_servicio( $servicio, $kg_hielo, $bultos = 1, $destino = null ) {
+	$servicio = in_array( (string) $servicio, array( '14', '12', '10', 'sabado' ), true ) ? (string) $servicio : '14';
+	$bultos   = max( 1, (int) $bultos );
+	$peso     = dip_peso_facturable( $kg_hielo, $bultos );
+	$destino  = is_array( $destino ) ? $destino : array();
+	$zona     = dip_zona_envio( $destino['cp'] ?? '' );
+	$cerca    = dip_cerca_oficina_mrw( $destino );
+	$r        = array( 'neto' => 0.0, 'servicio' => $servicio, 'mrw' => $servicio, 'zona' => $zona, 'peso' => $peso, 'cerca' => $cerca );
+	if ( $peso <= 0 ) return $r;
+	if ( 'sabado' === $servicio ) {
+		$neto = dip_tarifa_mrw( 'sabado', $peso, $bultos, $zona, $cerca );
+		return null === $neto ? null : array_merge( $r, array( 'neto' => $neto ) );
+	}
+	// Servicios que llegan a esa hora o antes: 14 → 14, 12, 10 · 12 → 12, 10 · 10 → 10. Con empate, el de la hora pedida.
+	$validos = array( '14' => array( '14', '12', '10' ), '12' => array( '12', '10' ), '10' => array( '10' ) )[ $servicio ];
+	foreach ( $validos as $s ) {
+		$neto = dip_tarifa_mrw( $s, $peso, $bultos, $zona, $cerca );
+		if ( $s === $servicio || $neto < $r['neto'] - 0.001 ) {
+			$r['neto'] = $neto;
+			$r['mrw']  = $s;
+		}
+	}
+	return $r;
 }
 
 /** Tipo de IVA general (21 % si WooCommerce no dice otra cosa). */
@@ -222,7 +427,7 @@ function dip_sabados_recogida_sin_suplemento() {
 
 /**
  * Suplemento de sábado de un día, o null si no lleva.
- * - Envío: 9,70 € + IVA (11,74 €).
+ * - Envío: ninguno desde el 11/11/2026 (el sábado tiene su propia tarifa: dip_precio_servicio).
  * - Recogida: 10,00 € IVA incluido, partido en base y cuota que suman justo 10,00 € (8,26 € + 1,74 €);
  *   sin suplemento los sábados de dip_sabados_recogida_sin_suplemento().
  *
@@ -232,14 +437,12 @@ function dip_suplemento_sabado( $metodo, $ymd ) {
 	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', (string) $ymd, dip_zona_horaria() );
 	if ( ! $d || 6 !== (int) $d->format( 'N' ) ) return null;
 	$factor = dip_factor_iva();
-	if ( 'recogida' === $metodo ) {
-		if ( in_array( (string) $ymd, dip_sabados_recogida_sin_suplemento(), true ) ) return null;
-		$con_iva = round( (float) DIP_RECOGIDA_SABADO_CON_IVA, 2 );
-		$neto    = round( $con_iva / $factor, 2 );
-	} else {
-		$neto    = round( (float) DIP_SATURDAY_SURCHARGE_EXCL_TAX, 2 );
-		$con_iva = round( $neto * $factor, 2 );
-	}
+	// Envío: desde el 11/11/2026 el sábado tiene su propia tarifa (Ecommerce de MRW, con su suplemento dentro):
+	// va en el precio del envío (dip_precio_servicio), no en una línea aparte. Solo la recogida lleva suplemento.
+	if ( 'recogida' !== $metodo ) return null;
+	if ( in_array( (string) $ymd, dip_sabados_recogida_sin_suplemento(), true ) ) return null;
+	$con_iva = round( (float) DIP_RECOGIDA_SABADO_CON_IVA, 2 );
+	$neto    = round( $con_iva / $factor, 2 );
 	return array( 'neto' => $neto, 'iva' => round( $con_iva - $neto, 2 ), 'con_iva' => $con_iva );
 }
 

@@ -34,7 +34,7 @@ return array(
 	'cp_corto'     => 'Falten xifres: són 5',
 	// Línia d'entrega amb el codi postal (%1$s = "08301 · Barcelona", %2$s = data); "medida" acaba amb un enllaç a WhatsApp; "fuera", no (no s'hi envia)
 	'llega_cp_ok'     => '%1$s — arriba el %2$s abans de les 14:00',
-	'llega_cp_sabado' => 'O el %1$s abans de les 12:00, segons la zona: +%2$s',
+	'llega_cp_sabado' => 'O el %1$s abans de les 13:00, segons la zona, amb preu de dissabte', // sense %2$s des de l'11/11/2026: el preu de dissabte depèn de la destinació i els quilos
 	'llega_cp_fuera'  => 'només enviem a la península: no a les Balears, les Canàries, Ceuta ni Melilla.',
 	'llega_cp_medida' => 'més de 150 kg fora de la província de Barcelona: demana-ho per',
 	'llega_cp_error'  => 'El codi postal %s no existeix a Espanya. Revisa les 5 xifres.',
@@ -87,9 +87,10 @@ return array(
 	),
 	'tarifa' => array(
 		'titulo' => 'Quant costa|<em>l\'enviament?</em>',
-		'texto'  => 'La tarifa de la missatgeria, igual a tota la península. Es calcula amb el pes del gel més 1 kg per caixa, i la veus abans de pagar.',
+		'texto'  => 'La tarifa de la missatgeria per a l\'entrega abans de les 14:00, igual a tota la península. Es calcula amb el pes del gel més 1 kg per caixa, i la veus abans de pagar. L\'entrega abans de les 12:00 o de les 10:00, i la del dissabte, tenen el seu preu segons la destinació i els quilos: el veus en triar el dia i l\'hora.',
 		'filas'  => array( array( 'Fins a 2 kg', 8.53 ), array( 'Fins a 5 kg', 10.32 ), array( 'Fins a 10 kg', 13.19 ), array( 'Cada kg de més', 1.12 ) ),
-		'extra'  => array( array( 'Entrega en dissabte (segons la zona)', 9.70 ), array( 'Recollida a Mataró, sense enviament', 0 ) ),
+		// 11/11/2026: sense fila de dissabte. Ja no és un suplement fix: depèn de la destinació i els quilos (es veu en triar el dia)
+		'extra'  => array( array( 'Recollida a Mataró, sense enviament', 0 ) ),
 		'nota'   => 'Preus amb IVA inclòs. La recollida es paga en efectiu i amb l\'import exacte.',
 		'gratis' => '0 €', // fila de la recollida al taló d'enviament: no hi ha cost d'enviament (el gel es paga a preu de recollida)
 		'enlace' => 'Terminis d\'entrega, festius i recollida',
@@ -99,8 +100,8 @@ return array(
 		'titulo'   => 'Abans de pagar',
 		'empresas' => 'Compte d\'empresa amb factura mensual',
 		'lista'    => array(
-			array( 'Quan arriba?', 'Si demanes abans de les 12:00 de dilluns a dijous, surt aquell mateix dia i arriba l\'endemà abans de les 14:00. Si demanes divendres, arriba dissabte abans de les 12:00 (segons la zona, amb un suplement de {sabado_envio}) o dimarts. No repartim ni diumenge ni dilluns. El dia el tries en pagar.' ),
-			array( 'Puc demanar per a un altre dia?', 'Sí: en pagar tries qualsevol dia dels pròxims 90 amb repartiment a la teva zona, de dimarts a dissabte (el dissabte, segons la zona i amb suplement). Demana\'l per al dia que el faràs servir: el gel sec es va sublimant amb les hores.' ),
+			array( 'Quan arriba?', 'Si demanes abans de les 12:00 de dilluns a dijous, surt aquell mateix dia i arriba l\'endemà abans de les 14:00. Si demanes divendres abans de les 12:00, arriba dissabte abans de les 13:00 (segons la zona, amb preu de dissabte) o dimarts. No repartim ni diumenge ni dilluns. El dia el tries en pagar.' ),
+			array( 'Puc demanar per a un altre dia?', 'Sí: en pagar tries qualsevol dia dels pròxims 90 amb repartiment a la teva zona, de dimarts a dissabte (el dissabte, segons la zona i amb preu de dissabte). Demana\'l per al dia que el faràs servir: el gel sec es va sublimant amb les hores.' ),
 			// Mesura pròpia del 10–11/11/2026. [PENDIENTE: actualitzar la frase de 3 kg quan el paquet petit sigui de 5 kg.]
 			array( 'Arriba el mateix pes que demano?', 'No del tot: el gel sec se sublima des que es prepara, també amb la caixa tancada. Ho hem mesurat a la nostra nau, amb les caixes tancades: en 29 hores, la caixa petita va perdre 1,8 kg, la gran (de 15 i 20 kg) 4,1 kg i la de 30 kg 5,7 kg. Si en demanes 3 kg, t\'arriben uns 2 kg. Amb calor o obrint la caixa es gasta abans. Demana\'l per al dia que el faràs servir i, si el necessites just, tria una caixa més gran.' ),
 			array( 'I si necessito factura?', 'Si ets particular i la comanda és de fins a 400 € (IVA inclòs), t\'arriba la factura simplificada per correu electrònic des d\'info@dryicepack.es, sense demanar-la. Si compres per a una empresa o com a autònom, marca la casella en pagar i posa-hi la raó social i el NIF: reps la factura completa. Si te n\'oblides, t\'enviem un enllaç per demanar-la.' ),

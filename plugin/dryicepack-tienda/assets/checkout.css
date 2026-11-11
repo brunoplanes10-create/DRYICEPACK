@@ -16,6 +16,12 @@
 .dip-metodo__texto small { display: block; margin-top: .2rem; color: var(--c-acero, #56677A); font-size: .85em; }
 .dip-metodo__texto .dip-metodo__precios { font-weight: 600; color: var(--c-marino, #1F3C55); }
 .dip-metodo__precio { font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Hora de entrega (inc/entrega.php, dip_html_horas): mismas tarjetas que el método, con un círculo de radio a la izquierda */
+.dip-horas { border: 0; margin: 0 0 1.4rem; padding: 0; min-width: 0; }
+.dip-hora { position: relative; }
+.dip-hora__marca { width: 18px; height: 18px; border: 1.5px solid var(--c-acero, #56677A); border-radius: 50%; box-sizing: border-box; background: var(--dip-fondo, #fff); }
+.dip-hora:has(input:checked) .dip-hora__marca { border: 5px solid var(--c-marino, #1F3C55); }
+.dip-horas__sabado { margin: 0 0 1.4rem; font-weight: 600; color: var(--c-marino, #1F3C55); font-size: .95rem; }
 
 /* 6 días + "Otra fecha": 4 por fila en móvil, una fila en escritorio */
 .dip-fechas__lista { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }

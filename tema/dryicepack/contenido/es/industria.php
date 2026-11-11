@@ -63,7 +63,7 @@ return array(
 		'titulo' => 'Preguntas de industria',
 		'lista'  => array(
 			array( '¿3 mm o 16 mm para enfriar piezas?', 'Normalmente 3 mm: más superficie en contacto y enfría antes. Para mantener el frío muchas horas, 16 mm.' ),
-			array( '¿Pueden entregar un día concreto?', 'Sí. En la web elige el día al pagar: de martes a viernes, y el sábado según zona. Para pedidos de volumen, lo acordamos por teléfono.' ),
+			array( '¿Pueden entregar un día concreto?', 'Sí. En la web, elija el día al pagar: de martes a viernes, y el sábado según zona (como mucho 80 kg por pedido, contando las cajas). Para pedidos de volumen, lo acordamos por teléfono.' ),
 			array( '¿Hacen limpieza criogénica?', 'La hace INDUNOVA, la empresa de la que forma parte DryIcePack. Le ponemos en contacto. Si tiene máquina propia, le servimos el <a href="' . esc_url( dipt_url( 'limpieza' ) ) . '">hielo seco para limpieza criogénica</a>: pellets de 3 mm.' ),
 		),
 	),

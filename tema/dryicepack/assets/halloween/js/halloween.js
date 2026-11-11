@@ -105,7 +105,7 @@
         texto = "de margen para pedir y recibirlo el viernes 30 antes de las 14:00.";
       } else if (f === "sabado") {
         objetivo = tSabado;
-        texto = "de margen para pedir con entrega el sábado 31 (según zona, suplemento de 11,74 € IVA incl.).";
+        texto = "de margen para pedir con entrega el sábado 31 (según zona, antes de las 13:00, con precio de sábado).";
       } else if (f === "cerrado") {
         reloj.textContent = "Plazo de envío cerrado";
         if (ahora < tTelefono) {

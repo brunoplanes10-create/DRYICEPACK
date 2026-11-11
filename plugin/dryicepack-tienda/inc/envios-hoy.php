@@ -32,7 +32,7 @@ if ( ! defined( 'DIP_EH_HORA_SABADO' ) )      define( 'DIP_EH_HORA_SABADO', '10:
 if ( ! defined( 'DIP_EH_HORA_REPARTO' ) )     define( 'DIP_EH_HORA_REPARTO', '09:00' );    // sábado, antes del reparto
 if ( ! defined( 'DIP_EH_HORA_SIN_NUMERO' ) )  define( 'DIP_EH_HORA_SIN_NUMERO', '18:00' ); // pedidos de hoy sin número de MRW
 if ( ! defined( 'DIP_EH_CADUCA' ) )           define( 'DIP_EH_CADUCA', 26 );               // horas sin comprobar antes de avisar
-// DIP_HORA_ENTREGA (14:00) y DIP_HORA_ENTREGA_SABADO (12:00) están en inc/negocio.php: una sola pareja para toda la tienda
+// DIP_HORA_ENTREGA (14:00) y DIP_HORA_ENTREGA_SABADO (13:00) están en inc/negocio.php: una sola pareja para toda la tienda
 if ( ! defined( 'DIP_MRW_SEGUIMIENTO' ) )     define( 'DIP_MRW_SEGUIMIENTO', 'https://www.mrw.es/seguimiento/' );
 
 /* =========================================================
@@ -75,9 +75,17 @@ function dip_eh_es_sabado( $ymd ) {
 	return $d && 6 === (int) $d->format( 'N' );
 }
 
-/** Hora límite de entrega de MRW para ese día: 14:00; el sábado, 12:00. */
+/** Hora límite de entrega de MRW para ese día: 14:00; el sábado, 13:00 (Ecommerce, 11/11/2026). */
 function dip_hora_limite_entrega( $ymd ) {
 	return dip_eh_es_sabado( $ymd ) ? DIP_HORA_ENTREGA_SABADO : DIP_HORA_ENTREGA;
+}
+
+/** Hora límite de un pedido: la que pagó el cliente (antes de las 10:00 o de las 12:00) o la de su día (14:00; sábado 13:00). */
+function dip_hora_entrega_pedido( WC_Order $p ) {
+	$fecha = dip_eh_fecha( $p );
+	$s     = (string) $p->get_meta( '_dip_servicio' );
+	if ( in_array( $s, array( '10', '12' ), true ) && ! dip_eh_es_sabado( $fecha ) && function_exists( 'dip_hora_servicio' ) ) return dip_hora_servicio( $s );
+	return dip_hora_limite_entrega( $fecha );
 }
 
 /** Día de salida de Mataró (el anterior a la entrega) o ''. */
@@ -351,7 +359,7 @@ function dip_eh_pantalla() {
 		</p>
 		<?php if ( $pedidos && 'hoy' === $clave && function_exists( 'dip_sagec_html_botones' ) ) dip_sagec_html_botones( $pedidos, $volver ); ?>
 		<?php if ( $pedidos && $sabado ) : ?>
-			<p class="dip-eh__sabado"><strong>Sábado antes de las 12:00:</strong> cinta y servicio de sábado de MRW · comprobar con MRW que el CP tiene reparto en sábado. Si no lo tiene, llama hoy al cliente: reembolso completo o recogerlo en Mataró.</p>
+			<p class="dip-eh__sabado"><strong><?php echo esc_html( 'Sábado antes de las ' . DIP_HORA_ENTREGA_SABADO . ':' ); ?></strong> Ecommerce de MRW con «entrega en sábado» (la etiqueta lo tiene que decir) · comprobar con MRW que el CP tiene reparto en sábado. Si no lo tiene, llama hoy al cliente: reembolso completo o recogerlo en Mataró.</p>
 		<?php endif; ?>
 		<?php if ( $pedidos ) : ?>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="dip-eh__form">
@@ -384,9 +392,16 @@ function dip_eh_html_pedido( WC_Order $p, $volver = '' ) {
 	<li class="dip-eh-p<?php echo $sabado ? ' dip-eh-p--sabado' : ''; ?><?php echo $numero ? ' dip-eh-p--hecho' : ''; ?>">
 		<p class="dip-eh-p__cabeza"><a href="<?php echo esc_url( $p->get_edit_order_url() ); ?>">Pedido <?php echo esc_html( $p->get_order_number() ); ?></a> <span><?php echo esc_html( dip_eh_cliente( $p ) ); ?></span></p>
 		<?php if ( $sabado ) : ?>
-			<p class="dip-eh-p__sabado"><strong>Sábado antes de las 12:00:</strong> cinta y servicio de sábado de MRW · comprobar con MRW que el CP tiene reparto en sábado.<?php if ( $tel ) : ?> <a href="<?php echo esc_attr( 'tel:' . $tel ); ?>">Llamar al cliente</a><?php endif; ?></p>
+			<p class="dip-eh-p__sabado"><strong><?php echo esc_html( 'Sábado antes de las ' . DIP_HORA_ENTREGA_SABADO . ':' ); ?></strong> Ecommerce con «entrega en sábado» · comprobar con MRW que el CP tiene reparto en sábado.<?php if ( $tel ) : ?> <a href="<?php echo esc_attr( 'tel:' . $tel ); ?>">Llamar al cliente</a><?php endif; ?></p>
 		<?php endif; ?>
-		<p class="dip-eh-p__datos"><span><?php echo esc_html( dip_eh_texto_kg( $p ) ); ?></span><span><?php echo esc_html( dip_eh_lugar( $p ) ?: '—' ); ?></span><span><?php echo esc_html( 'Entrega: ' . ( $fecha ? dip_fecha_larga( $fecha ) . ', antes de las ' . dip_hora_limite_entrega( $fecha ) : 'sin día' ) ); ?></span><?php if ( '' !== (string) $p->get_meta( '_dip_urgente' ) ) : ?><span class="dip-eh-p__urgente">Urgente</span><?php endif; ?></p>
+		<p class="dip-eh-p__datos"><span><?php echo esc_html( dip_eh_texto_kg( $p ) ); ?></span><span><?php echo esc_html( dip_eh_lugar( $p ) ?: '—' ); ?></span><span><?php echo esc_html( 'Entrega: ' . ( $fecha ? dip_fecha_larga( $fecha ) . ', antes de las ' . dip_hora_entrega_pedido( $p ) : 'sin día' ) ); ?></span><?php if ( '' !== (string) $p->get_meta( '_dip_urgente' ) ) : ?><span class="dip-eh-p__urgente">Urgente</span><?php endif; ?></p>
+		<?php
+		// Hora pagada por el cliente (11/11/2026): antes de las 10:00 o de las 12:00 → otra cinta y otro servicio de MRW
+		$dip_s = (string) $p->get_meta( '_dip_servicio' );
+		if ( in_array( $dip_s, array( '10', '12' ), true ) && ! $sabado ) :
+			?>
+			<p class="dip-eh-p__hora"><strong><?php echo esc_html( 'Antes de las ' . dip_hora_servicio( $dip_s ) . ':' ); ?></strong> <?php echo esc_html( 'lo ha pagado el cliente. Servicio de MRW ' . ( dip_servicios_envio()[ (string) ( $p->get_meta( '_dip_servicio_mrw' ) ?: $dip_s ) ]['mrw'] ?? '' ) . ' y su cinta.' ); ?></p>
+		<?php endif; ?>
 		<?php if ( function_exists( 'dip_sagec_html_pedido' ) && dip_eh_salida_de( $fecha ) === dip_eh_ahora()->format( 'Y-m-d' ) ) dip_sagec_html_pedido( $p, $volver ); ?>
 		<label class="dip-eh-p__etiqueta" for="dip-mrw-<?php echo (int) $id; ?>">Número de MRW</label>
 		<input class="dip-eh-p__campo" id="dip-mrw-<?php echo (int) $id; ?>" name="dip_mrw[<?php echo (int) $id; ?>]" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="35" value="<?php echo esc_attr( $numero ); ?>">
@@ -654,7 +669,7 @@ function dip_eh_email_sin_numero( $salida, $entrega, array $pedidos ) {
 	$n      = count( $pedidos );
 	$asunto = sprintf( 'Pedidos de hoy sin número de MRW: %d', $n );
 	$texto  = sprintf( "%s hoy, %s, y todavía no %s número de MRW. Sin número, el cliente no recibe el aviso de que va de camino ni puede seguirlo.\n\n", 1 === $n ? 'Este pedido salía' : 'Estos pedidos salían', dip_fecha_larga( $salida ), 1 === $n ? 'tiene' : 'tienen' );
-	foreach ( $pedidos as $p ) $texto .= dip_eh_linea_email( $p ) . '  Entrega: ' . dip_fecha_larga( $entrega ) . ', antes de las ' . dip_hora_limite_entrega( $entrega ) . "\n";
+	foreach ( $pedidos as $p ) $texto .= dip_eh_linea_email( $p ) . '  Entrega: ' . dip_fecha_larga( $entrega ) . ', antes de las ' . dip_hora_entrega_pedido( $p ) . "\n";
 	$texto .= "\nQué hacer:\n"
 		. '1. ' . ( 1 === $n ? 'Si ya ha salido' : 'Si ya salieron' ) . ": apunta el número de MRW (está en la etiqueta y en la web de clientes de MRW) en «Envíos de hoy» y pulsa «Guardar y avisar a los clientes».\n"
 		. '2. ' . ( 1 === $n ? 'Si no ha salido' : 'Si alguno no ha salido' ) . ": llama hoy al cliente y ofrécele reembolso completo o recogerlo en Mataró.\n\n"

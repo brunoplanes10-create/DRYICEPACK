@@ -3,8 +3,9 @@
  * Provincias y ciudades de la península (plantillas/provincia.php) · castellano.
  * Primero la empresa (de usted, como las páginas B2B); la entrega, los precios y las preguntas de la compra online, de tú.
  * Marcadores (inc/lugares.php, dipt_lugar_texto): {nombre} {Nombre} {provincia} {ccaa} {cp} {cp_resto} {km} {min} {fecha}
- * {y_prov} {y_toda} {y_toda_de} {envio:N} {total:N} {kilo:N} y los de la tienda: {pk} {precio:N} {recogida:N} {sabado_envio}
- * {sabado_recogida} {sabado_libre}. Nunca cifras fijas de precios: salen de la tienda.
+ * {y_prov} {y_toda} {y_toda_de} {envio:N} {total:N} {kilo:N} y los de la tienda: {pk} {precio:N} {recogida:N}
+ * {sabado_recogida} {sabado_libre}. Nunca cifras fijas de precios: salen de la tienda. El envío en sábado ya no tiene
+ * suplemento fijo (11/11/2026): su precio depende del destino y los kilos y se ve al pagar.
  */
 return array(
 	'marcadores' => array(
@@ -92,7 +93,7 @@ return array(
 		'titulo'  => '¿Cuándo llega a {nombre}?|<em>Y cuánto cuesta.</em>',
 		'tarjeta' => 'Puesto en {nombre} · IVA incl.',
 		'pedido'  => array( 'Pedido antes de las 12:00', 'Reparto de martes a viernes: domingo y lunes no hay.' ),
-		'sabado'  => array( 'Sábado', 'Antes de las 12:00, según zona: lo comprobamos antes de enviar. Suplemento de {sabado_envio} (IVA incluido). Pídelo antes de las 12:00 del viernes.' ),
+		'sabado'  => array( 'Sábado', 'Antes de las 13:00, según zona: lo comprobamos antes de enviar. Precio de sábado: lo ves al elegir el día. Pídelo antes de las 12:00 del viernes.' ),
 		'mrw'     => array( 'Días sin reparto', 'MRW no reparte {lista}. Al pagar solo te salen los días con reparto.' ),
 		'mrw_dia' => array( 'provincia' => 'el {dia} en toda la provincia', 'local' => 'el {dia} en {nombre}' ),
 		'pack'    => '{precio} ({kilo}/kg) + envío {envio} = {total}',
@@ -114,11 +115,11 @@ return array(
 		'donde'    => array( '¿Dónde comprar hielo seco en {nombre}?', 'Online, en esta web: eliges pellets de 3 mm o nuggets de 16 mm, desde {pk} kg, y llega a {nombre} en caja EPS antes de las 14:00 del día que elijas (si pides antes de las 12:00, de lunes a jueves, al día siguiente). Para empresas, también con suministro programado y factura mensual.' ),
 		'donde_cat' => array( '¿Dónde comprar hielo seco en {nombre}?', 'Online, en esta web: eliges pellets de 3 mm o nuggets de 16 mm, desde {pk} kg, y llega a {nombre} en caja EPS antes de las 14:00 del día que elijas (si pides antes de las 12:00, de lunes a jueves, al día siguiente). O recógelo en nuestra nave de Mataró, a {km} km, de lunes a sábado.' ),
 		'empresa'  => array( '¿Cómo lo pide una empresa de {nombre}?', 'Con una cuenta de empresa: contrato de suministro, pedidos programados (semanales, quincenales o mensuales) y una sola factura al mes, a 30 días. Díganos cuántos kilos y cada cuánto, y le contestamos con su precio, normalmente el mismo día laborable.' ),
-		'tarda'    => array( '¿Cuánto tarda en llegar el hielo seco a {nombre}?', 'Si pides antes de las 12:00 de lunes a jueves, llega a {nombre} al día siguiente antes de las 14:00. Si pides el viernes, llega el martes, o el sábado antes de las 12:00 si tu código postal tiene reparto en sábado (con suplemento). Domingo y lunes no hay reparto. Al pagar solo ves los días con reparto en tu zona.{mrw}' ),
+		'tarda'    => array( '¿Cuánto tarda en llegar el hielo seco a {nombre}?', 'Si pides antes de las 12:00 de lunes a jueves, llega a {nombre} al día siguiente antes de las 14:00. Si pides el viernes antes de las 12:00, llega el martes, o el sábado antes de las 13:00 si tu código postal tiene reparto en sábado (con precio de sábado). Domingo y lunes no hay reparto. Al pagar solo ves los días con reparto en tu zona.{mrw}' ),
 		'mrw'      => ' Próximos días sin reparto de MRW en {nombre}: {lista}.',
 		'envio'    => array( '¿Cuánto cuesta el envío a {nombre}?', 'Lo mismo que a cualquier punto de la península, según el peso (IVA incluido): {lista}. Se calcula con el peso del hielo más 1 kg por caja y lo ves en el total antes de pagar.' ),
 		'envio_kg' => '{kg} kg, {envio}',
-		'sabado'   => array( '¿Entregáis en sábado en {nombre}?', 'Según la zona. MRW no publica qué códigos postales tienen reparto en sábado: lo comprobamos antes de enviar. Si lo hay, llega antes de las 12:00, con un suplemento de {sabado_envio} (IVA incluido). Para recibirlo el sábado, pide antes de las 12:00 del viernes.' ),
+		'sabado'   => array( '¿Entregáis en sábado en {nombre}?', 'Según la zona. MRW no publica qué códigos postales tienen reparto en sábado: lo comprobamos antes de enviar. Si lo hay, llega antes de las 13:00, con precio de sábado: lo ves al elegir el día. Para recibirlo el sábado, pide antes de las 12:00 del viernes.' ),
 		'medida'   => array( '¿Puedo pedir más de 150 kg?', 'Sí, pero no por la web. Fuera de la provincia de Barcelona, los pedidos de más de 150 kg se preparan a medida y con otro precio: escríbenos por WhatsApp ({wa}), llámanos al {tel} o mándanos un email a {email} y te decimos precio y día.' ),
 		'medida_bcn' => array( '¿Puedo pedir más de 150 kg?', 'Sí. En la provincia de Barcelona puedes pedir hasta 250 kg por la web. Para más de 250 kg, escríbenos por WhatsApp ({wa}), llámanos al {tel} o mándanos un email a {email} y te damos precio y día.' ),
 		'recogida' => array( '¿Puedo recogerlo en Mataró si estoy en {nombre}?', 'Sí. Nuestra nave está en Mataró, a {km} km de {nombre} (unos {min} min en coche sin tráfico). Eliges el día al pedir, de lunes a sábado, y te confirmamos la hora por teléfono o WhatsApp. Precio redondo con IVA incluido, el mismo en la web y en la nave: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Se paga en efectivo y con el importe exacto: no tenemos cambio. En el coche, llévalo en el maletero y ventilando.' ),

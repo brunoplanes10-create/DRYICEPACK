@@ -63,7 +63,7 @@ return array(
 		'titulo' => 'Industry questions',
 		'lista'  => array(
 			array( '3 mm or 16 mm for cooling parts?', 'Usually 3 mm: more surface in contact, so it cools faster. To hold the cold for many hours, 16 mm.' ),
-			array( 'Can you deliver on a specific day?', 'Yes. Online, you choose the day at checkout: Tuesday to Friday, and Saturday depending on the area. For volume orders, we agree it by phone.' ),
+			array( 'Can you deliver on a specific day?', 'Yes. Online, you choose the day at checkout: Tuesday to Friday, and Saturday depending on the area (up to 80 kg per order, counting the boxes). For volume orders, we agree it by phone.' ),
 			array( 'Do you offer dry ice blasting?', 'It’s done by INDUNOVA, the company DryIcePack belongs to. We’ll put you in touch.' ),
 		),
 	),

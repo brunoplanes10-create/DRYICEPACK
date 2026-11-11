@@ -48,11 +48,41 @@ function dip_fecha_elegida( $metodo = null, $destino = null ) {
 	$metodo  = $metodo ?: dip_metodo_elegido();
 	$destino = null === $destino && function_exists( 'dip_destino_actual' ) ? dip_destino_actual() : $destino;
 	$fecha   = WC()->session ? (string) WC()->session->get( 'dip_fecha' ) : '';
-	if ( $fecha && dip_fecha_es_valida( $fecha, $metodo, $destino ) ) return $fecha;
+	// Un sábado elegido con más de 80 kg en el carrito ya no vale (Ecommerce de MRW): pasa a la primera fecha
+	$sabado_no = 'envio' === $metodo && $fecha && 'sabado' === dip_servicio_para( '', $fecha ) && ! dip_sabado_posible_carrito();
+	if ( $fecha && ! $sabado_no && dip_fecha_es_valida( $fecha, $metodo, $destino ) ) return $fecha;
 	foreach ( dip_fechas_disponibles( $metodo, 8, null, $destino ) as $f ) {
 		if ( ! $f['sabado'] ) return $f['fecha'];
 	}
 	return '';
+}
+
+/**
+ * Hora de entrega elegida (11/11/2026): '14' (de serie), '12' o '10'; si el día es sábado, 'sabado'.
+ * $fecha null = la elegida en esta sesión.
+ */
+function dip_servicio_elegido( $fecha = null ) {
+	$fecha = null === $fecha ? dip_fecha_elegida( 'envio' ) : (string) $fecha;
+	$s     = function_exists( 'WC' ) && WC()->session ? (string) WC()->session->get( 'dip_servicio' ) : '';
+	return dip_servicio_para( $s, $fecha );
+}
+
+/** Kilos y cajas del carrito con el destino del checkout: lo que necesita dip_precio_servicio(). */
+function dip_precio_servicio_carrito( $servicio, $destino = null ) {
+	$c       = dip_carrito_kg();
+	$destino = null === $destino && function_exists( 'dip_destino_actual' ) ? dip_destino_actual() : $destino;
+	return dip_precio_servicio( $servicio, $c['kg'], max( 1, $c['cajas'] ), $destino );
+}
+
+/** ¿Se puede el sábado con estos kilos? (Ecommerce de MRW: como mucho 80 kg facturables por envío) */
+function dip_sabado_posible( $kg, $cajas ) {
+	return dip_peso_facturable( $kg, max( 1, (int) $cajas ) ) <= DIP_SABADO_MAX_KG;
+}
+
+function dip_sabado_posible_carrito() {
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) return true;
+	$c = dip_carrito_kg();
+	return $c['kg'] <= 0 || dip_sabado_posible( $c['kg'], $c['cajas'] );
 }
 
 /**
@@ -97,6 +127,23 @@ add_action( 'woocommerce_checkout_update_order_review', static function ( $post_
 		$fecha = sanitize_text_field( $datos['dip_fecha'] );
 		WC()->session->set( 'dip_fecha', preg_match( '/^\d{4}-\d{2}-\d{2}$/', $fecha ) ? $fecha : '' );
 	}
+	if ( isset( $datos['dip_servicio'] ) && WC()->session ) {
+		$s = sanitize_key( $datos['dip_servicio'] );
+		WC()->session->set( 'dip_servicio', in_array( $s, array( '14', '12', '10' ), true ) ? $s : '14' );
+	}
+} );
+
+/* El precio del envío depende del día y de la hora: van en el paquete para que WooCommerce lo recalcule al cambiarlos
+   (guarda las tarifas por paquete). inc/envio.php lee 'dip_servicio' y pone el precio de MRW de esa hora. */
+add_filter( 'woocommerce_cart_shipping_packages', static function ( $paquetes ) {
+	if ( ( is_admin() && ! wp_doing_ajax() ) || ! function_exists( 'WC' ) || ! WC()->session ) return $paquetes;
+	$fecha    = dip_fecha_elegida( 'envio' );
+	$servicio = dip_servicio_elegido( $fecha );
+	foreach ( $paquetes as $i => $p ) {
+		$paquetes[ $i ]['dip_fecha']    = $fecha;
+		$paquetes[ $i ]['dip_servicio'] = $servicio;
+	}
+	return $paquetes;
 } );
 
 /* ---------- Suplemento de sábado ----------
@@ -219,17 +266,32 @@ function dip_html_entrega() {
 		$fechas   = array_slice( $fechas, 0, DIP_FECHAS_CASILLAS - 1 );
 		$fechas[] = $cal['fechas'][ $cal['indice'][ $fecha ] ] + array( 'lejana' => true );
 	}
-	// Suplemento de sábado con IVA del método elegido (envío 11,74 €, recogida 10,00 €) y sábados de recogida sin suplemento
-	$sab    = dip_texto_euros( 'recogida' === $metodo ? DIP_RECOGIDA_SABADO_CON_IVA : round( DIP_SATURDAY_SURCHARGE_EXCL_TAX * $iva, 2 ) );
+	// Sábado con más de 80 kg: no se ofrece (Ecommerce de MRW: 80 kg como mucho por envío)
+	$sin_sabado = 'envio' === $metodo && ! dip_sabado_posible_carrito();
+	$dias_cal   = array_keys( $cal['indice'] );
+	if ( $sin_sabado ) {
+		$fechas   = array_values( array_filter( $fechas, static fn( $f ) => ! $f['sabado'] ) );
+		$dias_cal = array_values( array_filter( $dias_cal, static fn( $d ) => 'sabado' !== dip_servicio_para( '', $d ) ) );
+	}
+	// Precio del envío (IVA incluido) de cada hora para este carrito y este destino; el sábado, su propia tarifa (11/11/2026)
+	$p14  = 'envio' === $metodo ? dip_precio_servicio_carrito( '14', $destino ) : null;
+	$psab = 'envio' === $metodo && ! $sin_sabado ? dip_precio_servicio_carrito( 'sabado', $destino ) : null;
+	// Lo que añade el sábado: recogida 10,00 €; envío, la diferencia con la entrega de serie (si cuesta más)
+	if ( 'recogida' === $metodo ) {
+		$sab = dip_texto_euros( DIP_RECOGIDA_SABADO_CON_IVA );
+	} else {
+		$dif = $psab && $p14 ? round( $psab['neto'] * $iva, 2 ) - round( $p14['neto'] * $iva, 2 ) : 0;
+		$sab = $dif > 0.004 ? dip_texto_euros( $dif ) : '';
+	}
 	$sin    = 'recogida' === $metodo ? dip_sabados_recogida_sin_suplemento() : array();
 	$nombre = dip_nombres_fecha( $idioma );
 	$datos  = array(
-		'f'   => array_keys( $cal['indice'] ),                    // días que se pueden elegir
+		'f'   => $dias_cal,                                       // días que se pueden elegir
 		'x'   => 'envio' === $metodo ? $cal['saltadas'] : array(), // días que MRW no reparte en el destino
 		'sel' => $fecha,
 		'des' => $cal['desde'],
 		'has' => $cal['hasta'],
-		'sab' => '+' . $sab,
+		'sab' => '' !== $sab ? '+' . $sab : '',
 		'sg'  => $sin,                                              // sábados sin suplemento (recogida del 31/10/2026)
 		'c'   => (int) DIP_FECHAS_CASILLAS,
 		'n'   => array( 'd' => $nombre['dias'], 'dc' => $nombre['dc'], 'm' => $nombre['meses'], 'mc' => $nombre['mc'], 'mde' => $nombre['mde'] ),
@@ -240,7 +302,7 @@ function dip_html_entrega() {
 			'no'  => $t['cal_no_disponible'],
 			'mrw' => $t['cal_festivo_mrw'],
 			'ley' => sprintf( 'recogida' === $metodo ? $t['cal_leyenda_recogida'] : $t['cal_leyenda_envio'], (int) DIP_DIAS_RESERVA ),
-			'ls'  => sprintf( 'recogida' === $metodo ? $t['cal_sabado_recogida'] : $t['cal_sabado_envio'], $sab ),
+			'ls'  => 'recogida' === $metodo ? sprintf( $t['cal_sabado_recogida'], $sab ) : ( '' !== $sab ? sprintf( $t['cal_sabado_envio'], $sab ) : $t['cal_sabado_envio_0'] ),
 		),
 	);
 	printf(
@@ -250,13 +312,13 @@ function dip_html_entrega() {
 	);
 	foreach ( $fechas as $f ) {
 		$corta = dip_fecha_corta( $f['fecha'], $idioma );
-		$extra = $f['sabado'] && ! in_array( $f['fecha'], $sin, true ) ? '+' . $sab : '';
+		$extra = $f['sabado'] && '' !== $sab && ! in_array( $f['fecha'], $sin, true ) ? '+' . $sab : '';
 		// Día abierto por el enlace urgente (inc/urgente.php): su suplemento, sumado al del sábado si lo es
 		$urg   = 'envio' === $metodo && function_exists( 'dip_urgente_extra_fecha' ) ? dip_urgente_extra_fecha( $f['fecha'] ) : '';
 		if ( $urg ) $extra = $extra ? $extra . ' ' . $urg : $urg;
 		printf(
 			'<label class="dip-fecha%1$s"><input type="radio" name="dip_fecha" value="%2$s"%3$s><span class="dip-fecha__dia" aria-hidden="true">%4$s</span><span class="dip-fecha__num" aria-hidden="true">%5$s</span><span class="dip-fecha__mes" aria-hidden="true">%6$s</span>%7$s<span class="screen-reader-text">%8$s</span></label>',
-			( $extra ? ' dip-fecha--sabado' : '' ) . ( empty( $f['lejana'] ) ? '' : ' dip-fecha--lejana' ),
+			( $f['sabado'] ? ' dip-fecha--sabado' : '' ) . ( empty( $f['lejana'] ) ? '' : ' dip-fecha--lejana' ),
 			esc_attr( $f['fecha'] ),
 			checked( $f['fecha'], $fecha, false ),
 			esc_html( $corta[0] ),
@@ -283,9 +345,42 @@ function dip_html_entrega() {
 		if ( $hay_sabado ) echo ' ' . esc_html( $t['sabado_nota'] );
 		$nota_mrw = dip_nota_festivos_destino( $saltadas, $destino, $idioma );
 		if ( $nota_mrw ) echo ' ' . esc_html( $nota_mrw );
+		if ( $sin_sabado ) echo ' ' . esc_html( sprintf( $t['sabado_max'], (int) DIP_SABADO_MAX_KG ) );
 	}
-	echo '</p></fieldset></div>';
+	echo '</p></fieldset>';
+	if ( 'envio' === $metodo && $fecha ) echo dip_html_horas( $fecha, $destino, $psab ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escapado en la función
+	echo '</div>';
 	return ob_get_clean();
+}
+
+/**
+ * Hora de entrega (11/11/2026): entre semana, antes de las 14:00 (de serie y la más barata), de las 12:00 o de las 10:00,
+ * cada una con el precio de MRW para este carrito y este destino (IVA incluido). El sábado no se elige: su precio y su hora.
+ */
+function dip_html_horas( $fecha, $destino, $psab = null ) {
+	$t        = dip_textos_tienda();
+	$iva      = dip_factor_iva();
+	$servicio = dip_servicio_elegido( $fecha );
+	if ( 'sabado' === $servicio ) {
+		if ( ! $psab ) return '';
+		return '<p class="dip-horas__sabado">' . esc_html( sprintf( $t['sabado_precio'], DIP_HORA_ENTREGA_SABADO, dip_texto_euros( round( $psab['neto'] * $iva, 2 ) ) ) ) . '</p>';
+	}
+	$h = '<fieldset class="dip-horas"><legend class="dip-leyenda">' . esc_html( $t['que_hora'] ) . '</legend>';
+	foreach ( array( '14', '12', '10' ) as $s ) {
+		$p = dip_precio_servicio_carrito( $s, $destino );
+		if ( ! $p ) continue;
+		$h .= sprintf(
+			'<label class="dip-metodo dip-hora%1$s"><input type="radio" name="dip_servicio" value="%2$s"%3$s><span class="dip-hora__marca" aria-hidden="true"></span><span class="dip-metodo__texto"><strong>%4$s</strong>%5$s</span><span class="dip-metodo__precio">%6$s</span></label>',
+			'14' === $s ? ' dip-hora--serie' : '',
+			esc_attr( $s ),
+			checked( $s, $servicio, false ),
+			esc_html( sprintf( $t['antes_de_m'], dip_hora_servicio( $s ) ) ),
+			'14' === $s ? '<small>' . esc_html( $t['hora_barata'] ) . '</small>' : '',
+			wp_kses_post( wc_price( round( $p['neto'] * $iva, 2 ) ) )
+		);
+	}
+	// Garantía (11/11/2026): si la hora pagada (10:00 o 12:00) no se cumple por un fallo nuestro o de MRW, se devuelve el envío
+	return $h . '<p class="dip-fechas__nota">' . esc_html( $t['horas_garantia'] ) . '</p></fieldset>';
 }
 
 /** Aviso con WhatsApp, teléfono y email para pedidos de más de 150 kg fuera de la provincia de Barcelona. */
@@ -334,6 +429,8 @@ add_action( 'woocommerce_after_checkout_validation', static function ( $datos, $
 	$destino = dip_destino_de_datos( $datos );
 	if ( ! dip_fecha_es_valida( $fecha, $metodo, $destino ) ) {
 		$errores->add( 'dip_fecha', dip_error_fecha( $fecha, $metodo, $destino ) );
+	} elseif ( 'envio' === $metodo && 'sabado' === dip_servicio_para( '', $fecha ) && ! dip_sabado_posible_carrito() ) {
+		$errores->add( 'dip_fecha', sprintf( $t['sabado_max'], (int) DIP_SABADO_MAX_KG ) );
 	}
 }, 20, 2 );
 
@@ -354,12 +451,47 @@ add_action( 'woocommerce_store_api_checkout_update_order_from_request', static f
 } );
 
 /* ---------- Guardar en el pedido ---------- */
-function dip_guardar_entrega( WC_Order $pedido, $fecha, $metodo ) {
+/**
+ * Día, método y, en los envíos, la hora (11/11/2026): _dip_servicio ('14', '12', '10' o 'sabado', lo que pagó el cliente)
+ * y _dip_servicio_mrw (el servicio de MRW más barato que llega a esa hora: con el que se crea el envío).
+ * $servicio null = el elegido en esta sesión. Al cambiar el día (Adelantar a mañana, escritorio), se ajusta al día nuevo.
+ */
+function dip_guardar_entrega( WC_Order $pedido, $fecha, $metodo, $servicio = null ) {
 	$pedido->update_meta_data( '_dip_fecha_entrega', $fecha );
 	$pedido->update_meta_data( '_dip_metodo_entrega', $metodo );
 	// Clave que usaba Order Delivery Date Lite: así la fecha se sigue viendo si el plugin sigue instalado.
 	$d = DateTimeImmutable::createFromFormat( '!Y-m-d', $fecha, dip_zona_horaria() );
 	if ( $d ) $pedido->update_meta_data( '_orddd_lite_timestamp', (string) $d->getTimestamp() );
+	if ( 'envio' !== $metodo ) {
+		$pedido->delete_meta_data( '_dip_servicio' );
+		$pedido->delete_meta_data( '_dip_servicio_mrw' );
+		return;
+	}
+	if ( null === $servicio ) {
+		$servicio = function_exists( 'WC' ) && WC()->session && ! is_admin() ? dip_servicio_elegido( $fecha ) : (string) $pedido->get_meta( '_dip_servicio' );
+	}
+	$servicio = dip_servicio_para( $servicio, $fecha );
+	$pedido->update_meta_data( '_dip_servicio', $servicio );
+	$pedido->update_meta_data( '_dip_servicio_mrw', dip_servicio_mrw_pedido( $pedido, $servicio ) );
+}
+
+/** Servicio de MRW con el que sale el pedido: el más barato que llega a la hora pagada (dip_precio_servicio). */
+function dip_servicio_mrw_pedido( WC_Order $pedido, $servicio ) {
+	if ( 'sabado' === $servicio ) return 'sabado';
+	$kg    = 0.0;
+	$cajas = 0;
+	foreach ( method_exists( $pedido, 'get_items' ) ? $pedido->get_items() : array() as $l ) {
+		$kg_ud = dip_kg_producto( $l->get_product() );
+		if ( $kg_ud <= 0 ) continue;
+		$kg    += $kg_ud * (float) $l->get_quantity();
+		$cajas += (int) $l->get_quantity();
+	}
+	if ( $kg <= 0 ) {
+		$kg    = (float) str_replace( ',', '.', (string) $pedido->get_meta( '_dip_kg' ) );
+		$cajas = max( 1, (int) $pedido->get_meta( '_dip_cajas' ) );
+	}
+	$p = dip_precio_servicio( $servicio, $kg, max( 1, $cajas ), dip_destino_de_pedido( $pedido ) );
+	return $p ? $p['mrw'] : $servicio;
 }
 
 add_action( 'woocommerce_checkout_create_order', static function ( $pedido, $datos ) {

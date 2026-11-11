@@ -43,7 +43,7 @@ return array(
 			array( '14:00', '', 'Arriba l\'endemà abans', 'A la seva nau, al taller o a l\'obra, a la península.' ),
 		),
 		'notas'  => array(
-			array( 'Dissabte', 'Abans de les 12:00, segons la zona: +{sabado_envio}, IVA inclòs.' ),
+			array( 'Dissabte', 'Abans de les 13:00, segons la zona, i com a màxim 80 kg per comanda, comptant-hi les caixes. Preu de dissabte: el veu en triar el dia. Demani\'l abans de les 12:00 de divendres.' ),
 			array( 'Un altre dia', 'Qualsevol dels propers 90 amb repartiment a la seva zona. Festius i dissabtes, a <a href="' . esc_url( dipt_url( 'envios' ) ) . '">enviaments i terminis d\'entrega</a>.' ),
 			array( 'Recollida', 'A la nau de Mataró, de dilluns a dissabte (el dissabte, +{sabado_recogida}). Només en efectiu i amb l\'import exacte.' ),
 		),
@@ -110,7 +110,7 @@ return array(
 		'lista'  => array(
 			array( 'Els pèl·lets de 3 mm serveixen per a la meva màquina?', 'És el calibre habitual de les màquines de neteja criogènica. Tot i així, comprovi al manual de la seva quin calibre admet. Si té dubtes, digui\'ns el model per WhatsApp o per telèfon.' ),
 			array( 'Quant gel sec gasta una màquina per hora?', 'Depèn de la màquina, de la pressió de treball i del que netegi: el consum l\'indica el fabricant. Digui\'ns la seva màquina i quantes hores netejarà, i l\'ajudem a calcular la comanda.' ),
-			array( 'El puc demanar per al dia de la neteja?', 'Sí. En pagar tria qualsevol dia dels propers 90 amb repartiment a la seva zona, de dimarts a dissabte (el dissabte, segons la zona i amb un suplement de {sabado_envio}). Demani\'l per a aquell dia: el gel sec se sublima amb les hores.' ),
+			array( 'El puc demanar per al dia de la neteja?', 'Sí. En pagar tria qualsevol dia dels propers 90 amb repartiment a la seva zona, de dimarts a dissabte (el dissabte, segons la zona, amb preu de dissabte i com a màxim 80 kg per comanda, comptant-hi les caixes). Demani\'l per a aquell dia: el gel sec se sublima amb les hores.' ),
 			array( 'Quant aguanten els pèl·lets a la caixa?', 'Depèn de la temperatura i de les vegades que s\'obri. Els pèl·lets de 3 mm se sublimen abans que els nuggets: guardi\'ls a la seva caixa, amb la tapa sense precintar, i no l\'obri fins que carregui la tremuja.' ),
 			array( 'Poden servir més de 150 kg?', 'Al web, fins a 250 kg per comanda. Fora de la província de Barcelona, a partir de 150 kg l\'enviament es prepara a mida: escrigui\'ns per WhatsApp, truqui\'ns o enviï\'ns un correu. Més de 250 kg? Li donem preu i dia, normalment el mateix dia feiner.' ),
 			array( 'Em fan factura completa?', 'Sí. En pagar, marqui «Compro per a una empresa o autònom» i escrigui la raó social i el NIF. Amb <a href="' . esc_url( dipt_url( 'empresas' ) ) . '">compte d\'empresa</a>, una sola factura al mes, a 30 dies.' ),

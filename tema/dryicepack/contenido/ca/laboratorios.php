@@ -51,7 +51,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntes de laboratori',
 		'lista'  => array(
-			array( 'A quina hora arriba?', 'Abans de les 14:00 de l\'endemà, si demana abans de les 12:00. Entreguem de dimarts a divendres i, segons la zona, el dissabte abans de les 12:00, amb suplement. Dins d\'aquest marge, l\'hora exacta la marca la ruta de MRW.' ),
+			array( 'A quina hora arriba?', 'Abans de les 14:00 de l\'endemà, si demana abans de les 12:00. Si el necessita abans, en pagar pot triar l\'entrega abans de les 12:00 o abans de les 10:00, cadascuna amb el seu preu. Entreguem de dimarts a divendres i, segons la zona, el dissabte abans de les 13:00, amb preu de dissabte. Dins d\'aquest marge, l\'hora exacta la marca la ruta de MRW.' ),
 			array( 'El puc guardar a l\'ultracongelador?', 'No. En un congelador tancat el gas genera pressió i pot fer malbé l\'equip. Conservi\'l a la seva caixa d\'EPS, en un lloc ventilat.' ),
 			array( 'Quant gel sec poso per caixa?', 'Depèn de les hores de viatge, de la mida de la caixa i de la temperatura exterior. Digui\'ns la ruta i el tipus de caixa i l\'orientem.' ),
 		),

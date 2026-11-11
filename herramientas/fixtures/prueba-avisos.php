@@ -291,7 +291,7 @@ if ( '1' === $paso ) {
 		$usted  = ! empty( $d['empresa'] );
 		if ( 'es' === $idioma ) {
 			$frases = $es_rec ? array( 'Recogida', 'Camí Ca La Madrona 19 D, 08304 Mataró', 'Qué pasa ahora', 'Información legal', 'art. 103.d TRLGDCU', 'garantía legal', 'Reclamaciones: info@dryicepack.es', 'Ronda Alfonso X El Sabio 10, 2º 1ª, 08301 Mataró', 'sin perjuicio de los derechos que la ley reconoce al consumidor, incluida la indemnización de daños y perjuicios' )
-				: array( 'antes de las ' . ( DIA_SABADO === $d['fecha'] ? '12:00' : '14:00' ), 'Qué pasa ahora', 'Resumen del pedido', 'Información legal', 'art. 103.d TRLGDCU', 'Si no llega ese día', 'reembolso completo o recogerlo en Mataró', 'Las condiciones de venta van adjuntas en PDF' );
+				: array( 'antes de las ' . ( DIA_SABADO === $d['fecha'] ? '13:00' : '14:00' ), 'Qué pasa ahora', 'Resumen del pedido', 'Información legal', 'art. 103.d TRLGDCU', 'Si no llega ese día', 'reembolso completo o recogerlo en Mataró', 'Las condiciones de venta van adjuntas en PDF' );
 		} elseif ( 'ca' === $idioma ) {
 			$frases = $es_rec ? array( 'Recull', 'Què passa ara', 'Informació legal' ) : array( 'abans de les 14:00', 'Què passa ara', 'Resum de la comanda', 'Les condicions de venda van adjuntes en PDF' );
 		} else {
@@ -310,7 +310,7 @@ if ( '1' === $paso ) {
 			if ( $usted && 'es' === $idioma ) ok( false !== strpos( $frase, 'Traiga el importe exacto' ), "{$clave}: de usted, «Traiga el importe exacto»", $frase );
 		}
 		if ( 'recogida-sabado' === $clave ) ok( false !== strpos( $txt, '10:30' ), 'recogida-sabado: la hora acordada (10:30) en la ficha' );
-		if ( 'envio-sabado' === $clave ) ok( false !== strpos( $txt, 'antes de las 12:00' ) && false !== strpos( $txt, 'Suplemento de entrega en sábado' ) && false !== strpos( $txt, 'Tus notas: Dejar en conserjería si no estoy.' ), 'envio-sabado: 12:00, suplemento en la tabla y nota del cliente' );
+		if ( 'envio-sabado' === $clave ) ok( false !== strpos( $txt, 'antes de las 13:00' ) && false !== strpos( $txt, 'Suplemento de entrega en sábado' ) && false !== strpos( $txt, 'Tus notas: Dejar en conserjería si no estoy.' ), 'envio-sabado: 13:00, suplemento en la tabla y nota del cliente' );
 		if ( 'espera' === $clave ) ok( false !== strpos( $txt, 'Estamos confirmando el pago' ), 'espera: dice que se está confirmando el pago' );
 		// Tú y usted
 		if ( 'es' === $idioma && $usted ) ok( ! preg_match( '/\b(tu pedido|Recógelo|te avisamos|eliges)\b/u', $txt . $c['alt'] ), "{$clave}: de usted, sin tú", mb_substr( $txt, 0, 400 ) );
@@ -423,12 +423,12 @@ if ( '2' === $paso ) {
 		ok( false !== strpos( $txt, str_replace( "\u{00A0}", ' ', html_entity_decode( dip_avisos_texto_efectivo( pedido( 'recogida-' . $k ), $c['idioma'], ! empty( $c['empresa'] ) ), ENT_QUOTES, 'UTF-8' ) ) ), "recogida {$k}: importe exacto en efectivo" );
 		guardar( 'recogida-' . $k, $cli[0] );
 	}
-	// Sábado: «Hoy llega» antes de las 12:00 y la recogida con su suplemento y la hora acordada
+	// Sábado: «Hoy llega» antes de las 13:00 y la recogida con su suplemento y la hora acordada
 	$antes = n_correos();
 	$r     = dip_avisos_pasada( a_las( DIA_SABADO, '08:00' ) );
 	$c     = correos_a( 'envio-sabado@example.com', $antes );
 	if ( ok( 1 === count( $c ), 'hoy sábado: un email' ) ) {
-		revisar( 'hoy-sabado', $c[0], 'es', array( 'Hoy llega tu hielo seco antes de las 12:00' ) );
+		revisar( 'hoy-sabado', $c[0], 'es', array( 'Hoy llega tu hielo seco antes de las 13:00' ) );
 		guardar( 'hoy-es-tu-sabado', $c[0] );
 	}
 	$c = correos_a( 'recogida-sabado@example.com', $antes );
@@ -436,13 +436,13 @@ if ( '2' === $paso ) {
 		revisar( 'recogida-sabado', $c[0], 'es', array( '10:30', 'Incluye el suplemento de recogida en sábado: 10,00 € (IVA incluido).', 'Si al final no puedes venir, avísanos' ) );
 		guardar( 'recogida-es-tu-sabado', $c[0] );
 	}
-	// Pasada del sábado a las 12:30: «Hoy llega» ya no (límite 12:00)
+	// Pasada del sábado a las 13:30: «Hoy llega» ya no (límite 13:00 desde el 11/11/2026)
 	$x = pedido( 'espera' );
 	$x->update_meta_data( '_dip_fecha_entrega', DIA_SABADO );
 	$x->update_meta_data( '_dip_enviado', '2026-12-04 10:00:00' );
 	$x->save_meta_data();
-	$r = dip_avisos_pasada( a_las( DIA_SABADO, '12:30' ) );
-	ok( ! $r['hoy'] && (bool) preg_grep( '/después de las 12:00/', $r['nota'] ), 'pasada del sábado a las 12:30: no manda «Hoy llega» (límite 12:00)', $r );
+	$r = dip_avisos_pasada( a_las( DIA_SABADO, '13:30' ) );
+	ok( ! $r['hoy'] && (bool) preg_grep( '/después de las 13:00/', $r['nota'] ), 'pasada del sábado a las 13:30: no manda «Hoy llega» (límite 13:00)', $r );
 
 	// Incidencia (a mano): reembolso completo o recogida con el envío devuelto
 	foreach ( $clientes as $k => $c ) {

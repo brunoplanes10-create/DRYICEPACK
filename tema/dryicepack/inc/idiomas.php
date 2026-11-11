@@ -34,7 +34,8 @@ function dipt_contenido( $nombre, $idioma = null ) {
  * - {pk}: kilos del pack pequeño que se vende ahora (3 mientras queden cajas de 3 kg; después 5).
  * - {recogida:10}, {recogida:pk}: precio de recogida en Mataró de ese pack, IVA incluido ("60 €", "€60").
  * - {precio:10}, {precio:pk}: precio de la web de ese pack con IVA ("64,49 €").
- * - {sabado_recogida}: suplemento de la recogida en sábado ("10 €"); {sabado_envio}: el del envío ("11,74 €").
+ * - {sabado_recogida}: suplemento de la recogida en sábado ("10 €"); {sabado_envio}: el suplemento de sábado de MRW a más de
+ *   25 km ("11,74 €"). Obsoleto desde el 11/11/2026: el sábado tiene su propia tarifa por zona y peso; ningún texto lo usa.
  * - {sabado_libre}: " El sábado 31 de octubre, sin suplemento." mientras quede un sábado de recogida sin suplemento; si no, nada.
  * Los marcadores que no son estos ({km}, {nombre}…) se quedan como están.
  */

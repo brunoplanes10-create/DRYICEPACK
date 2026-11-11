@@ -52,7 +52,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntas de laboratorio',
 		'lista'  => array(
-			array( '¿A qué hora llega?', 'Antes de las 14:00 del día siguiente, si pide antes de las 12:00. Entregamos de martes a viernes y, según zona, el sábado antes de las 12:00, con suplemento. Dentro de ese margen, la hora exacta la marca la ruta de MRW.' ),
+			array( '¿A qué hora llega?', 'Antes de las 14:00 del día siguiente, si pide antes de las 12:00. Si lo necesita antes, al pagar puede elegir la entrega antes de las 12:00 o antes de las 10:00, cada una con su precio. Entregamos de martes a viernes y, según zona, el sábado antes de las 13:00, con precio de sábado. Dentro de ese margen, la hora exacta la marca la ruta de MRW.' ),
 			array( '¿Puedo guardarlo en el ultracongelador?', 'No. En un congelador cerrado el gas genera presión y puede dañar el equipo. Consérvelo en su caja de EPS, en un sitio ventilado.' ),
 			array( '¿Cuánto hielo seco pongo por caja?', 'Depende de las horas de viaje, del tamaño de la caja y de la temperatura exterior. Díganos la ruta y el tipo de caja y le orientamos.' ),
 		),

@@ -34,7 +34,7 @@ return array(
 	'cp_corto'     => 'Missing digits: 5 needed',
 	// Delivery line with the postcode (%1$s = "08301 · Barcelona", %2$s = date); "medida" ends with a WhatsApp link; "fuera" doesn't (no delivery)
 	'llega_cp_ok'     => '%1$s — arrives on %2$s before 14:00',
-	'llega_cp_sabado' => 'Or %1$s before 12:00, in some areas: +%2$s',
+	'llega_cp_sabado' => 'Or %1$s before 13:00, in some areas, at the Saturday rate', // no %2$s since 11/11/2026: the Saturday price depends on the destination and the kilos
 	'llega_cp_fuera'  => 'we only deliver to mainland Spain: not to the Balearic or Canary Islands, Ceuta or Melilla.',
 	'llega_cp_medida' => 'over 150 kg outside the province of Barcelona: order via',
 	'llega_cp_error'  => 'Postcode %s does not exist in Spain. Check the 5 digits.',
@@ -87,9 +87,10 @@ return array(
 	),
 	'tarifa' => array(
 		'titulo' => 'What does|<em>delivery cost?</em>',
-		'texto'  => 'The courier’s rate, the same across mainland Spain. It’s based on the weight of the ice plus 1 kg per box, and you see it before you pay.',
+		'texto'  => 'The courier’s rate for delivery before 14:00, the same across mainland Spain. It’s based on the weight of the ice plus 1 kg per box, and you see it before you pay. Delivery before 12:00 or before 10:00, and on Saturday, has its own price depending on the destination and the kilos: you see it when you choose the day and the time.',
 		'filas'  => array( array( 'Up to 2 kg', 8.53 ), array( 'Up to 5 kg', 10.32 ), array( 'Up to 10 kg', 13.19 ), array( 'Each extra kg', 1.12 ) ),
-		'extra'  => array( array( 'Saturday delivery (depending on area)', 9.70 ), array( 'Collection in Mataró, no courier', 0 ) ),
+		// 11/11/2026: no Saturday row. It is no longer a fixed surcharge: it depends on the destination and the kilos (shown when choosing the day)
+		'extra'  => array( array( 'Collection in Mataró, no courier', 0 ) ),
 		'nota'   => 'Prices include VAT. Collection is paid in cash, with the exact amount.',
 		'gratis' => '€0', // collection row of the delivery table: no delivery cost (the ice is paid at the collection price)
 		'enlace' => 'Delivery times, holidays and collection',
@@ -99,8 +100,8 @@ return array(
 		'titulo'   => 'Before you pay',
 		'empresas' => 'Business account with monthly invoicing',
 		'lista'    => array(
-			array( 'When will it arrive?', 'If you order before 12:00, Monday to Thursday, it leaves the same day and arrives the next day before 14:00. Order on Friday and it arrives on Saturday before 12:00 (depending on the area, with a {sabado_envio} surcharge) or on Tuesday. We don’t deliver on Sunday or Monday. You choose the day at checkout.' ),
-			array( 'Can I order for another day?', 'Yes: at checkout you can choose any day in the next 90 with delivery to your area, Tuesday to Saturday (Saturday depending on the area, with a surcharge). Order it for the day you’ll use it: dry ice sublimates over time.' ),
+			array( 'When will it arrive?', 'If you order before 12:00, Monday to Thursday, it leaves the same day and arrives the next day before 14:00. Order before 12:00 on Friday and it arrives on Saturday before 13:00 (depending on the area, at the Saturday rate) or on Tuesday. We don’t deliver on Sunday or Monday. You choose the day at checkout.' ),
+			array( 'Can I order for another day?', 'Yes: at checkout you can choose any day in the next 90 with delivery to your area, Tuesday to Saturday (Saturday depending on the area, at the Saturday rate). Order it for the day you’ll use it: dry ice sublimates over time.' ),
 			// Own measurement, 10–11/11/2026. [PENDIENTE: update the 3 kg sentence when the small pack becomes 5 kg.]
 			array( 'Will I receive the weight I ordered?', 'Not quite: dry ice sublimates from the moment it is packed, even in a closed box. We measured it in our warehouse with the boxes closed: over 29 hours the small box lost 1.8 kg, the large one (15 and 20 kg) 4.1 kg and the 30 kg box 5.7 kg. Order 3 kg and about 2 kg arrives. In hot weather, or if the box is opened, it goes faster. Order it for the day you’ll use it and, if you need an exact amount, choose a bigger box.' ),
 			array( 'What if I need an invoice?', 'If you’re an individual and the order is up to €400 (VAT included), the simplified invoice reaches you by email from info@dryicepack.es, without asking. If you’re buying for a company or as self-employed, tick the box at checkout and enter the company name and tax ID: you get the full invoice. If you forget, we’ll send you a link to request it.' ),

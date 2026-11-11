@@ -44,6 +44,10 @@
 		if (document.activeElement === this) focoFecha = this.value;
 		$body.trigger('update_checkout');
 	});
+	/* Hora de entrega (antes de las 14:00, 12:00 o 10:00): cada una con su precio de MRW */
+	$(document).on('change', 'input[name="dip_servicio"]', function () {
+		$body.trigger('update_checkout');
+	});
 
 	/* ---------- Calendario "Otra fecha" ----------
 	   Cualquier día válido de los próximos 90. Los días salen del servidor (data-dip-cal en .dip-fechas): no hace peticiones.
@@ -74,7 +78,7 @@
 	function etiqueta(D, f) {
 		var t = utc(f), d = new Date(t), texto = D.n.d[semana(t)] + ' ' + d.getUTCDate() + ' ' + D.n.mde[d.getUTCMonth()];
 		if (!D.ok[f]) return texto + ', ' + (D.cierra[f] ? D.t.mrw : D.t.no);
-		return semana(t) === 5 && !D.libre[f] ? texto + ', ' + D.sab : texto;
+		return semana(t) === 5 && !D.libre[f] && D.sab ? texto + ', ' + D.sab : texto;
 	}
 	function limitar(D, t) { return ymd(Math.min(Math.max(t, utc(D.min + '-01')), finDeMes(D.max))); }
 
@@ -148,7 +152,7 @@
 			nueva.className = 'dip-fecha dip-fecha--lejana' + (sab ? ' dip-fecha--sabado' : '');
 			nueva.innerHTML = '<input type="radio" name="dip_fecha" value="' + f + '"><span class="dip-fecha__dia" aria-hidden="true">' + esc(D.n.dc[semana(t)]) + '</span>'
 				+ '<span class="dip-fecha__num" aria-hidden="true">' + d.getUTCDate() + '</span><span class="dip-fecha__mes" aria-hidden="true">' + esc(D.n.mc[d.getUTCMonth()]) + '</span>'
-				+ (sab ? '<span class="dip-fecha__extra">' + esc(D.sab) + '</span>' : '') + '<span class="screen-reader-text">' + esc(etiqueta(D, f)) + '</span>';
+				+ (sab && D.sab ? '<span class="dip-fecha__extra">' + esc(D.sab) + '</span>' : '') + '<span class="screen-reader-text">' + esc(etiqueta(D, f)) + '</span>';
 			if (sobra) lista.replaceChild(nueva, sobra); else lista.insertBefore(nueva, lista.querySelector('.dip-otra-fecha'));
 			radio = nueva.querySelector('input');
 		}

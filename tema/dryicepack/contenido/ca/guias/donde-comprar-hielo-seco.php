@@ -23,7 +23,7 @@ return array(
 
 <h2>On es compra, doncs?</h2>
 <h3>Botiga en línia amb enviament</h3>
-<p>Tries format i quilos, veus el total amb l\'enviament inclòs i pagues. A DryIcePack, si demanes abans de les 12:00, arriba l\'endemà abans de les 14:00 en caixa aïllant, a tota l\'Espanya peninsular. Repartim de dimarts a divendres i, segons la zona, el dissabte abans de les 12:00, amb suplement.</p>
+<p>Tries format i quilos, veus el total amb l\'enviament inclòs i pagues. A DryIcePack, si demanes abans de les 12:00, arriba l\'endemà abans de les 14:00 en caixa aïllant, a tota l\'Espanya peninsular. Repartim de dimarts a divendres i, segons la zona, el dissabte abans de les 13:00, amb preu de dissabte.</p>
 <h3>Recollida al magatzem</h3>
 <p>Si ets a prop, t\'estalvies l\'enviament. La nostra nau és a Mataró (Barcelona) i s\'hi pot recollir de dilluns a dissabte, també festius: tries el dia en demanar i et confirmem l\'hora. El preu és rodó i amb IVA inclòs, el mateix al web i a la nau: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre} Es paga en efectiu i amb l\'import exacte: no tenim canvi.</p>
 <h3>Proveïdors de gasos industrials</h3>

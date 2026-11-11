@@ -233,7 +233,7 @@ function dip_mp_situacion( WC_Order $p, $idioma, array $t ) {
 	$recoge  = dip_eh_es_recogida( $p );
 	$fecha   = dip_eh_fecha( $p );
 	$dia     = $fecha ? dip_fecha_larga( $fecha, $idioma ) : '';
-	$limite  = $fecha ? dip_hora_limite_entrega( $fecha ) : DIP_HORA_ENTREGA;
+	$limite  = $fecha ? dip_hora_entrega_pedido( $p ) : DIP_HORA_ENTREGA;
 	$estado  = $p->get_status();
 	$hoy     = dip_eh_ahora()->format( 'Y-m-d' );
 	$creado  = $p->get_date_created() ? $p->get_date_created()->getTimestamp() : time();
@@ -412,7 +412,7 @@ function dip_mp_html( WC_Order $p ) {
 						<?php endif; ?>
 					<?php else : ?>
 						<?php if ( $fecha ) : ?>
-							<div><dt><?php echo esc_html( $t['dt_entrega'] ); ?></dt><dd><?php echo esc_html( sprintf( $t['dd_entrega'], dip_fecha_larga( $fecha, $idioma ), dip_hora_limite_entrega( $fecha ) ) ); ?></dd></div>
+							<div><dt><?php echo esc_html( $t['dt_entrega'] ); ?></dt><dd><?php echo esc_html( sprintf( $t['dd_entrega'], dip_fecha_larga( $fecha, $idioma ), dip_hora_entrega_pedido( $p ) ) ); ?></dd></div>
 						<?php endif; ?>
 						<?php
 						$direccion = trim( implode( ', ', array_filter( array( trim( ( $p->get_shipping_address_1() ?: $p->get_billing_address_1() ) . ' ' . ( $p->get_shipping_address_2() ?: $p->get_billing_address_2() ) ), dip_eh_lugar( $p ) ) ) ) );

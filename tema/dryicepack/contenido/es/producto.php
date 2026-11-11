@@ -34,7 +34,7 @@ return array(
 	'cp_corto'     => 'Faltan cifras: son 5',
 	// Línea de entrega con el código postal (%1$s = "08301 · Barcelona", %2$s = fecha); "medida" termina en un enlace a WhatsApp; "fuera", no (no se envía)
 	'llega_cp_ok'     => '%1$s — llega el %2$s antes de las 14:00',
-	'llega_cp_sabado' => 'O el %1$s antes de las 12:00, según zona: +%2$s',
+	'llega_cp_sabado' => 'O el %1$s antes de las 13:00, según zona, con precio de sábado', // sin %2$s desde el 11/11/2026: el precio de sábado depende del destino y los kilos y se ve al pagar
 	'llega_cp_fuera'  => 'solo enviamos a la península: no a Baleares, Canarias, Ceuta ni Melilla.',
 	'llega_cp_medida' => 'más de 150 kg fuera de la provincia de Barcelona: pídelo por',
 	'llega_cp_error'  => 'El código postal %s no existe en España. Revisa las 5 cifras.',
@@ -87,9 +87,10 @@ return array(
 	),
 	'tarifa' => array(
 		'titulo' => '¿Cuánto cuesta|<em>el envío?</em>',
-		'texto'  => 'La tarifa de la mensajería, igual en toda la península. Se calcula con el peso del hielo más 1 kg por caja, y la ves antes de pagar.',
+		'texto'  => 'La tarifa de la mensajería para la entrega antes de las 14:00, igual en toda la península. Se calcula con el peso del hielo más 1 kg por caja, y la ves antes de pagar. La entrega antes de las 12:00 o de las 10:00, y la del sábado, tienen su precio según el destino y los kilos: lo ves al elegir el día y la hora.',
 		'filas'  => array( array( 'Hasta 2 kg', 8.53 ), array( 'Hasta 5 kg', 10.32 ), array( 'Hasta 10 kg', 13.19 ), array( 'Cada kg de más', 1.12 ) ),
-		'extra'  => array( array( 'Entrega en sábado (según zona)', 9.70 ), array( 'Recogida en Mataró, sin envío', 0 ) ),
+		// 11/11/2026: sin fila de sábado. Ya no es un suplemento fijo: depende del destino y los kilos (se ve al elegir el día)
+		'extra'  => array( array( 'Recogida en Mataró, sin envío', 0 ) ),
 		'nota'   => 'Precios con IVA incluido. La recogida se paga en efectivo y con el importe exacto.',
 		'gratis' => '0 €', // fila de la recogida en el talón de envío: no hay coste de envío (el hielo se paga a precio de recogida)
 		'enlace' => 'Plazos de entrega, festivos y recogida',
@@ -99,8 +100,8 @@ return array(
 		'titulo'   => 'Antes de pagar',
 		'empresas' => 'Cuenta de empresa con factura mensual',
 		'lista'    => array(
-			array( '¿Cuándo llega?', 'Si pides antes de las 12:00 de lunes a jueves, sale ese mismo día y llega al día siguiente antes de las 14:00. Si pides el viernes, llega el sábado antes de las 12:00 (según zona, con suplemento de {sabado_envio}) o el martes. No repartimos en domingo ni lunes. El día lo eliges al pagar.' ),
-			array( '¿Puedo pedir para otro día?', 'Sí: al pagar eliges cualquier día de los próximos 90 con reparto en tu zona, de martes a sábado (el sábado, según zona y con suplemento). Pídelo para el día que lo vas a usar: el hielo seco se va sublimando con las horas.' ),
+			array( '¿Cuándo llega?', 'Si pides antes de las 12:00 de lunes a jueves, sale ese mismo día y llega al día siguiente antes de las 14:00. Si pides el viernes antes de las 12:00, llega el sábado antes de las 13:00 (según zona, con precio de sábado) o el martes. No repartimos en domingo ni lunes. El día lo eliges al pagar.' ),
+			array( '¿Puedo pedir para otro día?', 'Sí: al pagar eliges cualquier día de los próximos 90 con reparto en tu zona, de martes a sábado (el sábado, según zona y con precio de sábado). Pídelo para el día que lo vas a usar: el hielo seco se va sublimando con las horas.' ),
 			// Medición propia del 10–11/11/2026 (guía «cuánto dura»). [PENDIENTE: actualizar la frase de 3 kg cuando el pack pequeño sea de 5 kg y se mida su caja.]
 			array( '¿Llega el mismo peso que pido?', 'No del todo: el hielo seco se sublima desde que se prepara, también con la caja cerrada. Lo hemos medido en nuestra nave, con las cajas cerradas: en 29 horas, la caja pequeña perdió 1,8 kg, la grande (packs de 15 y 20 kg) 4,1 kg y la de 30 kg 5,7 kg. Si pides 3 kg, te llegan unos 2 kg. Con calor o abriendo la caja se gasta antes. Pídelo para el día que lo vas a usar y, si lo necesitas justo, elige un pack más.' ),
 			array( '¿Y si necesito factura?', 'Si eres particular y el pedido es de hasta 400 € (IVA incluido), te llega la factura simplificada por email desde info@dryicepack.es, sin pedirla. Si compras para una empresa o como autónomo, marca la casilla al pagar y pon la razón social y el NIF: recibes la factura completa. Si se te olvida, te enviamos un enlace para pedirla.' ),

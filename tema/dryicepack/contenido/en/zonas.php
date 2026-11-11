@@ -14,12 +14,12 @@ return array(
 		'texto'   => 'Order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00 at any postcode in mainland Spain. Or pick any day you like. Near Mataró? Collect it instead: {pk} kg for {recogida:pk}, VAT included.',
 		'provincias' => 'Mainland Spain, by region',
 		'grupos'  => 'Near Mataró, by district',
-		'resto'   => 'Can’t see your city? It still arrives at any postcode in mainland Spain the next day before 14:00, Tuesday to Friday (on Saturday, depending on the area, before 12:00). We don’t deliver to the Balearic or Canary Islands, Ceuta or Melilla.',
+		'resto'   => 'Can’t see your city? It still arrives at any postcode in mainland Spain the next day before 14:00, Tuesday to Friday (on Saturday, depending on the area, before 13:00). We don’t deliver to the Balearic or Canary Islands, Ceuta or Melilla.',
 		'envios'  => 'See delivery times and prices',
 		'faq'     => array(
 			array( 'Where can I buy dry ice near me?', 'Online, here, anywhere in mainland Spain: order before 12:00 (Spanish time), Monday to Thursday, and it arrives the next day before 14:00 in an EPS box, or on the day you choose. Near Mataró? Collect it from our warehouse, Monday to Saturday: {pk} kg for {recogida:pk}, VAT included, cash only.' ),
 			array( 'Do you deliver to the Balearic or Canary Islands, Ceuta or Melilla?', 'No. We only deliver to mainland Spain, to any postcode on the mainland.' ),
-			array( 'Can I order for a specific day?', 'Yes: at checkout, choose any day in the next 90 with delivery in your area, Tuesday to Saturday (Saturday depending on the area, with a {sabado_envio} surcharge, VAT included).' ),
+			array( 'Can I order for a specific day?', 'Yes: at checkout, choose any day in the next 90 with delivery in your area, Tuesday to Saturday (Saturday depending on the area, at the Saturday rate).' ),
 		),
 	),
 	// Regions in English (key: the Spanish name, normalised by dipt_lugar_normal in inc/lugares.php)
@@ -49,7 +49,7 @@ return array(
 			'titulo' => 'When does it reach {nombre}?|<em>And how much is delivery?</em>',
 			'filas'  => array(
 				array( 'Order before 12:00', 'It arrives the next day before 14:00, Tuesday to Friday. No deliveries on Sunday or Monday.' ),
-				array( 'Saturday', 'If your postcode gets Saturday delivery, it arrives before 12:00, with a {sabado_envio} surcharge (VAT included). Order before 12:00 on Friday.' ),
+				array( 'Saturday', 'If your postcode gets Saturday delivery, it arrives before 13:00, at the Saturday rate: you see it when you choose the day. Order before 12:00 on Friday.' ),
 				array( 'Collection', 'At our warehouse in Mataró, {km} km away, Monday to Saturday. Whole-euro prices, VAT included: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You choose the day and we confirm the time. Cash only, exact amount.' ),
 				array( '10 kg delivery', '€17.32 incl. VAT, the same as anywhere in mainland Spain. You see it in the total before you pay: no surprises at the last step.' ),
 				array( 'For businesses', 'An account with a supply contract, a discount on list prices based on volume, scheduled orders and a single invoice a month, payable within 30 days.' ),
@@ -60,9 +60,9 @@ return array(
 			'lista'  => array( array( 'hosteleria', 'Hospitality' ), array( 'transporte', 'Cold-chain transport' ), array( 'industria', 'Industry' ), array( 'laboratorios', 'Laboratories' ), array( 'eventos', 'Parties and events' ) ),
 		),
 		'faq'     => array(
-			array( 'How long does dry ice take to reach {nombre}?', 'If you order before 12:00, Monday to Thursday, it arrives in {nombre} the next day before 14:00. Order on Friday and it arrives on Saturday before 12:00 (if your postcode gets Saturday delivery, with a surcharge) or on Tuesday. We don’t deliver on Sunday or Monday. At checkout, you only see the days available.' ),
+			array( 'How long does dry ice take to reach {nombre}?', 'If you order before 12:00, Monday to Thursday, it arrives in {nombre} the next day before 14:00. Order before 12:00 on Friday and it arrives on Saturday before 13:00 (if your postcode gets Saturday delivery, at the Saturday rate) or on Tuesday. We don’t deliver on Sunday or Monday. At checkout, you only see the days available.' ),
 			array( 'Can I collect it if I’m in {nombre}?', 'Yes. Our warehouse is in Mataró, {km} km away (about {min} min by car without traffic). Choose the day when you order, Monday to Saturday, and we confirm the time by phone or WhatsApp. Whole-euro prices, VAT included, the same online and at the warehouse: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. On Saturday, +{sabado_recogida} (VAT included).{sabado_libre} You pay in cash, with the exact amount: we can’t give change. In the car, carry it in the boot, with ventilation.' ),
-			array( 'Do you deliver on Saturday in {nombre}?', 'It depends on the postcode. If your area gets Saturday delivery, you’ll see it as an option at checkout, with a {sabado_envio} surcharge (VAT included), and it arrives before 12:00. To have it on Saturday, order before 12:00 on Friday.' ),
+			array( 'Do you deliver on Saturday in {nombre}?', 'It depends on the postcode. If your area gets Saturday delivery, you’ll see it as an option at checkout, at the Saturday rate, and it arrives before 13:00. To have it on Saturday, order before 12:00 on Friday.' ),
 		),
 		'cerca'   => 'Nearby areas',
 		'fuente'  => 'Distances and times: OpenStreetMap and OSRM, without traffic.',

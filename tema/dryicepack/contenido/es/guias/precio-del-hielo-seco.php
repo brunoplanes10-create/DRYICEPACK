@@ -97,7 +97,7 @@ return array(
 <li><strong>El IVA (' . $dgp_ivp . ' %)</strong> se suma al precio del pack. En la tabla tiene las dos cifras.</li>
 <li><strong>El envío va aparte</strong> y se calcula con el peso del hielo más 1 kg por caja. La tarifa es la misma en toda la península: hasta 5 kg, ' . $dgp_dos( $dgp_t5 ) . ' + IVA; hasta 10 kg, ' . $dgp_dos( $dgp_t10 ) . ' + IVA; cada kilo de más, ' . $dgp_dos( $dgp_tkg ) . ' + IVA.</li>
 </ul>
-<p>Si pide antes de las 12:00, de lunes a jueves, llega al día siguiente antes de las 14:00. La entrega en sábado, según zona, lleva un suplemento de {sabado_envio}, IVA incluido. Días, festivos y sábados, en <a href="' . esc_url( dipt_url( 'envios' ) ) . '">envíos y plazos de entrega</a>.</p>
+<p>Si pide antes de las 12:00, de lunes a jueves, llega al día siguiente antes de las 14:00. La entrega antes de las 12:00 o antes de las 10:00, y la del sábado (según zona, antes de las 13:00), tienen su propio precio según el destino y los kilos: lo ve al elegir el día y la hora. Días, festivos y sábados, en <a href="' . esc_url( dipt_url( 'envios' ) ) . '">envíos y plazos de entrega</a>.</p>
 
 <h2>¿Por qué baja el precio por kilo?</h2>
 <p>Porque una parte del coste va por caja, no por kilo: la caja de EPS y el envío. Cuantos más kilos lleva la caja, menos le toca a cada uno. Con el envío y el IVA, el kilo pasa de ' . $dgp_dos( $dgp_pri['p']['total'] / $dgp_pri['kg'] ) . ' en el pack de ' . $dgp_kgt( $dgp_pri ) . ' a ' . $dgp_dos( $dgp_ult['p']['total'] / $dgp_ult['kg'] ) . ' en el de ' . $dgp_kgt( $dgp_ult ) . '.</p>

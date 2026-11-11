@@ -33,7 +33,7 @@ return array(
 	'halloween' => array(
 		// Sale del 1/9 al 31/10 de cada año (plantillas/eventos.php): sin fechas de un año concreto (en 2026 decía «JUE 29/10 · 12:00»)
 		'titulo' => 'Para Halloween, recíbelo la víspera.',
-		'texto'  => 'Pídelo antes de las 12:00 del día anterior a la entrega, o resérvalo antes y elige el día al pagar: llega antes de las 14:00. ¿Lo quieres el mismo sábado? Según zona, llega antes de las 12:00 y con un suplemento de {sabado_envio}.',
+		'texto'  => 'Pídelo antes de las 12:00 del día anterior a la entrega, o resérvalo antes y elige el día al pagar: llega antes de las 14:00. ¿Lo quieres el mismo sábado? Según zona, llega antes de las 13:00 y con precio de sábado: lo ves al elegir el día.',
 		'enlace' => 'Hielo seco para Halloween',
 		'fecha'  => '', // rótulo en mono con el último pedido del año (vacío: no se muestra)
 	),
@@ -44,7 +44,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntas de fiestas y eventos',
 		'lista'  => array(
-			array( '¿Cuándo lo pido para una boda el sábado?', 'Pídelo cuando quieras y elige que llegue el viernes (último momento para eso: jueves a las 12:00). Para recibirlo el mismo sábado, elige sábado: llega antes de las 12:00, depende de la zona y lleva un suplemento de {sabado_envio} (IVA incluido). Cuanto más cerca del evento, mejor: se va sublimando con las horas.' ),
+			array( '¿Cuándo lo pido para una boda el sábado?', 'Pídelo cuando quieras y elige que llegue el viernes (último momento para eso: jueves a las 12:00). Para recibirlo el mismo sábado, elige sábado y pídelo antes de las 12:00 del viernes: llega antes de las 13:00, depende de la zona y tiene precio de sábado, que ves al elegir el día. Cuanto más cerca del evento, mejor: se va sublimando con las horas.' ),
 			array( '¿La niebla moja o mancha?', 'No mancha: es vapor de agua condensado y CO₂. Con mucha niebla seguida, el suelo puede quedar húmedo: en una pista de baile, sécalo entre tandas para que nadie resbale.' ),
 			array( '¿Salta la alarma de incendios?', 'Los detectores de humo ópticos pueden reaccionar a la niebla densa. Pregúntalo en el local antes del evento.' ),
 		),
@@ -56,7 +56,7 @@ return array(
 		'boton'   => 'Pedir hielo seco',
 		'semana'  => 'Días de entrega',
 		'dias'    => array( array( 'L', 'Lunes' ), array( 'M', 'Martes' ), array( 'X', 'Miércoles' ), array( 'J', 'Jueves' ), array( 'V', 'Viernes' ), array( 'S', 'Sábado' ), array( 'D', 'Domingo' ) ),
-		'estados' => array( 'si' => 'Reparto antes de las 14:00', 'zona' => 'Según zona, con suplemento', 'no' => 'Sin reparto' ),
+		'estados' => array( 'si' => 'Reparto antes de las 14:00', 'zona' => 'Según zona, con precio de sábado', 'no' => 'Sin reparto' ),
 		'nota'    => 'Al pagar solo aparecen los días con reparto en tu zona.',
 	),
 );

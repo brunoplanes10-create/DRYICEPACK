@@ -65,7 +65,7 @@ return array(
 	'config_cookies'  => 'Configurar les galetes',
 	'derechos'        => 'DryIcePack és una marca d\'INDUNOVA IMS S.L. · CIF B66800103',
 	// Entrega (rellotge de l'hora límit)
-	// MRW entrega abans de les 14:00 (dissabte, abans de les 12:00; la primera entrega que s'anuncia mai no és en dissabte)
+	// MRW entrega abans de les 14:00 (dissabte, abans de les 13:00; la primera entrega que s'anuncia mai no és en dissabte)
 	'corte_antes'     => 'Demana abans de les 12:00 i arriba el %s abans de les 14:00',
 	'corte_quedan'    => 'Falten %s per demanar avui',
 	'corte_despues'   => 'Si demanes ara, arriba el %s abans de les 14:00',

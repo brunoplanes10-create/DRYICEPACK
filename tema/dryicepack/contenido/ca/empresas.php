@@ -94,7 +94,7 @@ return array(
 			array( 'Quin preu tindré?', 'Un descompte sobre la tarifa del web, segons el seu volum i la seva freqüència. S\'acorda en obrir el compte. Completi la frase de més amunt i li responem, normalment el mateix dia feiner.' ),
 			array( 'Puc canviar quilos o freqüència?', 'Sí, quan ho necessiti. Avisi\'ns amb antelació per WhatsApp, telèfon o correu electrònic i ho ajustem.' ),
 			array( 'Emeten factura completa?', 'Sí, sempre, amb les seves dades fiscals. Amb compte d\'empresa rep una sola factura al mes amb totes les comandes.' ),
-			array( 'Arriben fora de Catalunya?', 'Sí, a tota la península per missatgeria. Si demana abans de les 12:00 de dilluns a dijous, arriba l\'endemà abans de les 14:00. El dissabte, segons la zona, arriba abans de les 12:00 i amb un suplement de {sabado_envio} (IVA inclòs). Més de 150 kg fora de la província de Barcelona: escrigui\'ns i li preparem l\'enviament a mida.' ),
+			array( 'Arriben fora de Catalunya?', 'Sí, a tota la península per missatgeria. Si demana abans de les 12:00 de dilluns a dijous, arriba l\'endemà abans de les 14:00. El dissabte, segons la zona, arriba abans de les 13:00 (com a màxim 80 kg per comanda, comptant-hi les caixes) i amb preu de dissabte: el veu en triar el dia. Més de 150 kg fora de la província de Barcelona: escrigui\'ns i li preparem l\'enviament a mida.' ),
 			array( 'Tenen fitxa de dades de seguretat?', 'Sí. La pot descarregar a la pàgina de seguretat, juntament amb les normes de manipulació per al seu equip.' ),
 		),
 	),

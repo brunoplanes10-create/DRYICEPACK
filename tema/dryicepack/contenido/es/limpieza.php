@@ -51,7 +51,7 @@ return array(
 			array( '14:00', '', 'Llega mañana antes', 'A su nave, su taller o la obra, en la península.' ),
 		),
 		'notas'  => array(
-			array( 'Sábado', 'Antes de las 12:00, según zona: +{sabado_envio}, IVA incluido.' ),
+			array( 'Sábado', 'Antes de las 13:00, según zona, y como mucho 80 kg por pedido, contando las cajas. Precio de sábado: lo ve al elegir el día. Pídalo antes de las 12:00 del viernes.' ),
 			array( 'Otro día', 'Cualquiera de los próximos 90 con reparto en su zona. Festivos y sábados, en <a href="' . esc_url( dipt_url( 'envios' ) ) . '">envíos y plazos de entrega</a>.' ),
 			array( 'Recogida', 'En la nave de Mataró, de lunes a sábado (el sábado, +{sabado_recogida}). Solo en efectivo y con el importe exacto.' ),
 		),
@@ -121,7 +121,7 @@ return array(
 			array( '¿Los pellets de 3 mm sirven para mi máquina?', 'Es el calibre habitual de las máquinas de limpieza criogénica. Aun así, compruebe en el manual de la suya qué calibre admite. Si tiene dudas, díganos el modelo por WhatsApp o por teléfono.' ),
 			// [PENDIENTE: consumo típico en kg por hora, dato de INDUNOVA. Si lo da, se añade aquí como referencia, citando que depende de la máquina.]
 			array( '¿Cuánto hielo seco gasta una máquina por hora?', 'Depende de la máquina, de la presión de trabajo y de lo que limpie: el consumo lo indica el fabricante. Díganos su máquina y cuántas horas va a limpiar, y le ayudamos a calcular el pedido.' ),
-			array( '¿Puedo pedirlo para el día de la limpieza?', 'Sí. Al pagar elige cualquier día de los próximos 90 con reparto en su zona, de martes a sábado (el sábado, según zona y con un suplemento de {sabado_envio}). Pídalo para ese día: el hielo seco se sublima con las horas.' ),
+			array( '¿Puedo pedirlo para el día de la limpieza?', 'Sí. Al pagar elige cualquier día de los próximos 90 con reparto en su zona, de martes a sábado (el sábado, según zona, con precio de sábado y como mucho 80 kg por pedido, contando las cajas). Pídalo para ese día: el hielo seco se sublima con las horas.' ),
 			array( '¿Cuánto aguantan los pellets en la caja?', 'Depende de la temperatura y de las veces que se abra. Los pellets de 3 mm se subliman antes que los nuggets: guárdelos en su caja, con la tapa sin precintar, y no la abra hasta cargar la tolva. Más detalles en <a href="' . esc_url( dipt_url( 'guia-cuanto-dura-el-hielo-seco' ) ) . '">cuánto dura el hielo seco y cómo guardarlo</a>.' ),
 			array( '¿Pueden servir más de 150 kg?', 'En la web, hasta 250 kg por pedido. Fuera de la provincia de Barcelona, a partir de 150 kg el envío se prepara a medida: escríbanos por WhatsApp, llámenos o mándenos un email. ¿Más de 250 kg? Le damos precio y día, normalmente el mismo día laborable.' ),
 			array( '¿Me hacen factura completa?', 'Sí. Al pagar, marque «Compro para una empresa o autónomo» y escriba la razón social y el NIF. Con <a href="' . esc_url( dipt_url( 'empresas' ) ) . '">cuenta de empresa</a>, una sola factura al mes, a 30 días.' ),

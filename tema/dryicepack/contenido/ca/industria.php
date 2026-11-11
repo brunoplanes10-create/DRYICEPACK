@@ -63,7 +63,7 @@ return array(
 		'titulo' => 'Preguntes d\'indústria',
 		'lista'  => array(
 			array( '3 mm o 16 mm per refredar peces?', 'Normalment 3 mm: més superfície en contacte i refreda abans. Per mantenir el fred moltes hores, 16 mm.' ),
-			array( 'Poden entregar un dia concret?', 'Sí. Al web tria el dia en pagar: de dimarts a divendres, i el dissabte segons la zona. Per a comandes de volum, l\'acordem per telèfon.' ),
+			array( 'Poden entregar un dia concret?', 'Sí. Al web, triï el dia en pagar: de dimarts a divendres, i el dissabte segons la zona (com a màxim 80 kg per comanda, comptant-hi les caixes). Per a comandes de volum, l\'acordem per telèfon.' ),
 			array( 'Fan neteja criogènica?', 'La fa INDUNOVA, l\'empresa de la qual forma part DryIcePack. Li facilitem el contacte. Si té màquina pròpia, li servim el <a href="' . esc_url( dipt_url( 'limpieza' ) ) . '">gel sec per a neteja criogènica</a>: pèl·lets de 3 mm.' ),
 		),
 	),

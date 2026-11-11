@@ -33,7 +33,7 @@ return array(
 	'halloween' => array(
 		// Sale del 1/9 al 31/10 de cada año (plantillas/eventos.php), si Halloween está traducida: sin fechas de un año concreto
 		'titulo' => 'For Halloween, get it the day before.',
-		'texto'  => 'Order before 12:00 (Spanish time) on the day before delivery, or book it earlier and choose the day at checkout: it arrives before 14:00. Want it on the Saturday itself? Depending on the area, it arrives before 12:00, with a {sabado_envio} surcharge.',
+		'texto'  => 'Order before 12:00 (Spanish time) on the day before delivery, or book it earlier and choose the day at checkout: it arrives before 14:00. Want it on the Saturday itself? Depending on the area, it arrives before 13:00, at the Saturday rate: you see it when you choose the day.',
 		'enlace' => 'Dry ice for Halloween',
 		'fecha'  => '', // rótulo en mono con el último pedido del año (vacío: no se muestra)
 	),
@@ -44,7 +44,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Party and event questions',
 		'lista'  => array(
-			array( 'When should I order for a Saturday wedding?', 'Order whenever you like and choose Friday delivery (the last moment to do that: Thursday at 12:00). To receive it on the Saturday itself, choose Saturday: it arrives before 12:00, depends on the area and has a {sabado_envio} surcharge (VAT included). The closer to the event, the better: it sublimates over time.' ),
+			array( 'When should I order for a Saturday wedding?', 'Order whenever you like and choose Friday delivery (the last moment to do that: Thursday at 12:00). To receive it on the Saturday itself, choose Saturday and order before 12:00 on Friday: it arrives before 13:00, depends on the area and is charged at the Saturday rate, which you see when you choose the day. The closer to the event, the better: it sublimates over time.' ),
 			array( 'Does the fog make things wet or leave stains?', 'It doesn’t stain: it’s condensed water vapour and CO₂. With a lot of fog in a row, the floor can get damp: on a dance floor, dry it between rounds so nobody slips.' ),
 			array( 'Will it set off the fire alarm?', 'Optical smoke detectors can react to dense fog. Ask the venue before the event.' ),
 		),
@@ -56,7 +56,7 @@ return array(
 		'boton'   => 'Order dry ice',
 		'semana'  => 'Delivery days',
 		'dias'    => array( array( 'Mo', 'Monday' ), array( 'Tu', 'Tuesday' ), array( 'We', 'Wednesday' ), array( 'Th', 'Thursday' ), array( 'Fr', 'Friday' ), array( 'Sa', 'Saturday' ), array( 'Su', 'Sunday' ) ),
-		'estados' => array( 'si' => 'Delivery before 14:00', 'zona' => 'Some areas, with a surcharge', 'no' => 'No delivery' ),
+		'estados' => array( 'si' => 'Delivery before 14:00', 'zona' => 'Some areas, at the Saturday rate', 'no' => 'No delivery' ),
 		'nota'    => 'At checkout you only see the days with delivery to your area.',
 	),
 );

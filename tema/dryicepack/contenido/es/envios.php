@@ -11,7 +11,7 @@ return array(
 		'titulo'   => 'Envío de hielo seco:|<em>pides antes de las 12:00, llega antes de las 14:00.</em>',
 		'reloj'    => array( 'antes' => 'Tiempo para pedir hoy', 'despues' => 'Por hoy ya ha pasado la hora límite' ),
 		'llega'    => array( 'antes' => 'Si pides ahora, llega el %s antes de las 14:00.', 'despues' => 'Si pides ahora, llega el %s antes de las 14:00.' ),
-		'texto'    => 'Lo que entra antes de las 12:00, de lunes a viernes, sale ese mismo día y llega al siguiente: de martes a viernes, antes de las 14:00; el sábado, según zona, antes de las 12:00. O eliges al pagar cualquier día de los próximos 90.',
+		'texto'    => 'Lo que pides antes de las 12:00, de lunes a jueves, sale ese mismo día y llega al siguiente antes de las 14:00. Si pides el viernes antes de las 12:00, llega el sábado antes de las 13:00 (según zona y con su precio) o el martes. O eliges al pagar cualquier día de los próximos 90.',
 		'alt'      => 'Repartidor cargando una caja de hielo seco en la furgoneta',
 	),
 	'semana' => array(
@@ -24,9 +24,9 @@ return array(
 			array( 1, 2, '' ),
 			array( 2, 3, '' ),
 			array( 3, 4, '' ),
-			array( 4, 5, 'Sábado según zona, antes de las 12:00, +{sabado_envio}. Si no, el martes.' ),
+			array( 4, 5, 'Sábado según zona, antes de las 13:00 (como mucho 80 kg por pedido, contando las cajas), con precio de sábado: lo ves al elegir el día. Si no, el martes.' ),
 		),
-		'finde'  => 'De martes a viernes llega antes de las 14:00; el sábado, antes de las 12:00. Pedidos del sábado y el domingo, o del viernes después de las 12:00: salen el lunes y llegan el martes.',
+		'finde'  => 'De martes a viernes llega antes de las 14:00; el sábado, según zona, antes de las 13:00. Pedidos del sábado y el domingo, o del viernes después de las 12:00: salen el lunes y llegan el martes.',
 		'festivos' => 'Si es festivo en Mataró, en Cataluña o en toda España, no salen pedidos, y tampoco se entrega en un festivo de la mensajería en tu zona. No tienes que mirarlo: al pagar solo aparecen los días posibles.',
 	),
 	'tarifa' => array(
@@ -64,7 +64,7 @@ return array(
 		'titulo' => 'Recogida en Mataró,|<em>sin esperar a la mensajería.</em>',
 		'lista'  => array(
 			array( 'Dónde', 'Camí Ca La Madrona 19 D, 08304 Mataró (Barcelona). Es nuestra nave, no una oficina de la mensajería.' ),
-			array( 'Cuándo', 'De lunes a sábado, también festivos. Elige el día al pagar y te confirmamos la hora por teléfono o WhatsApp. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre}' ),
+			array( 'Cuándo', 'De lunes a viernes de 9:00 a 18:00 y el sábado de 9:00 a 13:00, también festivos. Elige el día al pagar y te confirmamos la hora por teléfono o WhatsApp. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre}' ),
 			array( 'Cuánto', 'Precio redondo con IVA incluido, el mismo en la web y en la nave: {pk} kg por {recogida:pk}, 10 kg por {recogida:10}, 15 kg por {recogida:15} y 20 kg por {recogida:20}. En efectivo y con el importe exacto: no tenemos cambio.' ),
 			array( 'Cómo llevarlo', 'Nunca en el habitáculo: en el maletero y ventilando.' ),
 		),
@@ -90,8 +90,9 @@ return array(
 		'lista'  => array(
 			array( '¿Cómo va embalado?', 'En caja de EPS de 40 mm de pared, cerrada con su tapa pero no hermética, para que el CO₂ pueda salir durante el viaje.' ),
 			array( '¿Llega el mismo peso que pido?', 'El hielo seco se sublima desde que sale de la nave, así que durante el viaje pierde algo de peso. Por eso sale el mismo día que se prepara y llega al día siguiente antes de las 14:00: el menor tiempo posible en camino. Si llega con más pérdida de la normal, te lo reponemos.' ),
-			array( '¿Y si no estoy cuando llega?', 'Lo mejor es dar una dirección donde haya alguien hasta las 14:00 (el sábado, hasta las 12:00). Si aun así no estás, MRW deja un aviso y vuelve a intentarlo: avísanos cuanto antes para seguir el envío, porque el hielo no espera.' ),
-			array( '¿Puedo pedir una hora concreta?', 'MRW entrega antes de las 14:00 (el sábado, antes de las 12:00); la hora exacta la marca su ruta. Si necesitas saber la hora, recógelo en Mataró: te la confirmamos antes.' ),
+			array( '¿Y si no estoy cuando llega?', 'Lo mejor es dar una dirección donde haya alguien hasta las 14:00 (el sábado, hasta las 13:00). Si aun así no estás, MRW deja un aviso y vuelve a intentarlo. El sábado hace un solo intento: si no hay nadie, deja el pedido en su punto MRW más cercano. Avísanos cuanto antes para seguir el envío, porque el hielo no espera.' ),
+			array( '¿Puedo pedir una hora concreta?', 'Una hora exacta, no; una hora límite, sí, entre semana. Al pagar eliges la hora límite: antes de las 14:00 (sale marcada y es la más barata), antes de las 12:00 o antes de las 10:00. Las dos últimas tienen su precio según el destino y los kilos: lo ves al elegirlas. El sábado, según zona, llega antes de las 13:00. Dentro de ese margen, la hora exacta la marca la ruta de MRW. Si necesitas saber la hora, recógelo en Mataró: te la confirmamos antes.' ),
+			array( '¿Y si pago antes de las 10:00 y llega más tarde?', 'Si eliges antes de las 10:00 o de las 12:00 y no llega a esa hora por un fallo nuestro o de MRW, te devolvemos el envío entero. Si por el retraso ya no te sirve, escríbenos: si la culpa es nuestra o de MRW, te devolvemos todo lo que pagaste. No se aplica si el retraso viene de una dirección o un teléfono mal puestos o de que no había nadie para recibirlo.' ),
 			array( '¿Hacéis envíos urgentes el mismo día?', 'No por mensajería. Si estás cerca de Mataró, puedes recogerlo el mismo día si pides antes de las 12:00. Te confirmamos la hora por teléfono o WhatsApp.' ),
 		),
 	),

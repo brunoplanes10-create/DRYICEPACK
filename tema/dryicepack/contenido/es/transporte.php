@@ -37,7 +37,7 @@ return array(
 		'mes'         => 'Al mes',
 		'mes_calc'    => 'Por semana × 4',
 		'nota'        => 'Cálculo orientativo. Al mes, contando 4 semanas.',
-		'lunes'       => 'Los lunes no hay reparto: para la ruta del lunes, elija la entrega del sábado (según zona, con suplemento) o recójalo el mismo lunes en Mataró.',
+		'lunes'       => 'Los lunes no hay reparto. Para la ruta del lunes, elija la entrega del sábado (según zona, con precio de sábado y como mucho 80 kg por pedido, contando las cajas): el hielo pasa el fin de semana en la caja y le calculamos los kilos. O recójalo el mismo lunes en Mataró.',
 		'boton'  => 'Pedir mi precio',
 	),
 	'cliente' => array(
@@ -54,7 +54,7 @@ return array(
 			array( '¿3 mm o 16 mm para transporte?', '16 mm: más masa por pieza, así que aguanta más horas en ruta. Los 3 mm enfrían más rápido y sirven para bajar la temperatura al empezar.' ),
 			array( '¿Puedo llevarlo en la cabina de la furgoneta?', 'No. Siempre en la zona de carga y ventilando. En la cabina el CO₂ se acumula y desplaza el oxígeno que respira el conductor.' ),
 			array( '¿Sirve para producto refrigerado, no congelado?', 'Sí, con cuidado: separe el hielo seco del producto con cartón o una bandeja para que no lo congele. Le ayudamos a ajustar la cantidad.' ),
-			array( '¿Pueden entregar cada semana a la misma hora?', 'El mismo día cada semana, sí: con un pedido programado llega antes de las 14:00 sin que tenga que pedirlo. Dentro de ese margen, la hora exacta la marca la ruta de MRW. Si necesita una hora fija, recójalo en Mataró a la hora que le confirmemos.' ),
+			array( '¿Pueden entregar cada semana a la misma hora?', 'El mismo día cada semana, sí: con un pedido programado llega antes de las 14:00 sin que tenga que pedirlo. Si lo necesita antes, también puede llegar antes de las 12:00 o antes de las 10:00, con su precio. Dentro de ese margen, la hora exacta la marca la ruta de MRW. Si necesita una hora fija, recójalo en Mataró a la hora que le confirmemos.' ),
 		),
 	),
 	// Llamada final: hoja de ruta (de Mataró a su almacén) y botón al formulario de cuenta de empresa, con WhatsApp como alternativa

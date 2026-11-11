@@ -106,6 +106,8 @@ function dipt_entrega_para_cp( $cp, $kg = 0, $idioma = null ) {
 		} else {
 			$entrega = dipt_primera_entrega();
 		}
+		// El sábado (Ecommerce de MRW) admite como mucho 80 kg facturables: con más, la ficha no lo ofrece (cajas de 20 kg)
+		if ( $sabado && $kg > 0 && function_exists( 'dip_sabado_posible' ) && ! dip_sabado_posible( $kg, max( 1, (int) ceil( $kg / 20 ) ) ) ) $sabado = null;
 	}
 	$fecha = static fn( $f ) => $f ? array( 'fecha' => $f['fecha'], 'texto' => dipt_fecha_larga( $f['fecha'], $idioma ) ) : null;
 	return array(

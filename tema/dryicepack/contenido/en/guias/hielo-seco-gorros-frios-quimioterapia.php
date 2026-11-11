@@ -38,15 +38,15 @@ return array(
 <p>You can order in advance and choose the delivery day at checkout.</p>
 <ul>
 <li><strong>Order before 12:00 (Spanish time), Monday to Thursday:</strong> it arrives the next day before 14:00, anywhere in mainland Spain.</li>
-<li><strong>Order before 12:00 on Friday:</strong> it arrives on Saturday before 12:00 depending on your area, with a {sabado_envio} surcharge (VAT included). Otherwise, on Tuesday.</li>
+<li><strong>Order before 12:00 on Friday:</strong> it arrives on Saturday before 13:00 depending on your area, at the Saturday rate: you see it when you choose the day. Otherwise, on Tuesday.</li>
 <li><strong>No deliveries on Sunday or Monday.</strong> No orders leave on public holidays: at checkout, you only see the days you can choose.</li>
-<li><strong>MRW delivers before 14:00</strong> (on Saturday, before 12:00), but the exact time depends on its route. If your session is first thing, order it for the day before. Dry ice sublimates over time: keep the delivery box closed until you’re ready to load the cool box and, if you’re not sure how many kilos to order, message us.</li>
+<li><strong>MRW delivers before 14:00</strong> (on Saturday, before 13:00). At checkout you can also choose delivery before 12:00 or before 10:00, each at its own price. Within that window, the exact time depends on MRW’s route: if your session is first thing, order it for the day before. Dry ice sublimates over time: keep the delivery box closed until you’re ready to load the cool box and, if you’re not sure how many kilos to order, message us.</li>
 </ul>
 
 <h3>What if my session is on a Monday?</h3>
 <p>There are no deliveries on Mondays. You have two options:</p>
 <ul>
-<li><strong>Saturday delivery.</strong> Order before 12:00 on Friday, if your area has Saturday delivery (it arrives before 12:00, with a {sabado_envio} surcharge, VAT included). The ice will spend the weekend in its box: message us before you order and we’ll work out the kilos.</li>
+<li><strong>Saturday delivery.</strong> Order before 12:00 on Friday, if your area has Saturday delivery (it arrives before 13:00, at the Saturday rate). The ice will spend the weekend in its box: message us before you order and we’ll work out the kilos.</li>
 <li><strong>Collection in Mataró on the Monday itself.</strong> From our warehouse (Camí Ca La Madrona 19 D), Monday to Saturday, including public holidays. Choose Monday at checkout and we’ll confirm the time by phone or WhatsApp; if your session is early, tell us when you order. There’s no delivery charge and the price is a round figure with VAT included: {pk} kg for {recogida:pk} and 10 kg for {recogida:10}. You pay in cash, with the exact amount: we can’t give change.</li>
 </ul>
 

@@ -94,7 +94,7 @@ return array(
 			array( 'What price will we get?', 'A discount on the online list prices, based on your volume and frequency. It’s agreed when you open the account. Fill in the sentence above and we’ll reply, usually the same working day.' ),
 			array( 'Can I change the kilos or the frequency?', 'Yes, whenever you need. Let us know in advance by WhatsApp, phone or email and we’ll adjust it.' ),
 			array( 'Do you issue full invoices?', 'Yes, always, with your tax details. With a business account you get a single invoice a month covering all your orders.' ),
-			array( 'Do you deliver outside Catalonia?', 'Yes, anywhere in mainland Spain by courier. If you order before 12:00 (Spanish time), Monday to Thursday, it arrives the next day before 14:00. On Saturday, depending on the area, it arrives before 12:00, with a {sabado_envio} surcharge (VAT included). Over 150 kg outside the province of Barcelona: message us and we’ll arrange it individually.' ),
+			array( 'Do you deliver outside Catalonia?', 'Yes, anywhere in mainland Spain by courier. If you order before 12:00 (Spanish time), Monday to Thursday, it arrives the next day before 14:00. On Saturday, depending on the area, it arrives before 13:00 (up to 80 kg per order, counting the boxes), at the Saturday rate: you see it when you choose the day. Over 150 kg outside the province of Barcelona: message us and we’ll arrange it individually.' ),
 			array( 'Do you have a safety data sheet?', 'Yes. You can download it (in Spanish) from the safety page, together with the handling rules for your team.' ),
 		),
 	),

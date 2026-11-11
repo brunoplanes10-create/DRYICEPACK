@@ -21,6 +21,7 @@ for (const f of ['ajustes.php', 'negocio.php', 'festivos-mrw.php', 'textos.php',
   php.writeFile('/p/inc/' + f, readFileSync('plugin/dryicepack-tienda/inc/' + f));
 }
 php.writeFile('/p/datos/mrw-oficinas.json', readFileSync('plugin/dryicepack-tienda/datos/mrw-oficinas.json'));
+php.writeFile('/p/datos/mrw-cerca.json', readFileSync('plugin/dryicepack-tienda/datos/mrw-cerca.json'));
 php.writeFile('/t/datos.php', readFileSync('tema/dryicepack/inc/datos.php'));
 const movimientoJs = readFileSync('tema/dryicepack/assets/js/movimiento.js', 'utf8');
 php.writeFile('/f/d0910.html', readFileSync('herramientas/fixtures/mrw-2026-10-09.html'));
@@ -158,6 +159,7 @@ const PEDIDO_SEGUIMIENTO = String.raw`
       }
       function get_meta( $k ) { return $this->meta[ $k ] ?? ''; }
       function update_meta_data( $k, $v ) { $this->meta[ $k ] = $v; }
+      function delete_meta_data( $k ) { unset( $this->meta[ $k ] ); }
       function save_meta_data() {}
       function add_order_note( $n ) { $this->notas[] = $n; }
       function get_order_number() { return (string) $this->d['id']; }
@@ -212,6 +214,33 @@ const PEDIDO_INFORMES = String.raw`
 `;
 
 const escenarios = {
+  'Cerca o lejos de una oficina de MRW (datos/mrw-cerca.json) y precio de cada hora': String.raw`
+    // Distancia medida (GeoNames + posición de las oficinas en mrw.es), 18 km en línea recta como mucho
+    $c = static fn( $cp, $pob = '' ) => dip_cerca_oficina_mrw( array( 'cp' => $cp, 'poblacion' => $pob ) );
+    ok( dip_mrw_cerca_datos()['ok'] && count( dip_mrw_cerca_datos()['cerca'] ) > 4000 && count( dip_mrw_cerca_datos()['lejos'] ) > 4000, 'datos cargados: más de 4.000 códigos cerca y más de 4.000 lejos' );
+    ok( $c( '17001' ) && $c( '17005' ) && $c( '17007', 'Girona' ), 'Girona capital: cerca (la oficina de Salt está a 3–5 km), con o sin población' );
+    ok( $c( '08304' ) && $c( '08301' ) && $c( '08013' ) && $c( '28014' ) && $c( '46001' ) && $c( '41001' ) && $c( '50001' ), 'Mataró, Barcelona, Madrid, Valencia, Sevilla y Zaragoza: cerca' );
+    ok( ! $c( '44140' ) && ! $c( '22700', 'Jaca' ) && ! $c( '44100' ) && ! $c( '28190' ), 'pueblos lejos de una oficina (Teruel, Jaca, Albarracín, sierra de Madrid): lejos, aunque se escriba la población' );
+    ok( $c( '08399', 'Mataró' ) && ! $c( '08399', 'Argentona' ) && ! $c( '08399' ), 'código que la lista no conoce: cerca solo si la población tiene oficina de MRW' );
+    ok( ! $c( '' ) && ! $c( '0830' ), 'sin código postal de 5 cifras: lejos' );
+    // Precios: el suplemento de lejos se cobra solo donde toca
+    $p = dip_precio_servicio( 'sabado', 10, 1, array( 'cp' => '17001', 'poblacion' => 'Girona' ) );
+    ok( 19.25 === $p['neto'] && true === $p['cerca'] && 'regional' === $p['zona'], 'sábado a Girona, 10 kg: 13,80 + 5,45 = 19,25 € (cerca)', $p );
+    $p = dip_precio_servicio( 'sabado', 10, 1, array( 'cp' => '44140' ) );
+    ok( 26.95 === $p['neto'] && false === $p['cerca'], 'sábado a un pueblo de Teruel, 10 kg: 17,25 + 9,70 = 26,95 € (lejos)', $p );
+    $p = dip_precio_servicio( '10', 3, 1, array( 'cp' => '22700', 'poblacion' => 'Jaca' ) );
+    ok( 41.83 === $p['neto'] && '10' === $p['mrw'], 'antes de las 10:00 a Jaca, 3 kg: 26,53 + 15,30 = 41,83 €', $p );
+    $p = dip_precio_servicio( '10', 3, 1, array( 'cp' => '17001' ) );
+    ok( 24.28 === $p['neto'], 'antes de las 10:00 a Girona, 3 kg: 24,28 € (cerca, sin los 15,30 €)', $p );
+    $p = dip_precio_servicio( '14', 3, 1, array( 'cp' => '08304' ) );
+    ok( 8.30 === $p['neto'] && '12' === $p['mrw'], 'Mataró, 3 kg, antes de las 14:00: 8,30 € por el Urgente 12 (más barato que 10,32 €)', $p );
+    $p = dip_precio_servicio( '14', 10, 1, array( 'cp' => '28014' ) );
+    ok( 14.31 === $p['neto'] && '14' === $p['mrw'], 'Madrid, 10 kg, antes de las 14:00: 14,31 € por el Urgente 14', $p );
+    ok( null === dip_precio_servicio( 'sabado', 80, 4, array( 'cp' => '08013' ) ) && null !== dip_precio_servicio( 'sabado', 75, 4, array( 'cp' => '08013' ) ), 'sábado: 84 kg facturables no; 79 sí' );
+    $p = dip_precio_servicio( 'sabado', 60, 3, array( 'cp' => '08013' ) );
+    ok( 45.82 === $p['neto'], 'sábado a Barcelona, 3 cajas de 20 kg (63 kg): 23,87 + 5 × 2,90 + 2 € de la 3.ª caja + 5,45 = 45,82 €', $p );
+  `,
+
   'Nombres de población': String.raw`
     $casa = fn( $a, $b ) => dip_mrw_mismo_sitio( dip_mrw_nombres( $a ), dip_mrw_nombres( $b ) );
     ok( $casa( "L'Hospitalet de Llobregat", 'Hospitalet De Llobregat' ), "L'Hospitalet de Llobregat casa con Hospitalet De Llobregat", dip_mrw_nombres( "L'Hospitalet de Llobregat" ) );
@@ -380,15 +409,19 @@ const escenarios = {
     class Tarifa { public $id; function __construct( $id ) { $this->id = $id; } function get_method_id() { return explode( ':', $this->id )[0]; } function get_cost() { return false !== strpos( $this->id, 'local' ) ? 0 : 13.19; } function get_taxes() { return array(); } }
     class Envios { function get_packages() { return array( array( 'rates' => array( 'flat_rate:1' => new Tarifa( 'flat_rate:1' ), 'local_pickup:2' => new Tarifa( 'local_pickup:2' ) ) ) ); } }
     class Cuotas { public $cesta; function __construct( $c ) { $this->cesta = $c; } function add_fee( $a ) { $this->cesta->fees[] = array( $a['name'], round( $a['amount'], 2 ) ); $this->cesta->ids[] = $a['id'] ?? ''; } }
-    class Cesta { public $fees = array(); public $ids = array(); function get_cart() { return array(); } function add_fee( $n, $i, $t = false ) { $this->fees[] = array( $n, round( $i, 2 ) ); } function fees_api() { return new Cuotas( $this ); } }
+    class Cesta { public $fees = array(); public $ids = array(); function get_cart() { return $GLOBALS['carrito'] ?? array(); } function add_fee( $n, $i, $t = false ) { $this->fees[] = array( $n, round( $i, 2 ) ); } function fees_api() { return new Cuotas( $this ); } }
     class Tienda { public $session, $customer, $cart; function __construct() { $this->session = new Sesion(); $this->customer = new Cliente(); $this->cart = new Cesta(); } function shipping() { return new Envios(); } }
     class Errores { public $e = array(); function add( $c, $m ) { $this->e[ $c ] = $m; } }
+    class ProductoP { public $kg; function __construct( $kg ) { $this->kg = $kg; } function get_weight() { return $this->kg; } }
+    function carrito( ...$packs ) { $GLOBALS['carrito'] = array_map( static fn( $kg ) => array( 'quantity' => 1, 'data' => new ProductoP( $kg ) ), $packs ); }
+    carrito( 10 ); // un pack de 10 kg (11 kg facturables) a Barcelona
     class WC_Order {
       public $meta = array(); public $cp;
       function __construct( $cp = '08013' ) { $this->cp = $cp; }
       function get_shipping_postcode() { return ''; } function get_billing_postcode() { return $this->cp; }
       function get_shipping_city() { return ''; } function get_billing_city() { return ''; }
       function update_meta_data( $k, $v ) { $this->meta[ $k ] = $v; } function get_meta( $k ) { return $this->meta[ $k ] ?? ''; } function save_meta_data() {}
+      function delete_meta_data( $k ) { unset( $this->meta[ $k ] ); } function get_items() { return array(); }
     }
     $GLOBALS['wc'] = new Tienda();
     function WC() { return $GLOBALS['wc']; }
@@ -427,7 +460,7 @@ const escenarios = {
     // 2. Suplemento de sábado
     $cesta = new Cesta();
     disparar( 'woocommerce_cart_calculate_fees', $cesta );
-    ok( array( array( 'Entrega en sábado', 9.7 ) ) === $cesta->fees, 'suplemento de sábado (9,70 € + IVA) con la fecha lejana', $cesta->fees );
+    ok( array() === $cesta->fees, 'sábado lejano: sin línea de suplemento (desde el 11/11/2026 el sábado va en su tarifa de envío)', $cesta->fees );
     WC()->session->set( 'dip_fecha', $miercoles );
     $cesta = new Cesta();
     disparar( 'woocommerce_cart_calculate_fees', $cesta );
@@ -468,7 +501,10 @@ const escenarios = {
     preg_match( '/data-dip-cal="([^"]+)"/', $html, $m );
     $json = json_decode( html_entity_decode( $m[1] ?? '', ENT_QUOTES, 'UTF-8' ), true );
     ok( $json && $sabado === $json['sel'] && in_array( $sabado, $json['f'], true ) && $json['f'] === array_column( $cal['fechas'], 'fecha' ), 'data-dip-cal: todas las fechas válidas (' . count( $json['f'] ?? array() ) . ') y la elegida', $json ? array_slice( $json, 2, 4 ) : $html );
-    ok( $json && '+11,74' . "\u{00A0}" . '€' === $json['sab'] && 6 === $json['c'] && 7 === count( $json['n']['d'] ) && 12 === count( $json['n']['mde'] ), 'data-dip-cal: suplemento, casillas y nombres de días y meses', $json ? array( $json['sab'], $json['c'] ) : null );
+    // Sábado (11/11/2026): Ecommerce de MRW. 10 kg a Barcelona (provincial, con oficina): 12,44 + 5,45 = 17,89 € → 21,65 € con IVA;
+    // entre semana, 14,31 € → 17,32 €. La casilla del sábado dice lo que añade: +4,33 €
+    ok( $json && '+4,33' . "\u{00A0}" . '€' === $json['sab'] && 6 === $json['c'] && 7 === count( $json['n']['d'] ) && 12 === count( $json['n']['mde'] ), 'data-dip-cal: lo que añade el sábado (+4,33 €), casillas y nombres de días y meses', $json ? array( $json['sab'], $json['c'] ) : null );
+    ok( false !== strpos( $html, 'Sábado antes de las 13:00, según zona: envío 21,65' ), 'sábado elegido: su hora (13:00) y su precio (21,65 € con IVA)', $html );
     preg_match_all( '/<label class="dip-fecha[^"]*"><input type="radio" name="dip_fecha" value="([\d-]+)"( checked)?/', $html, $c );
     ok( 6 === count( $c[1] ) && $sabado === $c[1][5] && ' checked' === $c[2][5] && 1 === substr_count( $html, "checked='checked'" ) - 1, 'casillas: 5 primeras + el sábado lejano marcado', $c[1] );
     ok( false !== strpos( $html, 'dip-fecha--lejana' ) && false !== strpos( $html, 'class="dip-otra-fecha" aria-expanded="false" aria-controls="dip-cal"' ) && false !== strpos( $html, 'id="dip-cal" hidden' ), 'botón "Otra fecha" y hueco del calendario' );
@@ -476,6 +512,44 @@ const escenarios = {
     $html = dip_html_entrega();
     preg_match_all( '/name="dip_fecha" value="([\d-]+)"/', $html, $c );
     ok( $c[1] === array_column( dip_fechas_disponibles( 'envio', 6, null, $destino ), 'fecha' ) && false === strpos( $html, 'dip-fecha--lejana' ), 'sin fecha lejana: las 6 primeras fechas', $c[1] );
+
+    // 6b. Hora de entrega (11/11/2026): entre semana se elige 14:00 (de serie), 12:00 o 10:00, cada una a precio de MRW
+    WC()->session->set( 'dip_fecha', $miercoles );
+    WC()->session->set( 'dip_servicio', '' );
+    $html = dip_html_entrega();
+    preg_match_all( '/name="dip_servicio" value="(\d+)"( checked)?/', $html, $h );
+    ok( array( '14', '12', '10' ) === $h[1] && ' checked' === $h[2][0], 'horas: 14:00 (marcada), 12:00 y 10:00', $h );
+    // Barcelona, 11 kg: 14:00 14,31 → 17,32 € · 12:00 22,10 + 2,21 = 24,31 → 29,42 € · 10:00 24,52 + 2,45 = 26,97 → 32,63 € (con oficina: sin los 15,30 €)
+    ok( false !== strpos( $html, '17,32' ) && false !== strpos( $html, '29,42' ) && false !== strpos( $html, '32,63' ) && false !== strpos( $html, 'La más barata' ), 'horas: precios con IVA para Barcelona (17,32 · 29,42 · 32,63) y «La más barata» en las 14:00', $html );
+    WC()->session->set( 'dip_servicio', '10' );
+    ok( '10' === dip_servicio_elegido( $miercoles ) && 'sabado' === dip_servicio_elegido( $sabado ) && '14' === dip_servicio_para( 'xx', $miercoles ), 'hora elegida: la de la sesión entre semana; el sábado, siempre «sabado»' );
+    $paq = disparar( 'woocommerce_cart_shipping_packages', array( array( 'contents' => array() ) ) );
+    ok( '10' === ( $paq[0]['dip_servicio'] ?? '' ) && $miercoles === ( $paq[0]['dip_fecha'] ?? '' ), 'el paquete lleva el día y la hora (WooCommerce recalcula el envío al cambiarlos)', $paq );
+    $_POST['dip_fecha'] = $miercoles;
+    $p = new WC_Order();
+    disparar( 'woocommerce_checkout_create_order', $p, $datos );
+    ok( '10' === $p->get_meta( '_dip_servicio' ) && '10' === $p->get_meta( '_dip_servicio_mrw' ), 'pedido: guarda la hora pagada (10) y el servicio de MRW (10)', $p->meta );
+    WC()->session->set( 'dip_servicio', '14' );
+    $p = new WC_Order( '08304' );
+    $p->update_meta_data( '_dip_kg', 3 );
+    $p->update_meta_data( '_dip_cajas', 1 );
+    disparar( 'woocommerce_checkout_create_order', $p, array( 'shipping_method' => array( 'flat_rate:1' ), 'billing_postcode' => '08304', 'billing_city' => 'Mataró' ) );
+    ok( '14' === $p->get_meta( '_dip_servicio' ) && '12' === $p->get_meta( '_dip_servicio_mrw' ), 'Mataró, 3 kg, antes de las 14:00: sale por el Urgente 12 (8,30 € frente a 10,32 €)', $p->meta );
+    $_POST['dip_fecha'] = $sabado;
+    $p = new WC_Order();
+    disparar( 'woocommerce_checkout_create_order', $p, $datos );
+    ok( 'sabado' === $p->get_meta( '_dip_servicio' ) && 'sabado' === $p->get_meta( '_dip_servicio_mrw' ), 'pedido del sábado: servicio «sabado»', $p->meta );
+    // Sábado con más de 80 kg (Ecommerce de MRW): no se ofrece y no se acepta
+    carrito( 20, 20, 20, 20, 20 );
+    WC()->session->set( 'dip_fecha', $sabado );
+    $html = dip_html_entrega();
+    preg_match( '/data-dip-cal="([^"]+)"/', $html, $m );
+    $j100 = json_decode( html_entity_decode( $m[1] ?? '', ENT_QUOTES, 'UTF-8' ), true );
+    ok( $j100 && ! in_array( $sabado, $j100['f'], true ) && false !== strpos( $html, 'como mucho 80 kg' ), '105 kg facturables: el sábado no sale y se dice por qué', $j100 ? count( $j100['f'] ) : $html );
+    ok( isset( $valida( $sabado, $datos )['dip_fecha'] ) && array() === $valida( $miercoles, $datos ), '105 kg: al pagar, el sábado da error y el miércoles no' );
+    carrito( 10 );
+    WC()->session->set( 'dip_servicio', '' );
+    WC()->session->set( 'dip_fecha', '' );
 
     // 7. Recogida: lunes lejano sí, sábado lejano con suplemento de recogida
     WC()->session->set( 'chosen_shipping_methods', array( 'local_pickup:2' ) );
@@ -492,7 +566,7 @@ const escenarios = {
     ok( array( array( 'Recogida en sábado', 8.26 ) ) === $cesta->fees && array( 'dip-sabado-recogida' ) === $cesta->ids, 'recogida el sábado lejano ' . $sabado_r . ': suplemento de recogida de 10 € IVA incluido (base 8,26 €)', $cesta->fees );
     $sup = dip_suplemento_sabado( 'recogida', $sabado_r );
     ok( $sup && 8.26 === $sup['neto'] && 1.74 === $sup['iva'] && 10.0 === $sup['con_iva'], 'suplemento de recogida: 8,26 € + 1,74 € = 10,00 €', $sup );
-    ok( null === dip_suplemento_sabado( 'recogida', '2026-10-31' ) && 11.74 === dip_suplemento_sabado( 'envio', '2026-10-31' )['con_iva'], '31/10/2026: recogida sin suplemento, envío con 11,74 €' );
+    ok( null === dip_suplemento_sabado( 'recogida', '2026-10-31' ) && null === dip_suplemento_sabado( 'envio', '2026-10-31' ), '31/10/2026: recogida sin suplemento; el envío del sábado ya no lleva línea aparte (va en su tarifa)' );
     ok( null === dip_suplemento_sabado( 'recogida', '2026-10-14' ) && null === dip_suplemento_sabado( 'envio', '2026-10-14' ), 'entre semana, sin suplemento' );
     if ( dip_fecha_es_valida( '2026-10-31', 'recogida' ) ) {
       WC()->session->set( 'dip_fecha', '2026-10-31' );
@@ -780,6 +854,7 @@ const escenarios = {
       function __construct( $meta ) { $this->meta = $meta; }
       function get_meta( $k ) { return $this->meta[ $k ] ?? ''; }
       function update_meta_data( $k, $v ) { $this->meta[ $k ] = $v; }
+      function delete_meta_data( $k ) { unset( $this->meta[ $k ] ); }
       function save_meta_data() {}
       function add_order_note( $n ) { $this->notas[] = $n; }
       function get_payment_method() { return 'cod'; }

@@ -36,7 +36,11 @@ add_filter( 'woocommerce_package_rates', static function ( $rates, $package ) {
 	if ( $kg > DIP_MAX_KG + 0.0001 ) return array();
 	$a_medida = dip_envio_a_medida( $kg, $cp ); // más de 150 kg fuera de la provincia de Barcelona: solo recogida online
 
-	$coste    = dip_coste_transporte( $kg, $bultos );
+	// Precio de la hora elegida (11/11/2026): 14:00 de serie, 12:00, 10:00 o sábado, a precio de MRW para este destino.
+	// El día y la hora llegan en el paquete (inc/entrega.php); sin ellos (otras pantallas), el de las 14:00.
+	$destino  = array( 'cp' => $cp, 'poblacion' => (string) ( $package['destination']['city'] ?? '' ) );
+	$precio   = dip_precio_servicio( (string) ( $package['dip_servicio'] ?? '14' ), $kg, $bultos, $destino ) ?: dip_precio_servicio( '14', $kg, $bultos, $destino );
+	$coste    = (float) $precio['neto'];
 	$envios   = array();
 	$recogida = array();
 	foreach ( $rates as $id => $rate ) {

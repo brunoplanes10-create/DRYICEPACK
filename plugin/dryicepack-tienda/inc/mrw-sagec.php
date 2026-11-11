@@ -63,6 +63,8 @@ function dip_sagec_por_defecto() {
 		// 0115 Urgente 14 Expedición (de lunes a jueves, el de serie) · 0800 Ecommerce (sábado, sale el viernes) ·
 		// también 0105 Urgente 12 Expedición y 0015 Urgente 10 Expedición
 		'servicio'          => '0115',
+		'servicio_12'       => '0105', // el cliente pagó «antes de las 12:00» (o es el más barato para las 14:00)
+		'servicio_10'       => '0015', // el cliente pagó «antes de las 10:00» (o es el más barato)
 		'servicio_sabado'   => '0800', // siempre con EntregaSabado = S
 		'tipo_mercancia'    => '',
 		'servicio_especial' => '',
@@ -299,6 +301,9 @@ function dip_sagec_datos( WC_Order $p ) {
 		'entrega'   => $entrega,
 		'salida'    => function_exists( 'dip_eh_salida_de' ) ? (string) dip_eh_salida_de( $entrega ) : '',
 		'sabado'    => function_exists( 'dip_eh_es_sabado' ) && dip_eh_es_sabado( $entrega ),
+		// Servicio de MRW con el que sale (inc/entrega.php, _dip_servicio_mrw): el más barato que llega a la hora pagada
+		'servicio'  => dip_sagec_servicio_pedido( $p, $entrega ),
+		'pagado'    => function_exists( 'dip_servicio_para' ) ? dip_servicio_para( (string) $p->get_meta( '_dip_servicio' ), $entrega ) : '14',
 		'nota'      => trim( (string) $p->get_customer_note() ),
 		'referencia' => (string) $p->get_order_number(),
 	);
@@ -306,7 +311,27 @@ function dip_sagec_datos( WC_Order $p ) {
 
 /** Huella de lo que manda en el envío: si cambia después de crearlo, hay que revisarlo. */
 function dip_sagec_huella( array $d ) {
-	return md5( implode( '|', array( $d['entrega'], $d['nombre'], $d['linea1'], $d['resto'], $d['cp'], $d['ciudad'], $d['telefono'], $d['kg'], $d['cajas'] ) ) );
+	return md5( implode( '|', array( $d['entrega'], $d['nombre'], $d['linea1'], $d['resto'], $d['cp'], $d['ciudad'], $d['telefono'], $d['kg'], $d['cajas'], $d['servicio'] ?? '' ) ) );
+}
+
+/**
+ * Servicio de MRW de un pedido ('14', '12', '10' o 'sabado'): _dip_servicio_mrw (guardado al pagar) o, si no lo tiene
+ * (pedidos de antes del 11/11/2026 o creados en el escritorio), el más barato que llega a la hora pagada.
+ */
+function dip_sagec_servicio_pedido( WC_Order $p, $entrega ) {
+	$es_sabado = function_exists( 'dip_eh_es_sabado' ) && dip_eh_es_sabado( $entrega );
+	if ( $es_sabado ) return 'sabado';
+	$mrw = (string) $p->get_meta( '_dip_servicio_mrw' );
+	if ( in_array( $mrw, array( '14', '12', '10' ), true ) ) return $mrw;
+	$pagado = function_exists( 'dip_servicio_para' ) ? dip_servicio_para( (string) $p->get_meta( '_dip_servicio' ), $entrega ) : '14';
+	return function_exists( 'dip_servicio_mrw_pedido' ) ? dip_servicio_mrw_pedido( $p, $pagado ) : $pagado;
+}
+
+/** Código de MRW de un servicio con los ajustes ($c): 0115, 0105, 0015 o 0800 de serie. */
+function dip_sagec_codigo( $servicio, array $c ) {
+	$campo = array( '14' => 'servicio', '12' => 'servicio_12', '10' => 'servicio_10', 'sabado' => 'servicio_sabado' )[ (string) $servicio ] ?? 'servicio';
+	$cod   = trim( (string) ( $c[ $campo ] ?? '' ) );
+	return '' !== $cod ? $cod : trim( (string) $c['servicio'] );
 }
 
 /**
@@ -380,7 +405,7 @@ function dip_sagec_peticion( array $d, ?array $c = null ) {
 			'Fecha'            => $salida ? $salida->format( 'd/m/Y' ) : '',
 			'Referencia'       => $d['referencia'],
 			'EnFranquicia'     => 'N',
-			'CodigoServicio'   => $d['sabado'] && '' !== trim( (string) $c['servicio_sabado'] ) ? trim( (string) $c['servicio_sabado'] ) : trim( (string) $c['servicio'] ),
+			'CodigoServicio'   => dip_sagec_codigo( $d['servicio'] ?? ( $d['sabado'] ? 'sabado' : '14' ), $c ),
 			'NumeroBultos'     => (string) max( 1, (int) $d['cajas'] ),
 			'Peso'             => (string) (int) $d['peso'],
 			'EntregaSabado'    => $d['sabado'] ? 'S' : 'N',
@@ -517,7 +542,8 @@ function dip_sagec_guardar_creado( WC_Order $p, $numero, $solicitud, array $dato
 		'Envío creado en MRW (%s): número %s, %s, salida el %s. Seguimiento: %s. %s',
 		$origen,
 		$numero,
-		$datos['sabado'] ? 'entrega en sábado antes de las ' . DIP_HORA_ENTREGA_SABADO : 'entrega antes de las ' . DIP_HORA_ENTREGA,
+		( $datos['sabado'] ? 'entrega en sábado antes de las ' . DIP_HORA_ENTREGA_SABADO : 'entrega antes de las ' . ( function_exists( 'dip_hora_servicio' ) ? dip_hora_servicio( $datos['pagado'] ?? '14' ) : DIP_HORA_ENTREGA ) )
+			. ( function_exists( 'dip_servicios_envio' ) ? ', servicio ' . ( dip_servicios_envio()[ $datos['servicio'] ?? '14' ]['mrw'] ?? '' ) : '' ),
 		dip_fecha_larga( $datos['salida'] ),
 		dip_url_seguimiento_mrw( $numero ),
 		$despues ? 'Ya es más tarde de las ' . dip_sagec_hora_camino() . ': el cliente recibe ahora el aviso «va de camino».' : 'El cliente recibe el aviso «va de camino» a las ' . dip_sagec_hora_camino() . '.'
@@ -981,6 +1007,73 @@ add_action( 'woocommerce_order_action_dip_sagec_anular', static function ( $pedi
 	if ( true !== $r && class_exists( 'WC_Admin_Meta_Boxes' ) ) WC_Admin_Meta_Boxes::add_error( 'No se ha anulado el envío en MRW: ' . $r . '. Anúlalo en la web de clientes de MRW.' );
 } );
 
+/* =========================================================
+ * Garantía de la hora pagada (11/11/2026): si un envío «antes de las 10:00» o «de las 12:00» llega tarde por un fallo
+ * nuestro o de MRW, se devuelve el envío entero (condiciones de venta). Acción del pedido «Devolver el envío entero»:
+ * reembolso de WooCommerce de la línea de envío (con su IVA); con WooPayments vuelve solo a la tarjeta. La pulsa el
+ * propietario: la web no devuelve nada por su cuenta. WooCommerce manda al cliente su email de reembolso parcial.
+ * Para devolver todo el pedido (ya no le sirve por el retraso), el botón «Reembolsar» de WooCommerce de siempre.
+ * ========================================================= */
+
+/** Devuelve el envío entero de un pedido. @return true|string motivo del fallo */
+function dip_devolver_envio( WC_Order $p, $razon = '' ) {
+	if ( '' !== (string) $p->get_meta( '_dip_envio_devuelto' ) ) return 'el envío ya se devolvió (' . $p->get_meta( '_dip_envio_devuelto' ) . ')';
+	if ( ! function_exists( 'wc_create_refund' ) ) return 'WooCommerce no está activo';
+	$lineas = array();
+	$total  = 0.0;
+	foreach ( $p->get_items( 'shipping' ) as $id => $item ) {
+		$base = round( (float) $item->get_total() - (float) $p->get_total_refunded_for_item( $id, 'shipping' ), 2 );
+		$iva  = array();
+		foreach ( (array) ( $item->get_taxes()['total'] ?? array() ) as $tipo => $importe ) {
+			$iva[ $tipo ] = round( (float) $importe - (float) $p->get_tax_refunded_for_item( $id, $tipo, 'shipping' ), 2 );
+		}
+		if ( $base <= 0 ) continue;
+		$lineas[ $id ] = array( 'qty' => 0, 'refund_total' => wc_format_decimal( $base ), 'refund_tax' => array_map( 'wc_format_decimal', $iva ) );
+		$total        += $base + array_sum( $iva );
+	}
+	$total = round( $total, 2 );
+	if ( $total <= 0 ) return 'el pedido no tiene envío que devolver';
+	$hora     = function_exists( 'dip_hora_entrega_pedido' ) ? dip_hora_entrega_pedido( $p ) : '';
+	$razon    = '' !== $razon ? $razon : ( in_array( (string) $p->get_meta( '_dip_servicio' ), array( '10', '12' ), true )
+		? sprintf( 'Envío devuelto: no llegó antes de las %s (fallo nuestro o de MRW).', $hora )
+		: 'Envío devuelto.' );
+	$pasarela = function_exists( 'wc_get_payment_gateway_by_order' ) ? wc_get_payment_gateway_by_order( $p ) : null;
+	$auto     = $pasarela && $pasarela->supports( 'refunds' );
+	$r        = wc_create_refund( array(
+		'amount'         => $total,
+		'reason'         => $razon,
+		'order_id'       => $p->get_id(),
+		'line_items'     => $lineas,
+		'refund_payment' => $auto,
+		'restock_items'  => false,
+	) );
+	if ( is_wp_error( $r ) ) return $r->get_error_message();
+	$p = wc_get_order( $p->get_id() );
+	$p->update_meta_data( '_dip_envio_devuelto', dip_sagec_ahora()->format( 'Y-m-d H:i' ) . ' · ' . dip_euros( $total ) );
+	$p->save_meta_data();
+	$p->add_order_note( $razon . ' ' . dip_euros( $total ) . ( $auto
+		? ' devueltos con ' . $pasarela->get_title() . '.'
+		: ' apuntados como reembolso. Esta forma de pago no devuelve sola: devuélvelo a mano (Bizum o transferencia).' ) );
+	return true;
+}
+
+add_filter( 'woocommerce_order_actions', static function ( $acciones, $pedido = null ) {
+	$pedido = $pedido instanceof WC_Order ? $pedido : ( $GLOBALS['theorder'] ?? null );
+	if ( ! $pedido instanceof WC_Order || ( function_exists( 'dip_eh_es_recogida' ) && dip_eh_es_recogida( $pedido ) ) ) return $acciones;
+	if ( '' !== (string) $pedido->get_meta( '_dip_envio_devuelto' ) || ! in_array( $pedido->get_status(), array( 'processing', 'completed', 'on-hold' ), true ) ) return $acciones;
+	if ( (float) $pedido->get_shipping_total() <= 0 ) return $acciones;
+	$s = (string) $pedido->get_meta( '_dip_servicio' );
+	$acciones['dip_devolver_envio'] = in_array( $s, array( '10', '12' ), true )
+		? 'Devolver el envío entero (no llegó antes de las ' . dip_hora_servicio( $s ) . ')'
+		: 'Devolver el envío entero';
+	return $acciones;
+}, 22, 2 );
+
+add_action( 'woocommerce_order_action_dip_devolver_envio', static function ( $pedido ) {
+	$r = dip_devolver_envio( $pedido );
+	if ( true !== $r && class_exists( 'WC_Admin_Meta_Boxes' ) ) WC_Admin_Meta_Boxes::add_error( 'No se ha devuelto el envío: ' . $r . '.' );
+} );
+
 /* En la pantalla del pedido, debajo del número de MRW */
 add_action( 'woocommerce_admin_order_data_after_shipping_address', static function ( $pedido ) {
 	if ( ! $pedido instanceof WC_Order || 'apagado' === dip_sagec_modo() || ( function_exists( 'dip_eh_es_recogida' ) && dip_eh_es_recogida( $pedido ) ) ) return;
@@ -1045,6 +1138,8 @@ function dip_sagec_html_ajustes() {
 			$campo( 'usuario', 'Usuario del servicio web', 'El de SAGEC (no el de la web de clientes, si MRW te da otro).' );
 			$campo( 'clave', 'Contraseña', 'Se guarda cifrada y no se vuelve a enseñar. También se puede poner en wp-config.php: define( \'DIP_MRW_CLAVE\', \'…\' ); y lo mismo con DIP_MRW_FRANQUICIA, DIP_MRW_ABONADO, DIP_MRW_DEPARTAMENTO y DIP_MRW_USUARIO.', 'password' );
 			$campo( 'servicio', 'Código de servicio (entre semana)', 'De serie 0115, Urgente 14 Expedición (antes de las 14:00). En tu cuenta también están 0105 Urgente 12 y 0015 Urgente 10.' );
+			$campo( 'servicio_12', 'Código de servicio antes de las 12:00', 'De serie 0105, Urgente 12 Expedición.' );
+			$campo( 'servicio_10', 'Código de servicio antes de las 10:00', 'De serie 0015, Urgente 10 Expedición.' );
 			$campo( 'servicio_sabado', 'Código de servicio del sábado', 'De serie 0800, Ecommerce. La web marca siempre «entrega en sábado».' );
 			$campo( 'tipo_mercancia', 'Tipo de mercancía', 'Lo que MRW te diga para el hielo seco (UN 1845). Vacío si no hace falta.' );
 			$campo( 'servicio_especial', 'Servicio especial', 'Solo si MRW pide marcar el hielo seco así. Vacío si no.' );
@@ -1065,7 +1160,7 @@ add_action( 'admin_post_dip_sagec_ajustes', static function () {
 	$antes = wp_parse_args( (array) get_option( 'dip_sagec', array() ), dip_sagec_por_defecto() );
 	$nuevo = $antes;
 	$nuevo['modo'] = in_array( (string) ( $e['modo'] ?? '' ), array( 'apagado', 'simulacion', 'pruebas', 'real' ), true ) ? (string) $e['modo'] : 'simulacion';
-	foreach ( array( 'franquicia', 'abonado', 'departamento', 'usuario', 'servicio', 'servicio_sabado', 'tipo_mercancia', 'servicio_especial', 'tipo_etiqueta' ) as $k ) {
+	foreach ( array( 'franquicia', 'abonado', 'departamento', 'usuario', 'servicio', 'servicio_12', 'servicio_10', 'servicio_sabado', 'tipo_mercancia', 'servicio_especial', 'tipo_etiqueta' ) as $k ) {
 		if ( array_key_exists( $k, $e ) ) $nuevo[ $k ] = substr( trim( sanitize_text_field( (string) $e[ $k ] ) ), 0, 40 );
 	}
 	if ( array_key_exists( 'observaciones', $e ) ) $nuevo['observaciones'] = mb_substr( trim( sanitize_text_field( (string) $e['observaciones'] ) ), 0, 120 );

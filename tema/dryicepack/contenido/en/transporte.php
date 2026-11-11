@@ -37,7 +37,7 @@ return array(
 		'mes'         => 'Per month',
 		'mes_calc'    => 'Per week × 4',
 		'nota'        => 'Estimate only. Per month, counting 4 weeks.',
-		'lunes'       => 'There are no deliveries on Mondays: for your Monday route, choose Saturday delivery (depending on the area, with a surcharge) or collect it in Mataró that Monday.',
+		'lunes'       => 'There are no deliveries on Mondays. For your Monday route, choose Saturday delivery (depending on the area, at the Saturday rate and up to 80 kg per order, counting the boxes): the ice spends the weekend in its box and we work out the kilos for you. Or collect it in Mataró that Monday.',
 		'boton'  => 'Get my price',
 	),
 	'cliente' => array(
@@ -54,7 +54,7 @@ return array(
 			array( '3 mm or 16 mm for transport?', '16 mm: more mass per piece, so it lasts longer on the road. 3 mm cools faster and helps bring the temperature down at the start.' ),
 			array( 'Can I carry it in the van cab?', 'No. Always in the load area, with ventilation. In the cab, the CO₂ builds up and displaces the oxygen the driver breathes.' ),
 			array( 'Does it work for chilled, not frozen, products?', 'Yes, with care: separate the dry ice from the product with cardboard or a tray so it doesn’t freeze it. We’ll help you get the quantity right.' ),
-			array( 'Can you deliver every week at the same time?', 'On the same day every week, yes: with a scheduled order it arrives before 14:00 without you having to ask. Within that window, the exact time depends on MRW’s route. If you need a fixed time, collect it in Mataró at the time we confirm with you.' ),
+			array( 'Can you deliver every week at the same time?', 'On the same day every week, yes: with a scheduled order it arrives before 14:00 without you having to ask. If you need it earlier, it can also arrive before 12:00 or before 10:00, each at its own price. Within that window, the exact time depends on MRW’s route. If you need a fixed time, collect it in Mataró at the time we confirm with you.' ),
 		),
 	),
 	// Final call to action: route sheet (from Mataró to your warehouse) and button to the business account form, with WhatsApp as an alternative

@@ -457,6 +457,22 @@ try {
 	$adelantar2 = crear( array( 'clave' => 'adelantar2', 'fecha' => '2026-12-09' ) );
 	ok( is_string( dip_urgente_adelantar( $adelantar2, a_las( '2026-12-02 17:45' ) ) ) && '2026-12-09' === (string) fresco( $adelantar2 )->get_meta( '_dip_fecha_entrega' ), 'a las 17:45 ya no se adelanta' );
 
+	/* ---------- Garantía de la hora pagada: devolver el envío entero ---------- */
+	$tarde10 = crear( array( 'clave' => 'tarde10' ) );
+	$tarde10->update_meta_data( '_dip_servicio', '10' );
+	$tarde10->save();
+	$envio_total = round( (float) $tarde10->get_shipping_total() + (float) $tarde10->get_shipping_tax(), 2 );
+	$acciones    = apply_filters( 'woocommerce_order_actions', array(), fresco( $tarde10 ) );
+	ok( isset( $acciones['dip_devolver_envio'] ) && false !== strpos( $acciones['dip_devolver_envio'], 'antes de las 10:00' ), 'acción «Devolver el envío entero (no llegó antes de las 10:00)»', $acciones );
+	ok( true === dip_devolver_envio( fresco( $tarde10 ) ), 'devolver el envío: hecho' );
+	$f = fresco( $tarde10 );
+	ok( abs( (float) $f->get_total_refunded() - $envio_total ) < 0.01 && $envio_total > 13, 'se devuelve el envío entero con IVA (' . $envio_total . ' €)', (float) $f->get_total_refunded() );
+	ok( '' !== (string) $f->get_meta( '_dip_envio_devuelto' ) && (bool) notas( $tarde10, 'no llegó antes de las 10:00' ), 'queda apuntado y con nota' );
+	ok( (bool) notas( $tarde10, 'devuélvelo a mano' ), 'con una forma de pago que no devuelve sola (cheque), la nota dice que se haga a mano' );
+	ok( is_string( dip_devolver_envio( fresco( $tarde10 ) ) ), 'no se devuelve dos veces' );
+	ok( ! isset( apply_filters( 'woocommerce_order_actions', array(), fresco( $tarde10 ) )['dip_devolver_envio'] ), 'y la acción ya no sale' );
+	ok( ! isset( apply_filters( 'woocommerce_order_actions', array(), fresco( $recogida ) )['dip_devolver_envio'] ), 'en una recogida no sale' );
+
 	/* ---------- Pasada programada ---------- */
 	ok( false !== wp_next_scheduled( 'dip_sagec_pasada' ) && false !== wp_next_scheduled( 'dip_sagec_salida' ), 'las tareas de las 8:00 y las 18:30 están programadas' );
 	$h = wp_date( 'H:i', (int) wp_next_scheduled( 'dip_sagec_pasada' ), dip_zona_horaria() );

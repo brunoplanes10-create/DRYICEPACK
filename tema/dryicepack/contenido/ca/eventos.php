@@ -33,7 +33,7 @@ return array(
 	'halloween' => array(
 		// Surt de l'1/9 al 31/10 de cada any (plantillas/eventos.php): sense dates d'un any concret (el 2026 deia «DJ 29/10 · 12:00»)
 		'titulo' => 'Per Halloween, rep-lo la vigília.',
-		'texto'  => 'Demana\'l abans de les 12:00 del dia abans de l\'entrega, o reserva\'l abans i tria el dia en pagar: arriba abans de les 14:00. El vols el mateix dissabte? Segons la zona, arriba abans de les 12:00 i amb un suplement de {sabado_envio}.',
+		'texto'  => 'Demana\'l abans de les 12:00 del dia abans de l\'entrega, o reserva\'l abans i tria el dia en pagar: arriba abans de les 14:00. El vols el mateix dissabte? Segons la zona, arriba abans de les 13:00 i amb preu de dissabte: el veus en triar el dia.',
 		'enlace' => 'Gel sec per a Halloween',
 		'fecha'  => '', // rètol en mono amb l'última comanda de l'any (buit: no es mostra)
 	),
@@ -44,7 +44,7 @@ return array(
 	'faq' => array(
 		'titulo' => 'Preguntes de festes i esdeveniments',
 		'lista'  => array(
-			array( 'Quan l\'he de demanar per a un casament en dissabte?', 'Demana\'l quan vulguis i tria que arribi divendres (l\'últim moment per fer-ho: dijous a les 12:00). Per rebre\'l el mateix dissabte, tria dissabte: arriba abans de les 12:00, depèn de la zona i porta un suplement de {sabado_envio} (IVA inclòs). Com més a prop de l\'esdeveniment, millor: es va sublimant amb les hores.' ),
+			array( 'Quan l\'he de demanar per a un casament en dissabte?', 'Demana\'l quan vulguis i tria que arribi divendres (l\'últim moment per fer-ho: dijous a les 12:00). Per rebre\'l el mateix dissabte, tria dissabte i demana\'l abans de les 12:00 de divendres: arriba abans de les 13:00, depèn de la zona i té preu de dissabte, que veus en triar el dia. Com més a prop de l\'esdeveniment, millor: es va sublimant amb les hores.' ),
 			array( 'La boira mulla o taca?', 'No taca: és vapor d\'aigua condensat i CO₂. Amb molta boira seguida, el terra pot quedar humit: en una pista de ball, eixuga\'l entre tandes perquè ningú no rellisqui.' ),
 			array( 'Salta l\'alarma d\'incendis?', 'Els detectors de fum òptics poden reaccionar a la boira densa. Pregunta-ho al local abans de l\'esdeveniment.' ),
 		),
@@ -56,7 +56,7 @@ return array(
 		'boton'   => 'Demanar gel sec',
 		'semana'  => 'Dies d\'entrega',
 		'dias'    => array( array( 'Dl', 'Dilluns' ), array( 'Dt', 'Dimarts' ), array( 'Dc', 'Dimecres' ), array( 'Dj', 'Dijous' ), array( 'Dv', 'Divendres' ), array( 'Ds', 'Dissabte' ), array( 'Dg', 'Diumenge' ) ),
-		'estados' => array( 'si' => 'Repartiment abans de les 14:00', 'zona' => 'Segons la zona, amb suplement', 'no' => 'Sense repartiment' ),
+		'estados' => array( 'si' => 'Repartiment abans de les 14:00', 'zona' => 'Segons la zona, amb preu de dissabte', 'no' => 'Sense repartiment' ),
 		'nota'    => 'En pagar només hi apareixen els dies amb repartiment a la teva zona.',
 	),
 );
