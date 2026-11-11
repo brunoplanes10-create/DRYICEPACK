@@ -66,6 +66,9 @@
 .cr-hero .entrada { color: var(--c-hielo-claro); }
 .cr-hero__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; }
 .cr-hero__acciones .enlace-flecha { color: #fff; }
+/* Servicio o máquina: a INDUNOVA, en una línea propia y con menos peso que las dos acciones de compra */
+.cr-hero__indu { flex-basis: 100%; margin: 0; padding-top: .9rem; border-top: 1px solid var(--c-linea-oscura); font-size: var(--t-peq); }
+.cr-hero__indu .enlace-flecha { color: var(--c-hielo-claro); }
 .cr-hero__mesa { position: relative; }
 .cr-hero__foto { aspect-ratio: 16 / 11; overflow: hidden; border-radius: var(--radio); background: var(--c-noche-2); }
 .cr-hero__foto img { width: 100%; height: 100%; object-fit: cover; }
@@ -219,6 +222,7 @@
 .cr-rama__pre { color: var(--c-hielo); }
 .cr-rama h3 { margin: .25rem 0 .5rem; font-family: var(--f-display); font-weight: 800; font-size: clamp(1.4rem, 2.2vw, 1.9rem); line-height: 1.15; letter-spacing: -.02em; color: #fff; }
 .cr-rama p:not(.cr-rama__pre) { max-width: 32rem; color: var(--c-hielo-claro); }
+.cr-rama .cr-rama__ir { margin-top: 1.2rem; }
 .cr-rama .enlace-flecha { margin-top: .9rem; color: #fff; }
 @media (max-width: 900px) {
 	.cr-indu__rej { grid-template-columns: 1fr; }

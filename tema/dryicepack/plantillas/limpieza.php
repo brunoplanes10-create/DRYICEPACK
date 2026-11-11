@@ -42,6 +42,9 @@ get_header();
 				<div class="cr-hero__acciones">
 					<?php echo dipt_boton( $c['hero']['boton'], $cr_pedir( $cr_mayor ), 'hielo' ); // phpcs:ignore ?>
 					<?php echo dipt_enlace( $c['hero']['enlace'], '#suministro' ); // phpcs:ignore ?>
+					<?php if ( ! empty( $c['hero']['indunova'] ) ) : // servicio, máquinas o más información: INDUNOVA ?>
+						<p class="cr-hero__indu"><?php echo dipt_enlace( $c['hero']['indunova'], $c['indunova']['url'], array( 'target' => '_blank', 'rel' => 'noopener' ) ); // phpcs:ignore ?></p>
+					<?php endif; ?>
 				</div>
 			</div>
 			<div class="cr-hero__mesa">
@@ -203,7 +206,7 @@ get_header();
 						<h3><?php echo esc_html( $r[1] ); ?></h3>
 						<p><?php echo esc_html( $r[2] ); ?></p>
 						<?php if ( 1 === $i ) : ?>
-							<?php echo dipt_enlace( $c['indunova']['enlace'], $c['indunova']['url'], array( 'target' => '_blank', 'rel' => 'noopener' ) ); // phpcs:ignore ?>
+							<p class="cr-rama__ir"><?php echo dipt_boton( $c['indunova']['boton'] ?? $c['indunova']['enlace'], $c['indunova']['url'], 'blanco', array( 'target' => '_blank', 'rel' => 'noopener' ) ); // phpcs:ignore ?></p>
 						<?php endif; ?>
 					</div>
 				<?php endforeach; ?>

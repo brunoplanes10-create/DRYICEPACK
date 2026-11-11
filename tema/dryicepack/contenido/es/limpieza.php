@@ -24,6 +24,8 @@ return array(
 		'texto'  => 'Para empresas con máquina propia, contratistas de limpieza industrial, talleres y detailing. Pida antes de las 12:00 y llega al día siguiente antes de las 14:00, en caja de EPS de 40 mm.',
 		'boton'  => 'Pedir pellets',
 		'enlace' => 'Suministro programado',
+		// Quien busca el servicio, una máquina o más información va a INDUNOVA (decisión del propietario, 11/11/2026)
+		'indunova' => '¿Busca el servicio o una máquina? INDUNOVA',
 		'alt'    => 'Limpieza criogénica de un engranaje con una pistola de chorreo de hielo seco',
 		// Placa de ensayo (decorativa: los mismos datos están en el texto)
 		'placa'  => array( array( 'Calibre', '3 mm' ), array( 'Temperatura', '−78,5 °C' ), array( 'Al chocar', 'pasa a gas' ) ),
@@ -92,8 +94,9 @@ return array(
 		'titulo' => '¿Con máquina|<em>o sin ella?</em>',
 		'ramas'  => array(
 			array( '¿Tiene máquina?', 'Le servimos los pellets.', 'De 3 mm, en caja de EPS de 40 mm, para el día que limpia.' ),
-			array( '¿No tiene máquina?', 'INDUNOVA hace el servicio.', 'La empresa de la que forma parte DryIcePack limpia en sus instalaciones, normalmente sin desmontar la maquinaria. También alquila y vende máquinas.' ),
+			array( '¿No tiene máquina?', 'INDUNOVA hace el servicio.', 'La empresa de la que forma parte DryIcePack limpia en sus instalaciones, normalmente sin desmontar la maquinaria. También alquila y vende máquinas. Para el servicio, una máquina o más información, hable con INDUNOVA.' ),
 		),
+		'boton'  => 'Ir a INDUNOVA',
 		'enlace' => 'Servicio de limpieza criogénica de INDUNOVA',
 		'url'    => 'https://indunova.es/servicio-de-limpieza-criogenica/',
 		'alt'    => 'Operario con gafas y guantes térmicos cargando pellets de hielo seco con una pala',
@@ -123,6 +126,7 @@ return array(
 			array( '¿Pueden servir más de 150 kg?', 'En la web, hasta 250 kg por pedido. Fuera de la provincia de Barcelona, a partir de 150 kg el envío se prepara a medida: escríbanos por WhatsApp, llámenos o mándenos un email. ¿Más de 250 kg? Le damos precio y día, normalmente el mismo día laborable.' ),
 			array( '¿Me hacen factura completa?', 'Sí. Al pagar, marque «Compro para una empresa o autónomo» y escriba la razón social y el NIF. Con <a href="' . esc_url( dipt_url( 'empresas' ) ) . '">cuenta de empresa</a>, una sola factura al mes, a 30 días.' ),
 			array( '¿Hacen ustedes la limpieza?', 'DryIcePack vende el hielo seco. La limpieza la hace INDUNOVA, la empresa de la que forma parte DryIcePack, en sus instalaciones: <a href="https://indunova.es/servicio-de-limpieza-criogenica/">servicio de limpieza criogénica de INDUNOVA</a>.' ),
+			array( '¿Alquilan o venden máquinas de limpieza criogénica?', 'DryIcePack vende el hielo seco. Las máquinas, en alquiler o en venta, las ofrece INDUNOVA, la empresa de la que forma parte DryIcePack: <a href="https://indunova.es/servicio-de-limpieza-criogenica/">limpieza criogénica y máquinas en INDUNOVA</a>. Allí le informan también del servicio.' ),
 			array( '¿Y para enfriar piezas o montar por contracción?', 'Es otro uso, con los mismos pellets de 3 mm: lo explicamos en <a href="' . esc_url( dipt_url( 'industria' ) ) . '">hielo seco industrial para enfriar piezas y baterías</a>.' ),
 		),
 	),
