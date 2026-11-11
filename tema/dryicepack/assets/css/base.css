@@ -581,3 +581,15 @@ details summary::-webkit-details-marker { display: none; }
 	.cabecera, .flotante-wa, .dip-cookies, .niebla { display: none !important; }
 	body { background: #fff; }
 }
+
+/* Fila de logos «Lo usan» (dipt_html_logos_fila): junto a los botones de comprar y de pagar.
+   Título encima y los 4 logos en una línea de 22rem como mucho: caben en una pantalla de 320 px sin partirse.
+   El tamaño de cada logo sale de su --lw (el mismo equilibrio que en la portada), a menor escala. */
+.logos-fila { margin: 1.1rem 0 0; color: var(--c-acero); }
+.logos-fila__titulo { margin: 0 0 .55rem; font-size: .72rem; letter-spacing: .04em; }
+.logos-fila__lista { display: flex; align-items: center; justify-content: space-between; gap: .5rem; max-width: 22rem; margin: 0; padding: 0; list-style: none; }
+.logos-fila__lista li { display: flex; }
+.logos-fila .logo-cliente { width: calc(var(--lw) * .55rem); max-height: 1.6rem; }
+/* En el checkout, centrada bajo el botón de pagar (el hueco ya lo da la rejilla de .place-order) */
+.logos-fila--pago { margin: 0; text-align: center; }
+.logos-fila--pago .logos-fila__lista { margin-inline: auto; }

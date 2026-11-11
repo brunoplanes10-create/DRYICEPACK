@@ -157,6 +157,7 @@ if ( function_exists( 'wc_print_notices' ) ) {
 				<ul class="p-confianza">
 					<?php foreach ( $c['confianza'] as $x ) : ?><li><?php echo dipt_icono( 'check' ); // phpcs:ignore ?><?php echo esc_html( $x ); ?></li><?php endforeach; ?>
 				</ul>
+				<?php echo dipt_html_logos_fila( 'p-logos' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- componente escapado ?>
 			</form>
 			<?php // Fabricante, identificación del producto y advertencias junto al botón de compra (Reglamento (UE) 2023/988, art. 19): ficha técnica en mono, sin caja
 			$gpsr = $c['gpsr'] ?? ( dipt_contenido( 'producto', 'es' )['gpsr'] ?? array() );

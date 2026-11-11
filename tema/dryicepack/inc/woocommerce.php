@@ -211,6 +211,12 @@ add_filter( 'woocommerce_gateway_description', static function ( $texto, $id ) {
 	return preg_replace( '/^(.*?)(\d[\d.]*,\d{2}[\s\x{00A0}]?€|€[\s\x{00A0}]?\d[\d,]*\.\d{2})(\.\s+)(.+)$/u', '$1<span class="dip-importe">$2</span>$3<strong class="dip-exacto">$4</strong>', $texto ) ?? $texto;
 }, 20, 2 );
 
+/* Debajo del botón de pagar, los 4 clientes que lo usan (estrategia/VENTAS-PSICOLOGIA.md, 4.4): la última duda antes de
+ * pagar es «¿me fío?». Va dentro de #payment, que WooCommerce repinta con cada cambio: se repinta con él. */
+add_action( 'woocommerce_review_order_after_submit', static function () {
+	echo dipt_html_logos_fila( 'logos-fila--pago' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- componente escapado
+} );
+
 /* Página de la ficha y páginas de tienda: sin barra lateral ni envoltorios por defecto. */
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );

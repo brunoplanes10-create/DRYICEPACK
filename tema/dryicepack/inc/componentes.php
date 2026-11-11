@@ -151,6 +151,18 @@ function dipt_logo_cliente( $id, $alt, $clase = '' ) {
 	return '<span class="' . esc_attr( $clases . ' logo-cliente--mascara' ) . '" role="img" aria-label="' . esc_attr( $alt ) . '" style="' . esc_attr( $estilo ) . '"></span>';
 }
 
+/**
+ * Fila de logos «Lo usan» junto al botón de comprar y de pagar (estrategia/VENTAS-PSICOLOGIA.md, 4.4): los 4 clientes
+ * con permiso por escrito (CLAUDE.md, 09/11/2026). Pequeña y en el color del texto: prueba, no adorno.
+ */
+function dipt_html_logos_fila( $clase = '' ) {
+	$idioma = function_exists( 'dipt_idioma' ) ? dipt_idioma() : 'es';
+	$titulo = array( 'es' => 'Lo usan', 'ca' => "L'utilitzen", 'en' => 'Used by' )[ $idioma ] ?? 'Lo usan';
+	$logos  = '';
+	foreach ( dipt_clientes() as $id => $c ) $logos .= '<li>' . dipt_logo_cliente( $id, $c['nombre'] ) . '</li>';
+	return '<div class="logos-fila ' . esc_attr( $clase ) . '"><p class="logos-fila__titulo dato">' . esc_html( $titulo ) . '</p><ul class="logos-fila__lista">' . $logos . '</ul></div>';
+}
+
 /* ---------- Botones ---------- */
 function dipt_boton( $texto, $url, $variante = '', $extra = array() ) {
 	$attr = '';
