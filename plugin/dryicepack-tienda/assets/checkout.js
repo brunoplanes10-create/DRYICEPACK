@@ -49,6 +49,15 @@
 		$body.trigger('update_checkout');
 	});
 
+	/* El pack siguiente (inc/ventas.php): cambia el pack del carrito y el checkout se recalcula */
+	$(document).on('click', '.dip-siguiente__boton', function () {
+		var b = this;
+		if (b.disabled || typeof wc_checkout_params === 'undefined') return;
+		b.disabled = true;
+		$.post(wc_checkout_params.wc_ajax_url.toString().replace('%%endpoint%%', 'dip_cambiar_pack'), { pack: b.getAttribute('data-dip-pack'), nonce: b.getAttribute('data-dip-nonce') })
+			.always(function () { $body.trigger('update_checkout'); });
+	});
+
 	/* ---------- Calendario "Otra fecha" ----------
 	   Cualquier día válido de los próximos 90. Los días salen del servidor (data-dip-cal en .dip-fechas): no hace peticiones.
 	   Teclado: flechas (día y semana), Inicio/Fin (semana), RePág/AvPág (mes), Intro o espacio (elegir), Esc (cerrar). */

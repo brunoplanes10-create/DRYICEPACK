@@ -21,6 +21,15 @@
 .dip-hora { position: relative; }
 .dip-hora__marca { width: 18px; height: 18px; border: 1.5px solid var(--c-acero, #56677A); border-radius: 50%; box-sizing: border-box; background: var(--dip-fondo, #fff); }
 .dip-hora:has(input:checked) .dip-hora__marca { border: 5px solid var(--c-marino, #1F3C55); }
+/* El pack siguiente (inc/ventas.php): una línea discreta debajo del producto, con su botón */
+/* El resumen del pedido va sobre fondo oscuro: texto y botón en claro */
+.dip-siguiente td { padding-top: 0 !important; border-top: 0 !important; text-align: left !important; }
+.dip-siguiente__texto { margin: 0 0 .6rem; padding: .6rem .75rem; border-left: 3px solid var(--c-criogenico, #3FB6E8); background: rgba(255, 255, 255, .06); font-size: .88rem; line-height: 1.45; color: var(--c-hielo, #EAF4FA); text-align: left; }
+.dip-siguiente__boton { min-height: 40px; padding: .45rem 1rem; border: 1.5px solid var(--c-hielo, #EAF4FA); border-radius: 999px; background: transparent; color: var(--c-hielo, #EAF4FA); font: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; transition: transform .2s cubic-bezier(.16, 1, .3, 1); }
+.dip-siguiente__boton:hover { transform: translateY(-1px); }
+.dip-siguiente__boton:focus-visible { outline: 2px solid var(--c-hielo, #EAF4FA); outline-offset: 2px; }
+.dip-siguiente__boton:disabled { opacity: .6; cursor: progress; }
+@media (prefers-reduced-motion: reduce) { .dip-siguiente__boton { transition: none; } .dip-siguiente__boton:hover { transform: none; } }
 .dip-horas__sabado { margin: 0 0 1.4rem; font-weight: 600; color: var(--c-marino, #1F3C55); font-size: .95rem; }
 
 /* 6 días + "Otra fecha": 4 por fila en móvil, una fila en escritorio */
