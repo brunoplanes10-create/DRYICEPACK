@@ -3,8 +3,8 @@
  * «envío con hielo seco», «hielo seco para enviar paquetes», «hielo seco para transportar alimentos», «caja de hielo seco»).
  * B2B, de usted. No ataca «hielo seco para transporte de congelados» (es de /hielo-seco-transporte/: se enlaza).
  * Fuentes: ADR 2025, sección 5.5.3 (BOE-A-2025-77, 3/1/2025) y Universidad de Míchigan, Packaging Requirements for Dry Ice (2017).
- * [PENDIENTE: pérdida de peso medida en nuestras cajas EPS de 40 mm (10 y 20 kg; 3 y 16 mm) a 24 y 48 h, en invierno y en verano.
- *  Cuando exista, sustituye a la referencia de la Universidad de Míchigan en la tabla de kilos.]
+ * Medición propia (10–11/11/2026, ver guía cuanto-dura-el-hielo-seco.php): cajas cerradas, en la nave, pellets de 3 mm,
+ * 29 h, pérdida 1,78 / 4,10 / 5,72 kg (pequeña / grande / 30 kg). [PENDIENTE: repetir en verano y con 16 mm.]
  * [PENDIENTE: ¿MRW admite que un cliente reenvíe con hielo seco? ¿Con qué marcas y límites?]
  * [PENDIENTE: ¿se venden cajas EPS sueltas? Si es que sí, ofrecerlas en el paso 1.]
  * [PENDIENTE: ¿el CO₂ tiene certificado de calidad alimentaria? Mientras no se confirme, nunca «apto para alimentos»:
@@ -52,15 +52,16 @@ return array(
 <p>Si el producto es refrigerado y no congelado, ponga un cartón entre el hielo seco y el producto para que no se congele, o valore otra opción: le contamos las diferencias en <a href="' . esc_url( home_url( '/guias/hielo-seco-o-placas-euteticas/' ) ) . '">hielo seco o placas eutécticas</a>. Para rutas de reparto con furgoneta propia, vea <a href="' . esc_url( dipt_url( 'transporte' ) ) . '">hielo seco para transporte de congelados</a>.</p>
 
 <h2>¿Cuántos kilos de hielo seco necesita cada envío?</h2>
-<p>Depende de cuatro cosas: las horas desde que cierra la caja hasta que el cliente la abre, lo que aísla la caja, lo llena que va y el calor que haga fuera. Como referencia publicada, en una nevera aislante adecuada se subliman de 2,3 a 4,5 kg de hielo seco cada 24 horas:</p>
+<p>Depende de cuatro cosas: las horas desde que cierra la caja hasta que el cliente la abre, lo que aísla la caja, lo llena que va y el calor que haga fuera. Lo hemos medido en nuestras cajas de porexpán, cerradas, a la sombra y en invierno:</p>
 <table>
-<thead><tr><th>Horas de viaje</th><th>Se gasta por el camino (referencia)</th></tr></thead>
+<thead><tr><th>Caja</th><th>Se gastó en 29 h</th><th>Unos por cada 24 h</th></tr></thead>
 <tbody>
-<tr><td>24 h</td><td>De 2,3 a 4,5 kg</td></tr>
-<tr><td>48 h</td><td>De 4,5 a 9,1 kg</td></tr>
+<tr><td>Pequeña (pack de 3 kg)</td><td>1,8 kg</td><td>1,5 kg</td></tr>
+<tr><td>Grande (packs de 15 y 20 kg)</td><td>4,1 kg</td><td>3,4 kg</td></tr>
+<tr><td>De 30 kg (empresas)</td><td>5,7 kg</td><td>4,7 kg</td></tr>
 </tbody>
 </table>
-<p class="gu-fuente">Fuente: Universidad de Míchigan, <a href="https://ehs.umich.edu/wp-content/uploads/2018/04/Pkg-Req-Dry-Ice.pdf">Packaging Requirements for Dry Ice</a> (2017): de 5 a 10 libras cada 24 horas, según la caja y la densidad del hielo. Es una referencia general, no una medición de nuestras cajas.</p>
+<p class="gu-fuente">Medición de DryIcePack en su nave de Mataró (noviembre de 2026), con pellets de 3 mm y las cajas sin abrir. Con calor o al sol se gasta más. Cuadra con la referencia publicada de la Universidad de Míchigan, <a href="https://ehs.umich.edu/wp-content/uploads/2018/04/Pkg-Req-Dry-Ice.pdf">Packaging Requirements for Dry Ice</a> (2017): de 5 a 10 libras (2,3 a 4,5 kg) cada 24 horas en una nevera aislante.</p>
 <p><strong>Súmele margen.</strong> Lo que se gasta por el camino no puede ser todo lo que lleva: el producto tiene que llegar con hielo seco todavía encima. Y cuente los retrasos: un día más en un almacén son 24 horas más de consumo.</p>
 <p><strong>Lo más fiable es medir su caja.</strong> Pésela al cerrarla y pida al cliente que la pese al abrirla, o envíese una a usted mismo. La diferencia es lo que gasta su caja en su ruta. Si prefiere no hacer cuentas, <a href="' . esc_url( dipt_url( 'contacto' ) ) . '">díganos la ruta y el tamaño de la caja</a> y le decimos cuántos kilos pedir. Qué hace que dure más o menos lo explicamos en <a href="' . esc_url( home_url( '/guias/cuanto-dura-el-hielo-seco/' ) ) . '">cuánto dura el hielo seco y cómo guardarlo</a>.</p>
 

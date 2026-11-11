@@ -10,10 +10,10 @@
  * - Cuentas propias: 1 W durante 24 h = 86,4 kJ → 86,4 / 573 = 0,151 kg (unos 150 g); 2,27-4,54 kg/24 h ≈ 15-30 W;
  *   diferencia de temperatura con 20 °C fuera = 98,5 °C y con 35 °C = 113,5 °C (+15 %).
  * - La cifra de UPS (2,26-4,53 kg cada 24 h en EPS) no se ha podido leer (acceso denegado): fuera.
- * [PENDIENTE: medición propia de DryIcePack: pérdida de peso de las cajas EPS de 40 mm (packs de 10 y 20 kg, en 3 y 16 mm)
- *  a las 24 y 48 h, en invierno y en verano (estrategia/SEO-CONTENIDOS.md, apartado 9, dato 1). Cuando exista, va en el
- *  resumen, en «¿Hay alguna cifra orientativa?» y en la meta, y se actualiza la FAQ de producto «¿Cuánto dura el hielo
- *  en la caja?» con un enlace aquí.]
+ * - Medición propia (el propietario, 10–11/11/2026): cajas de porexpán cerradas, dentro de la nave de Mataró, pellets de
+ *   3 mm, 29 h, pesos CON la caja: pequeña 3,96 → 2,18 kg (−1,78); grande 16,34 → 12,24 kg (−4,10); 30 kg 32,88 → 27,16 kg
+ *   (−5,72). Por 24 h, proporcional: 1,5 / 3,4 / 4,7 kg. La caja pequeña de ahora es más gruesa (pierde algo menos).
+ *   [PENDIENTE: repetir en verano y con la caja de 5 kg cuando sustituya a la de 3 kg; pesar las cajas vacías.]
  * Esquema de la caja: pieza .gu-esquema (assets/css/paginas/guia.css), la misma que el triple embalaje de la guía de muestras.
  */
 $dipt_gd_pin = static function ( $n, $x, $y ) {
@@ -68,9 +68,9 @@ return array(
 	'extracto' => 'El hielo seco no se derrite: se sublima. Qué hace que dure más o menos (la caja, los kilos, 3 o 16 mm, las aperturas, el calor de fuera) y cómo guardarlo sin riesgos.',
 	'seo'      => array(
 		'titulo'      => '¿Cuánto dura el hielo seco? Y cómo guardarlo | DryIcePack',
-		'descripcion' => 'El hielo seco no se derrite: se sublima a −78,5 °C y cada kilo da unos 541 litros de gas. Mira de qué depende cuánto dura y cómo guardarlo sin riesgos.',
+		'descripcion' => 'El hielo seco se sublima a −78,5 °C: en nuestra prueba, una caja cerrada perdió 4,1 kg en 29 horas. Mira de qué depende cuánto dura y cómo guardarlo.',
 	),
-	'contenido' => '<p class="resumen"><strong>Respuesta corta:</strong> el hielo seco no se derrite, se sublima: pasa de sólido a gas a −78,5 °C. Dura lo que tarda en llegarle el calor. En su caja de EPS cerrada se gasta despacio; al aire, mucho más rápido; en agua caliente, en forma de niebla. Por eso se pide para el día en que se va a usar.</p>
+	'contenido' => '<p class="resumen"><strong>Respuesta corta:</strong> el hielo seco no se derrite, se sublima: pasa de sólido a gas a −78,5 °C. Dura lo que tarda en llegarle el calor. En su caja de EPS cerrada se gasta despacio; al aire, mucho más rápido; en agua caliente, en forma de niebla. Lo hemos medido: en 29 horas, nuestra caja grande cerrada perdió 4,1&nbsp;kg y la pequeña 1,8&nbsp;kg. Por eso se pide para el día en que se va a usar.</p>
 
 <h2>¿Por qué se gasta si no se derrite?</h2>
 <p>A presión normal, el <a href="' . esc_url( dipt_url( 'que-es' ) ) . '">hielo seco, que es CO<sub>2</sub> sólido</a>, pasa directamente de sólido a gas a −78,5 °C (ficha de PanGas, grupo Linde). Todo lo que tiene alrededor está más caliente, también un congelador de casa, que trabaja a −18 °C. Ese calor le llega sin parar y lo va convirtiendo en gas.</p>
@@ -113,9 +113,23 @@ return array(
 </tbody>
 </table>
 
-<h2>¿Hay alguna cifra orientativa?</h2>
-<p>La única con fuente que hemos encontrado es para envíos: la Universidad de Oregón recomienda poner de 2,27 a 4,54&nbsp;kg de hielo seco por cada 24&nbsp;h de viaje en una caja aislante, y seguir lo que indique el fabricante de la caja. Con la regla de antes, eso es como tener entre 15 y 30&nbsp;W de calor entrando sin parar.</p>
-<p>Es una pauta para enviar paquetes, no una medida de nuestras cajas. Si lo necesitas para varios días, escríbenos por <a href="' . esc_url( dipt_url( 'contacto' ) ) . '">teléfono, WhatsApp o email</a> con el día de uso y te decimos qué pack pedir. Si lo que envías son congelados, mira <a href="' . esc_url( home_url( '/guias/enviar-congelados-con-hielo-seco/' ) ) . '">cómo enviar congelados con hielo seco: caja, kilos y marca</a>; si son muestras, <a href="' . esc_url( home_url( '/guias/enviar-muestras-con-hielo-seco/' ) ) . '">enviar muestras con hielo seco: triple embalaje y etiquetas</a>.</p>
+<h2>¿Cuánto pierde una caja en un día? Lo hemos medido</h2>
+<p>Pesamos tres de nuestras cajas de porexpán al cerrarlas y otra vez 29 horas después, sin abrirlas, dentro de nuestra nave de Mataró y con pellets de 3&nbsp;mm (noviembre de 2026). Los pesos incluyen la caja:</p>
+<table>
+<thead><tr><th>Caja</th><th>Al cerrar</th><th>A las 29&nbsp;h</th><th>Perdió</th><th>Unos por cada 24&nbsp;h</th></tr></thead>
+<tbody>
+<tr><td>Pequeña (pack de 3&nbsp;kg)</td><td>3,96&nbsp;kg</td><td>2,18&nbsp;kg</td><td>1,78&nbsp;kg</td><td>1,5&nbsp;kg</td></tr>
+<tr><td>Grande (packs de 15 y 20&nbsp;kg)</td><td>16,34&nbsp;kg</td><td>12,24&nbsp;kg</td><td>4,10&nbsp;kg</td><td>3,4&nbsp;kg</td></tr>
+<tr><td>De 30&nbsp;kg (empresas)</td><td>32,88&nbsp;kg</td><td>27,16&nbsp;kg</td><td>5,72&nbsp;kg</td><td>4,7&nbsp;kg</td></tr>
+</tbody>
+</table>
+<p>Tres cosas que se ven en la tabla:</p>
+<ul>
+<li><strong>La caja grande pierde más kilos, pero una parte menor de lo que lleva.</strong> Por eso los packs pequeños son los que más notan el viaje: de un pack de 3&nbsp;kg llegan unos 2&nbsp;kg.</li>
+<li><strong>Es una medida de invierno, a la sombra y sin abrir.</strong> Con calor, al sol o abriendo la caja, se gasta antes. Los nuggets de 16&nbsp;mm aguantan algo más que los pellets de 3&nbsp;mm.</li>
+<li><strong>Cuadra con la pauta publicada:</strong> la Universidad de Oregón recomienda contar de 2,27 a 4,54&nbsp;kg por cada 24&nbsp;h de envío en una caja aislante. Nuestras cajas grandes están en esa franja o un poco por encima. Con la regla de antes, es como tener entre 15 y 30&nbsp;W de calor entrando sin parar.</li>
+</ul>
+<p>Si lo necesitas justo para un día, pide el pack siguiente. Si lo necesitas para varios días, escríbenos por <a href="' . esc_url( dipt_url( 'contacto' ) ) . '">teléfono, WhatsApp o email</a> con el día de uso y te decimos qué pack pedir. Si lo que envías son congelados, mira <a href="' . esc_url( home_url( '/guias/enviar-congelados-con-hielo-seco/' ) ) . '">cómo enviar congelados con hielo seco: caja, kilos y marca</a>; si son muestras, <a href="' . esc_url( home_url( '/guias/enviar-muestras-con-hielo-seco/' ) ) . '">enviar muestras con hielo seco: triple embalaje y etiquetas</a>.</p>
 
 <h2>¿Cómo se guarda el hielo seco en casa?</h2>
 <ul>
@@ -148,5 +162,6 @@ return array(
 <li><a href="https://static.prd.echannel.linde.com/wcsstore/CH_REC_Industrial_Ntl_Store/datasheets/fr_CH/pangas_ps_glace-carbonique-en-pellets-3mm_f.pdf" rel="noopener">PanGas (grupo Linde), ficha técnica de los pellets de hielo seco</a>: sublima a −78,5 °C a 1,013 bar, necesita 573 kJ por kilo, cada kilo da 0,541 m³ de gas y el gas pesa 1,528 veces lo que el aire.</li>
 <li><a href="https://safety.uoregon.edu/sites/default/files/dry_ice_shipping_guide.pdf" rel="noopener">Universidad de Oregón, Dry Ice Shipping Guide</a>: kilos por cada 24 h de envío y relleno de los huecos.</li>
 <li>Las cuentas (150 g por vatio y día, de 15 a 30 W, un 15 % más de calor con 35 °C) son nuestras, hechas con esos datos.</li>
+<li>Las pesadas de la tabla son nuestras: tres cajas de porexpán cerradas, en la nave de Mataró, en noviembre de 2026. Las repetiremos en verano.</li>
 </ul>',
 );
