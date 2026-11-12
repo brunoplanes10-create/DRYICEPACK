@@ -147,7 +147,7 @@ Todo contenido que explique un uso incluye estos avisos, o enlaza a /seguridad-d
   - Fotos reales del producto y del vapor (las de Halloween están en `FOTOS Y VIDEOS HALLOWEEN DRYICEPACK/`)
 - **Prohibido el look genérico de IA:** degradados morado-azul, blobs, glassmorphism, fotos de stock, iconos de librería mezclados, rejillas de 3 tarjetas idénticas como única solución, radios exagerados.
 - Contraste WCAG AA. Diseño mobile-first.
-- **Botones (11/11/2026):** siempre con `dipt_boton()` (texto y flecha en su círculo) o con relleno igual a los dos lados; nunca el texto pegado al borde. Antes de enseñar cualquier cambio visual, pasar `node herramientas/revisar-botones.mjs` (mide todos los botones a 390 y 1440 px) y mirar las capturas.
+- **Botones (11/11/2026):** siempre con `dipt_boton()` (texto y flecha en su círculo) o con relleno igual a los dos lados; nunca el texto pegado al borde; en una píldora, un icono junto al borde necesita un hueco de al menos el 40 % de su altura (12/11/2026, el logo del flotante de WhatsApp). Antes de enseñar cualquier cambio visual, pasar `node herramientas/revisar-botones.mjs` (mide todos los botones a 390 y 1440 px) y mirar las capturas.
 - En rediseños, propón **2–3 direcciones visuales** con boceto antes de implementar.
 - **Cada sección de cada página** (decidido el 15/10/2026): antes de diseñarla, 2–3 bocetos reales y animados (`tema/dryicepack/zz-bocetos/`, se ven en el servidor de prueba y no van al .zip), una comparativa a 1440 y 390 px, y el propietario elige. Aunque se tarde más.
 

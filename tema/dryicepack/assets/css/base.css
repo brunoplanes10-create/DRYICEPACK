@@ -335,7 +335,7 @@ h1 .tramo, h2 .tramo, h3 .tramo { display: block; text-wrap: balance; }
 /* ---------- WhatsApp flotante ----------
    Aparece después del hero; se esconde con el menú abierto y cuando el cierre o el pie están en pantalla (movimiento.js).
    En móvil, solo el icono (44 px). Con barra de compra fija, se acopla encima de ella (.hay-barra-compra). */
-.flotante-wa { position: fixed; right: 18px; bottom: 18px; z-index: 90; display: flex; align-items: center; gap: .6rem; height: 52px; padding: 0 1.15rem 0 .95rem; border-radius: 999px; background: #1B7F4B; color: #fff; font-weight: 600; font-size: .95rem; text-decoration: none; box-shadow: var(--sombra-2); transition: transform var(--d-corta) var(--e-salida), opacity var(--d-corta) linear, visibility 0s; }
+.flotante-wa { position: fixed; right: 18px; bottom: 18px; z-index: 90; display: flex; align-items: center; gap: .6rem; height: 52px; padding: 0 1.4rem 0 1.35rem; border-radius: 999px; background: #1B7F4B; color: #fff; font-weight: 600; font-size: .95rem; text-decoration: none; box-shadow: var(--sombra-2); transition: transform var(--d-corta) var(--e-salida), opacity var(--d-corta) linear, visibility 0s; }
 .flotante-wa svg { width: 26px; height: 26px; }
 .js .flotante-wa:not(.wa-visible), .menu-abierto .flotante-wa { opacity: 0; transform: translate3d(0, 16px, 0); visibility: hidden; pointer-events: none; transition: transform var(--d-corta) var(--e-salida), opacity var(--d-corta) linear, visibility 0s var(--d-corta); }
 .flotante-wa:hover, .flotante-wa:focus-visible { transform: translateY(-2px); text-decoration: none; }

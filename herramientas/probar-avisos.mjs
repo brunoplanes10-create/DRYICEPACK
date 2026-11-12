@@ -14,7 +14,7 @@ import { execFileSync } from 'node:child_process';
 
 const BASE = 'http://127.0.0.1:9500';
 const ORIGEN = 'herramientas/fixtures/prueba-avisos.php';
-const DESTINO = 'plugin/dryicepack-tienda/zz-prueba-avisos.php';
+const DESTINO = (process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-prueba-avisos.php';
 const URL_PRUEBA = BASE + '/wp-content/plugins/dryicepack-tienda/zz-prueba-avisos.php';
 const SALIDA_PG = '.tmp/pg/avisos'; // /salida/avisos dentro de Playground
 const SALIDA = '.tmp/avisos';

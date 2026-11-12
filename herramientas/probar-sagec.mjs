@@ -7,7 +7,7 @@ import { copyFileSync, existsSync, unlinkSync } from 'node:fs';
 
 const BASE = 'http://127.0.0.1:9500';
 const ORIGEN = 'herramientas/fixtures/prueba-sagec.php';
-const DESTINO = 'plugin/dryicepack-tienda/zz-prueba-sagec.php';
+const DESTINO = (process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-prueba-sagec.php';
 const URL_PRUEBA = BASE + '/wp-content/plugins/dryicepack-tienda/zz-prueba-sagec.php';
 
 const borrar = () => { try { if (existsSync(DESTINO)) unlinkSync(DESTINO); } catch (e) { console.log('FALLO: no se ha podido borrar ' + DESTINO + ': ' + e.message); process.exitCode = 1; } };

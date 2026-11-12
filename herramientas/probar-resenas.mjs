@@ -15,7 +15,7 @@ import { join } from 'node:path';
 
 const BASE = 'http://127.0.0.1:9500';
 const ORIGEN = 'herramientas/fixtures/prueba-resenas.php';
-const DESTINO = 'plugin/dryicepack-tienda/zz-prueba-resenas.php';
+const DESTINO = (process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-prueba-resenas.php';
 const URL_PRUEBA = BASE + '/wp-content/plugins/dryicepack-tienda/zz-prueba-resenas.php';
 const SALIDA_PG = '.tmp/pg/resenas'; // /salida/resenas dentro de Playground
 const SALIDA = '.tmp/resenas';

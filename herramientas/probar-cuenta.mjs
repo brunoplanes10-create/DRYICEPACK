@@ -10,7 +10,7 @@ import puppeteer from 'puppeteer-core';
 import { copyFileSync, rmSync, mkdirSync } from 'node:fs';
 
 const BASE = 'http://127.0.0.1:9500';
-const FIXTURE = 'plugin/dryicepack-tienda/zz-cuenta.php';
+const FIXTURE = (process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-cuenta.php';
 let fallos = 0;
 const ok = (cond, texto, detalle) => { if (!cond) fallos++; console.log((cond ? 'OK   ' : 'FALLO') + ' ' + texto + (!cond && detalle !== undefined ? ' → ' + JSON.stringify(detalle) : '')); return cond; };
 mkdirSync('.tmp/cuenta', { recursive: true });

@@ -9,7 +9,7 @@ import puppeteer from 'puppeteer-core';
 import { copyFileSync, rmSync, mkdirSync } from 'node:fs';
 
 const BASE = 'http://127.0.0.1:9500';
-const FIXTURE = 'plugin/dryicepack-tienda/zz-meta-pedido.php';
+const FIXTURE = (process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-meta-pedido.php';
 let fallos = 0;
 const ok = (cond, texto, detalle) => { if (!cond) fallos++; console.log((cond ? 'OK   ' : 'FALLO') + ' ' + texto + (!cond && detalle !== undefined ? ' → ' + JSON.stringify(detalle) : '')); return cond; };
 const limpio = (s) => (s || '').replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
@@ -115,7 +115,7 @@ try {
   ok(mo && !mo.repetido_de, 'el original no se marca como repetido', mo && mo.repetido_de);
   await ctxB.close();
   // El email del día después: «Repetir el pedido» y la baja de ofertas, solo si al comprar no marcó la casilla de ofertas
-  copyFileSync('herramientas/fixtures/email-repetir.php', 'plugin/dryicepack-tienda/zz-email-repetir.php');
+  copyFileSync('herramientas/fixtures/email-repetir.php', (process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-email-repetir.php');
   const em = await (await fetch(`${BASE}/wp-content/plugins/dryicepack-tienda/zz-email-repetir.php?marca=${Date.now().toString(36)}`)).json();
   ok(em.casilla_sin_marcar.repetir && em.casilla_sin_marcar.baja_ofertas && em.casilla_sin_marcar.texto, 'email del día después, casilla sin marcar: «Repetir el pedido» y la baja de ofertas (también en el texto)', em.casilla_sin_marcar);
   ok(!em.casilla_marcada.repetir && !em.casilla_marcada.baja_ofertas, 'casilla marcada: sin enlace de volver a comprar', em.casilla_marcada);
@@ -123,7 +123,7 @@ try {
   ok(!em.baja_despues.repetir, 'de baja de ofertas después de comprar: sin enlace de volver a comprar', em.baja_despues);
   ok(Object.values(em).every((x) => x.baja_resenas), 'la baja de las reseñas sigue en todos', em);
 } finally {
-  rmSync('plugin/dryicepack-tienda/zz-email-repetir.php', { force: true });
+  rmSync((process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-email-repetir.php', { force: true });
   rmSync(FIXTURE, { force: true });
   await nav.close();
 }

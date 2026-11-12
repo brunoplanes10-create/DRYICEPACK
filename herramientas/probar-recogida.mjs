@@ -13,7 +13,7 @@ import { copyFileSync, existsSync, unlinkSync, readFileSync } from 'node:fs';
 
 const BASE = 'http://127.0.0.1:9500';
 const ORIGEN = 'herramientas/fixtures/prueba-recogida.php';
-const DESTINO = 'plugin/dryicepack-tienda/zz-prueba-recogida.php';
+const DESTINO = (process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-prueba-recogida.php';
 const URL_PRUEBA = BASE + '/wp-content/plugins/dryicepack-tienda/zz-prueba-recogida.php';
 const MARGEN_MS = 10 * 60 * 1000; // la prueba hace cientos de cálculos de carrito: hasta 10 minutos
 
