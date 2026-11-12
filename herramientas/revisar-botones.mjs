@@ -58,6 +58,18 @@ const medir = () => {
     // Sin caja (ni fondo, ni borde, ni sombra): parece un enlace y no tiene borde que tocar
     const caja = cs.backgroundColor !== 'rgba(0, 0, 0, 0)' || parseFloat(cs.borderLeftWidth) > 0 || parseFloat(cs.borderRightWidth) > 0 || cs.backgroundImage !== 'none' || cs.boxShadow !== 'none';
     if (!caja) continue;
+    // Tarjetas y miniaturas con foto (la imagen ocupa casi toda la caja): no son botones de texto
+    const conFoto = [...b.querySelectorAll('img, svg, picture, video')].some((x) => { const q = x.getBoundingClientRect(); return q.width * q.height >= .25 * r.width * r.height; });
+    if (conFoto) continue;
+    // Texto oculto para la vista (solo para lectores de pantalla: clip, clip-path o caja de 1 px), como el «WhatsApp» del
+    // flotante en el móvil, que allí es un círculo con el logo
+    const oculto = (el) => {
+      for (let e = el; e && e !== b; e = e.parentElement) {
+        const c = getComputedStyle(e);
+        if ((c.clip && c.clip !== 'auto') || (c.clipPath && c.clipPath !== 'none') || e.getBoundingClientRect().width <= 1) return true;
+      }
+      return false;
+    };
     // Lo que se ve dentro: trozos de texto, iconos (svg, img) y la flecha del tema, cada uno con su caja
     const piezas = [];
     if (b.tagName === 'INPUT') {
@@ -66,7 +78,7 @@ const medir = () => {
       const recorrido = document.createTreeWalker(b, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
       for (let n = recorrido.nextNode(); n; n = recorrido.nextNode()) {
         if (n.nodeType === 3) {
-          if (!n.textContent.trim() || n.parentElement.closest('.boton__flecha')) continue;
+          if (!n.textContent.trim() || n.parentElement.closest('.boton__flecha') || oculto(n.parentElement)) continue;
           const rg = document.createRange(); rg.selectNodeContents(n);
           for (const x of rg.getClientRects()) if (x.width > .5 && x.height > .5) piezas.push({ izq: x.left, der: x.right, tipo: 'texto' });
         } else if (n.matches('.boton__flecha')) {
