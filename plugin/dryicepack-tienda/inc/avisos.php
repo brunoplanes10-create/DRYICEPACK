@@ -487,6 +487,7 @@ function dip_avisos_partes( WC_Order $pedido, $tipo, array $extra = array() ) {
 						array( $t['f_mrw'], $mrw, dip_avisos_url_mrw( $mrw ), $t['seguir'] ),
 					) ),
 					array( 'caja', $t['no_puedes_titulo'], array( sprintf( $t['no_puedes'], $wa, $tel ) ) ),
+					array( 'caja', $t['guardar_titulo'], $t['guardar'] ), // hasta que lo use (VENTAS-PSICOLOGIA 3.5)
 					array( 'p', $t['seguridad_linea'], 'normal', $segur ),
 					$boton,
 				),
@@ -511,6 +512,7 @@ function dip_avisos_partes( WC_Order $pedido, $tipo, array $extra = array() ) {
 				$bloques[] = array( 'p', $sup ? sprintf( $t['g_sabado'], dip_avisos_euros( $sup['con_iva'], $idioma ) ) : $t['g_sabado_libre'], 'suave' );
 			}
 			$bloques[] = array( 'p', $t['g_coche'], 'normal', $segur );
+			$bloques[] = array( 'caja', $t['guardar_titulo'], $t['guardar'] ); // hasta que lo use (VENTAS-PSICOLOGIA 3.5)
 			$bloques[] = array( 'caja', '', array_values( array_filter( array( sprintf( $t['g_cambio'], $tel, $wa ), $efectivo ? $t['g_no_puedes'] : '' ) ) ) );
 			$bloques[] = $boton;
 			$p        += array(

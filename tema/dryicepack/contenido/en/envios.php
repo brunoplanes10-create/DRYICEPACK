@@ -96,4 +96,14 @@ return array(
 			array( 'Do you offer same-day delivery?', 'Not by courier. If you’re near Mataró, you can collect it the same day if you order before 12:00. We confirm the time by phone or WhatsApp.' ),
 		),
 	),
+	'horas' => array(
+		'titulo' => 'How much does each delivery time cost?',
+		'zona'   => 'Delivery area',
+		'zonas'  => array( 'urbano' => 'Mataró', 'provincial' => 'Province of Barcelona', 'regional' => 'Rest of Catalonia', 'peninsular' => 'Rest of mainland Spain' ),
+		'pack'   => 'Pack',
+		'horas'  => array( '14' => 'Before 14:00', '12' => 'Before 12:00', '10' => 'Before 10:00', 'sabado' => 'Saturday, before 13:00' ),
+		'barata' => 'standard · cheapest on weekdays',
+		'segun'  => 'depending on the area',
+		'nota'   => 'Delivery by MRW, VAT included, one pack per order. If your postcode is more than 25 km from an MRW office, delivery before 10:00 costs %1$s more and Saturday delivery %2$s more: you will see it at checkout with your postcode. On Saturdays, 80 kg at most.',
+	),
 );

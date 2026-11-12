@@ -15,8 +15,9 @@
  *     - Es el enlace firmado de «Mi pedido» con &repetir=1: quien lo tiene ya veía la dirección y los packs. Por eso no se
  *       rellenan el nombre, el email ni el teléfono, que esa página no enseña. Con la sesión de otro usuario, solo el carrito.
  *     - Lo que ya no se vende (p. ej. el pack de 3 kg cuando se acaba) se avisa y no se añade.
- *     - No va en los emails: un enlace para volver a comprar es publicidad, y a los clientes solo se les puede mandar si al
- *       comprar pudieron decir que no (art. 21.2 de la LSSI).
+ *     - En el email del día después de la entrega (inc/resenas.php), solo si al comprar no marcó «No quiero recibir avisos
+ *       ni ofertas» (inc/ofertas.php) y con la baja de ofertas al pie: un enlace para volver a comprar es publicidad (art.
+ *       21.2 de la LSSI).
  *     - El pedido nuevo guarda _dip_repetido_de (el id del original) y una nota.
  */
 if ( ! defined( 'ABSPATH' ) ) exit;

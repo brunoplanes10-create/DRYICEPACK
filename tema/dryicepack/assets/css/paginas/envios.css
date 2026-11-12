@@ -254,3 +254,39 @@
 	.v-pestanas__panel { grid-row: var(--fila); grid-column: 1; position: static; margin: .2rem 0 1rem; padding: 1.4rem 1.3rem; }
 	.v-pestanas__q { display: none; }
 }
+
+/* V3b · ¿Cuánto cuesta cada hora? (11/11/2026, boceto A «La tarifa por zonas»): tarifa en mono con pestañas de zona. La de
+   las 14:00, marcada como la de serie y la más barata entre semana. En móvil, cada pack es una ficha con sus cuatro horas. */
+.v-horas__cab { display: grid; gap: 1rem; margin-bottom: 2rem; }
+@media (min-width: 900px) { .v-horas__cab { grid-template-columns: 1fr auto; align-items: end; } }
+.v-horas__pestanas { display: flex; flex-wrap: wrap; gap: .4rem; }
+.v-horas__pestanas[hidden] { display: none; }
+.v-horas__pestanas button { min-height: 44px; padding: .5rem 1rem; border: 1px solid var(--c-linea-fuerte); border-radius: 999px; background: #fff; color: var(--c-tinta); font: 600 .9rem/1 var(--f-texto); cursor: pointer; transition: transform var(--d-corta) var(--e-salida); }
+.v-horas__pestanas button[aria-selected="true"] { background: var(--c-marino); border-color: var(--c-marino); color: #fff; }
+.v-horas__pestanas button:hover { transform: translateY(-1px); }
+.v-horas__pestanas button:focus-visible { outline: 2px solid var(--c-marino); outline-offset: 2px; }
+.v-horas__panel + .v-horas__panel { margin-top: 1.6rem; } /* sin JavaScript, las cuatro tablas seguidas */
+.v-horas__panel[hidden] { display: none; }
+.v-horas__tabla { width: 100%; border-collapse: collapse; background: #fff; border-radius: var(--radio-grande); overflow: hidden; box-shadow: 0 0 0 1px var(--c-linea-fuerte), var(--sombra-1); }
+.v-horas__tabla caption { padding: 0 0 .6rem; text-align: left; font: 700 .78rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--c-acero); }
+.js .v-horas__tabla caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } /* con pestañas, la zona ya se ve en la pestaña */
+.v-horas__tabla th, .v-horas__tabla td { padding: 1rem 1.2rem; border-bottom: 1px solid var(--c-linea); text-align: right; }
+.v-horas__tabla tbody tr:last-child th, .v-horas__tabla tbody tr:last-child td { border-bottom: 0; }
+.v-horas__tabla thead th { font: 600 .74rem/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--c-acero); vertical-align: bottom; }
+.v-horas__tabla thead th:first-child, .v-horas__tabla tbody th { text-align: left; }
+.v-horas__tabla thead small { display: block; margin-top: .2rem; font-weight: 500; letter-spacing: .03em; text-transform: none; }
+.v-horas__tabla tbody th { font: 700 1rem/1 var(--f-mono); }
+.v-horas__tabla td { font: 500 1.05rem/1 var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.v-horas__tabla .v-horas__barata { background: var(--c-escarcha); color: var(--c-marino); }
+.v-horas__tabla td.v-horas__barata { font-weight: 700; }
+.v-horas__nota { margin: 1rem 0 0; max-width: 60rem; font-size: .88rem; }
+@media (max-width: 699px) {
+	.v-horas__tabla, .v-horas__tabla tbody, .v-horas__tabla tr, .v-horas__tabla th, .v-horas__tabla td { display: block; }
+	.v-horas__tabla thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+	.v-horas__tabla tbody tr { padding: .4rem 0 .6rem; border-bottom: 1px solid var(--c-linea-fuerte); }
+	.v-horas__tabla tbody tr:last-child { border-bottom: 0; }
+	.v-horas__tabla tbody th { padding: .8rem 1rem .4rem; font-size: 1.05rem; border: 0; }
+	.v-horas__tabla td { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem 1rem; border: 0; }
+	.v-horas__tabla td::before { content: attr(data-hora); font: 500 .85rem/1.2 var(--f-texto); color: var(--c-acero); white-space: normal; }
+	.v-horas__tabla td.v-horas__barata::before { color: var(--c-marino); font-weight: 600; }
+}

@@ -40,6 +40,8 @@ return array(
 	'pie_frase'       => 'Gel sec que arriba <em>fred</em> i abans de les 14:00.',
 	'pie_tienda'      => 'Gel sec',
 	'pie_servicio'    => 'Servei',
+	'pie_zonas'       => 'Enviem a',
+	'pie_zonas_todas' => 'Totes les zones',
 	'pie_contacto'    => 'Parlem',
 	'pie_enlaces'     => array(
 		array( 'producto', 'Comprar' ),

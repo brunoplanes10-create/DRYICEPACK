@@ -301,6 +301,10 @@ h1 .tramo, h2 .tramo, h3 .tramo { display: block; text-wrap: balance; }
 .pie__col h2 { margin: 0 0 1rem; font-family: var(--f-texto); font-weight: 700; font-size: .78rem; letter-spacing: .04em; color: var(--c-hielo); }
 .pie__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; font-size: .95rem; }
 .pie__contacto { display: grid; gap: .55rem; font-size: .95rem; }
+/* «Enviamos a»: las ciudades principales en una fila, debajo de las columnas */
+.pie__zonas { display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem 1.4rem; margin-top: calc(clamp(3rem, 6vw, 5rem) * -.5); padding-bottom: clamp(2rem, 4vw, 3rem); }
+.pie__zonas h2 { margin: 0; font-family: var(--f-texto); font-weight: 700; font-size: .78rem; letter-spacing: .04em; color: var(--c-hielo); }
+.pie__zonas ul { display: flex; flex-wrap: wrap; gap: .45rem 1.1rem; margin: 0; padding: 0; list-style: none; font-size: .92rem; }
 .pie__contacto .tel-grande { font-size: 1.2rem; }
 .pie__abajo { display: flex; flex-wrap: wrap; gap: .8rem 1.6rem; justify-content: space-between; padding-block: 1.5rem 2rem; border-top: 1px solid var(--c-linea-oscura); font-size: .82rem; color: var(--c-hielo-claro); }
 .pie__abajo nav { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; }

@@ -51,6 +51,24 @@ if ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url()
 				</div>
 			</div>
 		</div>
+		<?php
+		// «Enviamos a»: las ciudades con más búsquedas, enlazadas desde todas las páginas (para el cliente y para que Google
+		// les dé importancia: si no, quedan a dos clics de la portada). Solo las que tienen página en este idioma.
+		$dipt_idi = dipt_idioma();
+		$dipt_pz  = array();
+		foreach ( array( 'zona-barcelona' => 'Barcelona', 'provincia-madrid' => 'Madrid', 'provincia-valencia' => 'Valencia', 'provincia-sevilla' => 'Sevilla', 'provincia-zaragoza' => 'Zaragoza', 'provincia-malaga' => 'Málaga', 'provincia-alicante' => 'Alicante', 'provincia-murcia' => 'Murcia', 'provincia-valladolid' => 'Valladolid', 'provincia-a-coruna' => 'A Coruña' ) as $dipt_k => $dipt_n ) {
+			if ( ! empty( dipt_paginas()[ $dipt_k ][ $dipt_idi ] ) ) $dipt_pz[ $dipt_k ] = $dipt_n;
+		}
+		if ( $dipt_pz ) :
+			?>
+		<nav class="pie__zonas" aria-labelledby="pie-zonas">
+			<h2 id="pie-zonas"><?php echo esc_html( dipt_t( 'pie_zonas' ) ); ?></h2>
+			<ul>
+				<?php foreach ( $dipt_pz as $dipt_k => $dipt_n ) : ?><li><a href="<?php echo esc_url( dipt_url( $dipt_k ) ); ?>"><?php echo esc_html( $dipt_n ); ?></a></li><?php endforeach; ?>
+				<li><a href="<?php echo esc_url( dipt_url( 'zonas' ) ); ?>"><?php echo esc_html( dipt_t( 'pie_zonas_todas' ) ); ?></a></li>
+			</ul>
+		</nav>
+		<?php endif; ?>
 	</div>
 	<?php /* Firma: texto aria-hidden que cuenta de 20 a −78,5 al entrar. La cifra final, invisible, reserva el ancho (CLS 0).
 	         Contraste 3,2:1 sobre marino (texto grande). En inglés, punto decimal como en el resto de la web. */

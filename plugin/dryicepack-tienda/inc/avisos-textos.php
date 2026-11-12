@@ -46,6 +46,8 @@ function dip_avisos_textos( $idioma = 'es', $usted = false ) {
 		'seguir'            => 'Seguir el envío en MRW',
 		'efectivo_usted'    => 'Pago en efectivo al recoger: %s. Traiga el importe exacto: no tenemos cambio.',
 		'seguridad_linea'   => 'Al recibirlo: guantes térmicos o pinzas, nunca con la piel. Ábrelo en un sitio ventilado y no lo guardes en un recipiente cerrado. No se come ni se bebe.',
+		'guardar_titulo'    => 'Hasta que lo uses',
+		'guardar'           => array( 'Déjalo en su caja de porexpán con la tapa puesta: así aguanta más, y la caja no cierra hermética.', 'En un sitio fresco y ventilado: nunca en un recipiente cerrado ni en un cuarto pequeño sin ventilar, porque el CO₂ desplaza el oxígeno.', 'Fuera del alcance de niños y mascotas.' ),
 		'seguridad_enlace'  => 'Todas las normas de seguridad',
 		'nadie_titulo'      => '¿No va a haber nadie?',
 		'nadie'             => 'Avísanos ya por WhatsApp al %1$s o llámanos al %2$s. El hielo seco se sublima: cuanto antes lo sepamos, más opciones tenemos.',
@@ -154,6 +156,8 @@ function dip_avisos_textos( $idioma = 'es', $usted = false ) {
 
 	$es_usted = array(
 		'seguridad_linea'   => 'Al recibirlo: guantes térmicos o pinzas, nunca con la piel. Ábralo en un sitio ventilado y no lo guarde en un recipiente cerrado. No se come ni se bebe.',
+		'guardar_titulo'    => 'Hasta que lo use',
+		'guardar'           => array( 'Déjelo en su caja de porexpán con la tapa puesta: así aguanta más, y la caja no cierra hermética.', 'En un sitio fresco y ventilado: nunca en un recipiente cerrado ni en un cuarto pequeño sin ventilar, porque el CO₂ desplaza el oxígeno.', 'Fuera del alcance de niños y mascotas.' ),
 		'nadie'             => 'Avísenos ya por WhatsApp al %1$s o llámenos al %2$s. El hielo seco se sublima: cuanto antes lo sepamos, más opciones tenemos.',
 		'no_puedes_titulo'  => '¿No puede recibirlo?',
 		'no_puedes'         => 'Avísenos ahora por WhatsApp al %1$s o llámenos al %2$s. El hielo seco se sublima: cuanto antes lo sepamos, más opciones tenemos.',
@@ -225,6 +229,8 @@ function dip_avisos_textos( $idioma = 'es', $usted = false ) {
 		'seguir'            => 'Seguir l\'enviament a MRW',
 		'efectivo_usted'    => 'Pagament en efectiu en recollir: %s. Porti l\'import exacte: no tenim canvi.',
 		'seguridad_linea'   => 'En rebre\'l: guants tèrmics o pinces, mai amb la pell. Obre\'l en un lloc ventilat i no el guardis en un recipient tancat. No es menja ni es beu.',
+		'guardar_titulo'    => 'Fins que el facis servir',
+		'guardar'           => array( 'Deixa\'l a la seva caixa de porexpan amb la tapa posada: així aguanta més, i la caixa no tanca hermètica.', 'En un lloc fresc i ventilat: mai en un recipient tancat ni en una habitació petita sense ventilar, perquè el CO₂ desplaça l\'oxigen.', 'Fora de l\'abast d\'infants i animals.' ),
 		'seguridad_enlace'  => 'Totes les normes de seguretat',
 		'nadie_titulo'      => 'No hi haurà ningú?',
 		'nadie'             => 'Avisa\'ns ara mateix per WhatsApp al %1$s o truca\'ns al %2$s. El gel sec se sublima: com més aviat ho sapiguem, més opcions tenim.',
@@ -326,6 +332,8 @@ function dip_avisos_textos( $idioma = 'es', $usted = false ) {
 
 	$ca_usted = array(
 		'seguridad_linea'   => 'En rebre\'l: guants tèrmics o pinces, mai amb la pell. Obri\'l en un lloc ventilat i no el guardi en un recipient tancat. No es menja ni es beu.',
+		'guardar_titulo'    => 'Fins que el faci servir',
+		'guardar'           => array( 'Deixi\'l a la seva caixa de porexpan amb la tapa posada: així aguanta més, i la caixa no tanca hermètica.', 'En un lloc fresc i ventilat: mai en un recipient tancat ni en una habitació petita sense ventilar, perquè el CO₂ desplaça l\'oxigen.', 'Fora de l\'abast d\'infants i animals.' ),
 		'nadie'             => 'Avisi\'ns ara mateix per WhatsApp al %1$s o truqui\'ns al %2$s. El gel sec se sublima: com més aviat ho sapiguem, més opcions tenim.',
 		'no_puedes_titulo'  => 'No el pot rebre?',
 		'no_puedes'         => 'Avisi\'ns ara per WhatsApp al %1$s o truqui\'ns al %2$s. El gel sec se sublima: com més aviat ho sapiguem, més opcions tenim.',
@@ -397,6 +405,8 @@ function dip_avisos_textos( $idioma = 'es', $usted = false ) {
 		'seguir'            => 'Track the parcel on MRW',
 		'efectivo_usted'    => 'Pay in cash on collection: %s. Please bring the exact amount: we have no change.',
 		'seguridad_linea'   => 'When it arrives: thermal gloves or tongs, never bare skin. Open it in a ventilated space and do not keep it in a sealed container. It is not for eating or drinking.',
+		'guardar_titulo'    => 'Until you use it',
+		'guardar'           => array( 'Keep it in its EPS box with the lid on: it lasts longer, and the box is not airtight.', 'In a cool, ventilated place: never in a sealed container or a small unventilated room, because CO₂ displaces oxygen.', 'Out of reach of children and pets.' ),
 		'seguridad_enlace'  => 'All the safety rules',
 		'nadie_titulo'      => 'Will nobody be in?',
 		'nadie'             => 'Let us know now on WhatsApp at %1$s or call us on %2$s. Dry ice sublimates: the sooner we know, the more options we have.',

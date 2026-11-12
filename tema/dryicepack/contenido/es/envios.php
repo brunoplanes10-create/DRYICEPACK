@@ -96,4 +96,15 @@ return array(
 			array( '¿Hacéis envíos urgentes el mismo día?', 'No por mensajería. Si estás cerca de Mataró, puedes recogerlo el mismo día si pides antes de las 12:00. Te confirmamos la hora por teléfono o WhatsApp.' ),
 		),
 	),
+	// V3b · ¿Cuánto cuesta cada hora? (11/11/2026). %1$s y %2$s: lo que suma estar lejos de una oficina de MRW (10:00 y sábado)
+	'horas' => array(
+		'titulo' => '¿Cuánto cuesta cada hora?',
+		'zona'   => 'Zona de entrega',
+		'zonas'  => array( 'urbano' => 'Mataró', 'provincial' => 'Provincia de Barcelona', 'regional' => 'Resto de Cataluña', 'peninsular' => 'Resto de la península' ),
+		'pack'   => 'Pack',
+		'horas'  => array( '14' => 'Antes de las 14:00', '12' => 'Antes de las 12:00', '10' => 'Antes de las 10:00', 'sabado' => 'Sábado, antes de las 13:00' ),
+		'barata' => 'de serie · la más barata entre semana',
+		'segun'  => 'según zona',
+		'nota'   => 'Envío con MRW, IVA incluido, un pack por pedido. Si tu código postal está a más de 25 km de una oficina de MRW, la entrega antes de las 10:00 cuesta %1$s más y la del sábado, %2$s más: lo ves al pagar con tu código postal. El sábado, como mucho 80 kg.',
+	),
 );

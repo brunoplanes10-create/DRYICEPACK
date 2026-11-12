@@ -53,6 +53,7 @@ return array(
 
 <h2>¿Cuántos kilos de hielo seco necesita cada envío?</h2>
 <p>Depende de cuatro cosas: las horas desde que cierra la caja hasta que el cliente la abre, lo que aísla la caja, lo llena que va y el calor que haga fuera. Lo hemos medido en nuestras cajas de porexpán, cerradas, a la sombra y en invierno:</p>
+<p class="sello-medido"><span class="sello-medido__marca">Medido por DryIcePack</span> 10–11/11/2026 · nave de Mataró · pellets de 3&nbsp;mm · cajas cerradas · 29&nbsp;h</p>
 <table>
 <thead><tr><th>Caja</th><th>Se gastó en 29 h</th><th>Unos por cada 24 h</th></tr></thead>
 <tbody>

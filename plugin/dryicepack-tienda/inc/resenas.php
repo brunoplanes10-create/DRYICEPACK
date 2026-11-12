@@ -112,6 +112,10 @@ function dip_resenas_textos( $idioma = 'es', $usted = false ) {
 			'pedir'            => '¿Nos cuentas qué tal en Google? Son 30 segundos y ayuda a otros a encontrarnos.',
 			'boton'            => 'Escribir reseña',
 			'arreglo'          => 'Y si algo no fue como esperabas, responde a este email y lo arreglamos.',
+			'repetir'          => '¿Lo vuelves a necesitar? Con los mismos packs y la misma dirección, en un clic:',
+			'repetir_enlace'   => 'Repetir el pedido',
+			'ofertas_pie'      => '¿No quieres avisos ni ofertas de hielo seco?',
+			'ofertas_baja'     => 'Darte de baja',
 			'pie'              => '¿No quieres que te pidamos opinión?',
 			'baja'             => 'Darte de baja',
 		),
@@ -128,6 +132,10 @@ function dip_resenas_textos( $idioma = 'es', $usted = false ) {
 			'pedir'            => '¿Nos cuenta qué tal en Google? Son 30 segundos y ayuda a otros a encontrarnos.',
 			'boton'            => 'Escribir reseña',
 			'arreglo'          => 'Y si algo no fue como esperaba, responda a este email y lo arreglamos.',
+			'repetir'          => '¿Lo vuelve a necesitar? Con los mismos packs y la misma dirección, en un clic:',
+			'repetir_enlace'   => 'Repetir el pedido',
+			'ofertas_pie'      => '¿No quiere avisos ni ofertas de hielo seco?',
+			'ofertas_baja'     => 'Darse de baja',
 			'pie'              => '¿No quiere que le pidamos opinión?',
 			'baja'             => 'Darse de baja',
 		),
@@ -144,6 +152,10 @@ function dip_resenas_textos( $idioma = 'es', $usted = false ) {
 			'pedir'            => 'Ens expliques a Google com et va anar? Són 30 segons i ajuda altres persones a trobar-nos.',
 			'boton'            => 'Escriure una ressenya',
 			'arreglo'          => 'I si alguna cosa no va anar com esperaves, respon aquest correu i ho arreglem.',
+			'repetir'          => 'El tornes a necessitar? Amb els mateixos packs i la mateixa adreça, en un clic:',
+			'repetir_enlace'   => 'Repetir la comanda',
+			'ofertas_pie'      => 'No vols avisos ni ofertes de gel sec?',
+			'ofertas_baja'     => 'Donar-te de baixa',
 			'pie'              => 'No vols que et demanem l\'opinió?',
 			'baja'             => 'Donar-te de baixa',
 		),
@@ -160,6 +172,10 @@ function dip_resenas_textos( $idioma = 'es', $usted = false ) {
 			'pedir'            => 'Ens explica a Google com li va anar? Són 30 segons i ajuda altres persones a trobar-nos.',
 			'boton'            => 'Escriure una ressenya',
 			'arreglo'          => 'I si alguna cosa no va anar com esperava, respongui aquest correu i ho arreglem.',
+			'repetir'          => 'El torna a necessitar? Amb els mateixos packs i la mateixa adreça, en un clic:',
+			'repetir_enlace'   => 'Repetir la comanda',
+			'ofertas_pie'      => 'No vol avisos ni ofertes de gel sec?',
+			'ofertas_baja'     => 'Donar-se de baixa',
 			'pie'              => 'No vol que li demanem l\'opinió?',
 			'baja'             => 'Donar-se de baixa',
 		),
@@ -176,6 +192,10 @@ function dip_resenas_textos( $idioma = 'es', $usted = false ) {
 			'pedir'            => 'Would you tell us how it went on Google? It takes 30 seconds and helps others find us.',
 			'boton'            => 'Write a review',
 			'arreglo'          => 'And if anything was not as you expected, reply to this email and we will put it right.',
+			'repetir'          => 'Need it again? Same packs and same address, in one click:',
+			'repetir_enlace'   => 'Repeat this order',
+			'ofertas_pie'      => 'Would you rather not get dry ice news or offers?',
+			'ofertas_baja'     => 'Unsubscribe',
 			'pie'              => 'Would you rather we did not ask for your feedback?',
 			'baja'             => 'Unsubscribe',
 		),
@@ -303,6 +323,11 @@ function dip_resenas_partes( WC_Order $pedido ) {
 	$cuanto = $kg > 0 ? sprintf( $t['kg'], dip_resenas_numero( $kg, $idioma ) . "\u{00A0}kg" ) : $t['kg_sin'];
 	$frase  = $dia ? sprintf( $t[ $clave ], $dia, $cuanto ) : sprintf( $t[ $clave ], $cuanto );
 	$nombre = dip_resenas_nombre( $pedido, $usted );
+	// «Repetir el pedido» (inc/ventas.php, 7.3) y la baja de ofertas: solo si al comprar no marcó «No quiero recibir avisos
+	// ni ofertas» (art. 21.2 de la LSSI, inc/ofertas.php) y no se ha dado de baja después. Un enlace para volver a comprar
+	// es publicidad: cada email que lo lleve, con su baja.
+	$correo  = (string) $pedido->get_billing_email();
+	$ofertas = 'si' === (string) $pedido->get_meta( '_dip_publicidad' ) && function_exists( 'dip_ofertas_de_baja' ) && ! dip_ofertas_de_baja( $correo ) && function_exists( 'dip_url_repetir_pedido' );
 	$saludo = $nombre ? sprintf( $t['hola'], $nombre ) . $frase : $t['hola_sin'] . ( function_exists( 'mb_strtoupper' ) ? mb_strtoupper( mb_substr( $frase, 0, 1 ) ) . mb_substr( $frase, 1 ) : ucfirst( $frase ) );
 	return array(
 		'asunto' => $t['asunto'],
@@ -312,6 +337,8 @@ function dip_resenas_partes( WC_Order $pedido ) {
 		'boton'  => array( 'texto' => $t['boton'], 'url' => (string) dip_ajuste( 'resenas_url' ) ),
 		'cierre' => array( $t['arreglo'] ),
 		'pie'    => array( 'texto' => $t['pie'], 'enlace' => $t['baja'], 'url' => dip_resenas_url_baja( (string) $pedido->get_billing_email(), $idioma, $usted ) ),
+		'repetir'     => $ofertas ? array( 'texto' => $t['repetir'], 'enlace' => $t['repetir_enlace'], 'url' => dip_url_repetir_pedido( $pedido ) ) : null,
+		'pie_ofertas' => $ofertas ? array( 'texto' => $t['ofertas_pie'], 'enlace' => $t['ofertas_baja'], 'url' => dip_ofertas_url_baja( $correo, $idioma, $usted ) ) : null,
 		'idioma' => $idioma,
 		'usted'  => $usted,
 	);
@@ -333,7 +360,9 @@ function dip_resenas_html( array $p ) {
 				array_map( static fn( $x ) => array( 'p', $x ), (array) $p['cuerpo'] ),
 				array( array( 'boton', $p['boton']['texto'], $p['boton']['url'] ) ),
 				array_map( static fn( $x ) => array( 'p', $x ), (array) $p['cierre'] ),
-				array( array( 'p', $p['pie']['texto'], 'pequeno', array( $p['pie']['enlace'], $p['pie']['url'] ) ) )
+				empty( $p['repetir'] ) ? array() : array( array( 'p', $p['repetir']['texto'], 'normal', array( $p['repetir']['enlace'], $p['repetir']['url'] ) ) ),
+				array( array( 'p', $p['pie']['texto'], 'pequeno', array( $p['pie']['enlace'], $p['pie']['url'] ) ) ),
+				empty( $p['pie_ofertas'] ) ? array() : array( array( 'p', $p['pie_ofertas']['texto'], 'pequeno', array( $p['pie_ofertas']['enlace'], $p['pie_ofertas']['url'] ) ) )
 			),
 		) );
 	}
@@ -342,14 +371,18 @@ function dip_resenas_html( array $p ) {
 		. $parrafos( $p['cuerpo'] )
 		. '<p style="margin:24px 0"><a href="' . esc_url( $p['boton']['url'] ) . '" style="display:inline-block;padding:14px 22px;background:#1F3C55;color:#ffffff;text-decoration:none;border-radius:999px;font-weight:600">' . esc_html( $p['boton']['texto'] ) . '</a></p>'
 		. $parrafos( $p['cierre'] )
-		. '<p style="margin:32px 0 0;font-size:12px;color:#56677A">' . esc_html( $p['pie']['texto'] ) . ' <a href="' . esc_url( $p['pie']['url'] ) . '" style="color:#56677A">' . esc_html( $p['pie']['enlace'] ) . '</a></p>';
+		. ( empty( $p['repetir'] ) ? '' : '<p>' . esc_html( $p['repetir']['texto'] ) . ' <a href="' . esc_url( $p['repetir']['url'] ) . '">' . esc_html( $p['repetir']['enlace'] ) . '</a></p>' )
+		. '<p style="margin:32px 0 0;font-size:12px;color:#56677A">' . esc_html( $p['pie']['texto'] ) . ' <a href="' . esc_url( $p['pie']['url'] ) . '" style="color:#56677A">' . esc_html( $p['pie']['enlace'] ) . '</a></p>'
+		. ( empty( $p['pie_ofertas'] ) ? '' : '<p style="margin:8px 0 0;font-size:12px;color:#56677A">' . esc_html( $p['pie_ofertas']['texto'] ) . ' <a href="' . esc_url( $p['pie_ofertas']['url'] ) . '" style="color:#56677A">' . esc_html( $p['pie_ofertas']['enlace'] ) . '</a></p>' );
 	return WC()->mailer()->wrap_message( $p['titulo'], $cuerpo );
 }
 
 /** Versión en texto del email (para los programas de correo que no muestran HTML). */
 function dip_resenas_texto_plano( array $p ) {
+	$repetir = empty( $p['repetir'] ) ? '' : "\n\n" . $p['repetir']['texto'] . ' ' . $p['repetir']['enlace'] . ': ' . $p['repetir']['url'];
+	$ofertas = empty( $p['pie_ofertas'] ) ? '' : $p['pie_ofertas']['texto'] . ' ' . $p['pie_ofertas']['enlace'] . ': ' . $p['pie_ofertas']['url'] . "\n";
 	return $p['saludo'] . "\n\n" . implode( "\n\n", (array) $p['cuerpo'] ) . "\n" . $p['boton']['texto'] . ': ' . $p['boton']['url']
-		. "\n\n" . implode( "\n\n", (array) $p['cierre'] ) . "\n\n-- \n" . $p['pie']['texto'] . ' ' . $p['pie']['enlace'] . ': ' . $p['pie']['url'] . "\n";
+		. "\n\n" . implode( "\n\n", (array) $p['cierre'] ) . $repetir . "\n\n-- \n" . $p['pie']['texto'] . ' ' . $p['pie']['enlace'] . ': ' . $p['pie']['url'] . "\n" . $ofertas;
 }
 
 /** Asunto, HTML ya envuelto, texto plano y enlace de baja del email de un pedido. */

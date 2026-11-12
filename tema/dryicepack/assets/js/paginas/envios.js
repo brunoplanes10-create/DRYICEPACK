@@ -212,4 +212,35 @@
 		};
 		if (movil.addEventListener) movil.addEventListener('change', alCambiar);
 	}
+
+	/* ---------- V3b · ¿Cuánto cuesta cada hora? Pestañas de zona (sin JavaScript se ven las cuatro tablas) ---------- */
+	var horas = document.querySelector('[data-horas]');
+	if (horas) {
+		var hTabs = [].slice.call(horas.querySelectorAll('[data-horas-zona]'));
+		var hPaneles = [].slice.call(horas.querySelectorAll('[data-horas-panel]'));
+		var hElegir = function (z, foco) {
+			hTabs.forEach(function (t) {
+				var si = t.getAttribute('data-horas-zona') === z;
+				t.setAttribute('aria-selected', String(si));
+				t.tabIndex = si ? 0 : -1;
+				if (si && foco) t.focus();
+			});
+			hPaneles.forEach(function (p) { p.hidden = p.getAttribute('data-horas-panel') !== z; });
+		};
+		var hLista = horas.querySelector('[data-horas-pestanas]');
+		if (hLista && hTabs.length) {
+			hLista.hidden = false;
+			hTabs.forEach(function (t, i) {
+				t.addEventListener('click', function () { hElegir(t.getAttribute('data-horas-zona')); });
+				t.addEventListener('keydown', function (e) {
+					var paso = e.key === 'ArrowRight' ? 1 : (e.key === 'ArrowLeft' ? -1 : 0);
+					if (!paso) return;
+					e.preventDefault();
+					hElegir(hTabs[(i + paso + hTabs.length) % hTabs.length].getAttribute('data-horas-zona'), true);
+				});
+			});
+			var hInicial = hTabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || hTabs[0];
+			hElegir(hInicial.getAttribute('data-horas-zona'));
+		}
+	}
 })();

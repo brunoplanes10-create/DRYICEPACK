@@ -56,6 +56,29 @@
     if (visto) Array.prototype.forEach.call(raiz.querySelectorAll("[data-hw-revela], [data-hw-cortina]"), function (el) { obsRevela.observe(el); });
   }
 
+  /* ---- Avísame (fuera de campaña): envío sin recargar; sin red, envío normal ---- */
+  var fAviso = raiz.querySelector("[data-hw-aviso]");
+  if (fAviso && w.fetch && w.FormData) {
+    fAviso.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var estado = raiz.querySelector("[data-hw-aviso-estado]");
+      var legal = raiz.querySelector("[data-hw-aviso-legal]");
+      var boton = fAviso.querySelector("button");
+      var datos = new FormData(fAviso);
+      datos.append("ajax", "1");
+      boton.disabled = true;
+      // getAttribute: el campo oculto name="action" tapa fAviso.action
+      fetch(fAviso.getAttribute("action"), { method: "POST", body: datos, credentials: "same-origin" })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          estado.textContent = j.mensaje;
+          estado.hidden = false;
+          if (j.ok) { fAviso.hidden = true; if (legal) legal.hidden = true; } else { boton.disabled = false; }
+        })
+        .catch(function () { boton.disabled = false; HTMLFormElement.prototype.submit.call(fAviso); });
+    });
+  }
+
   /* ---- Ambientación solo en la sección que está en pantalla ---- */
   var secciones = raiz.querySelectorAll(".hw-hero, .hw-seccion, .hw-final");
   if (io) {

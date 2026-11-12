@@ -93,12 +93,14 @@ add_action( 'plugins_loaded', static function () {
 	require_once DIP_TIENDA_DIR . 'inc/informes.php';
 	require_once DIP_TIENDA_DIR . 'inc/seguimiento-entregas.php'; // revisión diaria: pedidos reservados con antelación que caen en un festivo de MRW
 	require_once DIP_TIENDA_DIR . 'inc/resenas.php';              // email «¿Qué tal llegó tu hielo seco?» el día después de la entrega (reseña en Google)
+	require_once DIP_TIENDA_DIR . 'inc/aviso-halloween.php';      // «Avísame» de la landing de Halloween fuera de campaña (con confirmación por email)
 	require_once DIP_TIENDA_DIR . 'inc/ofertas.php';              // casilla «No quiero recibir avisos ni ofertas» (art. 21.2 LSSI), lista para ofertas y página de baja
 	require_once DIP_TIENDA_DIR . 'inc/envios-hoy.php';           // «Envíos de hoy»: número de MRW, aviso «va de camino» y avisos internos de sábado y sin número
 	require_once DIP_TIENDA_DIR . 'inc/mrw-sagec.php';            // envíos en MRW con su servicio web: se crean el día de salida, número en el pedido y en AST, etiquetas
 	require_once DIP_TIENDA_DIR . 'inc/urgente.php';              // enlace de pedido urgente (comprar para mañana después de las 12:00) y «Adelantar a mañana»
 	require_once DIP_TIENDA_DIR . 'inc/ventas.php';               // técnicas de venta con datos reales: el pack siguiente en el checkout (estrategia/VENTAS-PSICOLOGIA.md)
 	require_once DIP_TIENDA_DIR . 'inc/mi-pedido.php';            // «Mi pedido»: estado del pedido sin cuenta, con enlace firmado (/mi-pedido/, /ca/la-meva-comanda/, /en/my-order/)
+	require_once DIP_TIENDA_DIR . 'inc/cuenta-cliente.php';       // cuenta opcional después de pagar: la ficha de cliente en la página de gracias
 	require_once DIP_TIENDA_DIR . 'inc/avisos-textos.php';        // textos de los emails al cliente (ES/CA/EN, tú y usted)
 	require_once DIP_TIENDA_DIR . 'inc/emails.php';               // diseño común de todos los emails (plantillas de WooCommerce sustituidas)
 	require_once DIP_TIENDA_DIR . 'inc/avisos.php';               // pedido recibido y avisos: va de camino, hoy llega (8:00), recogida (8:00), incidencia

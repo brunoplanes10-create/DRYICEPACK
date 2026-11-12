@@ -682,3 +682,38 @@ function dip_fecha_corta( $ymd, $idioma = 'es' ) {
 function dip_euros( $importe ) {
 	return number_format( (float) $importe, 2, ',', '.' ) . ' €';
 }
+
+/**
+ * Tabla de precios del envío por hora y zona para la página de envíos (11/11/2026): con IVA, un pack por pedido, con el
+ * mismo cálculo que el checkout (dip_precio_servicio) y un código postal de muestra de cada zona, cerca de una oficina de
+ * MRW. Lo que suma estar a más de 25 km de una oficina (10:00 y sábado) va aparte, en 'lejos'.
+ *
+ * @param float[] $packs Kilos de cada pack (3 o 5, 10, 15, 20).
+ * @return array{zonas: array<string, array<string, array<string, ?float>>>, lejos: array{10: float, sabado: float}}
+ *         zonas[urbano|provincial|regional|peninsular][kg][14|12|10|sabado] = euros con IVA (null si no se puede).
+ */
+function dip_tabla_precios_envio( array $packs ) {
+	$muestras = array(
+		'urbano'     => array( 'cp' => '08301', 'poblacion' => 'Mataró' ),
+		'provincial' => array( 'cp' => '08013', 'poblacion' => 'Barcelona' ),
+		'regional'   => array( 'cp' => '17001', 'poblacion' => 'Girona' ),
+		'peninsular' => array( 'cp' => '28001', 'poblacion' => 'Madrid' ),
+	);
+	$iva = dip_factor_iva();
+	$r   = array(
+		'zonas' => array(),
+		'lejos' => array(
+			'10'     => round( DIP_SUPLEMENTO_10_LEJOS * $iva, 2 ),
+			'sabado' => round( ( (float) DIP_SATURDAY_SURCHARGE_EXCL_TAX - DIP_SABADO_SUPLEMENTO_CERCA ) * $iva, 2 ),
+		),
+	);
+	foreach ( $muestras as $zona => $destino ) {
+		foreach ( $packs as $kg ) {
+			foreach ( array( '14', '12', '10', 'sabado' ) as $servicio ) {
+				$p = dip_precio_servicio( $servicio, (float) $kg, 1, $destino );
+				$r['zonas'][ $zona ][ (string) ( 0 + $kg ) ][ $servicio ] = $p ? round( $p['neto'] * $iva, 2 ) : null;
+			}
+		}
+	}
+	return $r;
+}

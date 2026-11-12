@@ -276,6 +276,9 @@ get_header();
 			<?php if ( $hw_campana ) : ?>
 			<!-- El único destacado del hero: el último pedido (solo durante la campaña) -->
 			<p class="hw-ticket hw-solo-abierto"><span class="hw-ticket__et"><span class="hw-f-v">Último pedido para el viernes 30</span><span class="hw-f-s">Último pedido para el sábado 31 (según zona)</span></span><span class="hw-ticket__fecha"><span class="hw-f-v">Jue 29/10 · 12:00</span><span class="hw-f-s">Vie 30/10 · 12:00</span></span></p>
+			<?php elseif ( function_exists( 'dip_ah_ano' ) ) : ?>
+			<!-- Fuera de campaña, en el mismo hueco: el aviso para el próximo Halloween (sección #aviso) -->
+			<a class="hw-ticket hw-ticket--aviso" href="#aviso"><span class="hw-ticket__et">¿Lo quieres para Halloween <?php echo (int) dip_ah_ano(); ?>?</span> <span class="hw-ticket__fecha">Te avisamos →</span></a>
 			<?php endif; ?>
 		</div>
 	</section>
@@ -543,6 +546,54 @@ get_header();
 			<p class="hw-nota hw-fecha__nota">No lo pidas con muchos días de antelación: el hielo seco sublima poco a poco. Lo ideal es recibirlo la víspera de la fiesta. ¿Tu fiesta es el sábado por la noche y lo recibes el viernes? Elige 16 mm, que aguanta más, o entrega en sábado si tu zona la tiene.</p>
 		</div>
 	</section>
+
+	<?php
+	// 6b · AVÍSAME (fuera de campaña; diseño «La hoja de octubre», elegido el 11/11/2026). Plugin: inc/aviso-halloween.php
+	if ( ! $hw_campana && function_exists( 'dip_ah_ocultos' ) ) :
+		$hw_ano   = dip_ah_ano();
+		$hw_oct   = new DateTimeImmutable( $hw_ano . '-10-01', wp_timezone() );
+		$hw_hueco = (int) $hw_oct->format( 'N' ) - 1; // días vacíos antes del 1 (semana de lunes a domingo)
+		$hw_d31   = array( 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo' )[ (int) $hw_oct->modify( '+30 day' )->format( 'N' ) - 1 ];
+		$hw_av    = isset( $_GET['aviso'] ) ? sanitize_key( wp_unslash( $_GET['aviso'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- sin JavaScript: 'revisa' o 'error'
+		$hw_pest  = '<b class="hw-aviso__pestana">Te escribimos <i>→</i></b>';
+		?>
+	<section class="hw-seccion hw-seccion--alt hw-aviso" id="aviso" aria-labelledby="hw-aviso-t">
+		<div class="hw-aviso__niebla" aria-hidden="true"></div>
+		<div class="hw-wrap hw-aviso__in">
+			<div class="hw-aviso__texto" data-hw-revela>
+				<p class="hw-antetitulo">Halloween <?php echo (int) $hw_ano; ?> · <?php echo esc_html( ucfirst( $hw_d31 ) ); ?> 31 de octubre</p>
+				<h2 id="hw-aviso-t">¿Lo quieres para el próximo Halloween? Te avisamos.</h2>
+				<p>Te escribimos una sola vez, a principios de octubre de <?php echo (int) $hw_ano; ?>, con las fechas para pedirlo y que llegue a tiempo a tu fiesta.</p>
+				<form class="hw-aviso__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-hw-aviso<?php echo 'revisa' === $hw_av ? ' hidden' : ''; ?>>
+					<?php echo dip_ah_ocultos(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- campos ocultos escapados en el plugin ?>
+					<label class="hw-oculto" for="hw-aviso-email">Tu email</label>
+					<input id="hw-aviso-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" maxlength="190" required>
+					<button class="hw-btn" type="submit">Avísame</button>
+				</form>
+				<p class="hw-aviso__legal" data-hw-aviso-legal<?php echo 'revisa' === $hw_av ? ' hidden' : ''; ?>>Te mandamos un email para confirmarlo. Solo lo usamos para este aviso y te das de baja con un clic. INDUNOVA IMS S.L. · <a href="<?php echo esc_url( function_exists( 'dipt_url' ) ? dipt_url( 'privacidad', 'es' ) : home_url( '/politica-de-privacidad/' ) ); ?>">Política de privacidad</a></p>
+				<p class="hw-aviso__estado" data-hw-aviso-estado role="status"<?php echo $hw_av ? '' : ' hidden'; ?>><?php echo esc_html( 'revisa' === $hw_av ? 'Revisa tu email: pulsa el botón del enlace que te hemos enviado para confirmar el aviso.' : ( 'error' === $hw_av ? 'No se ha podido apuntar. Revisa el email y vuelve a probar, o escríbenos a info@dryicepack.es.' : '' ) ); ?></p>
+			</div>
+			<div class="hw-aviso__hoja" aria-hidden="true" data-hw-revela>
+				<div class="hw-aviso__cab"><span class="hw-aviso__mes">Octubre</span><span class="hw-aviso__ano"><?php echo (int) $hw_ano; ?></span></div>
+				<?php if ( $hw_hueco < 3 ) echo '<div class="hw-aviso__pestana-sola">' . $hw_pest . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML fijo ?>
+				<div class="hw-aviso__dias">
+					<?php
+					foreach ( array( 'L', 'M', 'X', 'J', 'V', 'S', 'D' ) as $hw_i => $hw_l ) printf( '<span class="hw-aviso__dsem%s">%s</span>', $hw_i > 4 ? ' hw-aviso__finde' : '', esc_html( $hw_l ) );
+					if ( $hw_hueco ) printf( '<span class="hw-aviso__hueco" style="grid-column: span %d">%s</span>', (int) $hw_hueco, $hw_hueco >= 3 ? $hw_pest : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML fijo
+					for ( $hw_dia = 1; $hw_dia <= 31; $hw_dia++ ) {
+						$hw_cl = array();
+						if ( ( $hw_hueco + $hw_dia - 1 ) % 7 > 4 ) $hw_cl[] = 'hw-aviso__finde';
+						if ( $hw_dia <= 8 ) $hw_cl[] = 'hw-aviso__sem'; // principios de octubre
+						if ( 31 === $hw_dia ) $hw_cl[] = 'hw-aviso__31';
+						printf( '<span class="%s">%d%s</span>', esc_attr( implode( ' ', $hw_cl ) ), (int) $hw_dia, 31 === $hw_dia ? '<i class="hw-aviso__anillo"></i>' : '' );
+					}
+					?>
+				</div>
+				<div class="hw-aviso__pie">31 · <?php echo esc_html( ucfirst( $hw_d31 ) ); ?> · Halloween</div>
+			</div>
+		</div>
+	</section>
+	<?php endif; ?>
 
 	<!-- 7 · SEGURIDAD -->
 	<section class="hw-seccion hw-seccion--seguridad" id="seguridad" aria-labelledby="hw-seg-t">

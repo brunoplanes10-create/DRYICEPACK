@@ -417,3 +417,8 @@ img.f-uso-eventos { object-position: 0% 50%; transform-origin: 0% 38%; scale: 1.
 .gu-texto .gu-tabla-texto td:last-child { font-weight: 400; }
 /* Encuadre de la foto de la caja con niebla (casi cuadrada) en 4:3: se quedan los nuggets y el vapor de arriba */
 img.f-caja-16mm-niebla { object-position: 50% 30%; }
+
+/* Sello «Medido por DryIcePack» (estrategia/VENTAS-PSICOLOGIA.md, 6.3): las cifras que son medidas propias llevan su fecha
+   y sus condiciones, como el sello de un laboratorio. Marino sobre papel: 8,6:1. */
+.gu-texto .sello-medido { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .3rem .7rem; margin: .2rem 0 1.1rem; padding: .45rem .8rem; border: 1.5px solid var(--c-marino); border-radius: 4px; font: 500 .74rem/1.45 var(--f-mono); letter-spacing: .03em; color: var(--c-marino); transform: rotate(-.8deg); }
+.gu-texto .sello-medido__marca { font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }

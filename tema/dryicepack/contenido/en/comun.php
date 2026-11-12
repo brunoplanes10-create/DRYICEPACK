@@ -40,6 +40,8 @@ return array(
 	'pie_frase'       => 'Dry ice that arrives <em>cold</em>, before 14:00.',
 	'pie_tienda'      => 'Dry ice',
 	'pie_servicio'    => 'Service',
+	'pie_zonas'       => 'We deliver to',
+	'pie_zonas_todas' => 'All areas',
 	'pie_contacto'    => 'Let’s talk',
 	'pie_enlaces'     => array(
 		array( 'producto', 'Buy' ),

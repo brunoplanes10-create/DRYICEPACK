@@ -96,4 +96,14 @@ return array(
 			array( 'Feu enviaments urgents el mateix dia?', 'No per missatgeria. Si ets a prop de Mataró, el pots recollir el mateix dia si demanes abans de les 12:00. Et confirmem l\'hora per telèfon o WhatsApp.' ),
 		),
 	),
+	'horas' => array(
+		'titulo' => 'Quant costa cada hora?',
+		'zona'   => 'Zona d\'entrega',
+		'zonas'  => array( 'urbano' => 'Mataró', 'provincial' => 'Província de Barcelona', 'regional' => 'Resta de Catalunya', 'peninsular' => 'Resta de la península' ),
+		'pack'   => 'Pack',
+		'horas'  => array( '14' => 'Abans de les 14:00', '12' => 'Abans de les 12:00', '10' => 'Abans de les 10:00', 'sabado' => 'Dissabte, abans de les 13:00' ),
+		'barata' => 'de sèrie · la més barata entre setmana',
+		'segun'  => 'segons la zona',
+		'nota'   => 'Enviament amb MRW, IVA inclòs, un pack per comanda. Si el teu codi postal és a més de 25 km d\'una oficina de MRW, l\'entrega abans de les 10:00 costa %1$s més i la del dissabte, %2$s més: ho veus en pagar amb el teu codi postal. El dissabte, com a màxim 80 kg.',
+	),
 );

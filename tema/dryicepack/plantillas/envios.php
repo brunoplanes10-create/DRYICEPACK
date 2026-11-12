@@ -262,6 +262,56 @@ $v_json = wp_json_encode( $v_paradas, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | J
 </section>
 <?php endif; ?>
 
+<?php
+// V3b · ¿Cuánto cuesta cada hora? (11/11/2026, boceto A «La tarifa por zonas»): los precios del checkout con IVA para cada
+// pack, hora y zona (dip_tabla_precios_envio, plugin). Pestañas de zona en envios.js; sin JavaScript se ven las cuatro
+// tablas seguidas, cada una con su zona en el caption.
+$h       = array_replace_recursive( (array) ( dipt_contenido( 'envios', 'es' )['horas'] ?? array() ), (array) ( $c['horas'] ?? array() ) );
+$h_tabla = function_exists( 'dip_tabla_precios_envio' ) && $v_packs && ! empty( $h['titulo'] ) ? dip_tabla_precios_envio( $v_packs ) : null;
+if ( $h_tabla ) :
+	$h_ser = array( '14', '12', '10', 'sabado' );
+	$h_eur = static fn( $n ) => null === $n ? '—' : dipt_euros( $n );
+	?>
+<section class="v-horas tono-papel seccion seccion--densa" aria-labelledby="v-horas-t" data-horas>
+	<div class="envoltura">
+		<div class="v-horas__cab">
+			<?php echo dipt_titulo( 'h2', $h['titulo'], 't-h2', 'v-horas-t', 'revela' ); // phpcs:ignore ?>
+			<div class="v-horas__pestanas" role="tablist" aria-label="<?php echo esc_attr( $h['zona'] ); ?>" data-horas-pestanas hidden>
+				<?php foreach ( $h['zonas'] as $h_z => $h_n ) : ?>
+					<button type="button" role="tab" id="v-horas-tab-<?php echo esc_attr( $h_z ); ?>" aria-controls="v-horas-<?php echo esc_attr( $h_z ); ?>" aria-selected="<?php echo 'provincial' === $h_z ? 'true' : 'false'; ?>" tabindex="<?php echo 'provincial' === $h_z ? '0' : '-1'; ?>" data-horas-zona="<?php echo esc_attr( $h_z ); ?>"><?php echo esc_html( $h_n ); ?></button>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php foreach ( $h['zonas'] as $h_z => $h_n ) : ?>
+			<div class="v-horas__panel" role="tabpanel" id="v-horas-<?php echo esc_attr( $h_z ); ?>" aria-labelledby="v-horas-tab-<?php echo esc_attr( $h_z ); ?>" data-horas-panel="<?php echo esc_attr( $h_z ); ?>">
+				<table class="v-horas__tabla">
+					<caption><?php echo esc_html( $h_n ); ?></caption>
+					<thead>
+						<tr>
+							<th scope="col"><?php echo esc_html( $h['pack'] ); ?></th>
+							<?php foreach ( $h_ser as $h_j => $h_s ) : ?>
+								<th scope="col"<?php echo 0 === $h_j ? ' class="v-horas__barata"' : ''; ?>><?php echo esc_html( $h['horas'][ $h_s ] ); ?><?php if ( 0 === $h_j ) : ?><small><?php echo esc_html( $h['barata'] ); ?></small><?php elseif ( 'sabado' === $h_s ) : ?><small><?php echo esc_html( $h['segun'] ); ?></small><?php endif; ?></th>
+							<?php endforeach; ?>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $v_packs as $h_kg ) : ?>
+							<tr>
+								<th scope="row"><?php echo esc_html( $v_num( $h_kg ) . ' kg' ); ?></th>
+								<?php foreach ( $h_ser as $h_j => $h_s ) : ?>
+									<td data-hora="<?php echo esc_attr( $h['horas'][ $h_s ] ); ?>"<?php echo 0 === $h_j ? ' class="v-horas__barata"' : ''; ?>><?php echo esc_html( $h_eur( $h_tabla['zonas'][ $h_z ][ (string) ( 0 + $h_kg ) ][ $h_s ] ?? null ) ); ?></td>
+								<?php endforeach; ?>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+		<?php endforeach; ?>
+		<p class="v-horas__nota suave"><?php echo esc_html( sprintf( $h['nota'], dipt_euros( $h_tabla['lejos']['10'] ), dipt_euros( $h_tabla['lejos']['sabado'] ) ) ); ?></p>
+	</div>
+</section>
+<?php endif; ?>
+
 <!-- V5 · Cobertura: mapa propio (península sí; islas, Ceuta y Melilla no) y código postal con la fecha del destino -->
 <section class="v-cobertura tono-marino seccion" aria-labelledby="v-cobertura-t" data-cobertura>
 	<div class="envoltura v-cobertura__in">

@@ -764,3 +764,55 @@ html[data-hw-fase="cerrado"] #hw .hw-solo-abierto, html[data-hw-fase="fin"] #hw 
 .quieto #hw .hw-murcielagos, .quieto #hw .hw-brasas { display: none; }
 .quieto #hw .hw-pendiente { opacity: 1; transform: none; }
 .quieto #hw .hw-tapado::after { transform: scaleX(0); }
+
+/* =========================================================
+   6b · Avísame (fuera de campaña): «La hoja de octubre»
+   A la izquierda, la promesa y el formulario (el naranja, solo en «Avísame»); a la derecha, la hoja de octubre del próximo
+   Halloween: el 31 con un aro naranja y los primeros días marcados con «Te escribimos». La hoja cae y se inclina al llegar
+   (halloween.js quita .hw-pendiente), el aro aparece con escala y la niebla va de lado. Solo transform y opacity.
+========================================================= */
+#hw .hw-aviso { overflow: hidden; }
+#hw .hw-aviso__niebla { position: absolute; inset: auto -10% -8% -10%; height: 70%; background: url(../img/niebla-capa.webp) repeat-x 0 100% / auto 100%; opacity: .2; pointer-events: none; }
+#hw.hw-anima .hw-aviso__niebla { animation: hw-aviso-deriva 24s linear infinite alternate; }
+@keyframes hw-aviso-deriva { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-6%, -2%, 0); } }
+#hw .hw-aviso__in { display: grid; gap: 48px; align-items: center; }
+@media (min-width: 900px) { #hw .hw-aviso__in { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 72px; } }
+#hw .hw-aviso__texto h2 { max-width: 15ch; }
+#hw .hw-aviso__texto > p:not(.hw-antetitulo) { max-width: 34rem; color: var(--hw-texto-2); }
+#hw .hw-aviso__form { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; max-width: 30rem; }
+#hw .hw-aviso__form[hidden] { display: none; }
+#hw .hw-aviso__form input[type="email"] { flex: 1 1 14rem; min-width: 0; min-height: 56px; padding: 0 20px; border: 1px solid var(--hw-linea-fuerte); border-radius: 999px; background: rgba(255, 255, 255, .04); color: var(--hw-vapor); font: 500 1rem/1 var(--hw-fuente); }
+#hw .hw-aviso__form input[type="email"]::placeholder { color: #8a8a96; }
+#hw .hw-aviso__form input[type="email"]:focus-visible { outline: 2px solid var(--hw-naranja-texto); outline-offset: 2px; border-color: transparent; }
+#hw .hw-aviso__form .hw-btn { flex: 0 0 auto; min-height: 56px; }
+#hw .hw-aviso__form .hw-btn[disabled] { opacity: .6; pointer-events: none; }
+#hw p.hw-aviso__legal { margin-top: 14px; max-width: 30rem; font-size: .82rem; line-height: 1.5; color: #8f8f9b; }
+#hw p.hw-aviso__estado { margin-top: 28px; max-width: 30rem; padding: 16px 20px; border-left: 3px solid var(--hw-naranja); background: rgba(255, 107, 26, .08); color: var(--hw-vapor); }
+#hw .hw-aviso [hidden] { display: none; }
+
+#hw .hw-aviso__hoja { position: relative; width: min(100%, 420px); margin-inline: auto; padding: 26px 26px 22px; border-radius: 6px; background: #f3efe8; color: #17171c; box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 2px 4px rgba(0, 0, 0, .5), 0 30px 60px -24px rgba(0, 0, 0, .9); transform: rotate(-2.5deg); }
+#hw .hw-aviso__hoja::before { content: ""; position: absolute; left: 0; right: 0; top: -9px; height: 18px; background: radial-gradient(circle at 9px 9px, var(--hw-noche) 4px, transparent 4.5px) 0 0 / 22px 18px repeat-x; } /* espiral */
+#hw .hw-aviso__cab { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #17171c; }
+#hw .hw-aviso__mes { font: 800 1.9rem/1 var(--hw-titulos); letter-spacing: -.03em; }
+#hw .hw-aviso__ano { font: 600 .8rem/1 var(--hw-mono); letter-spacing: .08em; color: #5b5b66; }
+#hw .hw-aviso__dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; text-align: center; font: 500 .95rem/1 var(--hw-mono); font-variant-numeric: tabular-nums; }
+#hw .hw-aviso__dias span { position: relative; display: grid; place-items: center; height: 38px; }
+#hw .hw-aviso__dias .hw-aviso__dsem { height: 26px; font-size: .68rem; font-weight: 600; letter-spacing: .06em; color: #6b6b75; }
+#hw .hw-aviso__dias .hw-aviso__finde { color: #8a3f12; }
+#hw .hw-aviso__dias .hw-aviso__sem { background: rgba(255, 107, 26, .14); }
+#hw .hw-aviso__dias .hw-aviso__31 { font-weight: 700; color: #17171c; }
+#hw .hw-aviso__dias .hw-aviso__hueco { justify-items: end; padding-right: 6px; }
+#hw .hw-aviso__anillo { position: absolute; inset: 1px 3px; border: 2.5px solid var(--hw-naranja); border-radius: 50%; }
+#hw .hw-aviso__pestana { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 4px; background: var(--hw-naranja); color: #140a04; font: 700 .68rem/1 var(--hw-mono); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .6); }
+#hw .hw-aviso__pestana i { font-style: normal; }
+#hw .hw-aviso__pestana-sola { margin-bottom: 10px; }
+#hw .hw-aviso__pie { margin-top: 16px; padding-top: 12px; border-top: 1px dashed #b9b2a6; font: 600 .74rem/1.4 var(--hw-mono); letter-spacing: .06em; color: #5b5b66; text-transform: uppercase; }
+/* Entrada: la hoja cae inclinada (en vez de subir como el resto) y el aro aparece después */
+#hw .hw-aviso__hoja.hw-pendiente { opacity: 0; transform: translate3d(0, -28px, 0) rotate(-9deg); }
+#hw .hw-aviso__anillo { transition: transform .4s var(--hw-curva) .55s, opacity .3s ease .55s; }
+#hw .hw-aviso__hoja.hw-pendiente .hw-aviso__anillo { opacity: 0; transform: scale(.4); }
+@media (max-width: 899px) { #hw .hw-aviso__hoja { width: min(100%, 360px); } }
+
+/* Hero fuera de campaña: el ticket lleva al aviso */
+#hw a.hw-ticket--aviso { text-decoration: none; color: #111114; transition: transform .2s var(--hw-curva); }
+#hw a.hw-ticket--aviso:hover { color: #111114; transform: translateY(-2px); }

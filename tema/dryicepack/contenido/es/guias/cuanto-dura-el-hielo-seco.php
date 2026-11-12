@@ -115,6 +115,7 @@ return array(
 
 <h2>¿Cuánto pierde una caja en un día? Lo hemos medido</h2>
 <p>Pesamos tres de nuestras cajas de porexpán al cerrarlas y otra vez 29 horas después, sin abrirlas, dentro de nuestra nave de Mataró y con pellets de 3&nbsp;mm (noviembre de 2026). Los pesos incluyen la caja:</p>
+<p class="sello-medido"><span class="sello-medido__marca">Medido por DryIcePack</span> 10–11/11/2026 · nave de Mataró · pellets de 3&nbsp;mm · cajas cerradas · 29&nbsp;h</p>
 <table>
 <thead><tr><th>Caja</th><th>Al cerrar</th><th>A las 29&nbsp;h</th><th>Perdió</th><th>Unos por cada 24&nbsp;h</th></tr></thead>
 <tbody>

@@ -40,6 +40,8 @@ return array(
 	'pie_frase'       => 'Hielo seco que llega <em>frío</em> y antes de las 14:00.',
 	'pie_tienda'      => 'Hielo seco',
 	'pie_servicio'    => 'Servicio',
+	'pie_zonas'       => 'Enviamos a',
+	'pie_zonas_todas' => 'Todas las zonas',
 	'pie_contacto'    => 'Hablemos',
 	'pie_enlaces'     => array(
 		array( 'producto', 'Comprar' ),
