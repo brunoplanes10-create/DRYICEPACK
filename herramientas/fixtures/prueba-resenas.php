@@ -434,7 +434,11 @@ if ( '2' === $paso ) {
 			$ok( ( $q['dip_resenas_baja'] ?? '' ) === dip_resenas_huella( $email ) && hash_equals( dip_resenas_firma( $q['dip_resenas_baja'] ?? '' ), (string) ( $q['firma'] ?? '' ) ), "{$clave}: el enlace de baja lleva la huella y una firma válida" );
 			$ok( ( 'es' === $x[7] ? ! isset( $q['idioma'] ) : $x[7] === ( $q['idioma'] ?? '' ) ) && $x[8] === ! empty( $q['usted'] ), "{$clave}: idioma y trato en el enlace de baja", $q );
 			$ok( false === stripos( $url, $email ) && false === stripos( $url, rawurlencode( $email ) ) && false === stripos( $url, strtok( $email, '@' ) ), "{$clave}: el enlace de baja no contiene el email" );
-			$ok( false !== strpos( (string) ( $c['cabeceras']['List-Unsubscribe'] ?? '' ), '<' . $url . '>' ) && 'List-Unsubscribe=One-Click' === ( $c['cabeceras']['List-Unsubscribe-Post'] ?? '' ), "{$clave}: cabeceras List-Unsubscribe y List-Unsubscribe-Post", $c['cabeceras'] );
+			// Con el bloque comercial («Repetir el pedido» y la baja de ofertas), el botón de baja del programa de correo da
+			// de baja de las dos cosas: la misma URL de baja de opiniones con la huella de ofertas y su firma (hallazgo 11)
+			$cab         = (string) ( $c['cabeceras']['List-Unsubscribe'] ?? '' );
+			$con_ofertas = false !== strpos( $c['cuerpo'], 'dip_ofertas_baja=' );
+			$ok( false !== strpos( $cab, '<' . $url . ( $con_ofertas ? '&ofertas=' . dip_ofertas_huella( $email ) . '&firma_ofertas=' : '>' ) ) && 'List-Unsubscribe=One-Click' === ( $c['cabeceras']['List-Unsubscribe-Post'] ?? '' ), "{$clave}: cabeceras List-Unsubscribe y List-Unsubscribe-Post" . ( $con_ofertas ? ' (baja de opiniones y de ofertas)' : '' ), $c['cabeceras'] );
 			$urls_baja[ $clave ] = $url;
 		}
 		if ( $carpeta ) {

@@ -452,7 +452,7 @@ function dip_mp_html( WC_Order $p ) {
 					</tfoot>
 				</table>
 				<?php if ( function_exists( 'dip_url_repetir_pedido' ) ) : // 7.3: mismos packs y misma dirección; el día se elige al pagar ?>
-					<p class="mp-repetir"><a class="boton boton--marino mp-repetir__boton" href="<?php echo esc_url( dip_url_repetir_pedido( $p ) ); ?>" rel="nofollow"><span><?php echo esc_html( $t['repetir'] ); ?></span><span class="boton__flecha"><?php echo dip_mp_icono( 'flecha' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG fijo ?></span></a><span class="mp-repetir__nota"><?php echo esc_html( $t['repetir_nota'] ); ?></span></p>
+					<p class="mp-repetir"><a class="boton boton--marino mp-repetir__boton" href="<?php echo esc_url( dip_url_repetir_pedido( $p ) ); ?>" rel="nofollow"><span><?php echo esc_html( $t['repetir'] ); ?></span><span class="boton__flecha"><?php echo dip_mp_icono( 'flecha' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG fijo ?></span></a><span class="mp-repetir__nota"><?php echo esc_html( $t[ dip_eh_es_recogida( $p ) ? 'repetir_nota_recogida' : 'repetir_nota' ] ); ?></span></p>
 				<?php endif; ?>
 			</section>
 
@@ -462,7 +462,7 @@ function dip_mp_html( WC_Order $p ) {
 					<p><?php echo esc_html( $t['problema_intro'] ); ?></p>
 					<ol class="mp-opciones">
 						<li><span><?php echo $fuerte( $t['opcion_reembolso'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span></li>
-						<li><span><?php echo $fuerte( $t['opcion_recoger'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php if ( $fecha && dip_eh_es_sabado( $fecha ) ) : ?> <?php echo esc_html( sprintf( $t['opcion_sabado'], dip_mp_euros_redondo( DIP_RECOGIDA_SABADO_CON_IVA, $idioma ) ) ); ?><?php endif; ?></span></li>
+						<li><span><?php echo $fuerte( $t['opcion_recoger'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php if ( function_exists( 'dip_avisos_suplemento_urgente' ) && dip_avisos_suplemento_urgente( $p ) > 0 ) : // el «Pedido urgente» se devuelve con el envío (inc/avisos.php) ?> <?php echo esc_html( $t['opcion_urgente'] ); ?><?php endif; ?><?php if ( $fecha && dip_eh_es_sabado( $fecha ) ) : ?> <?php echo esc_html( sprintf( $t['opcion_sabado'], dip_mp_euros_redondo( DIP_RECOGIDA_SABADO_CON_IVA, $idioma ) ) ); ?><?php endif; ?></span></li>
 					</ol>
 					<p class="mp-legal"><?php echo esc_html( $t['problema_legal'] ); ?> <a href="<?php echo esc_url( dip_mp_url_tema( 'condiciones', $idioma, '/condiciones-de-venta/' ) ); ?>"><?php echo esc_html( $t['condiciones'] ); ?></a></p>
 				<?php elseif ( $activo && $recoge && 'cod' === $p->get_payment_method() && 'recogido' !== $s['fase'] ) : ?>

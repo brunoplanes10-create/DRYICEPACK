@@ -223,6 +223,11 @@ const escenarios = {
     ok( ! $c( '44140' ) && ! $c( '22700', 'Jaca' ) && ! $c( '44100' ) && ! $c( '28190' ), 'pueblos lejos de una oficina (Teruel, Jaca, Albarracín, sierra de Madrid): lejos, aunque se escriba la población' );
     ok( $c( '08399', 'Mataró' ) && ! $c( '08399', 'Argentona' ) && ! $c( '08399' ), 'código que la lista no conoce: cerca solo si la población tiene oficina de MRW' );
     ok( ! $c( '' ) && ! $c( '0830' ), 'sin código postal de 5 cifras: lejos' );
+    // Vizcaya: en la portada de mrw.es su enlace va a ?provincia=VILAREAL (Portugal); el generador pide ?provincia=VIZCAYA (12/11/2026)
+    ok( $c( '48980' ) && $c( '48003' ) && $c( '48950' ), 'Santurtzi, Bilbao y Erandio: cerca (oficinas de MRW de Vizcaya)' );
+    ok( ! empty( dip_mrw_cerca_datos()['poblaciones']['VIZCAYA'] ) && ! isset( dip_mrw_cerca_datos()['poblaciones']['VILAREAL'] ), 'poblaciones con oficina: Vizcaya sí, Vila Real (Portugal) no' );
+    $p = dip_precio_servicio( '10', 3, 1, array( 'cp' => '48980' ) );
+    ok( 26.53 === $p['neto'] && true === $p['cerca'], 'antes de las 10:00 a Santurtzi, 3 kg: 26,53 € (cerca, sin los 15,30 €)', $p );
     // Precios: el suplemento de lejos se cobra solo donde toca
     $p = dip_precio_servicio( 'sabado', 10, 1, array( 'cp' => '17001', 'poblacion' => 'Girona' ) );
     ok( 19.25 === $p['neto'] && true === $p['cerca'] && 'regional' === $p['zona'], 'sábado a Girona, 10 kg: 13,80 + 5,45 = 19,25 € (cerca)', $p );
@@ -1293,7 +1298,7 @@ function puenteJs(config, ts) {
 function avisoPuenteJs(config, ts, textos) {
   const span = { textContent: '' };
   const attrs = { 'data-t-dias': textos.dias.join('|'), 'data-t-antes': textos.antes, 'data-t-hoy': textos.hoy, 'data-t-despues': textos.despues };
-  const el = { hidden: true, getAttribute: (n) => (n in attrs ? attrs[n] : null), querySelector: (s) => (s === '[data-puente-texto]' ? span : null) };
+  const el = { hidden: true, getAttribute: (n) => (n in attrs ? attrs[n] : null), hasAttribute: () => false, querySelector: (s) => (s === '[data-puente-texto]' ? span : null) };
   contextoJs(config, ts, { '[data-puente]': [el] });
   return el.hidden ? null : span.textContent;
 }
@@ -1379,6 +1384,31 @@ console.log('\n— Tema: aviso de puente (movimiento.js) igual que el plugin');
     }
     const sinAviso = d.casos.find((c) => !c.php);
     contar(`${sinAviso && avisoPuenteJs(d.config, sinAviso.ts, es) === null ? 'OK   ' : 'FALLO'} sin puente en los próximos 10 días, el aviso queda oculto (${sinAviso ? sinAviso.cuando : 'sin caso'})`);
+
+    // Reloj del corte de la ficha (data-corte) con el enlace urgente: CFG.corte = 17:30. «Quedan» cuenta los minutos del
+    // corte y el texto dice 17:30, no las 12:00 escritas a mano. Miércoles 18/11/2026 (Madrid, UTC+1).
+    const relojJs = (corte, iso) => {
+      const span = { textContent: '' }, quedan = { textContent: '', hidden: true };
+      const attrs = { 'data-t-antes': 'Para recibirlo el %s, pide antes de las 12:00.', 'data-t-quedan': 'Quedan %s.', 'data-t-despues': '' };
+      const el = { hidden: false, getAttribute: (n) => (n in attrs ? attrs[n] : null), hasAttribute: (n) => n === 'data-ocultar-sin-texto', classList: { add: () => {} },
+        querySelector: (s) => (s === '[data-corte-texto]' ? span : s === '[data-corte-quedan]' ? quedan : null) };
+      contextoJs({ ...d.config, corte, festivos: [], sinSalida: [] }, Date.parse(iso) / 1000, { '[data-corte]': [el] });
+      return el.hidden ? null : span.textContent + ' ' + (quedan.hidden ? '' : quedan.textContent);
+    };
+    const urgente = { hora: 17, minuto: 30 };
+    const casosReloj = [
+      [urgente, '2026-11-18T15:00:00+01:00', 'Para recibirlo el jueves 19 de noviembre, pide antes de las 17:30. Quedan 2 h 30 min.'],
+      [urgente, '2026-11-18T17:10:00+01:00', 'Para recibirlo el jueves 19 de noviembre, pide antes de las 17:30. Quedan 20 min.'],
+      [{ hora: 12, minuto: 0 }, '2026-11-18T10:45:00+01:00', 'Para recibirlo el jueves 19 de noviembre, pide antes de las 12:00. Quedan 1 h 15 min.'],
+      [{ hora: 12, minuto: 0 }, '2026-11-18T15:00:00+01:00', null],
+    ];
+    for (const [corte, iso, esperado] of casosReloj) {
+      const real = relojJs(corte, iso);
+      contar(`${real === esperado ? 'OK   ' : 'FALLO'} reloj del corte (corte ${corte.hora}:${String(corte.minuto).padStart(2, '0')}), ${iso.slice(0, 16)}: «${real}»${real === esperado ? '' : `\n        esperado: «${esperado}»`}`);
+    }
+    // Aviso de puente «pide hoy antes de las …» con el enlace urgente: la hora del corte de hoy
+    const hoyUrgente = avisoPuenteJs({ ...d.config, corte: urgente }, d.fijos['2026-12-03 10:00'], es);
+    contar(`${hoyUrgente && hoyUrgente.includes('pide hoy antes de las 17:30') ? 'OK   ' : 'FALLO'} puente con el enlace urgente: «${hoyUrgente}»`);
   }
 }
 

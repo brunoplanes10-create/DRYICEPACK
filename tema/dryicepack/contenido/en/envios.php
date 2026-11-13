@@ -50,7 +50,7 @@ return array(
 		),
 		'tramo'  => 'rate up to %s kg',
 		'extra'  => '%1$s up to 10 kg + %2$s kg × %3$s',
-		'nota'   => 'We count 20 kg boxes and put the rest in the pack that covers it ({pk}, 10 or 15 kg), as if you ordered it in the shop. The courier charges the ice plus 1 kg per box, rounded up: the same calculation as at checkout.',
+		'nota'   => 'We count 20 kg boxes and put the rest in the pack that covers it ({pk}, 10 or 15 kg), as if you ordered it in the shop. The courier charges the ice plus 1 kg per box, rounded up: the same calculation as at checkout. In Mataró (08301–08304), light orders cost a little less at checkout.',
 		'medida' => array(
 			'cajas'  => 'Boxes made up for your order',
 			'titulo' => 'We’ll give you a price and a day.',

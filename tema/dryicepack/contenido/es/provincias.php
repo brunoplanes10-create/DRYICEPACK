@@ -97,7 +97,7 @@ return array(
 		'mrw'     => array( 'Días sin reparto', 'MRW no reparte {lista}. Al pagar solo te salen los días con reparto.' ),
 		'mrw_dia' => array( 'provincia' => 'el {dia} en toda la provincia', 'local' => 'el {dia} en {nombre}' ),
 		'pack'    => '{precio} ({kilo}/kg) + envío {envio} = {total}',
-		'tarifa'  => array( 'Cómo se calcula el envío', 'Con la tarifa de la mensajería, igual en toda la península: el peso del hielo más 1 kg por caja. Lo ves en el total antes de pagar.' ),
+		'tarifa'  => array( 'Cómo se calcula el envío', 'Con la tarifa de la mensajería, igual en toda la península (en Mataró, con poco peso, algo menos): el peso del hielo más 1 kg por caja. Lo ves en el total antes de pagar.' ),
 		'recogida' => array( 'Recogida en Mataró', 'A {km} km de {nombre} (unos {min} min en coche, sin tráfico), de lunes a sábado. Precio redondo con IVA incluido: {pk} kg por {recogida:pk} y 10 kg por {recogida:10}. El sábado, +{sabado_recogida} (IVA incluido).{sabado_libre} Tú eliges el día y te confirmamos la hora. En efectivo y con el importe exacto.' ),
 		'municipios' => array( 'También enviamos a', '{lista} y al resto de la provincia (códigos postales {cp_resto}).' ),
 		'resto'      => array( 'También enviamos a', 'Toda la provincia de {provincia} (códigos postales {cp_resto}).' ),

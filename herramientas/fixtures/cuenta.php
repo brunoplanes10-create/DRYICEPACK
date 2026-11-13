@@ -40,6 +40,12 @@ if ( isset( $_GET['email'] ) ) {
 	) : null );
 	exit;
 }
+if ( isset( $_GET['sin_comprobar'] ) ) { // una cuenta de cliente abierta con ese email sin comprobarlo (no con el botón)
+	$correo = sanitize_email( wp_unslash( $_GET['sin_comprobar'] ) );
+	$id     = email_exists( $correo ) ?: wp_insert_user( array( 'user_login' => 'sc' . substr( md5( $correo ), 0, 12 ), 'user_email' => $correo, 'user_pass' => wp_generate_password( 24 ), 'role' => 'customer' ) );
+	echo wp_json_encode( is_wp_error( $id ) ? $id->get_error_message() : (int) $id );
+	exit;
+}
 if ( isset( $_GET['entrar'] ) ) { // la primera vez que entra (como al poner la contraseña)
 	$u = get_user_by( 'email', sanitize_email( wp_unslash( $_GET['entrar'] ) ) );
 	if ( $u ) do_action( 'wp_login', $u->user_login, $u );

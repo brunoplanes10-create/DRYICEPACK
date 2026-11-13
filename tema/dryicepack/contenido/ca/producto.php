@@ -96,7 +96,7 @@ return array(
 	),
 	'tarifa' => array(
 		'titulo' => 'Quant costa|<em>l\'enviament?</em>',
-		'texto'  => 'La tarifa de la missatgeria per a l\'entrega abans de les 14:00, igual a tota la península. Es calcula amb el pes del gel més 1 kg per caixa, i la veus abans de pagar. L\'entrega abans de les 12:00 o de les 10:00, i la del dissabte, tenen el seu preu segons la destinació i els quilos: el veus en triar el dia i l\'hora.',
+		'texto'  => 'La tarifa de la missatgeria per a l\'entrega abans de les 14:00, la mateixa a tota la península (a Mataró, amb poc pes, una mica menys). Es calcula amb el pes del gel més 1 kg per caixa, i la veus abans de pagar. L\'entrega abans de les 12:00 o de les 10:00, i la del dissabte, tenen el seu preu segons la destinació i els quilos: el veus en triar el dia i l\'hora.',
 		'filas'  => array( array( 'Fins a 2 kg', 8.53 ), array( 'Fins a 5 kg', 10.32 ), array( 'Fins a 10 kg', 13.19 ), array( 'Cada kg de més', 1.12 ) ),
 		// 11/11/2026: sense fila de dissabte. Ja no és un suplement fix: depèn de la destinació i els quilos (es veu en triar el dia)
 		'extra'  => array( array( 'Recollida a Mataró, sense enviament', 0 ) ),

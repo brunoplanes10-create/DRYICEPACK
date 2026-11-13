@@ -423,6 +423,20 @@ function dip_avisos_suplemento_envio( WC_Order $pedido ) {
 	return round( $suma, 2 );
 }
 
+/**
+ * Suplemento «Pedido urgente» del pedido, IVA incluido (inc/urgente.php: solo se cobra con envío). En una entrega que
+ * falla se devuelve con el envío, como el de sábado. Por la marca de la línea o, si no la tiene, por su nombre.
+ */
+function dip_avisos_suplemento_urgente( WC_Order $pedido ) {
+	$suma = 0.0;
+	foreach ( $pedido->get_items( 'fee' ) as $item ) {
+		if ( $item->get_meta( '_dip_urgente' ) || preg_match( '/pedido urgente|comanda urgent|urgent order/iu', (string) $item->get_name() ) ) {
+			$suma += (float) $item->get_total() + (float) $item->get_total_tax();
+		}
+	}
+	return round( $suma, 2 );
+}
+
 /** Envío del pedido, IVA incluido. */
 function dip_avisos_importe_envio( WC_Order $pedido ) {
 	$suma = 0.0;
@@ -527,9 +541,10 @@ function dip_avisos_partes( WC_Order $pedido, $tipo, array $extra = array() ) {
 		case 'incidencia':
 			$pagado  = round( (float) $pedido->get_total() - (float) $pedido->get_total_refunded(), 2 );
 			$envio   = dip_avisos_importe_envio( $pedido );
-			$sup     = dip_avisos_suplemento_envio( $pedido );
-			$devolver = $envio + $sup; // todo lo que pagó por el envío (desde el 11/11/2026 el sábado va en la tarifa, sin línea aparte)
-			$opcion2  = array( sprintf( $sup > 0 ? $t['i_op2_sabado'] : $t['i_op2'], dip_avisos_euros( $devolver, $idioma ) ) );
+			$sup     = dip_avisos_suplemento_envio( $pedido ); // pedidos de antes del 11/11/2026, con línea de sábado
+			$urg     = dip_avisos_suplemento_urgente( $pedido );
+			$devolver = round( $envio + $sup + $urg, 2 ); // todo lo que pagó por el envío (desde el 11/11/2026 el sábado va en la tarifa, sin línea aparte)
+			$opcion2  = array( sprintf( $sup > 0 ? $t['i_op2_sabado'] : ( $urg > 0 ? $t['i_op2_urgente'] : $t['i_op2'] ), dip_avisos_euros( $devolver, $idioma ) ) );
 			if ( $devolver > 0 && dip_avisos_es_sabado( $fecha ) ) {
 				// Si lo recoge el mismo sábado, del envío nos quedamos los 10 € de la recogida en sábado y se devuelve el resto
 				$rec = dip_suplemento_sabado( 'recogida', $fecha );

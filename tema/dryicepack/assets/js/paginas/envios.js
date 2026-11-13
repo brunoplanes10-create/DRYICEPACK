@@ -16,7 +16,10 @@
 		var etiqueta = reloj.querySelector('[data-reloj-etiqueta]');
 		var hasta = reloj.querySelector('[data-reloj-hasta]');
 		var hora = reloj.getAttribute('data-hora') || '12:00';
-		var corteH = CFG.corte ? CFG.corte.hora : 12, corteM = CFG.corte ? CFG.corte.minuto : 0;
+		// El corte de serie (12:00) y el de hoy (CFG.corte: con el enlace urgente, 17:30). El de hoy solo vale hoy:
+		// pasado, se cuenta hasta el corte de serie del siguiente día de salida
+		var base = hora.split(':'), baseH = +base[0] || 12, baseM = +base[1] || 0;
+		var corteH = CFG.corte ? CFG.corte.hora : baseH, corteM = CFG.corte ? CFG.corte.minuto : baseM;
 		var fmt = null;
 		try { fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); } catch (e) { fmt = null; }
 		// Diferencia entre la hora de Madrid y UTC en ese instante (cambia con el horario de verano)
@@ -39,14 +42,15 @@
 			if (!r) return;
 			var sale = new Date(r.entrega.getTime());
 			sale.setUTCDate(sale.getUTCDate() - 1);
-			var pared = Date.UTC(sale.getUTCFullYear(), sale.getUTCMonth(), sale.getUTCDate(), corteH, corteM, 0);
+			var cH = r.saleHoy ? corteH : baseH, cM = r.saleHoy ? corteM : baseM;
+			var pared = Date.UTC(sale.getUTCFullYear(), sale.getUTCMonth(), sale.getUTCDate(), cH, cM, 0);
 			var faltan = Math.max(0, Math.floor((pared - desfase(pared) - Date.now()) / 1000));
 			poner(h, dos(Math.floor(faltan / 3600)));
 			poner(m, dos(Math.floor(faltan % 3600 / 60)));
 			poner(s, dos(faltan % 60));
 			etiqueta.textContent = reloj.getAttribute(r.saleHoy ? 'data-t-antes' : 'data-t-despues');
 			reloj.classList.toggle('corte-pasado', !r.saleHoy);
-			var t = E.texto(sale) + ' · ' + hora;
+			var t = E.texto(sale) + ' · ' + (r.saleHoy ? dos(cH) + ':' + dos(cM) : hora);
 			if (hasta && hasta.textContent !== t) hasta.textContent = t;
 		};
 		tic();

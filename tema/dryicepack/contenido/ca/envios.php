@@ -50,7 +50,7 @@ return array(
 		),
 		'tramo'  => 'tarifa fins a %s kg',
 		'extra'  => '%1$s fins a 10 kg + %2$s kg × %3$s',
-		'nota'   => 'Comptem caixes de 20 kg i la resta en el pack que toqui ({pk}, 10 o 15 kg), com si ho demanessis a la botiga. La missatgeria cobra el gel més 1 kg per caixa, arrodonit a l\'alça: el mateix càlcul que es fa en pagar.',
+		'nota'   => 'Comptem caixes de 20 kg i la resta en el pack que toqui ({pk}, 10 o 15 kg), com si ho demanessis a la botiga. La missatgeria cobra el gel més 1 kg per caixa, arrodonit a l\'alça: el mateix càlcul que es fa en pagar. A Mataró (08301–08304), amb poc pes, en pagar surt una mica menys.',
 		'medida' => array(
 			'cajas'  => 'Caixes a mida de la comanda',
 			'titulo' => 'Et preparem preu i dia.',

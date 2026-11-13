@@ -238,6 +238,13 @@
 	function esLaborable(f) { var n = f.getUTCDay(); return n >= 1 && n <= 5 && !esFestivo(f); }
 	function saleEseDia(f) { return esLaborable(f) && sinSalida.indexOf(clave(f)) === -1; }
 	function antesCorte(a) { var c = CFG.corte || { hora: 12, minuto: 0 }; return a.h * 60 + a.mi < c.hora * 60 + c.minuto; }
+	/* Hora del corte de hoy en minutos. Con el enlace de pedido urgente del plugin es su hora límite (17:30 de serie) y solo vale
+	   para hoy: los textos de hoy («pide antes de las 12:00») cambian las 12:00 escritas a mano por esa hora (horaCorte). */
+	function minutosCorte() { var c = CFG.corte || { hora: 12, minuto: 0 }; return c.hora * 60 + (c.minuto || 0); }
+	function horaCorte(t) {
+		var m = minutosCorte();
+		return m === 720 ? t : String(t).replace(/12:00/g, ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + (m % 60)).slice(-2));
+	}
 	/* Devuelve { entrega: Date, saleHoy: bool }. sinReparto (opcional): días 'Y-m-d' en que MRW no reparte en un destino
 	   concreto (páginas de provincia y ciudad): esos días no se entrega allí, como en el checkout para ese código postal. */
 	function proximaEntrega(sinReparto) {
@@ -297,6 +304,7 @@
 			var dest = el.querySelector('[data-puente-texto]') || el, txt = '';
 			var llega = p ? (p.antes ? p.antes.entrega : p.siguiente) : null;
 			var t = p ? el.getAttribute(p.antes ? (p.antes.hoy ? 'data-t-hoy' : 'data-t-antes') : 'data-t-despues') : '';
+			if (t && p.antes && p.antes.hoy) t = horaCorte(t); // «pide hoy antes de las 12:00»: la hora del corte de hoy
 			if (llega && t) {
 				var l = (el.getAttribute('data-t-dias') || 'el %s|el %1$s y el %2$s|del %1$s al %2$s').split('|');
 				var n = p.dias.length, pr = p.dias[0], u = p.dias[n - 1];
@@ -308,7 +316,7 @@
 				txt = txt.charAt(0).toUpperCase() + txt.slice(1);
 			}
 			dest.textContent = txt;
-			el.hidden = !txt;
+			el.hidden = !txt || el.hasAttribute('data-callar'); // data-callar: la ficha con un código postal que no cuadra
 		});
 	}
 	if (d.querySelector('[data-puente]')) { pintarPuente(); setInterval(pintarPuente, 60000); }
@@ -326,9 +334,9 @@
 			var dest = el.querySelector('[data-corte-texto]') || el;
 			var quedan = el.querySelector('[data-corte-quedan]');
 			if (r.saleHoy) {
-				dest.textContent = (el.getAttribute('data-t-antes') || '%s').replace('%s', fecha);
+				dest.textContent = horaCorte(el.getAttribute('data-t-antes') || '%s').replace('%s', fecha);
 				if (quedan) {
-					var min = (CFG.corte ? CFG.corte.hora : 12) * 60 - (a.h * 60 + a.mi);
+					var min = minutosCorte() - (a.h * 60 + a.mi); // con los minutos del corte (17:30 con el enlace urgente)
 					var hh = Math.floor(min / 60), mm = min % 60;
 					quedan.textContent = (el.getAttribute('data-t-quedan') || '%s').replace('%s', [hh ? hh + ' h' : '', mm || !hh ? mm + ' min' : ''].filter(Boolean).join(' ')); // «2 h», «1 h 15 min», «40 min»
 					quedan.hidden = false;
@@ -340,9 +348,12 @@
 			}
 			el.classList.add('corte-listo');
 			// Ficha del producto: la línea solo se ve mientras hay algo que decir (antes del corte de las 12:00)
-			if (el.hasAttribute('data-ocultar-sin-texto')) el.hidden = !dest.textContent.trim();
+			if (el.hasAttribute('data-ocultar-sin-texto')) el.hidden = !dest.textContent.trim() || el.hasAttribute('data-callar');
 		});
 	}
+	/* La ficha calla el reloj y el aviso de puente (data-callar) cuando el código postal escrito tiene otra fecha o no se envía,
+	   y los vuelve a pintar al quitarlo. */
+	w.dipEntrega.repintar = function () { pintarPuente(); pintarCorte(); };
 	if (d.querySelector('[data-corte]')) { pintarCorte(); setInterval(pintarCorte, 30000); }
 
 	/* Abierto o cerrado ahora (nave: lunes a viernes no festivos, 9:00–18:00 hora de Madrid) */

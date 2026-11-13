@@ -4,7 +4,10 @@
 //    el formulario y el enlace del hero. Capturas a 390 y 1440 px en .tmp/aviso/.
 // 2. El alta queda sin confirmar; la confirmación pide pulsar un botón (abrir el enlace no confirma); otra alta con el mismo
 //    email dice que ya está apuntado; la baja lo quita; una firma falsa da 400; el campo trampa no apunta a nadie.
-// 3. Tarea diaria: lo que no se confirma en 7 días se borra; el 1 de septiembre avisa una vez de cuántos esperan.
+// 3. Tarea diaria: lo que no se confirma en 7 días se borra; el 1 de septiembre avisa una vez de cuántos esperan; los
+//    confirmados se borran el 1 de noviembre después de su Halloween; desde el 1 de octubre se apunta para el año siguiente.
+// 4. Quien se apuntó un año anterior vuelve a apuntarse con doble opt-in (no «ya estás apuntado») y no sale en el CSV;
+//    como mucho 2 emails de confirmación por dirección en 24 h; el email de confirmación lleva «Quitar el aviso».
 // Uso: node herramientas/probar-aviso-halloween.mjs
 import puppeteer from 'puppeteer-core';
 import { copyFileSync, rmSync, mkdirSync } from 'node:fs';
@@ -24,7 +27,7 @@ const nav = await puppeteer.launch({ executablePath: 'C:/Program Files/Google/Ch
 const errores = [];
 try {
   await datos('?limpiar_ip=1');
-  const { ano } = await datos();
+  const { ano, ano_alta } = await datos(); // ano_alta: el del aviso de quien se apunta hoy (desde el 1/10, el año siguiente)
   const p = await nav.newPage();
   p.on('pageerror', (e) => errores.push(e.message));
   // 1. La sección
@@ -45,10 +48,10 @@ try {
       } : null;
     });
     if (ancho === 390) {
-      ok(s && s.ante === `Halloween ${ano} · Domingo 31 de octubre` || (s && new RegExp(`^Halloween ${ano} · \\S+ 31 de octubre$`).test(s.ante)), `antetítulo con el año y el día: «${s && s.ante}»`, s);
+      ok(s && new RegExp(`^Halloween ${ano_alta} · \\S+ 31 de octubre$`).test(s.ante), `antetítulo con el año y el día: «${s && s.ante}»`, s);
       ok(s && s.h2 === '¿Lo quieres para el próximo Halloween? Te avisamos.', 'titular', s && s.h2);
       ok(s && s.dias === 31 && s.anillo && /Te escribimos/.test(s.pestana), 'la hoja: 31 días, aro en el 31 y «Te escribimos»', s);
-      ok(s && s.ticket === '#aviso' && s.ticketTexto === `¿Lo quieres para Halloween ${ano}? Te avisamos →`, 'el hero lleva al aviso', s);
+      ok(s && s.ticket === '#aviso' && s.ticketTexto === `¿Lo quieres para Halloween ${ano_alta}? Te avisamos →`, 'el hero lleva al aviso', s);
     }
     ok(s && !s.scroll, `${ancho} px: sin scroll horizontal`);
     const sec = await p.$('#aviso');
@@ -69,20 +72,20 @@ try {
   await p.click('[data-hw-aviso] button');
   const r1 = await respuesta;
   await p.waitForFunction(() => { const e = document.querySelector('[data-hw-aviso-estado]'); return e && !e.hidden && e.textContent.trim(); }, { timeout: 30000 }).catch(() => null);
-  const tras = await p.evaluate(() => ({ estado: document.querySelector('[data-hw-aviso-estado]')?.textContent.trim(), visible: !document.querySelector('[data-hw-aviso-estado]')?.hidden, form: !document.querySelector('[data-hw-aviso]')?.hidden }));
+  const tras = await p.evaluate(() => ({ estado: document.querySelector('[data-hw-aviso-estado]')?.textContent.trim(), visible: !document.querySelector('[data-hw-aviso-estado]')?.hidden, form: !document.querySelector('[data-hw-aviso]')?.hidden, foco: document.activeElement === document.querySelector('[data-hw-aviso-estado]') }));
   const correoOk = r1.status() === 200;
-  ok(tras.visible && (correoOk ? tras.estado.startsWith('Revisa tu email') && !tras.form : tras.estado.startsWith('No hemos podido enviarte el email')), `respuesta en la página sin recargar (${correoOk ? 'email enviado' : 'el WordPress de prueba no manda emails'})`, tras);
+  ok(tras.visible && (correoOk ? tras.estado.startsWith('Revisa tu email') && !tras.form && tras.foco : tras.estado.startsWith('No hemos podido enviarte el email')), `respuesta en la página sin recargar (${correoOk ? 'email enviado' : 'el WordPress de prueba no manda emails'})`, tras);
   let x = await datos(`?email=${encodeURIComponent(email)}`);
-  ok(x.entrada && x.entrada.email === email && !x.entrada.confirmado && x.entrada.ano === ano, 'queda apuntado sin confirmar, para el año que toca', x.entrada);
+  ok(x.entrada && x.entrada.email === email && !x.entrada.confirmado && x.entrada.ano === ano_alta, 'queda apuntado sin confirmar, para el año que toca', x.entrada);
 
   // Confirmar: abrir el enlace no confirma; el botón sí
   const c = await nav.newPage();
   const g = await c.goto(x.confirmar, { waitUntil: 'networkidle2' });
-  ok(g.status() === 200 && (await c.evaluate(() => document.querySelector('h1')?.textContent)) === `¿Confirmas el aviso de Halloween ${ano}?`, 'el enlace de confirmación enseña un botón', g.status());
+  ok(g.status() === 200 && (await c.evaluate(() => document.querySelector('h1')?.textContent)) === `¿Confirmas el aviso de Halloween ${ano_alta}?`, 'el enlace de confirmación enseña un botón', g.status());
   x = await datos(`?email=${encodeURIComponent(email)}`);
   ok(x.entrada && !x.entrada.confirmado, 'solo con abrirlo no se confirma');
   await Promise.all([c.waitForNavigation({ waitUntil: 'networkidle2' }), c.click('form button')]);
-  ok((await c.evaluate(() => document.querySelector('h1')?.textContent)) === `Hecho: te avisaremos para Halloween ${ano}`, 'con el botón: confirmado');
+  ok((await c.evaluate(() => document.querySelector('h1')?.textContent)) === `Hecho: te avisaremos para Halloween ${ano_alta}`, 'con el botón: confirmado');
   x = await datos(`?email=${encodeURIComponent(email)}`);
   ok(x.entrada && /^\d{4}-\d{2}-\d{2} /.test(x.entrada.confirmado), 'queda la fecha de confirmación', x.entrada);
   await c.screenshot({ path: '.tmp/aviso/confirmado-390.png' });
@@ -94,7 +97,39 @@ try {
     const r = await fetch(f.getAttribute('action'), { method: 'POST', body: d, credentials: 'same-origin' });
     return r.json();
   }, email);
-  ok(r2.ok && r2.mensaje === `Ya estás apuntado: te escribiremos a principios de octubre de ${ano}.`, 'otra alta con el mismo email: «Ya estás apuntado»', r2);
+  ok(r2.ok && r2.mensaje === `Ya estás apuntado: te escribiremos a principios de octubre de ${ano_alta}.`, 'otra alta con el mismo email: «Ya estás apuntado»', r2);
+
+  // Alta por AJAX desde la página (mismo formulario y marca de tiempo)
+  const alta = (correo) => p.evaluate(async (correo) => {
+    const f = document.querySelector('[data-hw-aviso]');
+    const d = new FormData(f); d.set('email', correo); d.set('ajax', '1');
+    const r = await fetch(f.getAttribute('action'), { method: 'POST', body: d, credentials: 'same-origin' });
+    return r.json();
+  }, correo);
+
+  // En octubre de su año (el aviso ya está saliendo), «ya estás apuntado» no promete escribir «a principios de octubre»
+  const ty = await datos('?textos_ya=1');
+  ok(ty.este === `Ya estás apuntado: te escribiremos a principios de octubre de ${ano_alta}.` && ty.empezado === `Ya estás apuntado al aviso de Halloween ${ano_alta - 1}: no tienes que hacer nada más.`, '«ya estás apuntado» sin prometer un octubre que ya empezó', ty);
+
+  // El email de confirmación lleva el enlace de baja («Quitar el aviso»), no solo el de octubre
+  const correo = await datos(`?correo=${encodeURIComponent(email)}`);
+  ok(correo.baja && correo.quitar, 'el email de confirmación lleva «Quitar el aviso» con el enlace de baja', correo);
+
+  // Un confirmado de un Halloween pasado: no sale en el CSV y, si vuelve, alta nueva con doble opt-in
+  const pasada = `pasada-${marca}@example.com`;
+  await datos(`?pasada=${encodeURIComponent(pasada)}`);
+  const csv = await datos('?csv=1');
+  ok(csv.includes(email) && !csv.includes(pasada), 'el CSV solo lleva los confirmados del Halloween en curso', csv);
+  const r4 = await alta(pasada);
+  const xp = await datos(`?email=${encodeURIComponent(pasada)}`);
+  ok(!/^Ya estás apuntado/.test(r4.mensaje || '') && xp.entrada && !xp.entrada.confirmado && xp.entrada.ano === ano_alta, 'quien se apuntó un año anterior vuelve a apuntarse (sin confirmar, para el año que toca)', { r4, entrada: xp.entrada });
+
+  // Ya se le mandaron 2 emails hace 1 hora: «revisa» sin mandar otro ni tocar el alta
+  const repe = `repe-${marca}@example.com`;
+  await datos(`?enviados=${encodeURIComponent(repe)}`);
+  const r5 = await alta(repe);
+  const xr = await datos(`?email=${encodeURIComponent(repe)}`);
+  ok(r5.ok && /^Revisa tu email/.test(r5.mensaje) && xr.entrada && xr.entrada.alta === '2000-01-01 00:00:00' && xr.entrada.envios === 2, 'como mucho 2 emails de confirmación por dirección en 24 h', { r5, entrada: xr.entrada });
 
   // Campo trampa: responde «ok» pero no apunta a nadie
   const trampa = `trampa-${marca}@example.com`;
@@ -108,6 +143,10 @@ try {
   // 3. Tarea diaria: el 1/9 avisa una vez de cuántos esperan
   const t = await datos('?tarea=1');
   ok(!t.antes.length && t.asuntos.length === 1 && new RegExp(`^Dryicepack: \\d+ esperan el aviso de Halloween ${ano}$`).test(t.asuntos[0]) && t.recordado === ano, 'el 1 de septiembre, un solo email a la dirección de avisos', t);
+  // El 1 de noviembre se borran los confirmados de ese Halloween; desde el 1 de octubre se apunta para el año siguiente
+  const n = await datos('?noviembre=1');
+  ok(n.antes >= 1 && n.el31 === n.antes && n.el1 === 0, 'los confirmados siguen el 31 de octubre y se borran el 1 de noviembre', n);
+  ok(n.ano_alta_sep === ano && n.ano_alta_oct === ano + 1, 'el 30/9 se apunta para este Halloween y el 2/10 para el del año siguiente', n);
   // Sin confirmar en 7 días: se borra
   const vieja = `viejo-${marca}@example.com`;
   await datos(`?vieja=${encodeURIComponent(vieja)}`);

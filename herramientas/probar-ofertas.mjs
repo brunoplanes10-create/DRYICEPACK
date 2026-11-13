@@ -5,6 +5,8 @@
 // 3. La página de baja: con GET pide confirmar (no da de baja sola); con el botón da de baja y deja de salir en la lista.
 //    Con una firma falsa, 400.
 // 4. La política de privacidad lo explica en castellano, catalán e inglés.
+// 5. (12/11/2026) Pago exprés por la Store API (como Apple Pay / Google Pay): la casilla llega por la sesión, y sin pasar
+//    por el checkout el pedido queda en 'no'. El CSV antepone un apóstrofo a las celdas que empiezan por =, +, - o @.
 // Uso: node herramientas/probar-ofertas.mjs
 import puppeteer from 'puppeteer-core';
 import { copyFileSync, rmSync, mkdirSync } from 'node:fs';
@@ -77,7 +79,56 @@ async function pedido(email, marcar, capturar) {
   return { id, marcadaAlPagar };
 }
 
+// Pago exprés (Apple Pay / Google Pay de WooPayments): el pedido se crea por la Store API, sin los campos del formulario.
+// La casilla llega por la sesión; si el cliente no pasó por el checkout, el pedido queda en 'no' (nunca 'si' por defecto).
+async function pedidoStoreApi(email, { checkout, marcar }) {
+  const ctx = await nav.createBrowserContext();
+  const p = await ctx.newPage();
+  p.on('pageerror', (e) => errores.push(email + ': ' + e.message));
+  await p.goto(`${BASE}/?add-to-cart=${prod.id}&variation_id=${v.id}&attribute_pa_peso=10kg-de-hielo-seco&attribute_pa_formato=3mm&quantity=1`, { waitUntil: 'networkidle2', timeout: 180000 });
+  let marcador = null;
+  if (checkout) {
+    await p.goto(BASE + '/checkout/', { waitUntil: 'networkidle2', timeout: 180000 });
+    marcador = await p.evaluate(() => !!document.querySelector('#dip_sin_ofertas_field input[type="hidden"][name="dip_ofertas_en_form"]'));
+    if (marcar) {
+      const e = p.waitForResponse((r) => r.url().includes('update_order_review'), { timeout: 30000 }).catch(() => null);
+      await p.click('#dip_sin_ofertas');
+      await e;
+      await new Promise((r) => setTimeout(r, 800));
+    }
+  }
+  const r = await p.evaluate(async (correo) => {
+    const carrito = await fetch('/wp-json/wc/store/v1/cart', { credentials: 'same-origin' });
+    const nonce = carrito.headers.get('Nonce') || carrito.headers.get('X-WC-Store-API-Nonce');
+    const dir = { first_name: 'Prueba', last_name: 'Exprés', address_1: 'Carrer de Mallorca 123', city: 'Barcelona', postcode: '08013', state: 'B', country: 'ES', phone: '600123456' };
+    const res = await fetch('/wp-json/wc/store/v1/checkout', {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', Nonce: nonce },
+      body: JSON.stringify({ billing_address: { ...dir, email: correo }, shipping_address: dir, payment_method: 'cheque' }),
+    });
+    const j = await res.json().catch(() => null);
+    return { estado: res.status, id: j && j.order_id, error: j && j.message };
+  }, email);
+  await ctx.close();
+  return { ...r, marcador };
+}
+
 try {
+  // Store API: casilla marcada en el checkout → 'no'; sin marcar → 'si'; sin pasar por el checkout → 'no'
+  const exNo = await pedidoStoreApi(`ofertas-exno-${marca}@example.com`, { checkout: true, marcar: true });
+  const exSi = await pedidoStoreApi(`ofertas-exsi-${marca}@example.com`, { checkout: true, marcar: false });
+  const exSin = await pedidoStoreApi(`ofertas-exsin-${marca}@example.com`, { checkout: false });
+  ok(exNo.marcador && exSi.marcador, 'la casilla lleva la marca oculta dip_ofertas_en_form', { exNo, exSi });
+  for (const [r, esperado, texto] of [[exNo, 'no', 'marcada en el checkout'], [exSi, 'si', 'sin marcar en el checkout'], [exSin, 'no', 'sin pasar por el checkout']]) {
+    const m = r.id ? await datos(`?pedido=${r.id}`) : null;
+    ok(m && m.publicidad === esperado, `pago exprés (Store API), ${texto}: _dip_publicidad = ${esperado}`, { r, m });
+  }
+  // CSV a salvo de fórmulas
+  for (const [entrada, salida] of [['=HIPERVINCULO("x")', '\'=HIPERVINCULO("x")'], ['+34 600', '\'+34 600'], ['@SUMA', '\'@SUMA'], ['-1+1', '\'-1+1'], ['Laura García', 'Laura García'], ['08013', '08013']]) {
+    const c = await datos(`?celda=${encodeURIComponent(entrada)}`);
+    ok(c === salida, `CSV: «${entrada}» → «${salida}»`, c);
+  }
+
   const si = await pedido(emailSi, false, true);
   const no = await pedido(emailNo, true, false);
   ok(si.id > 0 && no.id > 0, 'los dos pedidos se crean', { si, no });

@@ -122,6 +122,14 @@ try {
   ok(!em.antes_de_la_casilla.repetir && !em.antes_de_la_casilla.baja_ofertas, 'pedido de antes de la casilla: sin enlace de volver a comprar', em.antes_de_la_casilla);
   ok(!em.baja_despues.repetir, 'de baja de ofertas después de comprar: sin enlace de volver a comprar', em.baja_despues);
   ok(Object.values(em).every((x) => x.baja_resenas), 'la baja de las reseñas sigue en todos', em);
+  // «Cancelar suscripción» de Gmail / Apple Mail (RFC 8058): con «Repetir», la cabecera da de baja de opiniones y de ofertas
+  ok(em.casilla_sin_marcar.baja_todo && !em.casilla_marcada.baja_todo && !em.baja_despues.baja_todo, 'con «Repetir», la cabecera List-Unsubscribe lleva también la baja de ofertas; sin él, solo la de opiniones', em);
+  const unClic = await fetch(em.casilla_sin_marcar.url_baja, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'List-Unsubscribe=One-Click' });
+  const tras = await (await fetch(`${BASE}/wp-content/plugins/dryicepack-tienda/zz-email-repetir.php?comprobar=${encodeURIComponent(em.casilla_sin_marcar.email)}`)).json();
+  ok(unClic.status === 200 && tras.resenas && tras.ofertas, 'el POST de un clic a esa cabecera da de baja de opiniones y de ofertas', { estado: unClic.status, tras });
+  const sinOfertas = new URL(em.casilla_sin_marcar.url_baja); sinOfertas.searchParams.set('firma_ofertas', '0'.repeat(16));
+  const rf = await fetch(sinOfertas.href);
+  ok(rf.status === 200, 'con la firma de ofertas falsa, la página sigue siendo la de la baja de opiniones (no da error)', rf.status);
 } finally {
   rmSync((process.env.DIP_PLUGIN_DIR || 'plugin/dryicepack-tienda') + '/zz-email-repetir.php', { force: true });
   rmSync(FIXTURE, { force: true });

@@ -1,7 +1,8 @@
 // Pedido completo en el WordPress de prueba: rellena el checkout, elige sábado (o recogida), marca empresa si se pide y paga.
 // Comprueba que el pedido se crea (página de gracias) y, en recogida (03/10/2026): total redondo (1 × 20 kg = 115,00 €),
 // solo efectivo, el texto «Pago en efectivo al recoger: 115,00 €. Trae el importe exacto: no tenemos cambio.» en el
-// checkout y el mismo texto en la página de gracias. Sale con código 1 si algo falla.
+// checkout y el mismo texto en la página de gracias. En «normal» (12/11/2026): la hora se elige con el teclado sin perder el
+// foco y, después de pagar la de las 10:00, el checkout siguiente vuelve a «antes de las 14:00». Sale con código 1 si algo falla.
 // Uso: node herramientas/probar-pedido.mjs [sabado|recogida|normal] [empresa] [cantidad]
 import puppeteer from 'puppeteer-core';
 const BASE = 'http://127.0.0.1:9500';
@@ -37,6 +38,18 @@ if (modo === 'recogida') {
 } else if (modo === 'sabado') {
   const e2 = esperaAjax(); await p.evaluate(() => document.querySelector('.dip-fecha--sabado input').click()); await e2;
   await new Promise((r) => setTimeout(r, 800));
+}
+if (modo === 'normal') {
+  // Hora con el teclado (12/11/2026): las flechas cambian la hora y, al repintar el bloque, el foco vuelve a la hora elegida
+  const marcadaHora = () => p.evaluate(() => { const r = document.querySelector('input[name="dip_servicio"]:checked'); return r ? r.value : null; });
+  ok((await marcadaHora()) === '14', 'normal: la hora de serie es «antes de las 14:00»', await marcadaHora());
+  await p.focus('input[name="dip_servicio"][value="14"]');
+  for (const esperada of ['12', '10']) {
+    const e3 = esperaAjax(); await p.keyboard.press('ArrowUp'); await e3;
+    await new Promise((r) => setTimeout(r, 800));
+    const foco = await p.evaluate(() => ({ nombre: document.activeElement && document.activeElement.name, valor: document.activeElement && document.activeElement.value }));
+    ok(foco.nombre === 'dip_servicio' && foco.valor === esperada && (await marcadaHora()) === esperada, `normal: con la flecha arriba pasa a ${esperada}:00 y el foco sigue en la hora`, foco);
+  }
 }
 if (empresa) {
   const casilla = await p.$('#dip_empresa');
@@ -91,6 +104,15 @@ if (modo === 'recogida') {
   ok(limpio(despues.total) === textoEfectivo.match(/: (.*?)\./)[1], 'recogida: el total del pedido es el mismo', despues.total);
 } else {
   ok(!despues.efectivo, modo + ': sin texto de efectivo en la página de gracias', despues.efectivo);
+}
+if (modo === 'normal') {
+  // La hora pagada (10:00) no pasa al pedido siguiente: el checkout nuevo, en la misma sesión, empieza en «antes de las 14:00»
+  await p.goto(`${BASE}/?add-to-cart=${prod.id}&variation_id=${v.id}&attribute_pa_peso=20kg-de-hielo-seco&attribute_pa_formato=3mm&quantity=1`, { waitUntil: 'networkidle2' });
+  // networkidle2 ya espera a la primera update_order_review (esperarla otra vez solo añadiría 30 s de espera)
+  await p.goto(BASE + '/checkout/', { waitUntil: 'networkidle2' });
+  await new Promise((r) => setTimeout(r, 800));
+  const hora2 = await p.evaluate(() => { const r = document.querySelector('input[name="dip_servicio"]:checked'); return r ? r.value : null; });
+  ok(hora2 === '14', 'normal: el pedido siguiente vuelve a «antes de las 14:00» (no hereda la de las 10:00)', hora2);
 }
 ok(!errores.length, 'sin errores de JS', errores);
 console.log(fallos ? `\n${fallos} fallo(s) en probar-pedido ${modo}` : `\nprobar-pedido ${modo}: todo correcto`);

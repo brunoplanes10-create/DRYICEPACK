@@ -158,8 +158,8 @@ add_action( 'woocommerce_checkout_create_order', static function ( $pedido, $dat
 	dip_guardar_resumen_pedido( $pedido );
 }, 20, 2 );
 
-/** Kilos, cajas, formatos, canal, idioma y provincia: para el resumen mensual y la exportación a Odoo. */
-function dip_guardar_resumen_pedido( WC_Order $pedido ) {
+/** Kilos, cajas y formatos de las líneas del pedido (cada pack en su caja). */
+function dip_resumen_lineas( WC_Order $pedido ) {
 	$kg       = 0.0;
 	$cajas    = 0;
 	$formatos = array();
@@ -172,12 +172,45 @@ function dip_guardar_resumen_pedido( WC_Order $pedido ) {
 		$formato  = $producto ? (string) $producto->get_attribute( 'pa_formato' ) : '';
 		if ( $formato ) $formatos[ $formato ] = ( $formatos[ $formato ] ?? 0 ) + $kg_ud * $cantidad;
 	}
-	$pedido->update_meta_data( '_dip_kg', $kg );
-	$pedido->update_meta_data( '_dip_cajas', $cajas );
-	$pedido->update_meta_data( '_dip_formatos', implode( ', ', array_map( static fn( $f, $k ) => $f . ': ' . wc_format_localized_decimal( $k ) . ' kg', array_keys( $formatos ), $formatos ) ) );
+	return array( 'kg' => $kg, 'cajas' => $cajas, 'formatos' => implode( ', ', array_map( static fn( $f, $k ) => $f . ': ' . wc_format_localized_decimal( $k ) . ' kg', array_keys( $formatos ), $formatos ) ) );
+}
+
+/** Kilos, cajas, formatos, canal, idioma y provincia: para el resumen mensual y la exportación a Odoo. */
+function dip_guardar_resumen_pedido( WC_Order $pedido ) {
+	$r = dip_resumen_lineas( $pedido );
+	$pedido->update_meta_data( '_dip_kg', $r['kg'] );
+	$pedido->update_meta_data( '_dip_cajas', $r['cajas'] );
+	$pedido->update_meta_data( '_dip_formatos', $r['formatos'] );
 	$pedido->update_meta_data( '_dip_idioma', dip_idioma() );
 	$pedido->update_meta_data( '_dip_canal', function_exists( 'dip_es_cuenta_empresa' ) && dip_es_cuenta_empresa( $pedido->get_customer_id() ) ? 'cuenta' : 'web' );
 }
+
+/*
+ * Líneas cambiadas a mano en el escritorio (12/11/2026): kilos, cajas y formatos al día, porque la app INDUNOVA Control
+ * lee _dip_kg y _dip_cajas. El idioma y el canal se quedan como al comprar. Si las líneas no llevan kilos (una línea
+ * suelta sin producto), no se toca lo que había.
+ */
+function dip_resumen_lineas_escritorio( $pedido ) {
+	if ( ! $pedido instanceof WC_Order || ! is_admin() || ! current_user_can( 'edit_shop_orders' ) ) return false;
+	$r = dip_resumen_lineas( $pedido );
+	if ( $r['kg'] <= 0 ) return false;
+	if ( abs( (float) $pedido->get_meta( '_dip_kg' ) - $r['kg'] ) < 0.001 && (int) $pedido->get_meta( '_dip_cajas' ) === $r['cajas'] ) return false;
+	$pedido->update_meta_data( '_dip_kg', $r['kg'] );
+	$pedido->update_meta_data( '_dip_cajas', $r['cajas'] );
+	$pedido->update_meta_data( '_dip_formatos', $r['formatos'] );
+	return true;
+}
+// «Recalcular» y guardar las líneas: calculate_totals() guarda el pedido justo después de este gancho. Con el envío ya
+// creado en MRW, unas líneas distintas lo dejan en «Revisar» con email (inc/mrw-sagec.php), sin esperar a «Actualizar»
+add_action( 'woocommerce_order_after_calculate_totals', static function ( $impuestos, $pedido = null ) {
+	dip_resumen_lineas_escritorio( $pedido );
+	if ( $pedido instanceof WC_Order && is_admin() && function_exists( 'dip_sagec_comprobar_cambios' ) ) dip_sagec_comprobar_cambios( $pedido );
+}, 20, 2 );
+add_action( 'woocommerce_saved_order_items', static function ( $pedido_id ) {
+	$pedido = wc_get_order( $pedido_id );
+	if ( dip_resumen_lineas_escritorio( $pedido ) ) $pedido->save_meta_data();
+	if ( $pedido instanceof WC_Order && is_admin() && function_exists( 'dip_sagec_comprobar_cambios' ) ) dip_sagec_comprobar_cambios( $pedido );
+}, 20, 1 );
 
 /* Pedidos que no pasan por el checkout clásico (pago exprés por Store API): también llevan su resumen. */
 add_action( 'woocommerce_new_order', static function ( $pedido_id, $pedido = null ) {

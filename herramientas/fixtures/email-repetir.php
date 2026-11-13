@@ -6,6 +6,11 @@ if ( ! in_array( $_SERVER['REMOTE_ADDR'] ?? '', array( '127.0.0.1', '::1' ), tru
 require '/wordpress/wp-load.php';
 header( 'Content-Type: application/json; charset=utf-8' );
 $marca = preg_replace( '/[^a-z0-9]/', '', strtolower( (string) ( $_GET['marca'] ?? 'x' ) ) );
+if ( isset( $_GET['comprobar'] ) ) { // ¿de baja de opiniones y de ofertas? (después del POST de un clic a la cabecera)
+	$email = sanitize_email( wp_unslash( $_GET['comprobar'] ) );
+	echo wp_json_encode( array( 'resenas' => dip_resenas_de_baja( $email ), 'ofertas' => dip_ofertas_de_baja( $email ) ) );
+	exit;
+}
 $casos = array(
 	'casilla_sin_marcar' => array( 'si', false ),
 	'casilla_marcada'    => array( 'no', false ),
@@ -28,6 +33,10 @@ foreach ( $casos as $nombre => list( $publicidad, $baja ) ) {
 		'baja_ofertas' => false !== strpos( $e['html'], 'dip_ofertas_baja=' ),
 		'texto'        => false !== strpos( $e['texto'], 'repetir=1' ) && false !== strpos( $e['texto'], 'dip_ofertas_baja=' ),
 		'baja_resenas' => false !== strpos( $e['html'], 'dip_resenas_baja=' ),
+		// Cabecera List-Unsubscribe: con «Repetir», baja de opiniones y de ofertas a la vez
+		'email'        => $email,
+		'url_baja'     => $e['url_baja'],
+		'baja_todo'    => ! empty( $e['baja_todo'] ) && false !== strpos( $e['url_baja'], 'firma_ofertas=' ),
 	);
 }
 echo wp_json_encode( $r );

@@ -3,7 +3,8 @@
 //    botón «Crear mi cuenta» con su flecha (texto nunca pegado al borde). Capturas a 390 y 1440 px en .tmp/cuenta/.
 // 2. El botón crea la cuenta (cliente normal, no de empresa), con el enlace para poner la contraseña, los datos del pedido
 //    para el próximo checkout y el pedido junto a la cuenta; la página dice «Guardada» y que revise su email.
-// 3. Otro pedido con el mismo email: «Ya tienes cuenta con este email» en vez de la ficha.
+// 3. Otro pedido con el mismo email: «Ya tienes cuenta con este email: entra para ver todos tus pedidos» en vez de la
+//    ficha, y al entrar ese pedido también pasa a la cuenta. Con una cuenta sin email comprobado, otro texto y nada se junta.
 // 4. Sin la clave del pedido no se crea nada.
 // Uso: node herramientas/probar-cuenta.mjs
 import puppeteer from 'puppeteer-core';
@@ -77,7 +78,7 @@ try {
   ok(a.id > 0, 'pedido sin cuenta creado', a.p.url());
   let f = await ficha(a.p);
   ok(f.filas && f.filas.Cliente === 'Laura García Pons' && f.filas.Email === email && f.filas['Dirección'] === 'Carrer de Mallorca 123, 2º 1ª · 08013 Barcelona' && f.filas['Último pedido'] === '10 kg · pellets de 3 mm', 'la ficha lleva los datos del pedido', f.filas);
-  ok(f.sello === 'Sin guardar' && f.titulo === 'Guarda tu ficha y la próxima vez pagas sin escribir nada.', 'sello «Sin guardar» y el titular', { sello: f.sello, titulo: f.titulo });
+  ok(f.sello === 'Sin guardar' && f.titulo === 'Guarda tu ficha y la próxima vez no tendrás que volver a escribir tus datos.', 'sello «Sin guardar» y el titular', { sello: f.sello, titulo: f.titulo });
   ok(f.boton === 'Crear mi cuenta' && f.flecha, 'botón «Crear mi cuenta» con su flecha', f);
   ok(f.hueco && f.hueco.izq >= 12 && f.hueco.der >= 4, 'el texto del botón no toca el borde', f.hueco);
   ok(f.nota === 'Te enviamos un email para poner la contraseña. Sin ella, nadie puede entrar en tu cuenta.', 'la nota de la contraseña', f.nota);
@@ -97,7 +98,7 @@ try {
   await new Promise((r) => setTimeout(r, 1500));
   f = await ficha(a.p);
   ok(/dip_cuenta=creada/.test(a.p.url()), 'vuelve a la página de gracias', a.p.url());
-  ok(f.sello === 'Guardada' && f.titulo === 'Ficha guardada: la próxima vez pagas sin escribir nada.' && f.hecho === 'Hecho. Revisa tu email para poner la contraseña.' && f.boton === null, 'sello «Guardada», titular de hecho, «revisa tu email» y sin botón', f);
+  ok(f.sello === 'Guardada' && f.titulo === 'Ficha guardada: la próxima vez, entra con tu cuenta y tus datos saldrán ya puestos.' && f.hecho === 'Hecho. Revisa tu email para poner la contraseña.' && f.boton === null, 'sello «Guardada», titular de hecho, «revisa tu email» y sin botón', f);
   await (await a.p.$('.dip-cc')).screenshot({ path: '.tmp/cuenta/guardada-390.png' });
   const u = await datos(`?email=${encodeURIComponent(email)}`);
   ok(u && u.roles.includes('customer') && !u.empresa, 'cuenta normal de cliente (no de empresa)', u);
@@ -117,8 +118,24 @@ try {
   // 3. Otro pedido con el mismo email
   const b = await pedido(email);
   f = await ficha(b.p);
-  ok(!f.filas && f.ya.startsWith('Ya tienes cuenta con este email'), '«Ya tienes cuenta con este email» en vez de la ficha', f);
+  ok(!f.filas && f.ya.startsWith('Ya tienes cuenta con este email: entra para ver todos tus pedidos.'), '«Ya tienes cuenta con este email: entra para ver todos tus pedidos» en vez de la ficha', f);
+  // «Entra para ver todos tus pedidos» es verdad: el pedido nuevo se marca y pasa a la cuenta al entrar, no antes
+  let mb = await datos(`?pedido=${b.id}`);
+  const ub = await datos(`?email=${encodeURIComponent(email)}`);
+  ok(mb && mb.cliente === 0 && ub && ub.juntar === '1', 'el pedido hecho sin entrar sigue sin cuenta hasta que entra, y la cuenta queda marcada', { mb, ub });
+  await datos(`?entrar=${encodeURIComponent(email)}`);
+  mb = await datos(`?pedido=${b.id}`);
+  ok(mb && u && mb.cliente === u.id, 'al entrar, también ese pedido pasa a su cuenta', mb);
   await b.ctx.close();
+
+  // 3b. Cuenta abierta con ese email sin comprobarlo (no con el botón ni de empresa): no se le pasa ningún pedido
+  const emailSin = `cuenta-sin-${marca}@example.com`;
+  ok(Number(await datos(`?sin_comprobar=${encodeURIComponent(emailSin)}`)) > 0, 'cuenta de cliente sin comprobar creada');
+  const s = await pedido(emailSin);
+  f = await ficha(s.p);
+  ok(!f.filas && f.ya.startsWith('Ya tienes cuenta con este email. Entra con ella la próxima vez y tus datos saldrán ya puestos al pagar.'), 'sin email comprobado: el texto no promete ver el pedido en la cuenta', f);
+  ok(!(await datos(`?email=${encodeURIComponent(emailSin)}`)).juntar, 'y no se marca para juntar pedidos');
+  await s.ctx.close();
 
   // 4. Sin la clave del pedido no se crea nada
   const c = await pedido(emailFalso);

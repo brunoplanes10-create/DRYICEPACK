@@ -1,9 +1,14 @@
 <?php
 /**
  * Cuenta de cliente opcional, después de pagar (11/11/2026). En la página de gracias, debajo de la factura: «Guarda tu ficha
- * y la próxima vez pagas sin escribir nada». Nunca antes de pagar: comprar sigue siendo sin cuenta.
+ * y la próxima vez no tendrás que volver a escribir tus datos» (no «pagas sin escribir nada»: la tarjeta se vuelve a
+ * escribir). Nunca antes de pagar: comprar sigue siendo sin cuenta.
  *
  * - Solo en pedidos sin cuenta y si ese email no tiene ya una. Si la tiene: «Ya tienes cuenta con este email» y entrar.
+ *   Si esa cuenta es de email comprobado (creada con este botón, que manda el enlace de la contraseña a ese email, o
+ *   cuenta de empresa creada por el propietario), el pedido se marca para pasar a la cuenta cuando entre: «entra para ver
+ *   todos tus pedidos». Si no (p. ej. una cuenta que alguien abrió con ese email sin comprobarlo), no se le pasa ningún
+ *   pedido y el texto solo dice que la próxima vez entre y tendrá sus datos puestos.
  * - El botón crea una cuenta normal de cliente (no de empresa: esas las crea el propietario) con los datos del pedido y
  *   WooCommerce le manda el email de cuenta nueva con el enlace para poner la contraseña. No entra solo: aunque alguien
  *   viera el enlace de la página de gracias, sin ese email no puede entrar en la cuenta.
@@ -27,22 +32,24 @@ function dip_cc_textos( $idioma = 'es', $usted = false ) {
 			'ultimo'   => 'Último pedido',
 			'sello_no' => 'Sin guardar',
 			'sello_si' => 'Guardada',
-			'titulo'   => 'Guarda tu ficha y la próxima vez pagas sin escribir nada.',
-			'titulo_hecho' => 'Ficha guardada: la próxima vez pagas sin escribir nada.',
+			'titulo'   => 'Guarda tu ficha y la próxima vez no tendrás que volver a escribir tus datos.',
+			'titulo_hecho' => 'Ficha guardada: la próxima vez, entra con tu cuenta y tus datos saldrán ya puestos.',
 			'ventajas' => array( 'Tus datos, ya puestos al pagar', 'Todos tus pedidos en un sitio', 'Repetir un pedido con un clic' ),
 			'boton'    => 'Crear mi cuenta',
 			'nota'     => 'Te enviamos un email para poner la contraseña. Sin ella, nadie puede entrar en tu cuenta.',
 			'hecho'    => 'Hecho. Revisa tu email para poner la contraseña.',
 			'ya_tiene' => 'Ya tienes cuenta con este email: entra para ver todos tus pedidos.',
+			'ya_tiene_datos' => 'Ya tienes cuenta con este email. Entra con ella la próxima vez y tus datos saldrán ya puestos al pagar.',
 			'entrar'   => 'Entrar',
 		),
 		'es_usted' => array(
-			'titulo'   => 'Guarde su ficha y la próxima vez pagará sin escribir nada.',
-			'titulo_hecho' => 'Ficha guardada: la próxima vez pagará sin escribir nada.',
+			'titulo'   => 'Guarde su ficha y la próxima vez no tendrá que volver a escribir sus datos.',
+			'titulo_hecho' => 'Ficha guardada: la próxima vez, entre con su cuenta y sus datos saldrán ya puestos.',
 			'ventajas' => array( 'Sus datos, ya puestos al pagar', 'Todos sus pedidos en un sitio', 'Repetir un pedido con un clic' ),
 			'nota'     => 'Le enviamos un email para poner la contraseña. Sin ella, nadie puede entrar en su cuenta.',
 			'hecho'    => 'Hecho. Revise su email para poner la contraseña.',
 			'ya_tiene' => 'Ya tiene cuenta con este email: entre para ver todos sus pedidos.',
+			'ya_tiene_datos' => 'Ya tiene cuenta con este email. Entre con ella la próxima vez y sus datos saldrán ya puestos al pagar.',
 		),
 		'ca'       => array(
 			'ficha'    => 'Fitxa de client',
@@ -53,22 +60,24 @@ function dip_cc_textos( $idioma = 'es', $usted = false ) {
 			'ultimo'   => 'Darrera comanda',
 			'sello_no' => 'Sense desar',
 			'sello_si' => 'Desada',
-			'titulo'   => 'Desa la teva fitxa i la propera vegada pagaràs sense escriure res.',
-			'titulo_hecho' => 'Fitxa desada: la propera vegada pagaràs sense escriure res.',
+			'titulo'   => 'Desa la teva fitxa i la propera vegada no hauràs de tornar a escriure les teves dades.',
+			'titulo_hecho' => 'Fitxa desada: la propera vegada, entra amb el teu compte i les teves dades sortiran ja posades.',
 			'ventajas' => array( 'Les teves dades, ja posades en pagar', 'Totes les teves comandes en un lloc', 'Repetir una comanda amb un clic' ),
 			'boton'    => 'Crear el meu compte',
 			'nota'     => 'T\'enviem un correu per posar la contrasenya. Sense ella, ningú no pot entrar al teu compte.',
 			'hecho'    => 'Fet. Mira el correu per posar la contrasenya.',
 			'ya_tiene' => 'Ja tens compte amb aquest correu: entra per veure totes les teves comandes.',
+			'ya_tiene_datos' => 'Ja tens compte amb aquest correu. Entra-hi la propera vegada i les teves dades sortiran ja posades en pagar.',
 			'entrar'   => 'Entrar',
 		),
 		'ca_usted' => array(
-			'titulo'   => 'Desi la seva fitxa i la propera vegada pagarà sense escriure res.',
-			'titulo_hecho' => 'Fitxa desada: la propera vegada pagarà sense escriure res.',
+			'titulo'   => 'Desi la seva fitxa i la propera vegada no haurà de tornar a escriure les seves dades.',
+			'titulo_hecho' => 'Fitxa desada: la propera vegada, entri amb el seu compte i les seves dades sortiran ja posades.',
 			'ventajas' => array( 'Les seves dades, ja posades en pagar', 'Totes les seves comandes en un lloc', 'Repetir una comanda amb un clic' ),
 			'nota'     => 'Li enviem un correu per posar la contrasenya. Sense ella, ningú no pot entrar al seu compte.',
 			'hecho'    => 'Fet. Miri el correu per posar la contrasenya.',
 			'ya_tiene' => 'Ja té compte amb aquest correu: entri per veure totes les seves comandes.',
+			'ya_tiene_datos' => 'Ja té compte amb aquest correu. Entri-hi la propera vegada i les seves dades sortiran ja posades en pagar.',
 		),
 		'en'       => array(
 			'ficha'    => 'Customer record',
@@ -79,13 +88,14 @@ function dip_cc_textos( $idioma = 'es', $usted = false ) {
 			'ultimo'   => 'Last order',
 			'sello_no' => 'Not saved',
 			'sello_si' => 'Saved',
-			'titulo'   => 'Save your record and pay without typing anything next time.',
-			'titulo_hecho' => 'Record saved: next time you pay without typing anything.',
+			'titulo'   => 'Save your details and next time you won’t have to type them again.',
+			'titulo_hecho' => 'Details saved: next time, log in and they will already be filled in at checkout.',
 			'ventajas' => array( 'Your details, already filled in at checkout', 'All your orders in one place', 'Reorder with one click' ),
 			'boton'    => 'Create my account',
 			'nota'     => 'We will email you a link to set your password. Without it, nobody can get into your account.',
 			'hecho'    => 'Done. Check your email to set your password.',
 			'ya_tiene' => 'You already have an account with this email: log in to see all your orders.',
+			'ya_tiene_datos' => 'You already have an account with this email. Log in next time and your details will already be filled in at checkout.',
 			'entrar'   => 'Log in',
 		),
 	);
@@ -109,17 +119,36 @@ add_action( 'woocommerce_thankyou', static function ( $pedido_id ) {
 	if ( ! $p instanceof WC_Order ) return;
 	$creada = isset( $_GET['dip_cuenta'] ) && 'creada' === $_GET['dip_cuenta'] && $p->get_meta( '_dip_cuenta_creada' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo cambia el texto
 	$estado = $creada ? 'creada' : dip_cc_estado( $p );
+	if ( 'ya_tiene' === $estado ) {
+		// Sus pedidos de invitado pasan a la cuenta cuando entre (no antes: WooCommerce no enseña la página de gracias de
+		// un pedido con cuenta a quien no ha entrado). Solo en cuentas de email comprobado: si no, cambia el texto.
+		$usuario = get_user_by( 'email', (string) $p->get_billing_email() );
+		if ( dip_cc_email_comprobado( $usuario ) ) {
+			update_user_meta( $usuario->ID, '_dip_juntar_pedidos', 1 );
+		} else {
+			$estado = 'ya_tiene_datos';
+		}
+	}
 	if ( $estado ) echo dip_cc_html( $p, $estado ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escapado dentro
 }, 6 );
+
+/**
+ * ¿Cuenta con el email comprobado? La creada con el botón de la página de gracias (la contraseña se pone desde el enlace
+ * que le llega a ese email) o la de empresa (la crea el propietario). Nunca las del equipo de la tienda.
+ */
+function dip_cc_email_comprobado( $usuario ) {
+	if ( ! $usuario instanceof WP_User || user_can( $usuario, 'manage_woocommerce' ) ) return false;
+	return (bool) get_user_meta( $usuario->ID, '_dip_cuenta_gracias', true ) || '1' === (string) get_user_meta( $usuario->ID, 'dip_cuenta_empresa', true );
+}
 
 function dip_cc_html( WC_Order $p, $estado ) {
 	$idioma = dip_mp_idioma( $p );
 	$usted  = dip_mp_de_usted( $p );
 	$t      = dip_cc_textos( $idioma, $usted );
-	if ( 'ya_tiene' === $estado ) {
+	if ( 'ya_tiene' === $estado || 'ya_tiene_datos' === $estado ) {
 		return sprintf(
 			'<p class="dip-cc-ya">%1$s <a class="enlace-flecha" href="%2$s"><span>%3$s</span>%4$s</a></p>',
-			esc_html( $t['ya_tiene'] ),
+			esc_html( $t[ $estado ] ),
 			esc_url( wc_get_page_permalink( 'myaccount' ) ),
 			esc_html( $t['entrar'] ),
 			dip_mp_icono( 'flecha' )
@@ -195,6 +224,7 @@ function dip_cc_crear() {
 	}
 	$c->save();
 	update_user_meta( $cliente, '_dip_juntar_pedidos', 1 ); // los pedidos pasan a la cuenta al entrar por primera vez (abajo)
+	update_user_meta( $cliente, '_dip_cuenta_gracias', current_time( 'mysql' ) ); // email comprobado: sus pedidos de invitado de después también pasan
 	$p = wc_get_order( $id );
 	$p->update_meta_data( '_dip_cuenta_creada', current_time( 'mysql' ) );
 	$p->add_order_note( 'El cliente ha creado su cuenta desde la página de gracias. Le llega el email para poner la contraseña.' );
@@ -205,7 +235,8 @@ function dip_cc_crear() {
 
 /*
  * La primera vez que pone la contraseña o entra, sus pedidos de invitado con ese email (este y los anteriores) pasan a la
- * cuenta: los ve en «Mi cuenta» con «Repetir». Una sola vez.
+ * cuenta: los ve en «Mi cuenta» con «Repetir». Una vez por marca: la pone el botón al crear la cuenta y la vuelve a poner
+ * la página de gracias de cada pedido que haga después sin entrar («Ya tienes cuenta… entra para ver todos tus pedidos»).
  */
 function dip_cc_juntar_pedidos( $usuario ) {
 	if ( ! $usuario instanceof WP_User || ! get_user_meta( $usuario->ID, '_dip_juntar_pedidos', true ) ) return;

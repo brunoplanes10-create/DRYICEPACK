@@ -44,8 +44,24 @@
 		if (document.activeElement === this) focoFecha = this.value;
 		$body.trigger('update_checkout');
 	});
-	/* Hora de entrega (antes de las 14:00, 12:00 o 10:00): cada una con su precio de MRW */
+	/* Hora de entrega (antes de las 14:00, 12:00 o 10:00): cada una con su precio de MRW. Como con el día, al repintar el
+	   bloque el foco vuelve a la hora elegida (con el teclado se sigue eligiendo con las flechas). */
+	var focoHora = '';
 	$(document).on('change', 'input[name="dip_servicio"]', function () {
+		if (document.activeElement === this) focoHora = this.value;
+		$body.trigger('update_checkout');
+	});
+
+	/* Casilla «No quiero recibir avisos ni ofertas» (inc/ofertas.php): queda en la sesión para los pagos con Apple Pay y
+	   Google Pay, que crean el pedido sin el formulario. WooCommerce junta este aviso con el de update_totals_on_change. */
+	$(document).on('change', '#dip_sin_ofertas', function () {
+		$body.trigger('update_checkout');
+	});
+
+	/* Al crear el pedido con el formulario, el día, la hora y la casilla salen de la sesión (inc/entrega.php, inc/ofertas.php).
+	   Si el pago falla (tarjeta rechazada) y el cliente prueba luego con Apple Pay o Google Pay, que no mandan el formulario,
+	   el pedido saldría para el primer día y a las 14:00: con un update_order_review vuelven a la sesión los del formulario. */
+	$body.on('checkout_error', function () {
 		$body.trigger('update_checkout');
 	});
 
@@ -227,10 +243,14 @@
 		if (perdido && focoFecha) {
 			var r = document.querySelector('input[name="dip_fecha"][value="' + focoFecha + '"]');
 			if (r) r.focus({ preventScroll: true });
+		} else if (perdido && focoHora) {
+			var h = document.querySelector('input[name="dip_servicio"][value="' + focoHora + '"]');
+			if (h) h.focus({ preventScroll: true });
 		} else if (perdido && cal.abierto && cal.dentro) {
 			enfocarDia();
 		}
 		focoFecha = '';
+		focoHora = '';
 	}
 	$body.on('updated_checkout', calendario);
 

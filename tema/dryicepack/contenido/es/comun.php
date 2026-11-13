@@ -41,7 +41,7 @@ return array(
 	'pie_tienda'      => 'Hielo seco',
 	'pie_servicio'    => 'Servicio',
 	'pie_zonas'       => 'Enviamos a',
-	'pie_zonas_todas' => 'Todas las zonas',
+	'pie_zonas_todas' => 'Toda la península', // no Baleares, Canarias, Ceuta ni Melilla
 	'pie_contacto'    => 'Hablemos',
 	'pie_enlaces'     => array(
 		array( 'producto', 'Comprar' ),

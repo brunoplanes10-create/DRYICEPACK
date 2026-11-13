@@ -470,11 +470,44 @@ if ( '2' === $paso ) {
 		$envio = dip_avisos_importe_envio( $p );
 		$sup   = dip_avisos_suplemento_envio( $p );
 		$nb    = static fn( $s ) => str_replace( "\u{00A0}", ' ', $s );
-		$txt   = revisar( 'incidencia-sabado', $c[0], 'es', array( 'MRW no tiene reparto en sábado en tu código postal.', $nb( 'te devolvemos el envío y el suplemento de sábado: ' . dip_avisos_euros( $envio + $sup ) ), 'nos quedamos los 10,00 € de la recogida en sábado: te devolvemos ' . $nb( dip_avisos_euros( $envio + $sup - 10 ) ) ) );
+		$txt   = revisar( 'incidencia-sabado', $c[0], 'es', array( 'MRW no tiene reparto en sábado en tu código postal.', $nb( 'te devolvemos el envío y el suplemento de sábado: ' . dip_avisos_euros( $envio + $sup ) ), 'del envío que pagaste nos quedamos los 10,00 € de la recogida en sábado y te devolvemos el resto: ' . $nb( dip_avisos_euros( $envio + $sup - 10 ) ) ) );
 		ok( abs( $sup - 11.74 ) < 0.001, 'el suplemento de envío en sábado del pedido es 11,74 €', $sup );
 		guardar( 'incidencia-es-tu-sabado', $c[0] );
 		ok( false === strpos( texto_de( $c[1]['cuerpo'] ), 'MRW no tiene reparto' ), 'el mensaje no pasa a la incidencia siguiente' );
 		ok( (bool) notas( $p->get_id(), "Mensaje: MRW no tiene reparto en sábado" ), 'la nota del pedido guarda el mensaje' );
+	}
+	$nb = static fn( $s ) => str_replace( "\u{00A0}", ' ', $s );
+	// Incidencia de un pedido urgente: «te devolvemos el envío» incluye la línea «Pedido urgente» (9,70 € + IVA)
+	$u   = crear( $clientes['es-tu'] + array( 'clave' => 'incidencia-urgente', 'email' => 'incidencia-urgente@example.com', 'metodo' => 'envio', 'fecha' => DIA_ENVIO, 'kg' => 10, 'cantidad' => 1 ) );
+	$fee = new WC_Order_Item_Fee();
+	$fee->set_props( array( 'name' => 'Pedido urgente', 'tax_class' => '', 'tax_status' => 'taxable', 'total' => 9.70 ) );
+	$fee->add_meta_data( '_dip_urgente', 1, true );
+	$u->add_item( $fee );
+	$u->calculate_totals( true );
+	$u->set_status( 'processing' ); // como los demás (sale el de pedido recibido; se cuenta después)
+	$u->save();
+	$u     = wc_get_order( $u->get_id() );
+	$antes = n_correos();
+	ok( true === dip_aviso_enviar( $u, 'incidencia', array( 'forzar' => true, 'manual' => true ) ), 'incidencia urgente: sale', dip_aviso_ultimo_motivo() );
+	$c = correos_a( 'incidencia-urgente@example.com', $antes );
+	if ( ok( 1 === count( $c ), 'incidencia urgente: un email' ) ) {
+		$urg = dip_avisos_suplemento_urgente( $u );
+		ok( abs( $urg - 11.74 ) < 0.001, 'el suplemento «Pedido urgente» del pedido es 11,74 € (IVA incluido)', $urg );
+		revisar( 'incidencia-urgente', $c[0], 'es', array( $nb( 'te devolvemos el envío y el suplemento «Pedido urgente»: ' . dip_avisos_euros( dip_avisos_importe_envio( $u ) + $urg ) ) ) );
+	}
+	// Incidencia de un sábado de los pedidos nuevos (el sábado va en la tarifa, sin línea de suplemento): «del envío que
+	// pagaste», nunca «del suplemento»
+	$s     = crear( $clientes['es-tu'] + array( 'clave' => 'incidencia-sabado-nuevo', 'email' => 'incidencia-sabado-nuevo@example.com', 'metodo' => 'envio', 'fecha' => DIA_SABADO, 'kg' => 10, 'cantidad' => 1 ) );
+	$s->set_status( 'processing' );
+	$s->save();
+	$s     = wc_get_order( $s->get_id() );
+	$antes = n_correos();
+	ok( true === dip_aviso_enviar( $s, 'incidencia', array( 'forzar' => true, 'manual' => true ) ), 'incidencia sábado (tarifa nueva): sale', dip_aviso_ultimo_motivo() );
+	$c = correos_a( 'incidencia-sabado-nuevo@example.com', $antes );
+	if ( ok( 1 === count( $c ), 'incidencia sábado (tarifa nueva): un email' ) ) {
+		$envio = dip_avisos_importe_envio( $s );
+		$txt   = revisar( 'incidencia-sabado-nuevo', $c[0], 'es', array( $nb( 'te devolvemos el envío: ' . dip_avisos_euros( $envio ) ), 'del envío que pagaste nos quedamos los 10,00 € de la recogida en sábado y te devolvemos el resto: ' . $nb( dip_avisos_euros( $envio - 10 ) ) ) );
+		ok( false === stripos( $txt, 'suplemento' ), 'incidencia sábado (tarifa nueva): no habla de ningún suplemento', $txt );
 	}
 	fin();
 }

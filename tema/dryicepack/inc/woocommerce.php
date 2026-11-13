@@ -95,6 +95,7 @@ function dipt_entrega_para_cp( $cp, $kg = 0, $idioma = null ) {
 	$medida  = function_exists( 'dip_envio_a_medida' ) ? dip_envio_a_medida( $kg, $cp ) : ( $kg > $limite && '08' !== $prefijo );
 	$entrega = null;
 	$sabado  = null;
+	$envio14 = array();
 	if ( ! $fuera ) {
 		if ( function_exists( 'dip_fechas_disponibles' ) ) {
 			// La misma lista que ofrece el checkout para ese destino: salta festivos y días en que MRW no reparte allí
@@ -106,8 +107,22 @@ function dipt_entrega_para_cp( $cp, $kg = 0, $idioma = null ) {
 		} else {
 			$entrega = dipt_primera_entrega();
 		}
-		// El sábado (Ecommerce de MRW) admite como mucho 80 kg facturables: con más, la ficha no lo ofrece (cajas de 20 kg)
-		if ( $sabado && $kg > 0 && function_exists( 'dip_sabado_posible' ) && ! dip_sabado_posible( $kg, max( 1, (int) ceil( $kg / 20 ) ) ) ) $sabado = null;
+		// El sábado (Ecommerce de MRW) admite como mucho 80 kg facturables (sabadoMaxKg). No se decide aquí: la ficha guarda la
+		// respuesta por código postal y lo decide en el navegador con el pack y las cajas de cada momento, con la regla del
+		// checkout (dip_sabado_posible: hielo + 1 kg por caja, cada pack en su caja).
+		// Envío antes de las 14:00 a este destino por peso facturable, solo donde no es la tarifa general: el checkout cobra el
+		// servicio de MRW más barato que llega a esa hora (dip_precio_servicio) y en Mataró, con poco peso, es el Urgente 12.
+		if ( function_exists( 'dip_precio_servicio' ) && function_exists( 'dip_tarifa_mrw' ) && function_exists( 'dip_zona_envio' ) ) {
+			$destino  = array( 'cp' => $cp, 'poblacion' => '' );
+			$embalaje = defined( 'DIP_PESO_EMBALAJE' ) ? (float) DIP_PESO_EMBALAJE : 1.0;
+			$max_kg   = defined( 'DIP_MAX_KG' ) ? (float) DIP_MAX_KG : 250.0;
+			$tope     = (int) ceil( $max_kg + $embalaje * ceil( $max_kg / 3 ) ); // el pack más pequeño, 3 kg, en su caja cada uno
+			$zona     = dip_zona_envio( $cp );
+			for ( $peso = 2; $peso <= $tope; $peso++ ) {
+				$p = dip_precio_servicio( '14', $peso - $embalaje, 1, $destino ); // una caja: peso facturable = $peso
+				if ( $p && $p['peso'] === $peso && abs( $p['neto'] - dip_tarifa_mrw( '14', $peso, 1, $zona, true ) ) > 0.001 ) $envio14[ (string) $peso ] = (float) $p['neto'];
+			}
+		}
 	}
 	$fecha = static fn( $f ) => $f ? array( 'fecha' => $f['fecha'], 'texto' => dipt_fecha_larga( $f['fecha'], $idioma ) ) : null;
 	return array(
@@ -119,6 +134,8 @@ function dipt_entrega_para_cp( $cp, $kg = 0, $idioma = null ) {
 		'kgMedida'  => $limite,
 		'entrega'   => $fecha( $entrega ),
 		'sabado'    => $fecha( $sabado ),
+		'sabadoMaxKg' => defined( 'DIP_SABADO_MAX_KG' ) ? (int) DIP_SABADO_MAX_KG : 80,
+		'envio14'   => (object) $envio14, // { peso facturable: neto sin IVA } donde no vale la tarifa general
 	);
 }
 

@@ -100,7 +100,7 @@ return array(
 	),
 	'tarifa' => array(
 		'titulo' => '¿Cuánto cuesta|<em>el envío?</em>',
-		'texto'  => 'La tarifa de la mensajería para la entrega antes de las 14:00, igual en toda la península. Se calcula con el peso del hielo más 1 kg por caja, y la ves antes de pagar. La entrega antes de las 12:00 o de las 10:00, y la del sábado, tienen su precio según el destino y los kilos: lo ves al elegir el día y la hora.',
+		'texto'  => 'La tarifa de la mensajería para la entrega antes de las 14:00, la misma en toda la península (en Mataró, con poco peso, algo menos). Se calcula con el peso del hielo más 1 kg por caja, y la ves antes de pagar. La entrega antes de las 12:00 o de las 10:00, y la del sábado, tienen su precio según el destino y los kilos: lo ves al elegir el día y la hora.',
 		'filas'  => array( array( 'Hasta 2 kg', 8.53 ), array( 'Hasta 5 kg', 10.32 ), array( 'Hasta 10 kg', 13.19 ), array( 'Cada kg de más', 1.12 ) ),
 		// 11/11/2026: sin fila de sábado. Ya no es un suplemento fijo: depende del destino y los kilos (se ve al elegir el día)
 		'extra'  => array( array( 'Recogida en Mataró, sin envío', 0 ) ),

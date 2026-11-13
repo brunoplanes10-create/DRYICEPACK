@@ -41,7 +41,7 @@ return array(
 	'pie_tienda'      => 'Gel sec',
 	'pie_servicio'    => 'Servei',
 	'pie_zonas'       => 'Enviem a',
-	'pie_zonas_todas' => 'Totes les zones',
+	'pie_zonas_todas' => 'Tota la península', // ni Balears, ni Canàries, ni Ceuta, ni Melilla
 	'pie_contacto'    => 'Parlem',
 	'pie_enlaces'     => array(
 		array( 'producto', 'Comprar' ),

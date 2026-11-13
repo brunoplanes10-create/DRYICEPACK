@@ -788,6 +788,7 @@ html[data-hw-fase="cerrado"] #hw .hw-solo-abierto, html[data-hw-fase="fin"] #hw 
 #hw .hw-aviso__form .hw-btn[disabled] { opacity: .6; pointer-events: none; }
 #hw p.hw-aviso__legal { margin-top: 14px; max-width: 30rem; font-size: .82rem; line-height: 1.5; color: #8f8f9b; }
 #hw p.hw-aviso__estado { margin-top: 28px; max-width: 30rem; padding: 16px 20px; border-left: 3px solid var(--hw-naranja); background: rgba(255, 107, 26, .08); color: var(--hw-vapor); }
+#hw p.hw-aviso__estado:focus { outline: none; } /* foco por programa (tabindex="-1") tras apuntarse: no es un control */
 #hw .hw-aviso [hidden] { display: none; }
 
 #hw .hw-aviso__hoja { position: relative; width: min(100%, 420px); margin-inline: auto; padding: 26px 26px 22px; border-radius: 6px; background: #f3efe8; color: #17171c; box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 2px 4px rgba(0, 0, 0, .5), 0 30px 60px -24px rgba(0, 0, 0, .9); transform: rotate(-2.5deg); }

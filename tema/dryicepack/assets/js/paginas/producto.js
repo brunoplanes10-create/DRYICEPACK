@@ -59,6 +59,10 @@
 		function envio(kg, cajas) {
 			if (kg <= 0) return 0;
 			var f = Math.ceil(kg + (T.embalaje || 1) * Math.max(1, cajas));
+			// Con código postal, el precio de ese destino donde no es la tarifa general (envio14, el del checkout: en Mataró con
+			// poco peso, el Urgente 12 es más barato). cp se declara más abajo y ya existe cuando se pinta.
+			var dest = cp && cp.res && cp.res.envio14;
+			if (dest && typeof dest[f] === 'number') return dest[f];
 			if (f <= 2) return T.hasta2; if (f <= 5) return T.hasta5; if (f <= 10) return T.hasta10;
 			return Math.round((T.hasta10 + (f - 10) * T.kgExtra) * 100) / 100;
 		}
@@ -71,6 +75,9 @@
 		}
 		function campo(n, valor) { var el = form.querySelector('[data-campo="' + n + '"]'); if (el) el.value = valor; }
 		function kgTotal() { return estado.kg * estado.cajas; }
+		// Sábado (Ecommerce de MRW): como mucho 80 kg facturables, con la regla del checkout (dip_sabado_posible): hielo + 1 kg
+		// por caja y cada pack en su caja. Se decide aquí con el pack y las cajas de ahora: la respuesta del servidor se guarda por código.
+		function sabadoPosible(r) { return Math.ceil(kgTotal() + (T.embalaje || 1) * Math.max(1, estado.cajas)) <= ((r && r.sabadoMaxKg) || 80); }
 
 		var inputCajas = form.querySelector('[data-cajas-input]');
 		var llega = raiz.querySelector('[data-llega]');
@@ -88,16 +95,20 @@
 			inputCajas.value = String(estado.cajas);
 			if (aviso) aviso.hidden = estado.cajas < maxCajas;
 			var pack = v.precio * iva * estado.cajas, env = envio(kgTotal(), estado.cajas) * iva;
-			raiz.querySelector('[data-precio-concepto]').textContent = raiz.querySelector('[data-precio-concepto]').textContent.split('·')[0].trim() + ' · ' + (estado.cajas > 1 ? estado.cajas + ' × ' : '') + estado.kg + ' kg';
-			raiz.querySelector('[data-precio-pack]').textContent = euros(pack);
-			raiz.querySelector('[data-precio-envio]').textContent = euros(env);
-			document.querySelectorAll('[data-precio-total]').forEach(function (el) { el.textContent = euros(pack + env); });
+			// Solo se toca el texto si cambia: pintar() corre también a cada tecla del código postal y el precio es una región
+			// aria-live (el lector de pantalla no repite el mismo precio)
+			var poner = function (el, t) { if (el && el.textContent !== t) el.textContent = t; };
+			var concepto = raiz.querySelector('[data-precio-concepto]');
+			poner(concepto, concepto.textContent.split('·')[0].trim() + ' · ' + (estado.cajas > 1 ? estado.cajas + ' × ' : '') + estado.kg + ' kg');
+			poner(raiz.querySelector('[data-precio-pack]'), euros(pack));
+			poner(raiz.querySelector('[data-precio-envio]'), euros(env));
+			document.querySelectorAll('[data-precio-total]').forEach(function (el) { poner(el, euros(pack + env)); });
 			// Recogida en Mataró con este pack: su precio redondo y lo que se ahorra frente al envío (VENTAS-PSICOLOGIA.md, 5.2)
 			var recoge = raiz.querySelector('[data-recoge]');
 			var recUd = CFG.recogida && CFG.recogida[String(estado.kg)];
 			if (recoge && recUd && recoge.getAttribute('data-t-recoge')) {
 				var rec = recUd * estado.cajas, ahorro = pack + env - rec;
-				if (ahorro > 0.005) recoge.textContent = recoge.getAttribute('data-t-recoge').replace('%1$s', euros(rec)).replace('%2$s', euros(ahorro));
+				if (ahorro > 0.005) poner(recoge, recoge.getAttribute('data-t-recoge').replace('%1$s', euros(rec)).replace('%2$s', euros(ahorro)));
 			}
 			campo('padre', v.padre || ''); campo('id', v.id); campo('peso', v.peso || ''); campo('fslug', v.fslug || '');
 			// Galería y caja de P2 del formato elegido. Al cambiar (no al cargar: es la imagen LCP), fundido de 400 ms.
@@ -115,7 +126,7 @@
 				}
 			});
 			document.querySelectorAll('[data-caja-formato]').forEach(function (f) { f.hidden = f.getAttribute('data-caja-formato') !== estado.formato; });
-			// Los kilos cambian el aviso de envío a medida: se recalcula sin volver a preguntar al servidor
+			// Los kilos cambian el aviso de envío a medida y el sábado (80 kg): se recalculan sin volver a preguntar al servidor
 			pintarCp();
 		}
 
@@ -149,7 +160,7 @@
 			cp.res = r;
 			cp.error = r ? '' : 'no_valido';
 			guardar(r ? v : '');
-			pintarCp();
+			repintar();
 		}
 
 		function consultar(v) {
@@ -165,7 +176,7 @@
 				.then(function (r) { return r.json(); })
 				.then(function (j) {
 					if (turno !== cp.turno) return;
-					if (j && j.success && j.data) { cp.cache[v] = j.data; recibir(v, j.data, true); }
+					if (j && j.success && j.data) { j.data._g = fechaGeneral(); cp.cache[v] = j.data; recibir(v, j.data, true); }
 					else if (j && j.data && j.data.codigo === 'cp_no_valido') { cp.cache[v] = null; recibir(v, null, true); }
 					else if (cp.cargando || (cp.res && cp.res.local)) recibir(v, local(v), true); // nonce caducado u otro error: datos locales
 				})
@@ -184,12 +195,26 @@
 				else { cp.cargando = true; cp.espera = setTimeout(function () { consultar(v); }, 250); }
 			}
 			guardar(cp.res ? v : '');
-			pintarCp();
+			repintar();
 		}
 
+		// Con un código nuevo cambia también el precio del envío (envio14): se pinta todo, no solo la línea de entrega
+		function repintar() { if (variacion()) pintar(); else pintarCp(); }
+		// Primera entrega general en este momento (cambia al pasar el corte): marca de cuándo se pidió cada respuesta
+		function fechaGeneral() {
+			var p = window.dipEntrega && window.dipEntrega.proxima ? window.dipEntrega.proxima() : null;
+			return p && p.entrega ? p.entrega.toISOString().slice(0, 10) : '';
+		}
 		function pintarCp() {
 			if (!cpInput || !cpCaja) return;
-			var r = cp.res, medida = esMedida(r);
+			var r = cp.res, v = cpInput.value;
+			// Pasado el corte, lo que se guardó del código postal ya no vale: los datos locales se recalculan y la respuesta
+			// del servidor se vuelve a pedir (mientras llega, se queda el texto anterior atenuado)
+			if (r && !cp.cargando && v.length === 5) {
+				if (r.local) r = cp.res = local(v);
+				else if (r._g && fechaGeneral() && r._g !== fechaGeneral()) { delete cp.cache[v]; cp.cargando = true; consultar(v); }
+			}
+			var medida = esMedida(r);
 			var e = cp.cargando ? 'cargando' : cp.error ? 'error' : r ? (r.fuera || medida ? 'aviso' : 'ok') : '';
 			cpCaja.setAttribute('data-cp-estado', e);
 			if (e === 'error') cpInput.setAttribute('aria-invalid', 'true'); else cpInput.removeAttribute('aria-invalid');
@@ -220,11 +245,22 @@
 				texto = tx(llega, 'ok').replace('%1$s', lugar).replace('%2$s', r.entrega.texto);
 				// El sábado solo se ofrece si llega antes que el primer día laborable (según zona y con suplemento)
 				// Fecha corta ("sábado 3", "dissabte 3", "Saturday 3"): cabe en una línea también a 390 px
-				if (r.sabado && r.entrega.fecha && r.sabado.fecha < r.entrega.fecha) extra = tx(llega, 'sabado').replace('%1$s', r.sabado.texto.split(' ').slice(0, 2).join(' ')).replace('%2$s', euros((T.sabado || 9.7) * iva));
+				if (r.sabado && r.entrega.fecha && r.sabado.fecha < r.entrega.fecha && sabadoPosible(r)) extra = tx(llega, 'sabado').replace('%1$s', r.sabado.texto.split(' ').slice(0, 2).join(' ')).replace('%2$s', euros((T.sabado || 9.7) * iva));
 			} else {
 				var p = window.dipEntrega && window.dipEntrega.proxima();
 				texto = p ? tx(llega, 'llega').replace('%s', window.dipEntrega.texto(p.entrega)) : llegaTexto.textContent;
 			}
+			// El reloj del corte y el aviso de puente de debajo del botón usan la fecha general: con un código postal al que no se
+			// envía, a medida o con otra primera fecha (festivo o cierre de MRW en el destino) se callan para no contradecir esta línea
+			var g = window.dipEntrega && window.dipEntrega.proxima();
+			var callar = !!(r && (r.fuera || medida)) || !!(r && r.entrega && r.entrega.fecha && g && r.entrega.fecha !== g.entrega.toISOString().slice(0, 10));
+			var cambia = false;
+			raiz.querySelectorAll('[data-corte], [data-puente]').forEach(function (el) {
+				if (el.hasAttribute('data-callar') === callar) return;
+				cambia = true;
+				if (callar) { el.setAttribute('data-callar', ''); el.hidden = true; } else el.removeAttribute('data-callar');
+			});
+			if (cambia && !callar && window.dipEntrega && window.dipEntrega.repintar) window.dipEntrega.repintar();
 			llega.classList.toggle('es-ok', tipo === 'ok');
 			llega.classList.toggle('es-aviso', tipo === 'aviso');
 			// Solo se toca el texto si cambia: la región aria-live no repite lo mismo a cada clic en los kilos

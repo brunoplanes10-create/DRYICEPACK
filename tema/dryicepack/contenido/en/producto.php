@@ -52,8 +52,8 @@ return array(
 	'puente'    => array(
 		'marca'   => 'Public holiday',
 		'dias'    => array( 'on %s', 'on %1$s and %2$s', 'from %1$s to %2$s' ),
-		'antes'   => 'No deliveries %1$s. To get it before, order on %2$s before 12:00 (Spanish time) and it arrives on %3$s. Collection in Mataró stays open.',
-		'hoy'     => 'No deliveries %1$s. To get it before, order today before 12:00 (Spanish time) and it arrives on %3$s. Collection in Mataró stays open.',
+		'antes'   => 'No deliveries %1$s. To get it before then, order on %2$s before 12:00 (Spanish time) and it arrives on %3$s. Collection in Mataró stays open.',
+		'hoy'     => 'No deliveries %1$s. To get it before then, order today before 12:00 (Spanish time) and it arrives on %3$s. Collection in Mataró stays open.',
 		'despues' => 'No deliveries %1$s. The next delivery is on %3$s. Collection in Mataró stays open.',
 	),
 	'max'       => 'Up to 250 kg per order. Need more? Message us and we’ll give you a price and a day.',
@@ -96,7 +96,7 @@ return array(
 	),
 	'tarifa' => array(
 		'titulo' => 'What does|<em>delivery cost?</em>',
-		'texto'  => 'The courier’s rate for delivery before 14:00, the same across mainland Spain. It’s based on the weight of the ice plus 1 kg per box, and you see it before you pay. Delivery before 12:00 or before 10:00, and on Saturday, has its own price depending on the destination and the kilos: you see it when you choose the day and the time.',
+		'texto'  => 'The courier’s rate for delivery before 14:00, the same across mainland Spain (a little less in Mataró for light orders). It’s based on the weight of the ice plus 1 kg per box, and you see it before you pay. Delivery before 12:00 or before 10:00, and on Saturday, has its own price depending on the destination and the kilos: you see it when you choose the day and the time.',
 		'filas'  => array( array( 'Up to 2 kg', 8.53 ), array( 'Up to 5 kg', 10.32 ), array( 'Up to 10 kg', 13.19 ), array( 'Each extra kg', 1.12 ) ),
 		// 11/11/2026: no Saturday row. It is no longer a fixed surcharge: it depends on the destination and the kilos (shown when choosing the day)
 		'extra'  => array( array( 'Collection in Mataró, no courier', 0 ) ),

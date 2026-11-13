@@ -41,7 +41,7 @@ return array(
 	'pie_tienda'      => 'Dry ice',
 	'pie_servicio'    => 'Service',
 	'pie_zonas'       => 'We deliver to',
-	'pie_zonas_todas' => 'All areas',
+	'pie_zonas_todas' => 'All of mainland Spain', // not the Balearic or Canary Islands, Ceuta or Melilla
 	'pie_contacto'    => 'Let’s talk',
 	'pie_enlaces'     => array(
 		array( 'producto', 'Buy' ),

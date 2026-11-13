@@ -92,7 +92,7 @@ return array(
 		'mrw'     => array( 'Dies sense repartiment', 'MRW no reparteix {lista}. En pagar només et surten els dies amb repartiment.' ),
 		'mrw_dia' => array( 'provincia' => 'el {dia} a tota la província', 'local' => 'el {dia} a {nombre}' ),
 		'pack'    => '{precio} ({kilo}/kg) + enviament {envio} = {total}',
-		'tarifa'  => array( 'Com es calcula l\'enviament', 'Amb la tarifa de la missatgeria, igual a tota la península: el pes del gel més 1 kg per caixa. El veus al total abans de pagar.' ),
+		'tarifa'  => array( 'Com es calcula l\'enviament', 'Amb la tarifa de la missatgeria, igual a tota la península (a Mataró, amb poc pes, una mica menys): el pes del gel més 1 kg per caixa. El veus al total abans de pagar.' ),
 		'recogida' => array( 'Recollida a Mataró', 'A {km} km de {nombre} (uns {min} min en cotxe, sense trànsit), de dilluns a dissabte. Preu rodó amb IVA inclòs: {pk} kg per {recogida:pk} i 10 kg per {recogida:10}. El dissabte, +{sabado_recogida} (IVA inclòs).{sabado_libre} Tu tries el dia i et confirmem l\'hora. En efectiu i amb l\'import exacte.' ),
 		'municipios' => array( 'També enviem a', '{lista} i a la resta de la província (codis postals {cp_resto}).' ),
 		'resto'      => array( 'També enviem a', 'Tota la província de {provincia} (codis postals {cp_resto}).' ),

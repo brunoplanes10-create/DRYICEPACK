@@ -156,14 +156,15 @@ function limpiar() {
 	}
 	$copia = get_option( 'dip_prueba_sagec_copia' );
 	if ( is_array( $copia ) ) {
-		foreach ( array( 'dip_sagec', 'dip_urgentes', 'dip_sagec_ultima' ) as $k ) {
+		foreach ( array( 'dip_sagec', 'dip_urgentes', 'dip_sagec_ultima', 'dip_sagec_aviso_falta', 'dip_sagec_avisado' ) as $k ) {
 			if ( null === $copia[ $k ] ) delete_option( $k );
 			else update_option( $k, $copia[ $k ], false );
 		}
 		delete_option( 'dip_prueba_sagec_copia' );
 	}
 	foreach ( array_keys( (array) _get_cron_array() ) as $t ) wp_clear_scheduled_hook( 'dip_sagec_uno' );
-	unset( $_COOKIE['dip_urgente'] );
+	foreach ( array( 'dip_sagec_pasada_en_curso', 'dip_prueba_cerrojo' ) as $k ) delete_option( $k );
+	unset( $_COOKIE['dip_urgente'], $_POST['dip_mrw_envio'], $_POST['dip_mrw_envio_antes'] );
 	return count( $ids );
 }
 
@@ -172,7 +173,7 @@ if ( isset( $_GET['limpiar'] ) ) {
 	exit;
 }
 limpiar(); // por si una prueba anterior se cortó
-update_option( 'dip_prueba_sagec_copia', array( 'dip_sagec' => get_option( 'dip_sagec', null ), 'dip_urgentes' => get_option( 'dip_urgentes', null ), 'dip_sagec_ultima' => get_option( 'dip_sagec_ultima', null ) ), false );
+update_option( 'dip_prueba_sagec_copia', array( 'dip_sagec' => get_option( 'dip_sagec', null ), 'dip_urgentes' => get_option( 'dip_urgentes', null ), 'dip_sagec_ultima' => get_option( 'dip_sagec_ultima', null ), 'dip_sagec_aviso_falta' => get_option( 'dip_sagec_aviso_falta', null ), 'dip_sagec_avisado' => get_option( 'dip_sagec_avisado', null ) ), false );
 
 try {
 	$avisos = (string) dip_ajuste( 'email_avisos' );
@@ -180,6 +181,7 @@ try {
 		'modo' => 'real', 'franquicia' => '02850', 'abonado' => '123456', 'departamento' => '', 'usuario' => 'PRUEBAWS',
 		'clave' => dip_sagec_cifrar( 'Secreta&<1>' ), 'servicio' => '0110', 'servicio_sabado' => '', 'tipo_mercancia' => '',
 		'servicio_especial' => '', 'tipo_etiqueta' => '', 'observaciones' => 'Hielo seco (UN 1845) en caja de poliestireno.',
+		'en_franquicia' => 'N', 'confirmado' => '1',
 	);
 	update_option( 'dip_sagec', $conf, false );
 
@@ -189,6 +191,30 @@ try {
 	ok( 'Secreta&<1>' === dip_sagec_config()['clave'], 'y se lee descifrada' );
 	ok( array() === dip_sagec_falta(), 'con todo puesto no falta nada', dip_sagec_falta() );
 	ok( array( 'código de servicio' ) === dip_sagec_falta( array_merge( dip_sagec_config(), array( 'servicio' => '' ) ) ), 'sin código de servicio, falta' );
+	// UN 1845, etiqueta y «en franquicia» (revisión 25): sin la confirmación de MRW, el modo real no crea nada
+	$sin_conf = dip_sagec_falta( array_merge( dip_sagec_config(), array( 'confirmado' => '' ) ) );
+	ok( 1 === count( $sin_conf ) && false !== strpos( $sin_conf[0], 'UN 1845' ), 'sin la confirmación de MRW, falta', $sin_conf );
+	ok( array() === dip_sagec_falta( array_merge( dip_sagec_config(), array( 'confirmado' => '' ) ), true ), 'para pruebas y etiquetas basta con las claves' );
+	ok( '' === ( dip_sagec_por_defecto()['confirmado'] ?? 'x' ) && 'N' === ( dip_sagec_por_defecto()['en_franquicia'] ?? '' ), 'de serie: sin confirmar y sin «en franquicia»' );
+	// Contraseña que ya no se descifra (claves de WordPress cambiadas): falta y se dice (revisión 4)
+	update_option( 'dip_sagec', array_merge( $conf, array( 'clave' => 'aes:' . base64_encode( str_repeat( 'x', 36 ) ) /* 20 bytes cifrados: no es un bloque de AES, nunca se descifra */ ) ), false );
+	ok( dip_sagec_clave_ilegible() && (bool) array_filter( dip_sagec_falta(), static fn( $t ) => false !== strpos( $t, 'ya no se puede leer' ) ), 'contraseña ilegible: falta y lo dice', dip_sagec_falta() );
+	update_option( 'dip_sagec', $conf, false );
+	ok( ! dip_sagec_clave_ilegible(), 'la contraseña buena se lee' );
+	// Código vacío: el de serie de ese servicio, nunca el de las 14:00 (revisión 30)
+	ok( '0015' === dip_sagec_codigo( '10', array_merge( dip_sagec_config(), array( 'servicio_10' => '' ) ) ) && '0105' === dip_sagec_codigo( '12', array_merge( dip_sagec_config(), array( 'servicio_12' => '' ) ) ) && '0800' === dip_sagec_codigo( 'sabado', array_merge( dip_sagec_config(), array( 'servicio_sabado' => '' ) ) ), 'código vacío: el de serie de ese servicio' );
+	// Cerrojo atómico (revisión 21)
+	ok( dip_sagec_cerrojo( 'dip_prueba_cerrojo' ) && ! dip_sagec_cerrojo( 'dip_prueba_cerrojo' ), 'cerrojo: el segundo no lo coge' );
+	global $wpdb;
+	$wpdb->update( $wpdb->options, array( 'option_value' => (string) ( time() - 900 ) ), array( 'option_name' => 'dip_prueba_cerrojo' ) );
+	ok( dip_sagec_cerrojo( 'dip_prueba_cerrojo', 600 ), 'cerrojo viejo (proceso cortado): se coge' );
+	dip_sagec_soltar( 'dip_prueba_cerrojo' );
+	ok( 0 === dip_sagec_cerrojo_desde( 'dip_prueba_cerrojo' ), 'cerrojo soltado' );
+	ok( dip_sagec_cerrojo( 'dip_sagec_pasada_en_curso', 600 ), 'otra pasada en marcha' );
+	$r = dip_sagec_pasada( 'prueba', false, a_las( '2026-12-02 09:00' ) );
+	ok( ! empty( $r['ocupada'] ) && ! dip_sagec_pasada_hecha( $r ), 'con otra pasada en marcha no se hace una segunda ni cuenta como hecha', $r );
+	dip_sagec_soltar( 'dip_sagec_pasada_en_curso' );
+	ok( ! dip_sagec_pasada_hecha( array( 'cuenta' => array( 'esperar' => 3 ) ) ) && dip_sagec_pasada_hecha( array( 'cuenta' => array() ) ) && dip_sagec_pasada_hecha( array( 'cuenta' => array( 'esperar' => 1, 'hecho' => 2 ) ) ), 'una pasada con todo «esperar» (antes de las 8:00) no cuenta como hecha (revisión 31)' );
 
 	/* ---------- Dirección y teléfono ---------- */
 	$casos = array(
@@ -392,6 +418,94 @@ try {
 	dip_eh_guardar_numero( fresco( $sin_tel ), '', false );
 	ok( array() === ast( $sin_tel ), 'número borrado: fuera de AST' );
 
+	// Pantalla abierta desde antes de que la web cree el envío (revisiones 0, 1 y 3)
+	$viejo = crear( array( 'clave' => 'viejo' ) );
+	ok( 'creado' === dip_sagec_crear( $viejo, 'pasada de las 8:00', false, a_las( '2026-12-02 08:00' ) )['estado'], 'pantalla vieja: la web crea el envío' );
+	$nv = (string) fresco( $viejo )->get_meta( '_dip_mrw_envio' );
+	$r  = dip_eh_guardar_numero( fresco( $viejo ), '', true, 'Envíos de hoy', '' );
+	ok( 'desfasado' === $r['cambio'] && $nv === (string) fresco( $viejo )->get_meta( '_dip_mrw_envio' ) && array( $nv ) === ast( $viejo ) && '' !== (string) fresco( $viejo )->get_meta( '_dip_sagec_creado' ), '«Guardar» con el campo vacío de una página abierta antes: no borra nada', $r );
+	$r = dip_eh_guardar_numero( fresco( $viejo ), '0285777888', true, 'Envíos de hoy', '' );
+	ok( 'desfasado' === $r['cambio'] && $nv === (string) fresco( $viejo )->get_meta( '_dip_mrw_envio' ), 'ni lo cambia', $r );
+	$r = dip_eh_guardar_numero( fresco( $viejo ), '', false, 'Envíos de hoy', $nv );
+	ok( 'protegido' === $r['cambio'] && $nv === (string) fresco( $viejo )->get_meta( '_dip_mrw_envio' ), 'vaciar el campo no borra un envío creado por la web', $r );
+	ok( 'protegido' === dip_eh_guardar_numero( fresco( $viejo ), '', false )['cambio'], 'tampoco sin el campo oculto' );
+	// La ficha del pedido abierta antes: «Actualizar» no borra el número ni crea otro envío
+	$admin         = get_users( array( 'role' => 'administrator', 'number' => 1, 'fields' => 'ID' ) );
+	$antes_usuario = get_current_user_id();
+	ok( ! empty( $admin ), 'hay un administrador para probar la ficha del pedido' );
+	wp_set_current_user( (int) ( $admin[0] ?? 0 ) );
+	$antes_p                     = count( peticiones_de( $viejo ) );
+	$_POST['dip_mrw_envio']       = '';
+	$_POST['dip_mrw_envio_antes'] = '';
+	do_action( 'woocommerce_process_shop_order_meta', $viejo->get_id(), get_post( $viejo->get_id() ) );
+	ok( $nv === (string) fresco( $viejo )->get_meta( '_dip_mrw_envio' ) && ! wp_next_scheduled( 'dip_sagec_uno', array( $viejo->get_id() ) ) && count( peticiones_de( $viejo ) ) === $antes_p, 'ficha abierta antes de crearlo: «Actualizar» no borra el número ni crea otro envío' );
+	// Un número apuntado a mano y borrado en la ficha: se borra, pero no se vuelve a crear solo en la misma petición
+	$mano_f = crear( array( 'clave' => 'mano-ficha' ) );
+	dip_eh_guardar_numero( fresco( $mano_f ), '0285 555 666', false );
+	$_POST['dip_mrw_envio']       = '';
+	$_POST['dip_mrw_envio_antes'] = '0285 555 666';
+	do_action( 'woocommerce_process_shop_order_meta', $mano_f->get_id(), get_post( $mano_f->get_id() ) );
+	ok( '' === (string) fresco( $mano_f )->get_meta( '_dip_mrw_envio' ) && ! empty( $GLOBALS['dip_eh_borrados'][ $mano_f->get_id() ] ) && ! wp_next_scheduled( 'dip_sagec_uno', array( $mano_f->get_id() ) ), 'número a mano borrado en la ficha: se borra y no se programa otro envío' );
+	unset( $_POST['dip_mrw_envio'], $_POST['dip_mrw_envio_antes'] );
+	wp_set_current_user( $antes_usuario );
+	// Número de la web cambiado por uno hecho a mano (revisión 29)
+	$r = dip_eh_guardar_numero( fresco( $viejo ), '0285999000', false, 'Envíos de hoy', $nv );
+	$f = fresco( $viejo );
+	ok( 'cambiado' === $r['cambio'] && $nv === $r['web'] && '' === (string) $f->get_meta( '_dip_sagec_creado' ) && array( '0285999000' ) === ast( $viejo ), 'número de la web cambiado a mano: ya no consta como creado por la web', $r );
+	ok( ! isset( apply_filters( 'woocommerce_order_actions', array(), $f )['dip_sagec_anular'] ), 'y «Anular el envío en MRW» ya no sale (anularía el nuevo)' );
+	ok( (bool) notas( $viejo, 'sigue activo en MRW' ), 'la nota dice que el de la web sigue activo en MRW' );
+
+	// Dos pasadas a la vez: la segunda tiene la copia de antes (revisión 21)
+	$doble = crear( array( 'clave' => 'doble' ) );
+	$copia = fresco( $doble );
+	dip_sagec_crear( fresco( $doble ), 'pasada A', false, a_las( '2026-12-02 09:00' ) );
+	$r = dip_sagec_crear( $copia, 'pasada B', true, a_las( '2026-12-02 09:00' ) );
+	ok( 'hecho' === $r['estado'] && 1 === count( peticiones_de( $doble ) ), 'otra pasada con la copia de antes: no crea un segundo envío', $r );
+
+	// «Hacer a mano» de un día y el pedido pasa a otro (revisión 5)
+	$cambia = crear( array( 'clave' => 'cambia-dia', 'telefono' => '' ) );
+	$GLOBALS['dip_sagec_nuevos_mano'] = array();
+	ok( 'mano' === dip_sagec_crear( $cambia, 'pasada', false, a_las( '2026-12-02 08:00' ) )['estado'], 'sin teléfono: a mano' );
+	$GLOBALS['dip_sagec_nuevos_mano'] = array();
+	$c2 = fresco( $cambia );
+	$c2->update_meta_data( '_dip_fecha_entrega', '2026-12-04' );
+	$c2->save();
+	$desde = count( $GLOBALS['correos'] );
+	$r     = dip_sagec_crear( fresco( $cambia ), 'pasada de las 8:00', false, a_las( '2026-12-03 08:00' ) );
+	dip_sagec_email_mano();
+	ok( 'mano' === $r['estado'] && 1 === count( correos_a( $avisos, $desde ) ), 'cambiado a otro día: ese día se vuelve a mirar y avisa', $r );
+	ok( 'marcado' === dip_sagec_crear( fresco( $cambia ), 'pasada', false, a_las( '2026-12-03 08:05' ) )['estado'], 'el mismo día, ya marcado' );
+	$GLOBALS['dip_sagec_nuevos_mano'] = array();
+
+	// Línea añadida en el escritorio: kilos y cajas de las líneas, no los del checkout (revisión 6)
+	$lineas = crear( array( 'clave' => 'lineas', 'kg' => 20 ) );
+	$l      = fresco( $lineas );
+	$l->add_product( variacion( 20 ), 1 );
+	$l->save();
+	$d = dip_sagec_datos( fresco( $lineas ) );
+	ok( 40.0 === (float) $d['kg'] && 2 === (int) $d['cajas'] && 42 === (int) $d['peso'], 'dos packs de 20 kg: 40 kg, 2 cajas y 42 kg facturables', array( $d['kg'], $d['cajas'], $d['peso'] ) );
+
+	// Número apuntado en el cuadro de Advanced Shipment Tracking (revisión 26)
+	$con_ast = crear( array( 'clave' => 'con-ast' ) );
+	$ca      = fresco( $con_ast );
+	$ca->update_meta_data( '_wc_shipment_tracking_items', array( array( 'tracking_provider' => 'mrw', 'tracking_number' => '0285123123', 'date_shipped' => (string) time() ) ) );
+	$ca->save();
+	$r = dip_sagec_crear( fresco( $con_ast ), 'pasada', false, a_las( '2026-12-02 09:00' ) );
+	$GLOBALS['dip_sagec_nuevos_mano'] = array();
+	ok( 'mano' === $r['estado'] && ! peticiones_de( $con_ast ) && false !== strpos( implode( ' ', $r['motivos'] ), 'Advanced Shipment Tracking' ), 'con número en AST: no se crea otro envío', $r );
+
+	// Anulado y vuelto a crear después del «va de camino»: el cliente recibe el número nuevo (revisión 28)
+	$desde = count( $GLOBALS['correos'] );
+	$r     = dip_sagec_crear( fresco( $empresa ), 'botón «Crear en MRW»', true, a_las( '2026-12-02 19:00' ) );
+	$ne2   = (string) fresco( $empresa )->get_meta( '_dip_mrw_envio' );
+	$c     = correos_a( 'empresa@sagec.test', $desde );
+	ok( 'creado' === $r['estado'] && 1 === count( $c ) && '' !== $ne2 && false !== strpos( $c[0]['texto'], $ne2 ), 'anulado y vuelto a crear a las 19:00: el aviso sale otra vez con el número nuevo', array( $r, array_column( $c, 'asunto' ) ) );
+
+	// «Crear envíos ahora» antes de las 8:00 (revisión 31)
+	$temprano = crear( array( 'clave' => 'temprano' ) );
+	ok( 'esperar' === dip_sagec_crear( $temprano, 'pasada', false, a_las( '2026-12-02 07:30' ) )['estado'], 'a las 7:30, sin el botón: espera a las 8:00' );
+	ok( 'creado' === dip_sagec_crear( fresco( $temprano ), 'botón «Crear envíos ahora»', 'hora', a_las( '2026-12-02 07:30' ) )['estado'], 'con «Crear envíos ahora» a las 7:30: se crea' );
+
 	// Modos: simulación, pruebas y apagado
 	update_option( 'dip_sagec', array_merge( $conf, array( 'modo' => 'simulacion' ) ), false );
 	$sim   = crear( array( 'clave' => 'sim' ) );
@@ -409,8 +523,34 @@ try {
 	ok( 'apagado' === dip_sagec_crear( fresco( $sim ), 'pasada', true, a_las( '2026-12-02 09:00' ) )['estado'], 'apagado: no hace nada' );
 	update_option( 'dip_sagec', array_merge( $conf, array( 'modo' => 'real', 'servicio' => '' ) ), false );
 	$antes = count( $GLOBALS['peticiones'] );
-	ok( 'simulado' === dip_sagec_crear( fresco( $sim ), 'pasada', false, a_las( '2026-12-02 09:00' ) )['estado'] && count( $GLOBALS['peticiones'] ) === $antes, 'real sin código de servicio: no manda nada' );
+	$desde = count( $GLOBALS['correos'] );
+	delete_option( 'dip_sagec_aviso_falta' );
+	$GLOBALS['dip_sagec_falta_aviso'] = array();
+	$r = dip_sagec_crear( fresco( $sim ), 'pasada', false, a_las( '2026-12-02 09:00' ) );
+	dip_sagec_email_mano();
+	ok( 'falta' === $r['estado'] && count( $GLOBALS['peticiones'] ) === $antes, 'real sin código de servicio: no manda nada', $r );
+	ok( '' === (string) fresco( $sim )->get_meta( '_dip_sagec_mano' ), 'y no lo deja en «Hacer a mano» (al completar Ajustes se crea solo)' );
+	$aviso = correos_a( $avisos, $desde );
+	ok( 1 === count( $aviso ) && false !== strpos( $aviso[0]['asunto'], 'faltan datos' ) && false !== strpos( $aviso[0]['texto'], 'código de servicio' ), 'real sin datos: email al correo de avisos (revisión 4)', array_column( $aviso, 'asunto' ) );
+	$desde = count( $GLOBALS['correos'] );
+	dip_sagec_crear( fresco( $sim ), 'pasada', false, a_las( '2026-12-02 10:00' ) );
+	dip_sagec_email_mano();
+	ok( ! correos_a( $avisos, $desde ), 'como mucho un email al día' );
 	ok( (bool) array_filter( dip_sagec_problemas( a_las( '2026-12-02 09:00' ) ), static fn( $t ) => false !== strpos( $t, 'código de servicio' ) ), 'y avisa en el escritorio' );
+	delete_option( 'dip_sagec_avisado' );
+	$desde = count( $GLOBALS['correos'] );
+	ok( dip_sagec_vigilar( a_las( '2026-12-02 09:00' ) ) && 1 === count( correos_a( $avisos, $desde ) ), 'el vigilante manda el email «la creación de envíos no funciona»' );
+	ok( ! dip_sagec_vigilar( a_las( '2026-12-02 09:30' ) ), 'y no lo repite el mismo día' );
+	// Sin la confirmación de MRW (UN 1845, etiqueta, en franquicia): real no crea; simulación igual que siempre (revisión 25)
+	update_option( 'dip_sagec', array_merge( $conf, array( 'confirmado' => '' ) ), false );
+	$antes = count( $GLOBALS['peticiones'] );
+	ok( 'falta' === dip_sagec_crear( fresco( $sim ), 'pasada', false, a_las( '2026-12-02 09:00' ) )['estado'] && count( $GLOBALS['peticiones'] ) === $antes, 'real sin la confirmación de MRW: no manda nada' );
+	update_option( 'dip_sagec', array_merge( $conf, array( 'confirmado' => '', 'modo' => 'simulacion' ) ), false );
+	ok( 'simulado' === dip_sagec_crear( fresco( $sim ), 'pasada', false, a_las( '2026-12-02 09:00' ) )['estado'] && count( $GLOBALS['peticiones'] ) === $antes, 'simulación sin confirmar: igual que siempre' );
+	update_option( 'dip_sagec', array_merge( $conf, array( 'confirmado' => '', 'modo' => 'pruebas' ) ), false );
+	ok( 'probado' === dip_sagec_crear( fresco( $sim ), 'pasada', false, a_las( '2026-12-02 09:00' ) )['estado'], 'pruebas sin confirmar: llama a sagec-test' );
+	update_option( 'dip_sagec', array_merge( $conf, array( 'en_franquicia' => 'S' ) ), false );
+	ok( false !== strpos( dip_sagec_sobre( 'TransmEnvio', dip_sagec_peticion( dip_sagec_datos( fresco( $sim ) ) ), dip_sagec_config() ), '<EnFranquicia>S</EnFranquicia>' ), '«en franquicia» sale del ajuste' );
 	update_option( 'dip_sagec', $conf, false );
 
 	/* ---------- Pedido urgente ---------- */
@@ -472,6 +612,34 @@ try {
 	ok( is_string( dip_devolver_envio( fresco( $tarde10 ) ) ), 'no se devuelve dos veces' );
 	ok( ! isset( apply_filters( 'woocommerce_order_actions', array(), fresco( $tarde10 ) )['dip_devolver_envio'] ), 'y la acción ya no sale' );
 	ok( ! isset( apply_filters( 'woocommerce_order_actions', array(), fresco( $recogida ) )['dip_devolver_envio'] ), 'en una recogida no sale' );
+	// Pedido de antes del 11/11 con el cargo «Entrega en sábado»: también se devuelve, como promete el email de incidencia (revisión 27)
+	$sab_viejo = crear( array( 'clave' => 'sabado-antiguo', 'fecha' => '2026-12-05' ) );
+	$fee       = new WC_Order_Item_Fee();
+	$fee->set_name( 'Entrega en sábado' );
+	$fee->set_total( 9.70 );
+	$fee->set_tax_status( 'taxable' );
+	$vs = fresco( $sab_viejo );
+	$vs->add_item( $fee );
+	$vs->calculate_totals( true );
+	$vs->save();
+	$vs       = fresco( $sab_viejo );
+	$esperado = round( (float) $vs->get_shipping_total() + (float) $vs->get_shipping_tax() + array_sum( array_map( static fn( $i ) => (float) $i->get_total() + (float) $i->get_total_tax(), $vs->get_items( 'fee' ) ) ), 2 );
+	ok( true === dip_devolver_envio( $vs ), 'devolver el envío con el cargo de sábado: hecho' );
+	ok( abs( (float) fresco( $sab_viejo )->get_total_refunded() - $esperado ) < 0.01 && $esperado > 22, 'se devuelven el envío y el cargo «Entrega en sábado» (' . $esperado . ' €)', (float) fresco( $sab_viejo )->get_total_refunded() );
+	// Pedido urgente: el suplemento se devuelve con el envío, como promete el email de incidencia (dip_avisos_suplemento_urgente)
+	$urg_dev = crear( array( 'clave' => 'urgente-devolver' ) );
+	$fee     = new WC_Order_Item_Fee();
+	$fee->set_name( 'Pedido urgente' );
+	$fee->set_total( 9.70 );
+	$fee->set_tax_status( 'taxable' );
+	$fee->add_meta_data( '_dip_urgente', '1', true );
+	$vu = fresco( $urg_dev );
+	$vu->add_item( $fee );
+	$vu->calculate_totals( true );
+	$vu->save();
+	$vu       = fresco( $urg_dev );
+	$esperado = round( (float) $vu->get_shipping_total() + (float) $vu->get_shipping_tax() + array_sum( array_map( static fn( $i ) => (float) $i->get_total() + (float) $i->get_total_tax(), $vu->get_items( 'fee' ) ) ), 2 );
+	ok( true === dip_devolver_envio( $vu ) && abs( (float) fresco( $urg_dev )->get_total_refunded() - $esperado ) < 0.01 && $esperado > 22, 'devolver el envío de un pedido urgente: también el suplemento «Pedido urgente» (' . $esperado . ' €)', (float) fresco( $urg_dev )->get_total_refunded() );
 
 	/* ---------- Pasada programada ---------- */
 	ok( false !== wp_next_scheduled( 'dip_sagec_pasada' ) && false !== wp_next_scheduled( 'dip_sagec_salida' ), 'las tareas de las 8:00 y las 18:30 están programadas' );

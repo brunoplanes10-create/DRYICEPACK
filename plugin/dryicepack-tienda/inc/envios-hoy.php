@@ -194,28 +194,43 @@ function dip_eh_aviso_resultado( $r ) {
  * Guarda el número de MRW de un pedido y, si es nuevo o ha cambiado y $avisar, avisa al cliente («va de camino»).
  * Número vacío en un pedido que lo tenía: se borran el número y la hora de envío.
  *
- * @return array{cambio: string, aviso: string, error: string} cambio: igual|nuevo|cambiado|borrado.
- *         aviso: no|enviado|fallo|sin_modulo|sin_respuesta.
+ * $mostrado: el número que enseñaba la pantalla al cargarla (campo oculto). Si en la base de datos ya hay otro (la web
+ * lo ha creado en MRW mientras la página estaba abierta), no se toca nada: 'desfasado'. null: sin comprobarlo.
+ * Un número creado por la web (_dip_sagec_creado) no se borra nunca con el campo vacío ('protegido'): para quitarlo,
+ * «Anular el envío en MRW». Si se cambia por otro, deja de constar como creado por la web y 'web' dice cuál era.
+ *
+ * @return array{cambio: string, aviso: string, error: string, actual: string, web: string}
+ *         cambio: igual|nuevo|cambiado|borrado|desfasado|protegido. aviso: no|enviado|fallo|sin_modulo|sin_respuesta.
  */
-function dip_eh_guardar_numero( WC_Order $pedido, $numero, $avisar = true, $donde = 'Envíos de hoy' ) {
+function dip_eh_guardar_numero( WC_Order $pedido, $numero, $avisar = true, $donde = 'Envíos de hoy', $mostrado = null ) {
+	$pedido->read_meta_data( true ); // de la base de datos: otra petición (WP-Cron) puede haberlo creado hace un momento
 	$nuevo   = dip_mrw_numero_limpio( $numero );
 	$antes   = (string) $pedido->get_meta( '_dip_mrw_envio' );
+	$web     = '' !== (string) $pedido->get_meta( '_dip_sagec_creado' ) ? $antes : '';
 	$usuario = wp_get_current_user();
 	$quien   = $usuario && $usuario->exists() ? ', ' . $usuario->display_name : '';
-	if ( $nuevo === $antes ) return array( 'cambio' => 'igual', 'aviso' => 'no', 'error' => '' );
+	$base    = array( 'aviso' => 'no', 'error' => '', 'actual' => $antes, 'web' => '' );
+	if ( $nuevo === $antes ) return array_merge( $base, array( 'cambio' => 'igual' ) );
+	if ( null !== $mostrado && dip_mrw_numero_limpio( $mostrado ) !== $antes ) return array_merge( $base, array( 'cambio' => 'desfasado' ) );
 
 	if ( '' === $nuevo ) {
-		$web = '' !== (string) $pedido->get_meta( '_dip_sagec_creado' );
-		foreach ( array( '_dip_mrw_envio', '_dip_enviado', '_dip_sagec_creado', '_dip_sagec_huella', '_dip_sagec_revisar' ) as $k ) $pedido->delete_meta_data( $k );
+		if ( '' !== $web ) return array_merge( $base, array( 'cambio' => 'protegido' ) );
+		foreach ( array( '_dip_mrw_envio', '_dip_enviado', '_dip_sagec_huella', '_dip_sagec_revisar' ) as $k ) $pedido->delete_meta_data( $k );
 		$pedido->save_meta_data();
 		if ( function_exists( 'dip_ast_quitar' ) ) dip_ast_quitar( $pedido, $antes );
-		$pedido->add_order_note( sprintf( 'Número de MRW borrado (%s%s): era %s. El cliente no recibe ningún aviso.%s', $donde, $quien, $antes, $web ? ' Lo había creado la web en MRW: si no va a salir, anúlalo también en la web de clientes de MRW.' : '' ) );
-		return array( 'cambio' => 'borrado', 'aviso' => 'no', 'error' => '' );
+		$pedido->add_order_note( sprintf( 'Número de MRW borrado (%s%s): era %s. El cliente no recibe ningún aviso.', $donde, $quien, $antes ) );
+		$GLOBALS['dip_eh_borrados'][ (int) $pedido->get_id() ] = $antes; // que en esta misma petición no se vuelva a crear solo (inc/mrw-sagec.php)
+		return array_merge( $base, array( 'cambio' => 'borrado', 'actual' => '' ) );
 	}
 
 	$pedido->update_meta_data( '_dip_mrw_envio', $nuevo );
 	if ( '' === (string) $pedido->get_meta( '_dip_enviado' ) ) $pedido->update_meta_data( '_dip_enviado', dip_eh_ahora()->format( 'Y-m-d H:i:s' ) );
 	$pedido->delete_meta_data( '_dip_sagec_mano' ); // ya está hecho a mano
+	// El número de la web se sustituye por uno hecho a mano: el de la web sigue activo en MRW y «Anular el envío en MRW»
+	// no debe anular el nuevo, así que deja de constar como creado por la web
+	if ( '' !== $web ) {
+		foreach ( array( '_dip_sagec_creado', '_dip_sagec_huella', '_dip_sagec_revisar', '_dip_sagec_solicitud' ) as $k ) $pedido->delete_meta_data( $k );
+	}
 	$pedido->save_meta_data();
 	// También en Advanced Shipment Tracking: de ahí lee el número la app INDUNOVA Control (inc/mrw-sagec.php)
 	if ( function_exists( 'dip_ast_poner' ) ) {
@@ -250,15 +265,16 @@ function dip_eh_guardar_numero( WC_Order $pedido, $numero, $avisar = true, $dond
 		'sin_modulo'    => 'No se ha avisado al cliente: el aviso automático «va de camino» todavía no está instalado.',
 	)[ $aviso ];
 	$pedido->add_order_note( sprintf(
-		'%s (%s%s): %s. Seguimiento: %s. %s',
+		'%s (%s%s): %s. Seguimiento: %s. %s%s',
 		$antes ? 'Número de MRW cambiado' : 'Enviado con MRW',
 		$donde,
 		$quien,
 		$antes ? $antes . ' → ' . $nuevo : 'número ' . $nuevo,
 		dip_url_seguimiento_mrw( $nuevo ),
-		$texto_aviso
+		$texto_aviso,
+		'' !== $web ? ' El envío ' . $web . ' lo creó la web y sigue activo en MRW: si no va a salir, anúlalo en la web de clientes de MRW.' : ''
 	) );
-	return array( 'cambio' => $antes ? 'cambiado' : 'nuevo', 'aviso' => $aviso, 'error' => $error );
+	return array( 'cambio' => $antes ? 'cambiado' : 'nuevo', 'aviso' => $aviso, 'error' => $error, 'actual' => $nuevo, 'web' => $web );
 }
 
 /* =========================================================
@@ -394,7 +410,7 @@ function dip_eh_html_pedido( WC_Order $p, $volver = '' ) {
 		<?php if ( $sabado ) : ?>
 			<p class="dip-eh-p__sabado"><strong><?php echo esc_html( 'Sábado antes de las ' . DIP_HORA_ENTREGA_SABADO . ':' ); ?></strong> Ecommerce con «entrega en sábado» · comprobar con MRW que el CP tiene reparto en sábado.<?php if ( $tel ) : ?> <a href="<?php echo esc_attr( 'tel:' . $tel ); ?>">Llamar al cliente</a><?php endif; ?></p>
 		<?php endif; ?>
-		<p class="dip-eh-p__datos"><span><?php echo esc_html( dip_eh_texto_kg( $p ) ); ?></span><span><?php echo esc_html( dip_eh_lugar( $p ) ?: '—' ); ?></span><span><?php echo esc_html( 'Entrega: ' . ( $fecha ? dip_fecha_larga( $fecha ) . ', antes de las ' . dip_hora_entrega_pedido( $p ) : 'sin día' ) ); ?></span><?php if ( '' !== (string) $p->get_meta( '_dip_urgente' ) ) : ?><span class="dip-eh-p__urgente">Urgente</span><?php endif; ?></p>
+		<p class="dip-eh-p__datos"><span><?php echo esc_html( dip_eh_texto_kg( $p ) ); ?></span><span><?php echo esc_html( dip_eh_lugar( $p ) ?: '—' ); ?></span><span><?php echo esc_html( 'Entrega: ' . ( $fecha ? dip_fecha_larga( $fecha ) . ', antes de las ' . dip_hora_entrega_pedido( $p ) : 'sin día' ) ); ?></span><?php if ( ! empty( $p->get_meta( '_dip_urgente' ) ) ) : ?><span class="dip-eh-p__urgente">Urgente</span><?php endif; ?></p>
 		<?php
 		// Hora pagada por el cliente (11/11/2026): antes de las 10:00 o de las 12:00 → otra cinta y otro servicio de MRW
 		$dip_s = (string) $p->get_meta( '_dip_servicio' );
@@ -405,6 +421,7 @@ function dip_eh_html_pedido( WC_Order $p, $volver = '' ) {
 		<?php if ( function_exists( 'dip_sagec_html_pedido' ) && dip_eh_salida_de( $fecha ) === dip_eh_ahora()->format( 'Y-m-d' ) ) dip_sagec_html_pedido( $p, $volver ); ?>
 		<label class="dip-eh-p__etiqueta" for="dip-mrw-<?php echo (int) $id; ?>">Número de MRW</label>
 		<input class="dip-eh-p__campo" id="dip-mrw-<?php echo (int) $id; ?>" name="dip_mrw[<?php echo (int) $id; ?>]" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="35" value="<?php echo esc_attr( $numero ); ?>">
+		<input type="hidden" name="dip_mrw_antes[<?php echo (int) $id; ?>]" value="<?php echo esc_attr( $numero ); ?>">
 		<?php if ( $numero ) : ?>
 			<p class="dip-eh-p__estado"><?php echo esc_html( $envio ? 'Enviado el ' . $envio : 'Con número' ); ?> · <a href="<?php echo esc_url( dip_url_seguimiento_mrw( $numero ) ); ?>" target="_blank" rel="noopener noreferrer">Seguir en MRW</a></p>
 		<?php endif; ?>
@@ -419,15 +436,27 @@ add_action( 'admin_post_dip_envios_hoy', static function () {
 	$dia     = isset( $_POST['dia'] ) ? sanitize_key( wp_unslash( $_POST['dia'] ) ) : 'hoy';
 	$fecha   = isset( $_POST['fecha'] ) ? sanitize_text_field( wp_unslash( $_POST['fecha'] ) ) : '';
 	$numeros = isset( $_POST['dip_mrw'] ) && is_array( $_POST['dip_mrw'] ) ? wp_unslash( $_POST['dip_mrw'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- se sanea abajo, uno a uno
+	$vistos  = isset( $_POST['dip_mrw_antes'] ) && is_array( $_POST['dip_mrw_antes'] ) ? wp_unslash( $_POST['dip_mrw_antes'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- se sanea abajo, uno a uno
 	$cuenta  = array( 'nuevo' => 0, 'cambiado' => 0, 'borrado' => 0, 'avisados' => 0 );
 	$lineas  = array();
 	$sin_mod = false;
 	foreach ( $numeros as $id => $numero ) {
 		$pedido = wc_get_order( absint( $id ) );
 		if ( ! $pedido instanceof WC_Order || 'shop_order' !== $pedido->get_type() || dip_eh_es_recogida( $pedido ) ) continue;
-		$r = dip_eh_guardar_numero( $pedido, sanitize_text_field( (string) $numero ) );
+		// Lo que enseñaba la página: si el número ha cambiado desde entonces (la web lo ha creado en MRW), no se toca
+		$visto = isset( $vistos[ $id ] ) ? sanitize_text_field( (string) $vistos[ $id ] ) : null;
+		$r     = dip_eh_guardar_numero( $pedido, sanitize_text_field( (string) $numero ), true, 'Envíos de hoy', $visto );
 		if ( 'igual' === $r['cambio'] ) continue;
+		if ( 'desfasado' === $r['cambio'] ) {
+			$lineas[] = sprintf( 'Pedido %s: no se ha tocado. Su número cambió mientras tenías la página abierta (ahora: %s). Si hay que corregirlo, hazlo otra vez.', $pedido->get_order_number(), $r['actual'] ?: 'sin número' );
+			continue;
+		}
+		if ( 'protegido' === $r['cambio'] ) {
+			$lineas[] = sprintf( 'Pedido %s: el envío %s lo creó la web en MRW y no se borra desde aquí. Para quitarlo, ábrelo y usa Acciones del pedido → Anular el envío en MRW (o, si ya está anulado allí, «Quitar el número sin anular en MRW»).', $pedido->get_order_number(), $r['actual'] );
+			continue;
+		}
 		$cuenta[ $r['cambio'] ]++;
+		if ( '' !== $r['web'] ) $lineas[] = sprintf( 'Pedido %s: el envío %s que creó la web sigue activo en MRW. Si no va a salir, anúlalo en la web de clientes de MRW.', $pedido->get_order_number(), $r['web'] );
 		if ( in_array( $r['aviso'], array( 'enviado', 'sin_respuesta' ), true ) ) $cuenta['avisados']++;
 		if ( 'sin_modulo' === $r['aviso'] ) $sin_mod = true;
 		if ( 'fallo' === $r['aviso'] ) $lineas[] = sprintf( 'Pedido %s: el aviso al cliente no ha salido%s. Avísale por WhatsApp o teléfono.', $pedido->get_order_number(), $r['error'] ? ' (' . $r['error'] . ')' : '' );
@@ -462,8 +491,9 @@ add_action( 'woocommerce_admin_order_data_after_shipping_address', static functi
 	$envio  = dip_eh_texto_enviado( $pedido );
 	echo '<div class="dip-mrw-pedido">';
 	printf(
-		'<p class="form-field form-field-wide"><label for="dip_mrw_envio">%s</label><input type="text" id="dip_mrw_envio" name="dip_mrw_envio" value="%s" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="35" style="font-size:16px"></p>',
+		'<p class="form-field form-field-wide"><label for="dip_mrw_envio">%s</label><input type="text" id="dip_mrw_envio" name="dip_mrw_envio" value="%s" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="35" style="font-size:16px"><input type="hidden" name="dip_mrw_envio_antes" value="%s"></p>',
 		esc_html( 'Número de MRW' ),
+		esc_attr( $numero ),
 		esc_attr( $numero )
 	);
 	printf(
@@ -485,8 +515,18 @@ add_action( 'woocommerce_process_shop_order_meta', static function ( $pedido_id 
 	if ( ! isset( $_POST['dip_mrw_envio'] ) || ! current_user_can( 'edit_shop_orders' ) ) return; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	$pedido = wc_get_order( $pedido_id );
 	if ( ! $pedido || dip_eh_es_recogida( $pedido ) ) return;
-	$r = dip_eh_guardar_numero( $pedido, sanitize_text_field( wp_unslash( $_POST['dip_mrw_envio'] ) ), ! empty( $_POST['dip_mrw_avisar'] ), 'pantalla del pedido' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-	if ( in_array( $r['aviso'], array( 'fallo', 'sin_modulo' ), true ) && class_exists( 'WC_Admin_Meta_Boxes' ) ) {
+	// Lo que enseñaba la ficha al abrirla: si la web ha creado el envío mientras estaba abierta, el número no se toca
+	$visto = isset( $_POST['dip_mrw_envio_antes'] ) ? sanitize_text_field( wp_unslash( $_POST['dip_mrw_envio_antes'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$r     = dip_eh_guardar_numero( $pedido, sanitize_text_field( wp_unslash( $_POST['dip_mrw_envio'] ) ), ! empty( $_POST['dip_mrw_avisar'] ), 'pantalla del pedido', $visto ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( ! class_exists( 'WC_Admin_Meta_Boxes', false ) ) return; // sin cargarla: fuera del escritorio registraría sus ganchos de guardado
+	if ( 'desfasado' === $r['cambio'] ) {
+		WC_Admin_Meta_Boxes::add_error( 'El número de MRW no se ha tocado: cambió mientras tenías el pedido abierto (ahora: ' . ( $r['actual'] ?: 'sin número' ) . '). Si hay que corregirlo, hazlo otra vez.' );
+	} elseif ( 'protegido' === $r['cambio'] ) {
+		WC_Admin_Meta_Boxes::add_error( 'El envío ' . $r['actual'] . ' lo creó la web en MRW y no se borra vaciando el campo. Para quitarlo: Acciones del pedido → Anular el envío en MRW (o, si ya está anulado allí, «Quitar el número sin anular en MRW»).' );
+	} elseif ( '' !== ( $r['web'] ?? '' ) ) {
+		WC_Admin_Meta_Boxes::add_error( 'El envío ' . $r['web'] . ' que creó la web sigue activo en MRW. Si no va a salir, anúlalo en la web de clientes de MRW.' );
+	}
+	if ( in_array( $r['aviso'], array( 'fallo', 'sin_modulo' ), true ) ) {
 		WC_Admin_Meta_Boxes::add_error( 'sin_modulo' === $r['aviso']
 			? 'Número de MRW guardado, pero el cliente no ha recibido ningún aviso: el aviso «va de camino» todavía no está instalado.'
 			: 'Número de MRW guardado, pero el aviso al cliente no ha salido' . ( $r['error'] ? ' (' . $r['error'] . ')' : '' ) . '. Avísale por WhatsApp o teléfono.' );
@@ -635,7 +675,7 @@ function dip_eh_email_sabado( $salida, $sabado, array $pedidos ) {
 		. '- Cinta y servicio de sábado de MRW, antes de las ' . DIP_HORA_ENTREGA_SABADO . ' (no la de urgente ' . DIP_HORA_ENTREGA . ").\n"
 		. "- Comprueba con MRW que el código postal tiene reparto en sábado.\n"
 		. '- Si un código postal no tiene reparto en sábado, llama hoy al cliente y que elija: reembolso completo de todo lo que pagó, o recogerlo en la nave de Mataró'
-		. ' (si lo recoge el mismo sábado, del suplemento de sábado nos quedamos ' . dip_euros( DIP_RECOGIDA_SABADO_CON_IVA ) . " y le devolvemos la diferencia).\n\n"
+		. ' (si lo recoge el mismo sábado, del envío que pagó nos quedamos ' . dip_euros( DIP_RECOGIDA_SABADO_CON_IVA ) . " de la recogida en sábado y le devolvemos el resto).\n\n"
 		. "PEDIDOS\n";
 	foreach ( $pedidos as $p ) $texto .= dip_eh_linea_email( $p );
 	$texto .= function_exists( 'dip_sagec_modo' ) && 'real' === dip_sagec_modo()

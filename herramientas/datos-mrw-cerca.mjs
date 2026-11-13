@@ -54,11 +54,15 @@ function oficinas(html, provincia) {
     if (!nombre || !codigo) continue;
     const d = dir ? limpiar(dir) : '';
     const cp = (d.match(/-\s*(\d{5})\s+([^(]+?)\s*\(/) || []);
+    // Código postal español: el de la dirección («- 08301 Mataró (…)», «…, 08150 Parets…»); si no, el del nombre
+    // («Barcelona 08007»). Los portugueses son «5000-471» y no cuentan.
+    const cpEs = (d.match(/(?<![\d-])(\d{5})(?![\d-])/) || limpiar(nombre).match(/(?<![\d-])(\d{5})(?![\d-])/) || [])[1] || '';
     r.push({
       codigo,
       nombre: limpiar(nombre),
       direccion: d,
-      cp: cp[1] || '',
+      cp: cp[1] || cpEs,
+      portugal: /(?<!\d)\d{4}-\d{3}(?!\d)/.test(d),
       poblacion: (cp[2] || '').trim(),
       provincia,
       lat: ll ? Number(ll[1]) : null,
@@ -93,12 +97,42 @@ const portada = await pagina('espana', BASE + '?franquicias_mrw_en=Espana');
 const provincias = [...new Set([...portada.matchAll(/\?provincia=([A-Z%0-9ÑÁÉÍÓÚÜ .'-]+)"/g)].map((m) => m[1]))];
 if (provincias.length < 45) throw new Error(`La página de MRW ha cambiado: solo ${provincias.length} provincias`);
 const todas = [];
-for (const p of provincias) {
+const leerProvincia = async (p) => {
   const html = await pagina('prov-' + p.replace(/[^A-Z0-9]/gi, '_'), BASE + '?provincia=' + p);
   const lista = oficinas(html, decodeURIComponent(p));
   if (!lista.length) console.log(`AVISO: ninguna oficina en ${p}`);
   todas.push(...lista);
+  return lista;
+};
+for (const p of provincias) await leerProvincia(p);
+
+// Provincias peninsulares (las de dip_mrw_provincia_por_cp() del plugin, festivos-mrw.php). En la portada de mrw.es,
+// «Vizcaya» enlaza a ?provincia=VILAREAL (Vila Real, Portugal; 12/11/2026): por eso, a cada provincia que se quede sin
+// oficinas se le pide también su página por el nombre (?provincia=VIZCAYA), y si sigue vacía el script para.
+const PROV_CP = {
+  '01': 'ALAVA', '02': 'ALBACETE', '03': 'ALICANTE', '04': 'ALMERIA', '05': 'AVILA', '06': 'BADAJOZ', '08': 'BARCELONA',
+  '09': 'BURGOS', '10': 'CACERES', '11': 'CADIZ', '12': 'CASTELLON', '13': 'CIUDAD REAL', '14': 'CORDOBA', '15': 'CORUNA',
+  '16': 'CUENCA', '17': 'GIRONA', '18': 'GRANADA', '19': 'GUADALAJARA', '20': 'GUIPUZCOA', '21': 'HUELVA', '22': 'HUESCA',
+  '23': 'JAEN', '24': 'LEON', '25': 'LLEIDA', '26': 'LA RIOJA', '27': 'LUGO', '28': 'MADRID', '29': 'MALAGA', '30': 'MURCIA',
+  '31': 'NAVARRA', '32': 'ORENSE', '33': 'ASTURIAS', '34': 'PALENCIA', '36': 'PONTEVEDRA', '37': 'SALAMANCA', '39': 'CANTABRIA',
+  '40': 'SEGOVIA', '41': 'SEVILLA', '42': 'SORIA', '43': 'TARRAGONA', '44': 'TERUEL', '45': 'TOLEDO', '46': 'VALENCIA',
+  '47': 'VALLADOLID', '48': 'VIZCAYA', '49': 'ZAMORA', '50': 'ZARAGOZA',
+};
+// Provincias de España que no son de la península (sus oficinas no reparten a la península, pero son de España)
+const ISLAS_Y_CIUDADES = ['BALEARES', 'PALMASLAS', 'TENERIFE', 'CEUTA', 'MELILLA'];
+const clave = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z]/g, '');
+const ESPANA = new Set([...Object.values(PROV_CP), ...ISLAS_Y_CIUDADES].map(clave));
+// Oficina de España: de una página de provincia española y sin código postal portugués
+const deEspana = (o) => ESPANA.has(clave(o.provincia)) && !o.portugal;
+const tieneOficinas = (lista, pref, nombre) => lista.some((o) => deEspana(o) && (o.cp.slice(0, 2) === pref || clave(o.provincia) === clave(nombre)));
+for (const [pref, nombre] of Object.entries(PROV_CP)) {
+  if (tieneOficinas(todas, pref, nombre)) continue;
+  console.log(`AVISO: ${nombre} sin oficinas en la portada de MRW; se pide ?provincia=${nombre}`);
+  await leerProvincia(nombre);
+  if (!tieneOficinas(todas, pref, nombre)) throw new Error(`La provincia ${nombre} (${pref}xxx) se queda sin oficinas de MRW: revisar la página de MRW`);
 }
+const fueraDeEspana = todas.filter((o) => !deEspana(o));
+if (fueraDeEspana.length) console.log(`Descartadas ${fueraDeEspana.length} oficinas de fuera de España: ${fueraDeEspana.map((o) => o.nombre + ' (' + o.provincia + ')').join(', ')}`);
 // Posición: la del enlace «MAPA»; si falta, la de su código postal en GeoNames
 const sinPos = [];
 for (const o of todas) {
@@ -106,9 +140,12 @@ for (const o of todas) {
   const l = lugares.get(o.cp);
   if (l) { o.lat = l[0].lat; o.lng = l[0].lng; o.posicion = 'cp'; } else sinPos.push(o);
 }
-const reparto = todas.filter((o) => o.lat !== null && !INTERNAS.test(o.nombre) && !FUERA.has(o.cp.slice(0, 2)));
+const reparto = todas.filter((o) => o.lat !== null && deEspana(o) && !INTERNAS.test(o.nombre) && !FUERA.has(o.cp.slice(0, 2)));
 console.log(`MRW: ${todas.length} oficinas en ${provincias.length} provincias; ${reparto.length} de reparto en la península con posición; ${sinPos.length} sin posición`);
 if (reparto.length < 300) throw new Error('Demasiado pocas oficinas: la página de MRW ha cambiado');
+for (const [pref, nombre] of Object.entries(PROV_CP)) {
+  if (!tieneOficinas(reparto, pref, nombre)) throw new Error(`La provincia ${nombre} (${pref}xxx) no tiene oficinas de reparto con posición: revisar la página de MRW`);
+}
 
 // 3. Cada código postal: la distancia de la población más lejana a su oficina más cercana
 const cerca = [];

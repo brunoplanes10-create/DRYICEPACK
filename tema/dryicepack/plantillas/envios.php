@@ -299,7 +299,8 @@ if ( $h_tabla ) :
 							<tr>
 								<th scope="row"><?php echo esc_html( $v_num( $h_kg ) . ' kg' ); ?></th>
 								<?php foreach ( $h_ser as $h_j => $h_s ) : ?>
-									<td data-hora="<?php echo esc_attr( $h['horas'][ $h_s ] ); ?>"<?php echo 0 === $h_j ? ' class="v-horas__barata"' : ''; ?>><?php echo esc_html( $h_eur( $h_tabla['zonas'][ $h_z ][ (string) ( 0 + $h_kg ) ][ $h_s ] ?? null ) ); ?></td>
+									<?php // En móvil la cabecera se esconde y cada celda enseña data-hora: lleva también el matiz («según zona» del sábado) ?>
+									<td data-hora="<?php echo esc_attr( $h['horas'][ $h_s ] . ( 0 === $h_j ? ' · ' . $h['barata'] : ( 'sabado' === $h_s ? ' · ' . $h['segun'] : '' ) ) ); ?>"<?php echo 0 === $h_j ? ' class="v-horas__barata"' : ''; ?>><?php echo esc_html( $h_eur( $h_tabla['zonas'][ $h_z ][ (string) ( 0 + $h_kg ) ][ $h_s ] ?? null ) ); ?></td>
 								<?php endforeach; ?>
 							</tr>
 						<?php endforeach; ?>

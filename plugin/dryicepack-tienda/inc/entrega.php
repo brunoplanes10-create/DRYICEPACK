@@ -150,6 +150,40 @@ add_action( 'woocommerce_checkout_update_order_review', static function ( $post_
 	}
 } );
 
+/* Al pagar (checkout clásico), el día y la hora del formulario pasan a la sesión antes de que WooCommerce recalcule el
+   envío (update_session va después de este gancho): así el precio cobrado y lo que se guarda en el pedido salen del mismo
+   dato, aunque el cliente envíe con Intro mientras la última update_order_review aún no ha vuelto. */
+add_action( 'woocommerce_checkout_process', static function () {
+	if ( ! function_exists( 'WC' ) || ! WC()->session ) return;
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- WooCommerce ya verificó el nonce del checkout
+	if ( isset( $_POST['dip_fecha'] ) ) {
+		$fecha = sanitize_text_field( wp_unslash( $_POST['dip_fecha'] ) );
+		WC()->session->set( 'dip_fecha', preg_match( '/^\d{4}-\d{2}-\d{2}$/', $fecha ) ? $fecha : '' );
+	}
+	if ( isset( $_POST['dip_servicio'] ) ) {
+		$s = sanitize_key( wp_unslash( $_POST['dip_servicio'] ) );
+		WC()->session->set( 'dip_servicio', in_array( $s, array( '14', '12', '10' ), true ) ? $s : '14' );
+	}
+	// phpcs:enable
+}, 5 );
+
+/* El día y la hora pagada no pasan al pedido siguiente (art. 60 bis TRLGDCU: un pago adicional nunca marcado de serie):
+   se borran de la sesión y cada checkout empieza en el primer día posible y «antes de las 14:00».
+   - Checkout clásico con el formulario: al crear el pedido. Si el pago falla, el formulario los vuelve a mandar
+     (woocommerce_checkout_process y update_order_review).
+   - Apple Pay / Google Pay (Store API, o el checkout clásico sin el formulario): solo cuando el pago ha salido bien
+     (WooCommerce vacía el carrito). Si se borraran antes, un pago rechazado y repetido sin repintar el checkout saldría
+     para el primer día posible y a las 14:00, no para el día que reservó el cliente. */
+function dip_olvidar_entrega_sesion() {
+	if ( ! function_exists( 'WC' ) || ! WC()->session ) return;
+	WC()->session->set( 'dip_fecha', null );
+	WC()->session->set( 'dip_servicio', null );
+}
+add_action( 'woocommerce_checkout_order_created', static function () {
+	if ( isset( $_POST['dip_fecha'] ) ) dip_olvidar_entrega_sesion(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- solo mira si llega el campo
+}, 99 );
+add_action( 'woocommerce_cart_emptied', 'dip_olvidar_entrega_sesion' );
+
 /* El precio del envío depende del día y de la hora: van en el paquete para que WooCommerce lo recalcule al cambiarlos
    (guarda las tarifas por paquete). inc/envio.php lee 'dip_servicio' y pone el precio de MRW de esa hora. */
 add_filter( 'woocommerce_cart_shipping_packages', static function ( $paquetes ) {
@@ -469,6 +503,15 @@ add_action( 'woocommerce_store_api_checkout_update_order_from_request', static f
 		}
 		return;
 	}
+	// El sábado, como mucho 80 kg (Ecommerce de MRW), igual que en el checkout clásico: sin esto el envío se cobraría
+	// como de entre semana (dip_fecha_elegida ya no da el sábado) y el pedido quedaría para el sábado
+	if ( 'envio' === $metodo && 'sabado' === dip_servicio_para( '', $fecha ) && ! dip_sabado_posible_carrito() ) {
+		if ( class_exists( '\Automattic\WooCommerce\StoreApi\Exceptions\RouteException' ) ) {
+			throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException( 'dip_fecha', esc_html( sprintf( dip_textos_tienda()['sabado_max'], (int) DIP_SABADO_MAX_KG ) ), 400 );
+		}
+		$fecha = dip_fecha_elegida( $metodo, $destino );
+		if ( ! $fecha ) return;
+	}
 	dip_guardar_entrega( $pedido, $fecha, $metodo );
 } );
 
@@ -489,10 +532,15 @@ function dip_guardar_entrega( WC_Order $pedido, $fecha, $metodo, $servicio = nul
 		$pedido->delete_meta_data( '_dip_servicio_mrw' );
 		return;
 	}
+	$del_checkout = false;
 	if ( null === $servicio ) {
-		$servicio = function_exists( 'WC' ) && WC()->session && ! is_admin() ? dip_servicio_elegido( $fecha ) : (string) $pedido->get_meta( '_dip_servicio' );
+		$del_checkout = function_exists( 'WC' ) && WC()->session && ! is_admin();
+		// Al cambiar el día después (escritorio, «Adelantar a mañana»), de la hora pagada, que nunca se pisa: pasar el pedido
+		// por un sábado y volver a un día entre semana no la convierte en la de las 14:00
+		$servicio = $del_checkout ? dip_servicio_elegido( $fecha ) : ( (string) $pedido->get_meta( '_dip_servicio_pagado' ) ?: (string) $pedido->get_meta( '_dip_servicio' ) );
 	}
 	$servicio = dip_servicio_para( $servicio, $fecha );
+	if ( $del_checkout ) $pedido->update_meta_data( '_dip_servicio_pagado', $servicio );
 	$pedido->update_meta_data( '_dip_servicio', $servicio );
 	$pedido->update_meta_data( '_dip_servicio_mrw', dip_servicio_mrw_pedido( $pedido, $servicio ) );
 }

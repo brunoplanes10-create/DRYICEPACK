@@ -70,6 +70,11 @@ function dip_sagec_por_defecto() {
 		'servicio_especial' => '',
 		'tipo_etiqueta'     => '',
 		'observaciones'     => 'Hielo seco (UN 1845) en caja de poliestireno.',
+		// Pendiente de MRW (11/11/2026): cómo se declara el hielo seco, el tipo de etiqueta y si va «en franquicia» (la
+		// cuenta tiene una recogida en la nave a las 17:45). Hasta que el propietario marque que MRW lo ha confirmado,
+		// el modo real no crea nada (dip_sagec_falta)
+		'en_franquicia'     => 'N',
+		'confirmado'        => '',
 	);
 }
 
@@ -92,15 +97,28 @@ function dip_sagec_modo() {
 	return dip_sagec_config()['modo'];
 }
 
-/** Lo que falta para llamar a MRW (lista vacía si está todo). El departamento puede ir vacío. */
-function dip_sagec_falta( ?array $c = null ) {
+/**
+ * Lo que falta para crear envíos reales en MRW (lista vacía si está todo). El departamento puede ir vacío.
+ * $solo_claves: solo lo que hace falta para llamar a MRW (entorno de pruebas, probar la conexión, etiquetas), sin la
+ * confirmación de MRW sobre el hielo seco, la etiqueta y «en franquicia».
+ */
+function dip_sagec_falta( ?array $c = null, $solo_claves = false ) {
 	$c      = $c ?? dip_sagec_config();
 	$nombre = array( 'franquicia' => 'código de franquicia', 'abonado' => 'código de abonado', 'usuario' => 'usuario', 'clave' => 'contraseña', 'servicio' => 'código de servicio' );
 	$r      = array();
 	foreach ( $nombre as $campo => $texto ) {
-		if ( '' === trim( (string) $c[ $campo ] ) ) $r[] = $texto;
+		if ( '' !== trim( (string) ( $c[ $campo ] ?? '' ) ) ) continue;
+		$r[] = 'clave' === $campo && dip_sagec_clave_ilegible() ? 'contraseña (la guardada ya no se puede leer: escríbela otra vez)' : $texto;
 	}
+	if ( ! $solo_claves && '1' !== (string) ( $c['confirmado'] ?? '' ) ) $r[] = 'la confirmación de MRW (cómo se declara el hielo seco UN 1845, tipo de etiqueta y «en franquicia»)';
 	return $r;
+}
+
+/** ¿Hay una contraseña guardada que ya no se descifra (han cambiado las claves de WordPress)? */
+function dip_sagec_clave_ilegible() {
+	if ( defined( 'DIP_MRW_CLAVE' ) && '' !== (string) constant( 'DIP_MRW_CLAVE' ) ) return false;
+	$guardada = (string) ( ( (array) get_option( 'dip_sagec', array() ) )['clave'] ?? '' );
+	return '' !== $guardada && '' === dip_sagec_descifrar( $guardada );
 }
 
 function dip_sagec_clave_cifrado() {
@@ -276,8 +294,21 @@ function dip_sagec_datos( WC_Order $p ) {
 	$ciudad   = trim( (string) ( $envio ? $p->get_shipping_city() : $p->get_billing_city() ) );
 	$pais     = (string) ( $envio ? $p->get_shipping_country() : $p->get_billing_country() );
 	$tel      = method_exists( $p, 'get_shipping_phone' ) && '' !== trim( (string) $p->get_shipping_phone() ) ? $p->get_shipping_phone() : $p->get_billing_phone();
-	$kg       = function_exists( 'dip_eh_kg' ) ? (float) dip_eh_kg( $p ) : 0.0;
-	$cajas    = function_exists( 'dip_eh_cajas' ) ? (int) dip_eh_cajas( $p ) : 0;
+	// Kilos y cajas de las líneas del pedido, como al pagar (dip_guardar_resumen_pedido): si se cambian las líneas en el
+	// escritorio, _dip_kg y _dip_cajas se quedan con lo del checkout. Sin líneas con kilos, lo guardado.
+	$kg       = 0.0;
+	$cajas    = 0;
+	if ( function_exists( 'dip_kg_producto' ) ) {
+		foreach ( $p->get_items() as $l ) {
+			$kg_ud  = (float) dip_kg_producto( $l->get_product() );
+			$kg    += $kg_ud * (int) $l->get_quantity();
+			$cajas += $kg_ud > 0 ? (int) $l->get_quantity() : 0;
+		}
+	}
+	if ( $kg <= 0 || $cajas < 1 ) {
+		$kg    = function_exists( 'dip_eh_kg' ) ? (float) dip_eh_kg( $p ) : 0.0;
+		$cajas = function_exists( 'dip_eh_cajas' ) ? (int) dip_eh_cajas( $p ) : 0;
+	}
 	$entrega  = function_exists( 'dip_eh_fecha' ) ? (string) dip_eh_fecha( $p ) : (string) $p->get_meta( '_dip_fecha_entrega' );
 	list( $via, $numero, $resto ) = dip_sagec_partir_direccion( $linea1 );
 	$resto    = trim( $resto . ( $resto && $linea2 ? ', ' : '' ) . $linea2 );
@@ -327,11 +358,16 @@ function dip_sagec_servicio_pedido( WC_Order $p, $entrega ) {
 	return function_exists( 'dip_servicio_mrw_pedido' ) ? dip_servicio_mrw_pedido( $p, $pagado ) : $pagado;
 }
 
-/** Código de MRW de un servicio con los ajustes ($c): 0115, 0105, 0015 o 0800 de serie. */
+/**
+ * Código de MRW de un servicio con los ajustes ($c): 0115, 0105, 0015 o 0800 de serie. Un campo vacío vuelve al de
+ * serie de ese servicio (como dicen las ayudas de Ajustes), nunca al de las 14:00: un envío pagado antes de las 10:00
+ * no puede salir como Urgente 14 sin que nadie se entere.
+ */
 function dip_sagec_codigo( $servicio, array $c ) {
 	$campo = array( '14' => 'servicio', '12' => 'servicio_12', '10' => 'servicio_10', 'sabado' => 'servicio_sabado' )[ (string) $servicio ] ?? 'servicio';
 	$cod   = trim( (string) ( $c[ $campo ] ?? '' ) );
-	return '' !== $cod ? $cod : trim( (string) $c['servicio'] );
+	if ( '' !== $cod || 'servicio' === $campo ) return $cod;
+	return trim( (string) ( dip_sagec_por_defecto()[ $campo ] ?? '' ) );
 }
 
 /**
@@ -340,11 +376,14 @@ function dip_sagec_codigo( $servicio, array $c ) {
  *   estado: listo · mano (falta algo o hay dudas: motivos) · esperar (antes de las 8:00) · hecho (ya tiene número) ·
  *   marcado (ya está en «Hacer a mano») · fuera (no le toca hoy: recogida, otro día, sin pagar…).
  *   $forzar (botón): sin las horas ni la marca de «Hacer a mano»; el resto de comprobaciones, igual.
+ *   $forzar = 'hora' («Crear envíos ahora» antes de las 8:00): solo sin esperar a las 8:00.
  */
 function dip_sagec_revisar( WC_Order $p, ?DateTimeImmutable $ahora = null, $forzar = false ) {
-	$ahora = dip_sagec_ahora( $ahora );
-	$hoy   = $ahora->format( 'Y-m-d' );
-	$r     = array( 'estado' => 'fuera', 'motivos' => array(), 'datos' => array() );
+	$ahora      = dip_sagec_ahora( $ahora );
+	$hoy        = $ahora->format( 'Y-m-d' );
+	$sin_espera = true === $forzar || 'hora' === $forzar;
+	$forzar     = true === $forzar;
+	$r          = array( 'estado' => 'fuera', 'motivos' => array(), 'datos' => array() );
 	if ( 'shop_order' !== $p->get_type() || ( function_exists( 'dip_eh_es_recogida' ) && dip_eh_es_recogida( $p ) ) ) return $r;
 	if ( ! in_array( $p->get_status(), array( 'processing', 'on-hold' ), true ) ) return $r;
 	$d          = dip_sagec_datos( $p );
@@ -354,8 +393,9 @@ function dip_sagec_revisar( WC_Order $p, ?DateTimeImmutable $ahora = null, $forz
 	if ( '' === $d['entrega'] ) return array_merge( $r, array( 'motivos' => array( 'el pedido no tiene día de entrega' ) ) );
 	if ( $d['salida'] > $hoy ) return array_merge( $r, array( 'motivos' => array( 'no sale hoy: sale el ' . dip_fecha_larga( $d['salida'] ) . '. Si tiene que salir hoy, usa «Adelantar a mañana»' ) ) );
 	if ( $d['salida'] < $hoy ) return array_merge( $r, array( 'motivos' => array( 'tenía que salir el ' . dip_fecha_larga( $d['salida'] ) . ': cambia el día de entrega' ) ) );
-	if ( ! $forzar && '' !== (string) $p->get_meta( '_dip_sagec_mano' ) ) return array_merge( $r, array( 'estado' => 'marcado' ) );
-	if ( ! $forzar && dip_sagec_minuto_del_dia( $ahora ) < dip_sagec_minutos( DIP_SAGEC_HORA_PASADA ) ) return array_merge( $r, array( 'estado' => 'esperar' ) );
+	// La marca de «Hacer a mano» vale para el día de salida en que se puso: si el pedido pasa a otro día, se vuelve a mirar
+	if ( ! $forzar && dip_sagec_mano_vigente( $p, $d['salida'] ) ) return array_merge( $r, array( 'estado' => 'marcado' ) );
+	if ( ! $sin_espera && dip_sagec_minuto_del_dia( $ahora ) < dip_sagec_minutos( DIP_SAGEC_HORA_PASADA ) ) return array_merge( $r, array( 'estado' => 'esperar' ) );
 
 	$m = array();
 	if ( 'on-hold' === $p->get_status() ) $m[] = DIP_SAGEC_EN_ESPERA; // completo y confirmado: sin pago confirmado, no sale solo
@@ -378,7 +418,22 @@ function dip_sagec_revisar( WC_Order $p, ?DateTimeImmutable $ahora = null, $forz
 	if ( function_exists( 'dip_envio_a_medida' ) && dip_envio_a_medida( $d['kg'], $d['cp'] ) ) $m[] = 'más de ' . DIP_KG_A_MEDIDA . ' kg fuera de la provincia de Barcelona: va a medida';
 	if ( '' !== $d['nota'] ) $m[] = 'el cliente ha dejado una nota: «' . mb_substr( $d['nota'], 0, 120 ) . '»';
 	if ( '' !== (string) $p->get_meta( '_dip_sagec_anulado' ) && ! $forzar ) $m[] = 'ya se anuló un envío de este pedido en MRW';
+	// Un número apuntado en el cuadro de Advanced Shipment Tracking (no por la web): puede que ya exista el envío
+	foreach ( array_filter( (array) $p->get_meta( '_wc_shipment_tracking_items' ), 'is_array' ) as $i ) {
+		$n = trim( (string) ( $i['tracking_number'] ?? '' ) );
+		if ( '' !== $n && 'dryicepack-tienda' !== (string) ( $i['source'] ?? '' ) ) {
+			$m[] = 'ya tiene el número ' . $n . ' en Advanced Shipment Tracking: si es el de MRW, apúntalo en «Envíos de hoy»';
+			break;
+		}
+	}
 	return array_merge( $r, array( 'estado' => $m ? 'mano' : 'listo', 'motivos' => $m ) );
+}
+
+/** ¿Está en «Hacer a mano» para este día de salida? Las marcas de antes del 12/11/2026 no guardan el día: valen siempre. */
+function dip_sagec_mano_vigente( WC_Order $p, $salida ) {
+	if ( '' === (string) $p->get_meta( '_dip_sagec_mano' ) ) return false;
+	$dia = (string) $p->get_meta( '_dip_sagec_mano_dia' );
+	return '' === $dia || '' === (string) $salida || $dia === (string) $salida;
 }
 
 /** Petición de TransmEnvio de un pedido. */
@@ -404,7 +459,7 @@ function dip_sagec_peticion( array $d, ?array $c = null ) {
 		'DatosServicio' => array(
 			'Fecha'            => $salida ? $salida->format( 'd/m/Y' ) : '',
 			'Referencia'       => $d['referencia'],
-			'EnFranquicia'     => 'N',
+			'EnFranquicia'     => 'S' === (string) ( $c['en_franquicia'] ?? 'N' ) ? 'S' : 'N', // lo confirma MRW (Ajustes → MRW)
 			'CodigoServicio'   => dip_sagec_codigo( $d['servicio'] ?? ( $d['sabado'] ? 'sabado' : '14' ), $c ),
 			'NumeroBultos'     => (string) max( 1, (int) $d['cajas'] ),
 			'Peso'             => (string) (int) $d['peso'],
@@ -420,27 +475,57 @@ function dip_sagec_peticion( array $d, ?array $c = null ) {
  * Crear un envío
  * ========================================================= */
 
-/** Bloqueo atómico (add_option no pisa una opción que ya existe): que la pasada y el aviso al momento no creen dos envíos. */
-function dip_sagec_bloquear( $id ) {
-	$clave = 'dip_sagec_bloqueo_' . (int) $id;
-	if ( add_option( $clave, time(), '', false ) ) return true;
-	if ( time() - (int) get_option( $clave ) > 5 * MINUTE_IN_SECONDS ) { // bloqueo viejo (un corte a mitad)
-		update_option( $clave, time(), false );
-		return true;
+/**
+ * Cerrojo atómico: una fila propia en wp_options, cuya clave es única, así que el segundo INSERT falla (add_option no
+ * vale: mira antes con get_option y luego hace INSERT … ON DUPLICATE KEY UPDATE). Un cerrojo de más de $caduca segundos
+ * es de un proceso que se cortó: se quita con un DELETE condicionado, que solo gana una petición (como dip_fs_reservar_pedido).
+ */
+function dip_sagec_cerrojo( $clave, $caduca = 300 ) {
+	global $wpdb;
+	for ( $intento = 0; $intento < 2; $intento++ ) {
+		$antes = $wpdb->suppress_errors( true );
+		$ok    = $wpdb->query( $wpdb->prepare( "INSERT INTO {$wpdb->options} (option_name, option_value, autoload) VALUES (%s, %s, 'off')", $clave, (string) time() ) );
+		$wpdb->suppress_errors( $antes );
+		if ( $ok ) {
+			wp_cache_delete( $clave, 'options' );
+			wp_cache_delete( 'notoptions', 'options' );
+			return true;
+		}
+		$viejo = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s AND CAST(option_value AS UNSIGNED) < %d", $clave, time() - (int) $caduca ) );
+		if ( ! $viejo ) return false;
 	}
 	return false;
 }
 
+function dip_sagec_soltar( $clave ) {
+	global $wpdb;
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s", $clave ) );
+	wp_cache_delete( $clave, 'options' );
+	wp_cache_delete( 'notoptions', 'options' );
+}
+
+/** Desde cuándo está cogido un cerrojo (0 si no lo está), leído de la base de datos. */
+function dip_sagec_cerrojo_desde( $clave ) {
+	global $wpdb;
+	return (int) $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s", $clave ) );
+}
+
+/** Que la pasada, el botón y el aviso al momento no creen dos envíos del mismo pedido. */
+function dip_sagec_bloquear( $id ) {
+	return dip_sagec_cerrojo( 'dip_sagec_bloqueo_' . (int) $id, 5 * MINUTE_IN_SECONDS );
+}
+
 function dip_sagec_desbloquear( $id ) {
-	delete_option( 'dip_sagec_bloqueo_' . (int) $id );
+	dip_sagec_soltar( 'dip_sagec_bloqueo_' . (int) $id );
 }
 
 /**
  * Crea el envío de un pedido en MRW, si le toca hoy y está completo.
  * $origen: texto para la nota ('pasada de las 8:00', 'al momento', 'botón'…). $forzar: botón «Crear en MRW».
  * @return array{estado: string, motivos: string[], numero: string, error: string}
- *   estado: creado · simulado · probado · mano · error (MRW no lo acepta: queda en «Hacer a mano») · esperar · hecho ·
- *   marcado · fuera · apagado · ocupado.
+ *   estado: creado · simulado · probado · mano · error (MRW no lo acepta: queda en «Hacer a mano») · falta (modo real
+ *   sin los datos de MRW: no se manda nada y llega un email, una vez al día) · esperar · hecho · marcado · fuera ·
+ *   apagado · ocupado.
  */
 function dip_sagec_crear( WC_Order $p, $origen = 'al momento', $forzar = false, ?DateTimeImmutable $ahora = null ) {
 	$c   = dip_sagec_config();
@@ -449,15 +534,27 @@ function dip_sagec_crear( WC_Order $p, $origen = 'al momento', $forzar = false, 
 	$id = (int) $p->get_id();
 	if ( ! dip_sagec_bloquear( $id ) ) return array_merge( $res, array( 'estado' => 'ocupado' ) );
 	try {
-		$p   = wc_get_order( $id ) ?: $p; // tal como está ahora, por si otra petición lo acaba de cambiar
+		// Tal como está ahora en la base de datos, por si otra petición lo acaba de crear: wc_get_order() puede devolver
+		// la copia en memoria de esta petición (caché de metadatos u OrderCache), así que los metadatos se vuelven a leer
+		$p = wc_get_order( $id ) ?: $p;
+		$p->read_meta_data( true );
 		$rev = dip_sagec_revisar( $p, $ahora, $forzar );
 		$res = array_merge( $res, array( 'estado' => $rev['estado'], 'motivos' => $rev['motivos'] ) );
 		if ( 'mano' === $rev['estado'] ) {
-			dip_sagec_marcar_mano( $p, $rev['motivos'], $origen, $c['modo'] );
+			dip_sagec_marcar_mano( $p, $rev['motivos'], $origen, $c['modo'], (string) ( $rev['datos']['salida'] ?? '' ) );
 			return $res;
 		}
 		if ( 'listo' !== $rev['estado'] ) return $res;
-		$falta = dip_sagec_falta( $c );
+		// En pruebas basta con las claves; para crear envíos de verdad, también lo que tiene que confirmar MRW
+		$falta = dip_sagec_falta( $c, 'pruebas' === $c['modo'] );
+		if ( 'real' === $c['modo'] && $falta ) {
+			// Modo real sin los datos de MRW: no se manda nada. No queda «Hacer a mano» (al completar Ajustes se crea solo),
+			// pero llega un email al correo de avisos (dip_sagec_email_mano, una vez al día) y sale en el escritorio
+			$motivo = 'no se ha creado en MRW: faltan en Ajustes → MRW ' . implode( ', ', $falta );
+			dip_sagec_guardar_estado( $p, array( 'estado' => 'falta', 'modo' => 'real', 'falta' => $falta ) );
+			$GLOBALS['dip_sagec_falta_aviso'][ $id ] = $motivo;
+			return array_merge( $res, array( 'estado' => 'falta', 'motivos' => array( $motivo ) ) );
+		}
 		if ( 'simulacion' === $c['modo'] || $falta ) {
 			dip_sagec_guardar_estado( $p, array( 'estado' => 'simulado', 'modo' => $c['modo'], 'falta' => $falta, 'peticion' => dip_sagec_resumen( $rev['datos'], $c ) ) );
 			return array_merge( $res, array( 'estado' => 'simulado', 'motivos' => $falta ? array( 'faltan datos de MRW en Ajustes: ' . implode( ', ', $falta ) ) : array() ) );
@@ -470,7 +567,7 @@ function dip_sagec_crear( WC_Order $p, $origen = 'al momento', $forzar = false, 
 		}
 		if ( ! $r['ok'] || '' === $numero ) {
 			$error = $r['error'] ?: 'MRW no ha devuelto número de envío';
-			dip_sagec_marcar_mano( $p, array( $error ), $origen, 'real' );
+			dip_sagec_marcar_mano( $p, array( $error ), $origen, 'real', (string) ( $rev['datos']['salida'] ?? '' ) );
 			return array_merge( $res, array( 'estado' => 'error', 'error' => $error, 'motivos' => array( $error ) ) );
 		}
 		dip_sagec_guardar_creado( $p, $numero, (string) ( $r['datos']['NumeroSolicitud'] ?? '' ), $rev['datos'], $origen, $ahora );
@@ -513,12 +610,14 @@ function dip_sagec_guardar_estado( WC_Order $p, array $estado ) {
  * «Hacer a mano»: no se crea nada, queda el motivo en el pedido y una nota. En modo real, además, un email al correo de
  * avisos (lo manda quien llama: la pasada junta todos en uno; al momento, uno por pedido).
  */
-function dip_sagec_marcar_mano( WC_Order $p, array $motivos, $origen, $modo ) {
+function dip_sagec_marcar_mano( WC_Order $p, array $motivos, $origen, $modo, $salida = '' ) {
 	$texto = implode( '; ', array_map( 'strval', $motivos ) );
-	dip_sagec_guardar_estado( $p, array( 'estado' => 'mano', 'modo' => $modo, 'motivos' => $motivos ) );
+	dip_sagec_guardar_estado( $p, array( 'estado' => 'mano', 'modo' => $modo, 'motivos' => $motivos, 'salida' => (string) $salida ) );
 	if ( 'real' !== $modo ) return;
-	$antes = (string) $p->get_meta( '_dip_sagec_mano' );
+	// La marca guarda su día de salida: si el pedido pasa a otro día, la misma marca vuelve a avisar ese día
+	$antes = dip_sagec_mano_vigente( $p, $salida ) ? (string) $p->get_meta( '_dip_sagec_mano' ) : '';
 	$p->update_meta_data( '_dip_sagec_mano', $texto );
+	if ( '' !== (string) $salida ) $p->update_meta_data( '_dip_sagec_mano_dia', (string) $salida );
 	$p->save_meta_data();
 	if ( $antes === $texto ) return;
 	$p->add_order_note( sprintf( 'Envío en MRW sin crear (%s): %s. Hazlo a mano en la web de clientes de MRW y apunta el número en «Envíos de hoy», o corrige el pedido y pulsa «Crear en MRW».', $origen, $texto ) );
@@ -546,9 +645,15 @@ function dip_sagec_guardar_creado( WC_Order $p, $numero, $solicitud, array $dato
 			. ( function_exists( 'dip_servicios_envio' ) ? ', servicio ' . ( dip_servicios_envio()[ $datos['servicio'] ?? '14' ]['mrw'] ?? '' ) : '' ),
 		dip_fecha_larga( $datos['salida'] ),
 		dip_url_seguimiento_mrw( $numero ),
-		$despues ? 'Ya es más tarde de las ' . dip_sagec_hora_camino() . ': el cliente recibe ahora el aviso «va de camino».' : 'El cliente recibe el aviso «va de camino» a las ' . dip_sagec_hora_camino() . '.'
+		$despues ? 'Ya es más tarde de las ' . dip_sagec_hora_camino() . ': sale ahora el aviso «va de camino» al cliente.' : 'El cliente recibe el aviso «va de camino» a las ' . dip_sagec_hora_camino() . '.'
 	) );
-	if ( $despues ) dip_sagec_avisar_salida( $p, $cuando );
+	if ( ! $despues ) return;
+	if ( 'fallo' !== dip_sagec_avisar_salida( $p, $cuando ) ) return;
+	// No ha salido: que no quede como avisado sin estarlo
+	$motivo = function_exists( 'dip_aviso_ultimo_motivo' ) ? (string) dip_aviso_ultimo_motivo() : '';
+	$p->add_order_note( 'El aviso «va de camino» del envío ' . $numero . ' no ha salido' . ( $motivo ? ' (' . $motivo . ')' : '' ) . '. Avisa al cliente por WhatsApp o teléfono, o desde Acciones del pedido → Enviar aviso: va de camino.' );
+	$correo = function_exists( 'dip_ajuste' ) ? (string) dip_ajuste( 'email_avisos' ) : '';
+	if ( '' !== $correo ) wp_mail( $correo, 'MRW: aviso «va de camino» que no ha salido', 'Pedido ' . $p->get_order_number() . ': envío ' . $numero . ' creado en MRW, pero el aviso «va de camino» al cliente no ha salido' . ( $motivo ? ' (' . $motivo . ')' : '' ) . ".\n\nAvísale por WhatsApp o teléfono, o desde el pedido: Acciones del pedido → Enviar aviso: va de camino.\n\n" . $p->get_edit_order_url() . "\n" );
 }
 
 /** Envío creado por la web que todavía no ha salido (aún no se ha avisado al cliente). «Mi pedido» no lo da por enviado. */
@@ -562,8 +667,12 @@ function dip_sagec_avisar_salida( WC_Order $p, ?DateTimeImmutable $ahora = null 
 	$p->update_meta_data( '_dip_enviado', dip_sagec_ahora( $ahora )->format( 'Y-m-d H:i:s' ) );
 	$p->save_meta_data();
 	if ( ! function_exists( 'dip_aviso_enviar' ) ) return 'fallo';
+	// Envío anulado y vuelto a crear después de avisar: el cliente tiene el enlace del anulado, así que el aviso sale
+	// otra vez con el número nuevo (como al corregir el número en «Envíos de hoy»), si el aviso está activado
+	$extra = array();
+	if ( '' !== (string) $p->get_meta( '_dip_aviso_camino' ) && ( ! function_exists( 'dip_avisos_activo' ) || dip_avisos_activo( 'camino' ) ) ) $extra['forzar'] = true;
 	try {
-		$ok = dip_aviso_enviar( $p, 'camino' );
+		$ok = dip_aviso_enviar( $p, 'camino', $extra );
 	} catch ( Throwable $e ) {
 		$ok = false;
 	}
@@ -625,24 +734,70 @@ function dip_sagec_pedidos_de_hoy( ?DateTimeImmutable $ahora = null ) {
 /**
  * Crea los envíos de todos los pedidos que salen hoy. Devuelve el recuento por estado y las líneas para el resultado.
  * Los nuevos «Hacer a mano» van juntos en un email al correo de avisos.
+ * Solo una pasada a la vez (la de WP-Cron y el botón «Crear envíos ahora»): si ya hay una en marcha, 'ocupada' => true.
  */
 function dip_sagec_pasada( $origen = 'pasada de las 8:00', $forzar = false, ?DateTimeImmutable $ahora = null ) {
-	$GLOBALS['dip_sagec_nuevos_mano'] = array();
-	$cuenta = array();
-	$lineas = array();
-	foreach ( dip_sagec_pedidos_de_hoy( $ahora ) as $p ) {
-		$r = dip_sagec_crear( $p, $origen, $forzar, $ahora );
-		$cuenta[ $r['estado'] ] = ( $cuenta[ $r['estado'] ] ?? 0 ) + 1;
-		if ( in_array( $r['estado'], array( 'creado', 'probado' ), true ) ) $lineas[] = sprintf( 'Pedido %s: envío %s%s.', $p->get_order_number(), $r['numero'], 'probado' === $r['estado'] ? ' (entorno de pruebas de MRW)' : '' );
-		if ( in_array( $r['estado'], array( 'mano', 'error' ), true ) ) $lineas[] = sprintf( 'Pedido %s: hacer a mano (%s).', $p->get_order_number(), implode( '; ', $r['motivos'] ?: array( $r['error'] ) ) );
-		if ( 'simulado' === $r['estado'] ) $lineas[] = sprintf( 'Pedido %s: listo para MRW%s.', $p->get_order_number(), $r['motivos'] ? ' (' . implode( '; ', $r['motivos'] ) . ')' : '' );
+	if ( ! dip_sagec_cerrojo( 'dip_sagec_pasada_en_curso', 10 * MINUTE_IN_SECONDS ) ) return array( 'cuenta' => array(), 'lineas' => array(), 'ocupada' => true );
+	try {
+		$GLOBALS['dip_sagec_nuevos_mano'] = array();
+		$cuenta = array();
+		$lineas = array();
+		foreach ( dip_sagec_pedidos_de_hoy( $ahora ) as $p ) {
+			$r = dip_sagec_crear( $p, $origen, $forzar, $ahora );
+			$cuenta[ $r['estado'] ] = ( $cuenta[ $r['estado'] ] ?? 0 ) + 1;
+			if ( in_array( $r['estado'], array( 'creado', 'probado' ), true ) ) $lineas[] = sprintf( 'Pedido %s: envío %s%s.', $p->get_order_number(), $r['numero'], 'probado' === $r['estado'] ? ' (entorno de pruebas de MRW)' : '' );
+			if ( in_array( $r['estado'], array( 'mano', 'error' ), true ) ) $lineas[] = sprintf( 'Pedido %s: hacer a mano (%s).', $p->get_order_number(), implode( '; ', $r['motivos'] ?: array( $r['error'] ) ) );
+			if ( 'simulado' === $r['estado'] ) $lineas[] = sprintf( 'Pedido %s: listo para MRW%s.', $p->get_order_number(), $r['motivos'] ? ' (' . implode( '; ', $r['motivos'] ) . ')' : '' );
+			if ( 'falta' === $r['estado'] ) $lineas[] = sprintf( 'Pedido %s: %s.', $p->get_order_number(), implode( '; ', $r['motivos'] ) );
+		}
+		dip_sagec_email_mano();
+		return array( 'cuenta' => $cuenta, 'lineas' => $lineas, 'ocupada' => false );
+	} finally {
+		dip_sagec_soltar( 'dip_sagec_pasada_en_curso' );
 	}
-	dip_sagec_email_mano();
-	return array( 'cuenta' => $cuenta, 'lineas' => $lineas );
+}
+
+/** ¿Cuenta como pasada hecha hoy? No, si todos los pedidos estaban esperando a las 8:00. */
+function dip_sagec_pasada_hecha( array $r ) {
+	if ( ! empty( $r['ocupada'] ) ) return false;
+	$cuenta = (array) ( $r['cuenta'] ?? array() );
+	return ! $cuenta || array( 'esperar' ) !== array_keys( $cuenta );
+}
+
+function dip_sagec_apuntar_pasada( array $r ) {
+	if ( dip_sagec_pasada_hecha( $r ) ) update_option( 'dip_sagec_ultima', array( 'dia' => dip_sagec_ahora()->format( 'Y-m-d' ), 'cuando' => time(), 'cuenta' => $r['cuenta'] ), false );
+}
+
+/**
+ * Modo real sin los datos de MRW: un email al correo de avisos con los pedidos que no se han creado (como mucho uno al
+ * día; el aviso rojo del escritorio sigue mientras falten).
+ */
+function dip_sagec_email_falta() {
+	$sin = (array) ( $GLOBALS['dip_sagec_falta_aviso'] ?? array() );
+	$GLOBALS['dip_sagec_falta_aviso'] = array();
+	if ( ! $sin ) return true;
+	$hoy = dip_sagec_ahora()->format( 'Y-m-d' );
+	if ( get_option( 'dip_sagec_aviso_falta' ) === $hoy ) return true;
+	$correo = function_exists( 'dip_ajuste' ) ? (string) dip_ajuste( 'email_avisos' ) : '';
+	if ( '' === $correo ) return false;
+	$texto = 'MRW está en modo real, pero faltan datos en Dryicepack → Ajustes → MRW: ' . implode( ', ', dip_sagec_falta() ) . ".\nNo se ha creado ningún envío en MRW. Estos pedidos salen hoy:\n\n";
+	foreach ( array_keys( $sin ) as $id ) {
+		$p = wc_get_order( $id );
+		if ( $p ) $texto .= function_exists( 'dip_eh_linea_email' ) ? dip_eh_linea_email( $p ) : 'Pedido ' . $p->get_order_number() . "\n";
+	}
+	$texto .= "\nQué hacer:\n"
+		. '1. Completa Ajustes → MRW y pulsa «Crear envíos ahora» en «Envíos de hoy», antes de las ' . dip_sagec_hora_limite() . ".\n"
+		. "2. Si no se puede, crea los envíos en la web de clientes de MRW y apunta los números en «Envíos de hoy».\n\n"
+		. 'Envíos de hoy: ' . ( function_exists( 'dip_eh_url' ) ? dip_eh_url() : admin_url( 'admin.php?page=dip-envios-hoy' ) ) . "\n"
+		. 'Ajustes: ' . admin_url( 'admin.php?page=dryicepack' ) . "#dip-mrw-sagec\n";
+	$ok = wp_mail( $correo, 'MRW: no se ha creado ningún envío (faltan datos en Ajustes)', $texto );
+	if ( $ok ) update_option( 'dip_sagec_aviso_falta', $hoy, false );
+	return $ok;
 }
 
 /** Un email con los pedidos que han quedado «Hacer a mano» en esta petición (solo los nuevos y en modo real). */
 function dip_sagec_email_mano() {
+	dip_sagec_email_falta();
 	$nuevos = (array) ( $GLOBALS['dip_sagec_nuevos_mano'] ?? array() );
 	$GLOBALS['dip_sagec_nuevos_mano'] = array();
 	if ( ! $nuevos ) return true;
@@ -693,9 +848,12 @@ add_action( 'init', static function () {
 	foreach ( dip_sagec_tareas() as $gancho => $hora ) {
 		$siguiente = wp_next_scheduled( $gancho );
 		$debe      = dip_eh_proxima( $hora );
-		// Si se cambia la hora en Ajustes, el evento de hoy se mueve a la hora nueva
+		// Si se cambia la hora en Ajustes, el evento de hoy se mueve a la hora nueva. Si la hora nueva ya ha pasado hoy y el
+		// evento que se quita era de hoy, sale ya (si no, los envíos de hoy se quedarían sin «va de camino» hasta mañana)
 		if ( $siguiente && abs( (int) $siguiente - (int) $debe ) > 60 && (int) $siguiente > time() ) {
+			$hoy = dip_sagec_ahora()->format( 'Y-m-d' );
 			wp_unschedule_event( $siguiente, $gancho );
+			if ( wp_date( 'Y-m-d', (int) $siguiente, dip_zona_horaria() ) === $hoy && wp_date( 'Y-m-d', (int) $debe, dip_zona_horaria() ) !== $hoy ) $debe = time();
 			$siguiente = false;
 		}
 		if ( ! $siguiente ) wp_schedule_single_event( $debe, $gancho );
@@ -704,8 +862,7 @@ add_action( 'init', static function () {
 
 add_action( 'dip_sagec_pasada', static function () {
 	if ( 'apagado' === dip_sagec_modo() ) return;
-	$r = dip_sagec_pasada();
-	update_option( 'dip_sagec_ultima', array( 'dia' => dip_sagec_ahora()->format( 'Y-m-d' ), 'cuando' => time(), 'cuenta' => $r['cuenta'] ), false );
+	dip_sagec_apuntar_pasada( dip_sagec_pasada() ); // si ya hay otra en marcha, la apunta esa
 } );
 
 add_action( 'dip_sagec_salida', static function () {
@@ -732,6 +889,7 @@ add_action( 'dip_sagec_uno', static function ( $id ) {
 	$p = wc_get_order( (int) $id );
 	if ( ! $p ) return;
 	$GLOBALS['dip_sagec_nuevos_mano'] = array();
+	$GLOBALS['dip_sagec_falta_aviso'] = array();
 	dip_sagec_crear( $p, 'al momento' );
 	dip_sagec_email_mano();
 } );
@@ -751,9 +909,21 @@ add_action( 'woocommerce_order_status_on-hold', 'dip_sagec_al_momento', 30 );
 add_action( 'woocommerce_process_shop_order_meta', static function ( $id ) {
 	$p = wc_get_order( $id );
 	if ( ! $p || '' === (string) $p->get_meta( '_dip_sagec_creado' ) ) {
+		// Número de MRW borrado a mano en esta misma petición (inc/envios-hoy.php): no se vuelve a crear solo; si tiene
+		// que salir, «Crear en MRW» en «Envíos de hoy» o en Acciones del pedido
+		if ( ! empty( $GLOBALS['dip_eh_borrados'][ (int) $id ] ) ) return;
 		dip_sagec_al_momento( $id );
 		return;
 	}
+	dip_sagec_comprobar_cambios( $p );
+}, 90 );
+
+/**
+ * Envío ya creado en MRW y pedido cambiado después (día, dirección, teléfono o kilos): marca «Revisar», nota y email.
+ * También al cambiar las líneas por AJAX en el escritorio (inc/checkout.php), que no pasa por «Actualizar».
+ */
+function dip_sagec_comprobar_cambios( WC_Order $p ) {
+	if ( '' === (string) $p->get_meta( '_dip_sagec_creado' ) ) return;
 	$huella = (string) $p->get_meta( '_dip_sagec_huella' );
 	if ( '' === $huella || dip_sagec_huella( dip_sagec_datos( $p ) ) === $huella || '' !== (string) $p->get_meta( '_dip_sagec_revisar' ) ) return;
 	$texto = 'el pedido ha cambiado (día, dirección, teléfono o kilos) después de crear el envío ' . $p->get_meta( '_dip_mrw_envio' ) . ' en MRW';
@@ -762,7 +932,7 @@ add_action( 'woocommerce_process_shop_order_meta', static function ( $id ) {
 	$p->add_order_note( 'Revisar el envío de MRW: ' . $texto . '. Anúlalo en MRW (Acciones del pedido → Anular el envío en MRW) y vuelve a crearlo, o corrígelo en la web de clientes de MRW.' );
 	$correo = (string) dip_ajuste( 'email_avisos' );
 	if ( '' !== $correo ) wp_mail( $correo, 'MRW: revisar el envío del pedido ' . $p->get_order_number(), 'Revisar: ' . $texto . ".\n\nAbrir el pedido: " . $p->get_edit_order_url() . "\n" );
-}, 90 );
+}
 
 /* Pedido cancelado o reembolsado con envío creado y sin salir: aviso para anularlo (no se anula solo). */
 add_action( 'woocommerce_order_status_changed', static function ( $id, $de, $a ) {
@@ -796,12 +966,29 @@ function dip_sagec_anular( WC_Order $p ) {
 	return true;
 }
 
+/**
+ * Quita del pedido el número que creó la web sin llamar a MRW (ya anulado en la web de clientes de MRW, o MRW no deja
+ * anularlo desde aquí). Igual que una anulación: fuera de Advanced Shipment Tracking y sin «va de camino». @return true|string
+ */
+function dip_sagec_quitar( WC_Order $p ) {
+	$numero = (string) $p->get_meta( '_dip_mrw_envio' );
+	if ( '' === $numero || '' === (string) $p->get_meta( '_dip_sagec_creado' ) ) return 'este pedido no tiene un envío creado por la web';
+	$avisado = '' !== (string) $p->get_meta( '_dip_aviso_camino' );
+	dip_ast_quitar( $p, $numero );
+	foreach ( array( '_dip_mrw_envio', '_dip_sagec_creado', '_dip_sagec_huella', '_dip_sagec_solicitud', '_dip_sagec_revisar', '_dip_enviado' ) as $k ) $p->delete_meta_data( $k );
+	$p->update_meta_data( '_dip_sagec_anulado', $numero );
+	$p->save_meta_data();
+	dip_sagec_guardar_estado( $p, array( 'estado' => 'anulado', 'modo' => 'real', 'numero' => $numero, 'sin_mrw' => 1 ) );
+	$p->add_order_note( 'Número de MRW ' . $numero . ' quitado del pedido sin anularlo desde la web: comprueba en la web de clientes de MRW que está anulado.' . ( $avisado ? ' El cliente ya había recibido el aviso «va de camino»: avísale.' : '' ) . ' Para crear otro: «Crear en MRW» en «Envíos de hoy».' );
+	return true;
+}
+
 /** PDF con las etiquetas de varios envíos. @return string|WP_Error */
 function dip_sagec_etiquetas( array $numeros ) {
 	$numeros = array_values( array_unique( array_filter( array_map( static fn( $n ) => str_replace( ' ', '', dip_mrw_numero_limpio( $n ) ), $numeros ) ) ) );
 	if ( ! $numeros ) return new WP_Error( 'dip_sagec', 'no hay envíos con número' );
 	$c = dip_sagec_config();
-	if ( ! in_array( $c['modo'], array( 'real', 'pruebas' ), true ) || dip_sagec_falta( $c ) ) return new WP_Error( 'dip_sagec', 'MRW no está conectado (Ajustes → MRW)' );
+	if ( ! in_array( $c['modo'], array( 'real', 'pruebas' ), true ) || dip_sagec_falta( $c, true ) ) return new WP_Error( 'dip_sagec', 'MRW no está conectado (Ajustes → MRW)' );
 	$r = dip_sagec_llamar( 'GetEtiquetaEnvio', 'GetEtiquetaEnvioResult', array(
 		'NumeroEnvio'           => implode( ',', $numeros ),
 		'SeparadorNumerosEnvio' => ',',
@@ -826,10 +1013,13 @@ function dip_sagec_texto_estado( WC_Order $p ) {
 		$d = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $creado, dip_zona_horaria() );
 		return array( 'bien', 'Creado en MRW' . ( $d ? ' el ' . $d->format( 'j/n \a \l\a\s H:i' ) : '' ) . '. ' . ( dip_sagec_pendiente_de_salir( $p ) ? 'Aviso «va de camino» a las ' . dip_sagec_hora_camino() . '.' : 'Cliente avisado.' ) );
 	}
-	if ( '' !== (string) $p->get_meta( '_dip_sagec_mano' ) ) return array( 'mal', 'Hacer a mano: ' . $p->get_meta( '_dip_sagec_mano' ) . '.' );
+	$salida = function_exists( 'dip_eh_salida_de' ) && function_exists( 'dip_eh_fecha' ) ? (string) dip_eh_salida_de( dip_eh_fecha( $p ) ) : '';
+	if ( dip_sagec_mano_vigente( $p, $salida ) ) return array( 'mal', 'Hacer a mano: ' . $p->get_meta( '_dip_sagec_mano' ) . '.' );
 	$e = (array) $p->get_meta( '_dip_sagec_estado' );
 	$cuando = ! empty( $e['cuando'] ) ? ' (' . wp_date( 'j/n H:i', (int) $e['cuando'], dip_zona_horaria() ) . ')' : '';
 	switch ( (string) ( $e['estado'] ?? '' ) ) {
+		case 'falta':
+			return array( 'mal', 'Sin crear en MRW' . $cuando . ': faltan en Ajustes → MRW ' . implode( ', ', (array) ( $e['falta'] ?? array() ) ) . '. Complétalos y pulsa «Crear en MRW», o hazlo a mano.' );
 		case 'simulado':
 			return array( 'info', 'Simulación' . $cuando . ': listo para MRW. Mandaría: ' . ( $e['peticion'] ?? '' ) . '.' );
 		case 'probado':
@@ -837,8 +1027,13 @@ function dip_sagec_texto_estado( WC_Order $p ) {
 		case 'error':
 			return array( 'mal', 'Prueba en MRW' . $cuando . ': ' . ( $e['error'] ?? 'no lo acepta' ) . '.' );
 		case 'mano':
-			return array( 'mal', ( 'real' === ( $e['modo'] ?? '' ) ? 'Hacer a mano' : 'Simulación: quedaría para hacer a mano' ) . $cuando . ': ' . implode( '; ', (array) ( $e['motivos'] ?? array() ) ) . '.' );
+			// En modo real, si la marca valiera para este día ya habría salido arriba: es de otro día de salida (el pedido
+			// ha cambiado de día) o ya está resuelta, y no se enseña el motivo viejo. La pasada de ese día lo vuelve a mirar
+			if ( 'real' === ( $e['modo'] ?? '' ) ) break;
+			if ( ! empty( $e['salida'] ) && '' !== $salida && (string) $e['salida'] !== $salida ) break;
+			return array( 'mal', 'Simulación: quedaría para hacer a mano' . $cuando . ': ' . implode( '; ', (array) ( $e['motivos'] ?? array() ) ) . '.' );
 		case 'anulado':
+			if ( ! empty( $e['sin_mrw'] ) ) return array( 'info', 'Número ' . ( $e['numero'] ?? '' ) . ' quitado del pedido' . $cuando . ' sin anularlo desde la web (anulado en la web de clientes de MRW).' );
 			return array( 'info', 'Envío ' . ( $e['numero'] ?? '' ) . ' anulado en MRW' . $cuando . '.' );
 	}
 	return array( '', '' );
@@ -854,12 +1049,45 @@ function dip_sagec_problemas( ?DateTimeImmutable $ahora = null ) {
 	$margen = dip_sagec_minutos( DIP_SAGEC_HORA_PASADA ) + 60;
 	list( $hp, $mp ) = array_map( 'intval', explode( ':', DIP_SAGEC_HORA_PASADA ) );
 	$tocaba = $hoy->setTime( $hp, $mp )->getTimestamp() >= (int) get_option( 'dip_sagec_desde', 0 ); // ya estaba instalado a las 8:00
-	if ( $tocaba && function_exists( 'dip_es_dia_de_salida' ) && dip_es_dia_de_salida( $hoy ) && dip_sagec_minuto_del_dia( $ahora ) >= $margen && ( $ultima['dia'] ?? '' ) !== $hoy->format( 'Y-m-d' ) ) {
+	// Una pasada en marcha (cerrojo de menos de 10 minutos) todavía no ha apuntado la hora: no se pide el botón
+	$en_curso = dip_sagec_cerrojo_desde( 'dip_sagec_pasada_en_curso' );
+	$en_curso = $en_curso && time() - $en_curso < 10 * MINUTE_IN_SECONDS;
+	if ( $tocaba && ! $en_curso && function_exists( 'dip_es_dia_de_salida' ) && dip_es_dia_de_salida( $hoy ) && dip_sagec_minuto_del_dia( $ahora ) >= $margen && ( $ultima['dia'] ?? '' ) !== $hoy->format( 'Y-m-d' ) ) {
 		$r[] = 'La creación de envíos en MRW de las ' . DIP_SAGEC_HORA_PASADA . ' no se ha hecho hoy (puede que WP-Cron no se esté ejecutando). Pulsa «Crear envíos ahora» en «Envíos de hoy».';
 	}
-	if ( 'real' === dip_sagec_modo() && dip_sagec_falta() ) $r[] = 'MRW está en modo real pero faltan datos en Ajustes → MRW: ' . implode( ', ', dip_sagec_falta() ) . '.';
+	if ( 'real' === dip_sagec_modo() && dip_sagec_falta() ) $r[] = 'MRW está en modo real pero faltan datos en Ajustes → MRW: ' . implode( ', ', dip_sagec_falta() ) . '. Mientras falten, no se crea ningún envío.';
 	return $r;
 }
+
+/**
+ * Modo real con problemas (la pasada de las 8:00 no se ha hecho, faltan datos de MRW, la contraseña ya no se lee):
+ * email al correo de avisos, como mucho uno al día. Se comprueba en las visitas (WP-Cron puede estar parado), cada 15 min.
+ */
+function dip_sagec_vigilar( ?DateTimeImmutable $ahora = null ) {
+	if ( 'real' !== dip_sagec_modo() ) return false;
+	$problemas = dip_sagec_problemas( $ahora );
+	$hoy       = dip_sagec_ahora( $ahora )->format( 'Y-m-d' );
+	if ( ! $problemas || get_option( 'dip_sagec_avisado' ) === $hoy ) return false;
+	$correo = function_exists( 'dip_ajuste' ) ? (string) dip_ajuste( 'email_avisos' ) : '';
+	if ( '' === $correo ) return false;
+	$ok = wp_mail(
+		$correo,
+		'MRW: la creación de envíos no funciona',
+		"La web no puede crear hoy los envíos en MRW:\n\n- " . implode( "\n- ", $problemas ) . "\n\n"
+		. 'Mientras tanto, en «Envíos de hoy»: «Crear envíos ahora», o crea los envíos en la web de clientes de MRW y apunta los números. Hay que tenerlos antes de las ' . dip_sagec_hora_limite() . ".\n\n"
+		. 'Envíos de hoy: ' . ( function_exists( 'dip_eh_url' ) ? dip_eh_url() : admin_url( 'admin.php?page=dip-envios-hoy' ) ) . "\n"
+		. 'Ajustes: ' . admin_url( 'admin.php?page=dryicepack' ) . "#dip-mrw-sagec\n\n"
+		. 'Este aviso se repite una vez al día mientras dure el problema.'
+	);
+	if ( $ok ) update_option( 'dip_sagec_avisado', $hoy, false );
+	return $ok;
+}
+
+add_action( 'init', static function () {
+	if ( wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || get_transient( 'dip_sagec_vigilado' ) ) return;
+	set_transient( 'dip_sagec_vigilado', 1, 15 * MINUTE_IN_SECONDS );
+	dip_sagec_vigilar();
+}, 30 );
 
 add_action( 'admin_notices', static function () {
 	if ( ! current_user_can( 'manage_woocommerce' ) ) return;
@@ -879,17 +1107,24 @@ add_action( 'admin_post_dip_sagec_accion', static function () {
 	$volver = isset( $_POST['volver'] ) ? esc_url_raw( wp_unslash( $_POST['volver'] ) ) : '';
 	$hecho  = array( 'tipo' => 'notice-success', 'texto' => '', 'lineas' => array() );
 	if ( 'crear_todos' === $que ) {
-		$r = dip_sagec_pasada( 'botón «Crear envíos ahora»' );
-		update_option( 'dip_sagec_ultima', array( 'dia' => dip_sagec_ahora()->format( 'Y-m-d' ), 'cuando' => time(), 'cuenta' => $r['cuenta'] ), false );
-		$hecho['texto']  = $r['lineas'] ? 'MRW: hecho.' : 'MRW: no había ningún envío nuevo que crear hoy.';
-		$hecho['lineas'] = $r['lineas'];
-		if ( ! empty( $r['cuenta']['mano'] ) || ! empty( $r['cuenta']['error'] ) ) $hecho['tipo'] = 'notice-warning';
+		// También antes de las 8:00 (quien lo pulsa quiere las etiquetas ya): solo se fuerza la hora, el resto igual
+		$r = dip_sagec_pasada( 'botón «Crear envíos ahora»', 'hora' );
+		if ( ! empty( $r['ocupada'] ) ) {
+			$hecho['tipo']  = 'notice-warning';
+			$hecho['texto'] = 'MRW: ya se están creando los envíos de hoy (pasada en marcha). Vuelve a cargar «Envíos de hoy» en un minuto.';
+		} else {
+			dip_sagec_apuntar_pasada( $r );
+			$hecho['texto']  = $r['lineas'] ? 'MRW: hecho.' : 'MRW: no había ningún envío nuevo que crear hoy.';
+			$hecho['lineas'] = $r['lineas'];
+			if ( ! empty( $r['cuenta']['mano'] ) || ! empty( $r['cuenta']['error'] ) || ! empty( $r['cuenta']['falta'] ) ) $hecho['tipo'] = 'notice-warning';
+		}
 	} elseif ( 'crear' === $que && $id && ( $p = wc_get_order( $id ) ) ) {
 		$p->delete_meta_data( '_dip_sagec_mano' );
 		$p->save_meta_data();
 		$GLOBALS['dip_sagec_nuevos_mano'] = array();
 		$r = dip_sagec_crear( $p, 'botón «Crear en MRW»', true );
 		$GLOBALS['dip_sagec_nuevos_mano'] = array(); // quien pulsa el botón ya ve el motivo: sin email
+		$GLOBALS['dip_sagec_falta_aviso'] = array();
 		$hecho['texto'] = array(
 			'creado'   => 'Pedido ' . $p->get_order_number() . ': envío ' . $r['numero'] . ' creado en MRW.',
 			'probado'  => 'Pedido ' . $p->get_order_number() . ': MRW (pruebas) lo acepta con el número ' . $r['numero'] . '.',
@@ -897,6 +1132,7 @@ add_action( 'admin_post_dip_sagec_accion', static function () {
 			'hecho'    => 'Pedido ' . $p->get_order_number() . ': ya tenía número de MRW.',
 			'apagado'  => 'MRW está apagado (Ajustes → MRW).',
 			'ocupado'  => 'Pedido ' . $p->get_order_number() . ': se está creando ahora mismo. Vuelve a cargar en un momento.',
+			'falta'    => 'Pedido ' . $p->get_order_number() . ': ' . implode( '; ', $r['motivos'] ) . '.',
 		)[ $r['estado'] ] ?? 'Pedido ' . $p->get_order_number() . ': no se ha creado. ' . implode( '; ', $r['motivos'] ?: array( $r['error'] ) ) . '.';
 		if ( ! in_array( $r['estado'], array( 'creado', 'probado', 'simulado', 'hecho' ), true ) ) $hecho['tipo'] = 'notice-warning';
 	} elseif ( 'avisar' === $que ) {
@@ -988,7 +1224,10 @@ add_filter( 'woocommerce_order_actions', static function ( $acciones, $pedido = 
 	$pedido = $pedido instanceof WC_Order ? $pedido : ( $GLOBALS['theorder'] ?? null );
 	if ( ! $pedido instanceof WC_Order || 'apagado' === dip_sagec_modo() || ( function_exists( 'dip_eh_es_recogida' ) && dip_eh_es_recogida( $pedido ) ) ) return $acciones;
 	if ( '' === (string) $pedido->get_meta( '_dip_mrw_envio' ) ) $acciones['dip_sagec_crear'] = 'Crear el envío en MRW';
-	if ( '' !== (string) $pedido->get_meta( '_dip_sagec_creado' ) ) $acciones['dip_sagec_anular'] = 'Anular el envío en MRW';
+	if ( '' !== (string) $pedido->get_meta( '_dip_sagec_creado' ) ) {
+		$acciones['dip_sagec_anular'] = 'Anular el envío en MRW';
+		$acciones['dip_sagec_quitar'] = 'Quitar el número sin anular en MRW (ya anulado allí)';
+	}
 	return $acciones;
 }, 20, 2 );
 
@@ -997,6 +1236,7 @@ add_action( 'woocommerce_order_action_dip_sagec_crear', static function ( $pedid
 	$pedido->save_meta_data();
 	$r = dip_sagec_crear( $pedido, 'Acciones del pedido', true );
 	$GLOBALS['dip_sagec_nuevos_mano'] = array();
+	$GLOBALS['dip_sagec_falta_aviso'] = array();
 	if ( ! in_array( $r['estado'], array( 'creado', 'probado', 'simulado', 'hecho' ), true ) && class_exists( 'WC_Admin_Meta_Boxes' ) ) {
 		WC_Admin_Meta_Boxes::add_error( 'No se ha creado el envío en MRW: ' . implode( '; ', $r['motivos'] ?: array( $r['error'] ?: $r['estado'] ) ) . '.' );
 	}
@@ -1004,7 +1244,15 @@ add_action( 'woocommerce_order_action_dip_sagec_crear', static function ( $pedid
 
 add_action( 'woocommerce_order_action_dip_sagec_anular', static function ( $pedido ) {
 	$r = dip_sagec_anular( $pedido );
-	if ( true !== $r && class_exists( 'WC_Admin_Meta_Boxes' ) ) WC_Admin_Meta_Boxes::add_error( 'No se ha anulado el envío en MRW: ' . $r . '. Anúlalo en la web de clientes de MRW.' );
+	if ( true !== $r && class_exists( 'WC_Admin_Meta_Boxes' ) ) WC_Admin_Meta_Boxes::add_error( 'No se ha anulado el envío en MRW: ' . $r . '. Anúlalo en la web de clientes de MRW y después usa «Quitar el número sin anular en MRW».' );
+} );
+
+add_action( 'woocommerce_order_action_dip_sagec_quitar', static function ( $pedido ) {
+	$numero = (string) $pedido->get_meta( '_dip_mrw_envio' );
+	$r      = dip_sagec_quitar( $pedido );
+	// En esta misma petición, el guardado del pedido (prioridad 90) no lo vuelve a mandar a MRW
+	if ( true === $r ) $GLOBALS['dip_eh_borrados'][ $pedido->get_id() ] = $numero;
+	elseif ( class_exists( 'WC_Admin_Meta_Boxes' ) ) WC_Admin_Meta_Boxes::add_error( 'No se ha quitado el número: ' . $r . '.' );
 } );
 
 /* =========================================================
@@ -1021,11 +1269,22 @@ function dip_devolver_envio( WC_Order $p, $razon = '' ) {
 	if ( ! function_exists( 'wc_create_refund' ) ) return 'WooCommerce no está activo';
 	$lineas = array();
 	$total  = 0.0;
-	foreach ( $p->get_items( 'shipping' ) as $id => $item ) {
-		$base = round( (float) $item->get_total() - (float) $p->get_total_refunded_for_item( $id, 'shipping' ), 2 );
+	// La línea de envío, el cargo «Pedido urgente» y, en los pedidos de antes del 11/11/2026, el cargo «Entrega en
+	// sábado» (no el de recogida en sábado): lo mismo que promete el email de incidencia (dip_avisos_suplemento_envio y
+	// dip_avisos_suplemento_urgente en inc/avisos.php)
+	$items = array();
+	foreach ( $p->get_items( 'shipping' ) as $id => $item ) $items[] = array( $id, $item, 'shipping' );
+	foreach ( $p->get_items( 'fee' ) as $id => $item ) {
+		$nombre  = (string) $item->get_name();
+		$sabado  = preg_match( '/s[áa]bado|dissabte|saturday/iu', $nombre ) && ! preg_match( '/recogida|recollida|collection/iu', $nombre );
+		$urgente = $item->get_meta( '_dip_urgente' ) || preg_match( '/pedido urgente|comanda urgent|urgent order/iu', $nombre );
+		if ( $sabado || $urgente ) $items[] = array( $id, $item, 'fee' );
+	}
+	foreach ( $items as list( $id, $item, $tipo_linea ) ) {
+		$base = round( (float) $item->get_total() - (float) $p->get_total_refunded_for_item( $id, $tipo_linea ), 2 );
 		$iva  = array();
 		foreach ( (array) ( $item->get_taxes()['total'] ?? array() ) as $tipo => $importe ) {
-			$iva[ $tipo ] = round( (float) $importe - (float) $p->get_tax_refunded_for_item( $id, $tipo, 'shipping' ), 2 );
+			$iva[ $tipo ] = round( (float) $importe - (float) $p->get_tax_refunded_for_item( $id, $tipo, $tipo_linea ), 2 );
 		}
 		if ( $base <= 0 ) continue;
 		$lineas[ $id ] = array( 'qty' => 0, 'refund_total' => wc_format_decimal( $base ), 'refund_tax' => array_map( 'wc_format_decimal', $iva ) );
@@ -1100,7 +1359,9 @@ function dip_sagec_html_ajustes() {
 		if ( $en_config ) {
 			echo '<input id="dip-sagec-' . esc_attr( $clave ) . '" type="text" class="regular-text" value="' . esc_attr( 'En wp-config.php (' . $const[ $clave ] . ')' ) . '" readonly>';
 		} elseif ( 'password' === $tipo ) {
-			echo '<input id="dip-sagec-' . esc_attr( $clave ) . '" name="dip_sagec[' . esc_attr( $clave ) . ']" type="password" class="regular-text" autocomplete="new-password" value="" placeholder="' . esc_attr( '' !== (string) $c['clave'] ? 'Guardada (escribe otra para cambiarla)' : '' ) . '">';
+			$guardada = '' !== (string) $c['clave'] ? ( dip_sagec_clave_ilegible() ? 'No se puede leer: escríbela otra vez' : 'Guardada (escribe otra para cambiarla)' ) : '';
+			echo '<input id="dip-sagec-' . esc_attr( $clave ) . '" name="dip_sagec[' . esc_attr( $clave ) . ']" type="password" class="regular-text" autocomplete="new-password" value="" placeholder="' . esc_attr( $guardada ) . '">';
+			if ( dip_sagec_clave_ilegible() ) echo '<p class="description" style="color:#b32d2e">' . esc_html( 'La contraseña guardada ya no se puede descifrar (han cambiado las claves de WordPress de wp-config.php). Escríbela otra vez y guarda.' ) . '</p>';
 			if ( '' !== (string) $c['clave'] ) echo ' <label><input type="checkbox" name="dip_sagec[borrar_clave]" value="1"> ' . esc_html( 'Borrarla' ) . '</label>';
 		} else {
 			echo '<input id="dip-sagec-' . esc_attr( $clave ) . '" name="dip_sagec[' . esc_attr( $clave ) . ']" type="text" class="regular-text" autocomplete="off" value="' . esc_attr( (string) $c[ $clave ] ) . '">';
@@ -1117,8 +1378,9 @@ function dip_sagec_html_ajustes() {
 		echo '<div class="notice ' . esc_attr( $prueba['ok'] ? 'notice-success' : 'notice-error' ) . ' inline"><p>' . esc_html( $prueba['texto'] ) . '</p></div>';
 	}
 	foreach ( dip_sagec_problemas() as $problema ) echo '<div class="notice notice-error inline"><p>' . esc_html( $problema ) . '</p></div>';
+	if ( 'real' !== $conf['modo'] && dip_sagec_falta( $conf ) ) echo '<div class="notice notice-info inline"><p>' . esc_html( 'Para crear envíos de verdad (modo real) faltan: ' . implode( ', ', dip_sagec_falta( $conf ) ) . '.' ) . '</p></div>';
 	?>
-	<p>El día de salida, a las <?php echo esc_html( DIP_SAGEC_HORA_PASADA ); ?>, la web crea en MRW los envíos completos de ese día; después, cada pedido nuevo para hoy al momento, hasta la hora límite. Guarda el número en el pedido y en Advanced Shipment Tracking (de ahí lo lee la app INDUNOVA Control). Si falta algo o hay dudas, no crea nada: el pedido queda «Hacer a mano» y llega un email al correo de avisos. Los códigos de servicio, el tipo de etiqueta y cómo se declara el hielo seco (UN 1845) te los tiene que dar MRW: mientras falte algo, no se manda nada.</p>
+	<p>El día de salida, a las <?php echo esc_html( DIP_SAGEC_HORA_PASADA ); ?>, la web crea en MRW los envíos completos de ese día; después, cada pedido nuevo para hoy al momento, hasta la hora límite. Guarda el número en el pedido y en Advanced Shipment Tracking (de ahí lo lee la app INDUNOVA Control). Si falta algo o hay dudas, no crea nada: el pedido queda «Hacer a mano» y llega un email al correo de avisos. Los códigos de servicio, el tipo de etiqueta, cómo se declara el hielo seco (UN 1845) y si va «en franquicia» te los tiene que dar MRW: mientras falte algo o no marques que MRW lo ha confirmado, el modo real no crea ningún envío (la simulación y las pruebas sí funcionan).</p>
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<input type="hidden" name="action" value="dip_sagec_ajustes">
 		<?php wp_nonce_field( 'dip_sagec_ajustes' ); ?>
@@ -1146,9 +1408,18 @@ function dip_sagec_html_ajustes() {
 			$campo( 'tipo_etiqueta', 'Tipo de etiqueta', 'El que te diga MRW para el PDF de las etiquetas. Vacío: el de serie.' );
 			$campo( 'observaciones', 'Observaciones para el repartidor', 'Van en todos los envíos (120 caracteres como mucho).' );
 			?>
+			<tr><th scope="row"><label for="dip-sagec-en_franquicia">En franquicia</label></th><td>
+				<select id="dip-sagec-en_franquicia" name="dip_sagec[en_franquicia]">
+					<option value="N" <?php selected( $c['en_franquicia'], 'N' ); ?>>No: MRW recoge las cajas (de serie)</option>
+					<option value="S" <?php selected( $c['en_franquicia'], 'S' ); ?>>Sí: las cajas se llevan a la franquicia de MRW</option>
+				</select>
+				<p class="description">Lo que te diga MRW. La cuenta tiene una recogida en la nave a las 17:45 y entre semana las cajas se llevan a MRW: pregúntales qué hay que marcar.</p></td></tr>
+			<tr><th scope="row">Confirmado con MRW</th><td>
+				<label><input type="checkbox" name="dip_sagec[confirmado]" value="1" <?php checked( '1', (string) $c['confirmado'] ); ?>> MRW me ha confirmado cómo se declara el hielo seco (UN 1845), el tipo de etiqueta y «en franquicia», y está puesto aquí</label>
+				<p class="description">Sin esta casilla, el modo real no crea ningún envío: los pedidos salen en «Envíos de hoy» como sin crear y llega un email al correo de avisos. La simulación y las pruebas funcionan igual.</p></td></tr>
 		</table>
 		<?php submit_button( 'Guardar los ajustes de MRW', 'primary', 'guardar', false ); ?>
-		<?php if ( ! dip_sagec_falta( $conf ) ) : ?> <button type="submit" class="button" name="probar" value="1"><?php echo esc_html( 'Guardar y probar la conexión' ); ?></button><?php endif; ?>
+		<?php if ( ! dip_sagec_falta( $conf, true ) ) : ?> <button type="submit" class="button" name="probar" value="1"><?php echo esc_html( 'Guardar y probar la conexión' ); ?></button><?php endif; ?>
 	</form>
 	<?php
 }
@@ -1164,6 +1435,8 @@ add_action( 'admin_post_dip_sagec_ajustes', static function () {
 		if ( array_key_exists( $k, $e ) ) $nuevo[ $k ] = substr( trim( sanitize_text_field( (string) $e[ $k ] ) ), 0, 40 );
 	}
 	if ( array_key_exists( 'observaciones', $e ) ) $nuevo['observaciones'] = mb_substr( trim( sanitize_text_field( (string) $e['observaciones'] ) ), 0, 120 );
+	$nuevo['en_franquicia'] = 'S' === (string) ( $e['en_franquicia'] ?? 'N' ) ? 'S' : 'N';
+	$nuevo['confirmado']    = empty( $e['confirmado'] ) ? '' : '1'; // casilla: sin marcar no llega
 	if ( ! empty( $e['borrar_clave'] ) ) $nuevo['clave'] = '';
 	elseif ( '' !== (string) ( $e['clave'] ?? '' ) ) $nuevo['clave'] = dip_sagec_cifrar( (string) $e['clave'] ); // tal cual: una contraseña puede llevar cualquier carácter
 	update_option( 'dip_sagec', $nuevo, false );

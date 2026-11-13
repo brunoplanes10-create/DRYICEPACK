@@ -65,19 +65,72 @@ add_filter( 'woocommerce_checkout_fields', static function ( $campos ) {
 		'label'    => $t['sin_ofertas'],
 		'required' => false,
 		'priority' => 15, // entre el email (10) y el teléfono (20)
-		'class'    => array( 'form-row-wide', 'dip-casilla-ofertas' ),
+		// update_totals_on_change: al marcarla o desmarcarla, WooCommerce manda update_order_review y queda en la sesión
+		'class'    => array( 'form-row-wide', 'dip-casilla-ofertas', 'update_totals_on_change' ),
 		'default'  => $email && dip_ofertas_de_baja( $email ) ? 1 : 0,
 	);
 	return $campos;
 }, 2010 );
 
+/* Marca oculta junto a la casilla: el pedido viene del formulario, donde el cliente la ha visto (una casilla sin marcar no
+   se envía, así que sin la marca no se distingue «no la marcó» de «no la vio»). */
+add_filter( 'woocommerce_form_field', static function ( $html, $clave ) {
+	if ( 'dip_sin_ofertas' !== $clave ) return $html;
+	// Dentro del párrafo del campo (antes de su </p>): así el teléfono sigue justo detrás de la casilla
+	$marca = '<input type="hidden" name="dip_ofertas_en_form" value="1">';
+	$fin   = strrpos( $html, '</p>' );
+	return false === $fin ? $html . $marca : substr_replace( $html, $marca, $fin, 0 );
+}, 10, 2 );
+
+/* La casilla, en la sesión (como dip_fecha): Apple Pay y Google Pay de WooPayments crean el pedido por la Store API, sin los
+   campos del formulario. 'no' = marcada, 'si' = sin marcar. Sin dato (null), el pedido queda en 'no' (art. 21.2 LSSI). */
+add_action( 'woocommerce_checkout_update_order_review', static function ( $post_data ) {
+	if ( ! function_exists( 'WC' ) || ! WC()->session ) return;
+	parse_str( (string) $post_data, $datos );
+	if ( empty( $datos['dip_ofertas_en_form'] ) ) return;
+	WC()->session->set( 'dip_sin_ofertas', empty( $datos['dip_sin_ofertas'] ) ? 'si' : 'no' );
+} );
+
+/** Lo que eligió el cliente en el checkout de esta sesión: 'si' (se le puede escribir), 'no' (marcó la casilla) o null (no se sabe). */
+function dip_ofertas_eleccion_sesion() {
+	$v = function_exists( 'WC' ) && WC()->session ? WC()->session->get( 'dip_sin_ofertas' ) : null;
+	return in_array( $v, array( 'si', 'no' ), true ) ? $v : null;
+}
+
+/** Guarda _dip_publicidad. $eleccion null = no se sabe: 'no', nunca 'si' por defecto, y sin pasar a la lista de bajas. */
+function dip_ofertas_guardar_pedido( WC_Order $pedido, $eleccion ) {
+	$pedido->update_meta_data( '_dip_publicidad', 'si' === $eleccion ? 'si' : 'no' );
+	if ( 'no' === $eleccion ) dip_ofertas_dar_de_baja( dip_ofertas_huella( $pedido->get_billing_email() ) );
+	add_option( 'dip_ofertas_desde', current_time( 'Y-m-d' ), '', false ); // primer pedido con la casilla (no cambia después)
+}
+
 /* Cada pedido guarda lo que eligió; si dice que no, va a la lista de bajas */
 add_action( 'woocommerce_checkout_create_order', static function ( $pedido, $datos ) {
-	$no = ! empty( $datos['dip_sin_ofertas'] );
-	$pedido->update_meta_data( '_dip_publicidad', $no ? 'no' : 'si' );
-	if ( $no ) dip_ofertas_dar_de_baja( dip_ofertas_huella( $pedido->get_billing_email() ) );
-	add_option( 'dip_ofertas_desde', current_time( 'Y-m-d' ), '', false ); // primer pedido con la casilla (no cambia después)
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce ya verificó el nonce del checkout
+	if ( ! empty( $_POST['dip_ofertas_en_form'] ) ) {
+		$eleccion = empty( $datos['dip_sin_ofertas'] ) ? 'si' : 'no';
+	} else {
+		$eleccion = dip_ofertas_eleccion_sesion(); // pago exprés u otra vía sin el formulario
+	}
+	dip_ofertas_guardar_pedido( $pedido, $eleccion );
 }, 10, 2 );
+
+/* Checkout por Store API (Apple Pay y Google Pay de WooPayments): lo que quedó en la sesión */
+add_action( 'woocommerce_store_api_checkout_update_order_from_request', static function ( $pedido ) {
+	if ( $pedido instanceof WC_Order ) dip_ofertas_guardar_pedido( $pedido, dip_ofertas_eleccion_sesion() );
+} );
+
+/* Cada checkout empieza de nuevo: la casilla sale de la página que ve el cliente, no de un pedido anterior. Como el día y
+   la hora (inc/entrega.php): con el formulario, al crear el pedido (si el pago falla, el formulario la vuelve a mandar);
+   con Apple Pay / Google Pay, cuando el pago ha salido bien (WooCommerce vacía el carrito), para que un pago rechazado y
+   repetido guarde lo que eligió el cliente. */
+function dip_ofertas_olvidar_sesion() {
+	if ( function_exists( 'WC' ) && WC()->session ) WC()->session->set( 'dip_sin_ofertas', null );
+}
+add_action( 'woocommerce_checkout_order_created', static function () {
+	if ( ! empty( $_POST['dip_ofertas_en_form'] ) ) dip_ofertas_olvidar_sesion(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- solo mira si llega la marca
+}, 99 );
+add_action( 'woocommerce_cart_emptied', 'dip_ofertas_olvidar_sesion' );
 
 /* =========================================================
  * La lista: Dryicepack → Clientes para ofertas
@@ -144,6 +197,7 @@ function dip_ofertas_pantalla() {
 		. ( $desde ? ' (está en el checkout desde el ' . esc_html( date_i18n( 'j/n/Y', strtotime( $desde ) ) ) . ')' : ' (aún no hay ningún pedido con la casilla)' )
 		. '. Se les puede escribir sobre hielo seco: fechas para pedir, puentes, Halloween, Nochevieja y ofertas (artículo 21.2 de la LSSI). No salen los que dijeron que no, los que se han dado de baja ni los pedidos de antes de la casilla.</p>';
 	echo '<p style="max-width:760px"><strong>Cada email tiene que llevar un enlace para darse de baja:</strong> el de la columna «baja» del CSV (quien se da de baja ahí ya no vuelve a salir en esta lista) o el de la herramienta de envíos.</p>';
+	echo '<p style="max-width:760px"><strong>Y tiene que ir identificado como publicidad:</strong> el asunto empieza por «Publicidad:» (por ejemplo, «Publicidad: pide antes del jueves 29 para Halloween»). La ley pide la palabra «publicidad» o la abreviatura «publi» (artículo 20.1 de la LSSI): en los emails en catalán o en inglés, «Publi:» o «Publicitat / Publicidad:» y «Advertising / Publicidad:».</p>';
 	printf(
 		'<p><a class="button button-primary" href="%1$s">Descargar CSV (%2$d)</a> <span style="margin-left:1em">Bajas guardadas: %3$d</span></p>',
 		esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=dip_ofertas_csv' ), 'dip_ofertas_csv' ) ),
@@ -171,7 +225,8 @@ add_action( 'admin_post_dip_ofertas_csv', static function () {
 	$salida = fopen( 'php://output', 'w' );
 	fwrite( $salida, "\xEF\xBB\xBF" );
 	fputcsv( $salida, array( 'email', 'nombre', 'empresa', 'idioma', 'trato', 'provincia', 'cp', 'ultimo_pedido', 'pedidos', 'baja' ), ';' );
-	foreach ( dip_ofertas_clientes() as $f ) fputcsv( $salida, array_values( $f ), ';' );
+	// Celdas a salvo de fórmulas (dip_csv_celda, inc/informes.php): el nombre y la empresa los escribe el cliente
+	foreach ( dip_ofertas_clientes() as $f ) fputcsv( $salida, array_map( 'dip_csv_celda', array_values( $f ) ), ';' );
 	fclose( $salida );
 	exit;
 } );

@@ -71,9 +71,18 @@
       fetch(fAviso.getAttribute("action"), { method: "POST", body: datos, credentials: "same-origin" })
         .then(function (r) { return r.json(); })
         .then(function (j) {
-          estado.textContent = j.mensaje;
-          estado.hidden = false;
-          if (j.ok) { fAviso.hidden = true; if (legal) legal.hidden = true; } else { boton.disabled = false; }
+          var mostrar = function () {
+            estado.textContent = j.mensaje;
+            if (j.ok) {
+              fAviso.hidden = true;
+              if (legal) legal.hidden = true;
+              // El botón con el foco desaparece: el foco pasa al aviso (tabindex="-1"), no al principio de la página
+              if (!estado.hasAttribute("tabindex")) estado.setAttribute("tabindex", "-1");
+              estado.focus();
+            } else { boton.disabled = false; }
+          };
+          // Primero visible (y vacía) y después el texto, en otro momento: una región viva oculta al cambiar no se anuncia
+          if (estado.hidden) { estado.textContent = ""; estado.hidden = false; w.setTimeout(mostrar, 100); } else { mostrar(); }
         })
         .catch(function () { boton.disabled = false; HTMLFormElement.prototype.submit.call(fAviso); });
     });

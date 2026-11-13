@@ -50,7 +50,7 @@ return array(
 		),
 		'tramo'  => 'tarifa hasta %s kg',
 		'extra'  => '%1$s hasta 10 kg + %2$s kg × %3$s',
-		'nota'   => 'Contamos cajas de 20 kg y el resto en el pack que toque ({pk}, 10 o 15 kg), como si lo pidieras en la tienda. La mensajería cobra el hielo más 1 kg por caja, redondeado al alza: la misma cuenta que se hace al pagar.',
+		'nota'   => 'Contamos cajas de 20 kg y el resto en el pack que toque ({pk}, 10 o 15 kg), como si lo pidieras en la tienda. La mensajería cobra el hielo más 1 kg por caja, redondeado al alza: la misma cuenta que se hace al pagar. En Mataró (08301–08304), con poco peso, al pagar sale algo menos.',
 		'medida' => array(
 			'cajas'  => 'Cajas a medida del pedido',
 			'titulo' => 'Te preparamos precio y día.',

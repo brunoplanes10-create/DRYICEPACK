@@ -11,6 +11,11 @@ if ( isset( $_GET['procesar'] ) ) {
 	echo wp_json_encode( $p ? $p->get_status() : null );
 	exit;
 }
+// Celda del CSV a salvo de fórmulas (dip_csv_celda)
+if ( isset( $_GET['celda'] ) ) {
+	echo wp_json_encode( dip_csv_celda( wp_unslash( $_GET['celda'] ) ) );
+	exit;
+}
 if ( isset( $_GET['pedido'] ) ) {
 	$p = wc_get_order( absint( $_GET['pedido'] ) );
 	echo wp_json_encode( $p ? array( 'publicidad' => (string) $p->get_meta( '_dip_publicidad' ), 'email' => $p->get_billing_email() ) : null );

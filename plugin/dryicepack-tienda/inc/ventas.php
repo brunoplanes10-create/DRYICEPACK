@@ -6,9 +6,12 @@
  * 5.1 El pack siguiente en el checkout. Con un solo pack en el carrito (1 o más cajas iguales), una línea debajo del
  *     producto: «Con 15 kg, el kilo con envío te sale a 7,65 € en vez de 8,18 €: son 32,83 € más», y un botón que cambia
  *     el pack (mismo formato y mismo número de cajas) sin salir del checkout. Solo si el kilo de verdad baja.
- *     - Envío: el precio de la hora y el destino elegidos (dip_precio_servicio), con IVA.
- *     - Recogida: los precios redondos de recogida en efectivo (inc/precios-recogida.php); el sábado suma lo mismo a los dos.
- *     - No se ofrece si el pack siguiente no se puede (sin existencias, más de 250 kg, sábado de más de 80 kg).
+ *     - Envío: el precio de la hora y el destino elegidos (dip_precio_servicio), con IVA, más el suplemento de pedido
+ *       urgente si lo lleva.
+ *     - Recogida: los precios redondos de recogida en efectivo (inc/precios-recogida.php), con el descuento de la cuenta
+ *       de empresa; el suplemento de recogida en sábado suma lo mismo a los dos.
+ *     - No se ofrece si el pack siguiente no se puede (sin existencias para todas las cajas, más de 250 kg, más de 150 kg
+ *       fuera de la provincia de Barcelona o sin código postal todavía, sábado de más de 80 kg).
  *
  * 7.3 Repetir el pedido, en «Mi pedido»: el carrito con los mismos packs y la misma dirección, y al checkout, donde se elige
  *     el día. La coherencia de quien ya compró: un clic en vez de volver a escribirlo todo.
@@ -43,7 +46,8 @@ function dip_ventas_siguiente_pack() {
 	$mejor   = null;
 	foreach ( $padre->get_children() as $id ) {
 		$s = wc_get_product( $id );
-		if ( ! $s instanceof WC_Product_Variation || ! $s->is_purchasable() || ! $s->is_in_stock() ) continue;
+		// Con existencias para todas las cajas (is_in_stock() solo mira que quede alguna)
+		if ( ! $s instanceof WC_Product_Variation || ! $s->is_purchasable() || ! $s->is_in_stock() || ! $s->has_enough_stock( $cajas ) ) continue;
 		if ( (string) ( $s->get_variation_attributes()['attribute_pa_formato'] ?? '' ) !== $formato ) continue;
 		$skg = (float) dip_kg_producto( $s );
 		if ( $skg > $kg + 0.001 && ( ! $mejor || $skg < $mejor['kg'] ) ) $mejor = array( 'p' => $s, 'kg' => $skg );
@@ -52,17 +56,36 @@ function dip_ventas_siguiente_pack() {
 
 	$iva = dip_factor_iva();
 	if ( 'recogida' === dip_metodo_elegido() ) {
-		$total   = dip_precio_recogida_producto( $v ) * $cajas;
-		$total_s = dip_precio_recogida_producto( $mejor['p'] ) * $cajas;
+		// El precio redondo de recogida con el descuento de la cuenta de empresa, como lo cobra el carrito (inc/cuentas.php
+		// rebaja la base; inc/precios-recogida.php la pone), y el suplemento de recogida en sábado, que también se paga
+		$desc    = function_exists( 'dip_descuento_cliente' ) ? (float) dip_descuento_cliente() : 0.0;
+		$precio  = static function ( $p ) use ( $iva, $desc ) {
+			$redondo = (float) dip_precio_recogida_producto( $p );
+			return $desc > 0 ? round( round( $redondo / $iva * ( 1 - $desc / 100 ), 2 ) * $iva, 2 ) : $redondo;
+		};
+		$sup     = dip_suplemento_sabado( 'recogida', dip_fecha_elegida( 'recogida' ) );
+		$extra   = $sup ? (float) $sup['con_iva'] : 0.0;
+		$total   = $precio( $v ) * $cajas + $extra;
+		$total_s = $precio( $mejor['p'] ) * $cajas + $extra;
 	} else {
 		$fecha    = dip_fecha_elegida( 'envio' );
 		$servicio = dip_servicio_elegido( $fecha );
 		$destino  = function_exists( 'dip_destino_actual' ) ? dip_destino_actual() : null;
+		// Más de 150 kg fuera de la provincia de Barcelona no hay envío online (envío a medida): con el pack siguiente el
+		// carrito se quedaría sin envío. Sin código postal todavía, no se ofrece si pasa de 150 kg.
+		$kg_s = $mejor['kg'] * $cajas;
+		$cp   = preg_replace( '/\D/', '', (string) ( $destino['cp'] ?? '' ) );
+		if ( dip_envio_a_medida( $kg_s, $cp ) || ( strlen( $cp ) < 2 && $kg_s > DIP_KG_A_MEDIDA + 0.0001 ) ) return null;
 		$env      = dip_precio_servicio( $servicio, $kg * $cajas, $cajas, $destino );
-		$env_s    = dip_precio_servicio( $servicio, $mejor['kg'] * $cajas, $cajas, $destino );
+		$env_s    = dip_precio_servicio( $servicio, $kg_s, $cajas, $destino );
 		if ( ! $env || ! $env_s ) return null; // sábado de más de 80 kg
-		$total   = round( (float) wc_get_price_including_tax( $v ), 2 ) * $cajas + round( $env['neto'] * $iva, 2 );
-		$total_s = round( (float) wc_get_price_including_tax( $mejor['p'] ), 2 ) * $cajas + round( $env_s['neto'] * $iva, 2 );
+		// El suplemento de pedido urgente (inc/urgente.php), si el día elegido lo lleva: se paga igual con los dos packs
+		$extra = 0.0;
+		if ( function_exists( 'dip_urgente_activo' ) && ( $e = dip_urgente_activo() ) && (float) $e['importe'] > 0 && dip_urgente_hace_falta( $fecha, $e ) ) {
+			$extra = dip_urgente_con_iva( (float) $e['importe'] );
+		}
+		$total   = round( (float) wc_get_price_including_tax( $v ), 2 ) * $cajas + round( $env['neto'] * $iva, 2 ) + $extra;
+		$total_s = round( (float) wc_get_price_including_tax( $mejor['p'] ), 2 ) * $cajas + round( $env_s['neto'] * $iva, 2 ) + $extra;
 	}
 	$kilo   = $total / ( $kg * $cajas );
 	$kilo_s = $total_s / ( $mejor['kg'] * $cajas );
@@ -134,6 +157,7 @@ function dip_repetir_pedido( WC_Order $p ) {
 	$tm     = dip_mp_textos( $idioma );
 	$cart   = WC()->cart;
 	$cart->empty_cart();
+	$faltan = 0;
 	foreach ( $p->get_items() as $l ) {
 		if ( ! $l instanceof WC_Order_Item_Product ) continue;
 		$prod = $l->get_product();
@@ -141,7 +165,10 @@ function dip_repetir_pedido( WC_Order $p ) {
 		if ( $n < 1 ) continue;
 		$ok = $prod && $prod->is_purchasable() && $prod->is_in_stock()
 			&& $cart->add_to_cart( (int) $l->get_product_id(), $n, (int) $l->get_variation_id(), $prod instanceof WC_Product_Variation ? $prod->get_variation_attributes() : array() );
-		if ( ! $ok ) wc_add_notice( sprintf( $t['repetido_sin'], dip_mp_nombre_linea( $l, $idioma, $tm ) ), 'notice' );
+		if ( ! $ok ) {
+			wc_add_notice( sprintf( $t['repetido_sin'], dip_mp_nombre_linea( $l, $idioma, $tm ) ), 'notice' );
+			$faltan++;
+		}
 	}
 	// El checkout y sus avisos, en el idioma del pedido (la misma cookie que pone inc/textos.php)
 	if ( ! headers_sent() ) {
@@ -175,7 +202,10 @@ function dip_repetir_pedido( WC_Order $p ) {
 		WC()->session->set( 'dip_repetido_de', (int) $p->get_id() );
 		WC()->session->set_customer_session_cookie( true );
 	}
-	wc_add_notice( sprintf( $t['repetido'], $p->get_order_number() ), 'success' );
+	// Recogida: ni «la misma dirección» ni «paga» (se paga en efectivo al recoger). Si algún pack no entró, no es «lo mismo».
+	$recoge = function_exists( 'dip_eh_es_recogida' ) ? dip_eh_es_recogida( $p ) : 'recogida' === (string) $p->get_meta( '_dip_metodo_entrega' );
+	$clave  = 'repetido' . ( $faltan ? '_parcial' : '' ) . ( $recoge ? '_recogida' : '' );
+	wc_add_notice( sprintf( $t[ $clave ], $p->get_order_number() ), 'success' );
 	wp_safe_redirect( wc_get_checkout_url() );
 	exit;
 }

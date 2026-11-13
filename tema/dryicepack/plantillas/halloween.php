@@ -278,7 +278,7 @@ get_header();
 			<p class="hw-ticket hw-solo-abierto"><span class="hw-ticket__et"><span class="hw-f-v">Último pedido para el viernes 30</span><span class="hw-f-s">Último pedido para el sábado 31 (según zona)</span></span><span class="hw-ticket__fecha"><span class="hw-f-v">Jue 29/10 · 12:00</span><span class="hw-f-s">Vie 30/10 · 12:00</span></span></p>
 			<?php elseif ( function_exists( 'dip_ah_ano' ) ) : ?>
 			<!-- Fuera de campaña, en el mismo hueco: el aviso para el próximo Halloween (sección #aviso) -->
-			<a class="hw-ticket hw-ticket--aviso" href="#aviso"><span class="hw-ticket__et">¿Lo quieres para Halloween <?php echo (int) dip_ah_ano(); ?>?</span> <span class="hw-ticket__fecha">Te avisamos →</span></a>
+			<a class="hw-ticket hw-ticket--aviso" href="#aviso"><span class="hw-ticket__et">¿Lo quieres para Halloween <?php echo (int) ( function_exists( 'dip_ah_ano_alta' ) ? dip_ah_ano_alta() : dip_ah_ano() ); ?>?</span> <span class="hw-ticket__fecha">Te avisamos →</span></a>
 			<?php endif; ?>
 		</div>
 	</section>
@@ -550,11 +550,14 @@ get_header();
 	<?php
 	// 6b · AVÍSAME (fuera de campaña; diseño «La hoja de octubre», elegido el 11/11/2026). Plugin: inc/aviso-halloween.php
 	if ( ! $hw_campana && function_exists( 'dip_ah_ocultos' ) ) :
-		$hw_ano   = dip_ah_ano();
-		$hw_oct   = new DateTimeImmutable( $hw_ano . '-10-01', wp_timezone() );
+		// El año del aviso de quien se apunta hoy: desde el 1 de octubre, el del año que viene (nunca un octubre que ya empezó)
+		$hw_ano   = function_exists( 'dip_ah_ano_alta' ) ? dip_ah_ano_alta() : dip_ah_ano();
+		$hw_oct  = new DateTimeImmutable( $hw_ano . '-10-01', wp_timezone() );
 		$hw_hueco = (int) $hw_oct->format( 'N' ) - 1; // días vacíos antes del 1 (semana de lunes a domingo)
 		$hw_d31   = array( 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo' )[ (int) $hw_oct->modify( '+30 day' )->format( 'N' ) - 1 ];
-		$hw_av    = isset( $_GET['aviso'] ) ? sanitize_key( wp_unslash( $_GET['aviso'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- sin JavaScript: 'revisa' o 'error'
+		$hw_av    = isset( $_GET['aviso'] ) ? sanitize_key( wp_unslash( $_GET['aviso'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- sin JavaScript: 'revisa', 'ya' o 'error'
+		if ( ! in_array( $hw_av, array( 'revisa', 'ya', 'error' ), true ) ) $hw_av = ''; // otro valor: ni caja vacía ni nada
+		$hw_hecho = in_array( $hw_av, array( 'revisa', 'ya' ), true ); // apuntado (o ya lo estaba): se esconde el formulario
 		$hw_pest  = '<b class="hw-aviso__pestana">Te escribimos <i>→</i></b>';
 		?>
 	<section class="hw-seccion hw-seccion--alt hw-aviso" id="aviso" aria-labelledby="hw-aviso-t">
@@ -564,14 +567,14 @@ get_header();
 				<p class="hw-antetitulo">Halloween <?php echo (int) $hw_ano; ?> · <?php echo esc_html( ucfirst( $hw_d31 ) ); ?> 31 de octubre</p>
 				<h2 id="hw-aviso-t">¿Lo quieres para el próximo Halloween? Te avisamos.</h2>
 				<p>Te escribimos una sola vez, a principios de octubre de <?php echo (int) $hw_ano; ?>, con las fechas para pedirlo y que llegue a tiempo a tu fiesta.</p>
-				<form class="hw-aviso__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-hw-aviso<?php echo 'revisa' === $hw_av ? ' hidden' : ''; ?>>
+				<form class="hw-aviso__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-hw-aviso<?php echo $hw_hecho ? ' hidden' : ''; ?>>
 					<?php echo dip_ah_ocultos(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- campos ocultos escapados en el plugin ?>
 					<label class="hw-oculto" for="hw-aviso-email">Tu email</label>
 					<input id="hw-aviso-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" maxlength="190" required>
 					<button class="hw-btn" type="submit">Avísame</button>
 				</form>
-				<p class="hw-aviso__legal" data-hw-aviso-legal<?php echo 'revisa' === $hw_av ? ' hidden' : ''; ?>>Te mandamos un email para confirmarlo. Solo lo usamos para este aviso y te das de baja con un clic. INDUNOVA IMS S.L. · <a href="<?php echo esc_url( function_exists( 'dipt_url' ) ? dipt_url( 'privacidad', 'es' ) : home_url( '/politica-de-privacidad/' ) ); ?>">Política de privacidad</a></p>
-				<p class="hw-aviso__estado" data-hw-aviso-estado role="status"<?php echo $hw_av ? '' : ' hidden'; ?>><?php echo esc_html( 'revisa' === $hw_av ? 'Revisa tu email: pulsa el botón del enlace que te hemos enviado para confirmar el aviso.' : ( 'error' === $hw_av ? 'No se ha podido apuntar. Revisa el email y vuelve a probar, o escríbenos a info@dryicepack.es.' : '' ) ); ?></p>
+				<p class="hw-aviso__legal" data-hw-aviso-legal<?php echo $hw_hecho ? ' hidden' : ''; ?>>Te mandamos un email para confirmarlo. Solo usamos tu email para este aviso y puedes quitarlo cuando quieras con el enlace «Quitar el aviso» de ese email. Responsable: INDUNOVA IMS S.L. Para acceder a tus datos, corregirlos, borrarlos o pedir que los limitemos o te los pasemos, escribe a info@dryicepack.es · <a href="<?php echo esc_url( function_exists( 'dipt_url' ) ? dipt_url( 'privacidad', 'es' ) : home_url( '/politica-de-privacidad/' ) ); ?>">Política de privacidad</a></p>
+				<p class="hw-aviso__estado" data-hw-aviso-estado role="status" tabindex="-1"<?php echo $hw_av ? '' : ' hidden'; ?>><?php echo esc_html( 'revisa' === $hw_av ? 'Revisa tu email: pulsa el botón del enlace que te hemos enviado para confirmar el aviso.' : ( 'ya' === $hw_av ? 'Ya estabas apuntado al aviso de Halloween: no tienes que hacer nada más.' : ( 'error' === $hw_av ? 'No te hemos podido apuntar. Comprueba que el email está bien escrito y vuelve a probar dentro de un rato, o escríbenos a info@dryicepack.es.' : '' ) ) ); ?></p>
 			</div>
 			<div class="hw-aviso__hoja" aria-hidden="true" data-hw-revela>
 				<div class="hw-aviso__cab"><span class="hw-aviso__mes">Octubre</span><span class="hw-aviso__ano"><?php echo (int) $hw_ano; ?></span></div>

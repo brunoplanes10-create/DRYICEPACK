@@ -6,7 +6,10 @@
  *   (copiar, WhatsApp o email). Nada es automático: sin enlace, nadie compra para mañana después de las 12:00.
  * - El enlace sirve para un solo pedido, solo hoy y hasta la hora límite (Ajustes, de serie 17:30: después ya no se llega a
  *   la última furgoneta de MRW, que sale a las 18:30). Abre la entrega de mañana en el checkout aunque hayan pasado las
- *   12:00. Todo lo demás se sigue aplicando: festivos, cierres de MRW en el destino, sábado con su suplemento, 250 kg.
+ *   12:00. Todo lo demás se sigue aplicando: festivos, cierres de MRW en el destino, sábado con su tarifa, 250 kg.
+ *   Solo se crea desde las 12:00: antes, el cliente pide para mañana sin enlace (y así el suplemento no aparece de repente
+ *   si paga justo después de las 12:00 con el total de antes en pantalla).
+ * - También vale en la Store API (/wc/store/…: Apple Pay y Google Pay de WooPayments): corte, suplemento y marca.
  * - Suplemento «Pedido urgente», como el del sábado (decidido el 11/11/2026): 9,70 € + IVA = 11,74 € con IVA (Ajustes;
  *   en cada enlace se puede cambiar o poner a 0). Se ve antes de pagar, en el pedido, en los emails y en la factura.
  *   Solo se cobra si hace falta el enlace: antes de las 12:00 o para otro día, no.
@@ -75,6 +78,9 @@ function dip_urgente_crear( $importe, $nota = '', ?DateTimeImmutable $ahora = nu
 	if ( dip_sagec_minuto_del_dia( $ahora ) >= dip_sagec_minutos( $limite ) ) return new WP_Error( 'dip_urgente', 'Ya son más de las ' . $limite . ': hoy no llega a la última furgoneta de MRW.' );
 	$entrega = dip_urgente_entrega_de_hoy( $ahora );
 	if ( '' === $entrega ) return new WP_Error( 'dip_urgente', 'Hoy no sale ningún envío (fin de semana, festivo o cierre de MRW Mataró): no se puede crear un enlace urgente.' );
+	// Antes del corte no hace falta: el cliente pide para mañana como siempre. Y si se creara antes de las 12:00 y pagara
+	// justo después, el suplemento entraría al pagar sin que lo hubiera visto en el total.
+	if ( dip_sagec_minuto_del_dia( $ahora ) < DIP_CUTOFF_HOUR * 60 + DIP_CUTOFF_MINUTE ) return new WP_Error( 'dip_urgente', sprintf( 'Hasta las %02d:%02d el cliente puede pedir para el %s sin enlace. Los enlaces urgentes se crean desde esa hora.', DIP_CUTOFF_HOUR, DIP_CUTOFF_MINUTE, dip_fecha_larga( $entrega ) ) );
 	list( $h, $m ) = array_map( 'intval', explode( ':', $limite ) );
 	$usuario = function_exists( 'wp_get_current_user' ) ? wp_get_current_user() : null;
 	$codigo  = bin2hex( random_bytes( 16 ) );
@@ -105,21 +111,57 @@ function dip_urgente_estado( array $e, ?DateTimeImmutable $ahora = null ) {
 }
 
 /**
- * Enlace de este visitante si vale ahora (cookie), o null. No vale en el escritorio, en la API REST ni en WP-Cron.
+ * ¿Es una petición de la Store API de WooCommerce (/wc/store/…)? Por ahí pagan Apple Pay y Google Pay de WooPayments
+ * (POST /wc/store/v1/checkout). El resto de la API REST (p. ej. /wp-json/dip/v1/envio, que es pública y va en caché)
+ * nunca ve el enlace.
+ */
+function dip_urgente_es_store_api() {
+	if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST ) return false;
+	if ( function_exists( 'WC' ) && WC() && method_exists( WC(), 'is_store_api_request' ) && WC()->is_store_api_request() ) return true;
+	$ruta = isset( $_GET['rest_route'] ) && is_string( $_GET['rest_route'] ) ? (string) wp_unslash( $_GET['rest_route'] ) : (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput -- solo se compara
+	return false !== strpos( $ruta, '/wc/store/' );
+}
+
+/**
+ * Código del enlace de este visitante: la cookie o, si no llega (el pago exprés por la Store API puede ir solo con el
+ * Cart-Token), el que se guardó en la sesión de WooCommerce al entrar por el enlace. '' si no hay.
+ */
+function dip_urgente_codigo() {
+	$codigo = isset( $_COOKIE['dip_urgente'] ) ? preg_replace( '/[^a-f0-9]/', '', (string) wp_unslash( $_COOKIE['dip_urgente'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- se limpia aquí
+	if ( 32 !== strlen( $codigo ) && function_exists( 'WC' ) && WC() && WC()->session ) {
+		$codigo = preg_replace( '/[^a-f0-9]/', '', (string) WC()->session->get( 'dip_urgente' ) );
+	}
+	return 32 === strlen( $codigo ) ? $codigo : '';
+}
+
+/**
+ * ¿El pedido del enlace (ya «usado») se está pagando en esta sesión? Un pago rechazado se reintenta con el mismo pedido:
+ * el de la sesión (checkout clásico: order_awaiting_payment; Store API: store_api_draft_order), sin pagar todavía
+ * (pendiente, fallido o borrador) y antes de la hora límite.
+ */
+function dip_urgente_pedido_en_pago( array $e, ?DateTimeImmutable $ahora = null ) {
+	$id = (int) ( $e['pedido'] ?? 0 );
+	if ( ! $id || ! function_exists( 'WC' ) || ! WC() || ! WC()->session ) return false;
+	if ( ( $ahora ?: new DateTimeImmutable( 'now' ) )->getTimestamp() >= (int) $e['caduca'] ) return false;
+	if ( $id !== (int) WC()->session->get( 'order_awaiting_payment' ) && $id !== (int) WC()->session->get( 'store_api_draft_order' ) ) return false;
+	$p = function_exists( 'wc_get_order' ) ? wc_get_order( $id ) : null;
+	return $p instanceof WC_Order && $p->has_status( array( 'pending', 'failed', 'checkout-draft' ) );
+}
+
+/**
+ * Enlace de este visitante si vale ahora (cookie o sesión), o null. No vale en el escritorio, en WP-Cron ni en la API
+ * REST, salvo en la Store API de la tienda (Apple Pay / Google Pay).
  * Uno ya usado sigue valiendo para su propio pedido mientras se paga (un pago rechazado se reintenta).
  */
 function dip_urgente_activo( ?DateTimeImmutable $ahora = null ) {
-	if ( ( is_admin() && ! wp_doing_ajax() ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || wp_doing_cron() ) return null;
-	$codigo = isset( $_COOKIE['dip_urgente'] ) ? preg_replace( '/[^a-f0-9]/', '', (string) wp_unslash( $_COOKIE['dip_urgente'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- se limpia aquí
-	if ( 32 !== strlen( $codigo ) ) return null;
+	if ( ( is_admin() && ! wp_doing_ajax() ) || wp_doing_cron() ) return null;
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST && ! dip_urgente_es_store_api() ) return null;
+	$codigo = dip_urgente_codigo();
+	if ( '' === $codigo ) return null;
 	$e = dip_urgente_lista()[ $codigo ] ?? null;
 	if ( ! is_array( $e ) ) return null;
 	$estado = dip_urgente_estado( $e, $ahora );
-	if ( 'usado' === $estado ) {
-		$espera = function_exists( 'WC' ) && WC()->session ? (int) WC()->session->get( 'order_awaiting_payment' ) : 0;
-		if ( $espera && $espera === (int) $e['pedido'] && ( $ahora ?: new DateTimeImmutable( 'now' ) )->getTimestamp() < (int) $e['caduca'] ) return $e;
-		return null;
-	}
+	if ( 'usado' === $estado ) return dip_urgente_pedido_en_pago( $e, $ahora ) ? $e : null;
 	return 'activo' === $estado ? $e : null;
 }
 
@@ -149,11 +191,21 @@ add_action( 'template_redirect', static function () {
 	$e      = dip_urgente_lista()[ $codigo ] ?? null;
 	$post   = get_page_by_path( DIP_PRODUCT_SLUG, OBJECT, 'product' );
 	$ficha  = $post ? get_permalink( $post ) : home_url( '/' );
-	$vale   = is_array( $e ) && 'activo' === dip_urgente_estado( $e );
+	// La ficha en el idioma del cliente (la de castellano reescribiría su cookie dip_idioma a 'es')
+	$idioma = isset( $_COOKIE['dip_idioma'] ) ? sanitize_key( wp_unslash( $_COOKIE['dip_idioma'] ) ) : '';
+	if ( in_array( $idioma, array( 'ca', 'en' ), true ) && function_exists( 'dipt_url' ) ) $ficha = dipt_url( 'producto', $idioma );
+	// Vale si está activo o, ya usado, si su pedido sigue sin pagar en esta sesión (pago rechazado: vuelve a pulsar el enlace)
+	$estado = is_array( $e ) ? dip_urgente_estado( $e ) : '';
+	$vale   = 'activo' === $estado || ( 'usado' === $estado && dip_urgente_pedido_en_pago( $e ) );
 	nocache_headers();
 	if ( $vale ) {
 		setcookie( 'dip_urgente', $codigo, array( 'expires' => (int) $e['caduca'], 'path' => COOKIEPATH ?: '/', 'domain' => COOKIE_DOMAIN ?: '', 'secure' => is_ssl(), 'httponly' => true, 'samesite' => 'Lax' ) );
 		$_COOKIE['dip_urgente'] = $codigo;
+		// También en la sesión: el pago exprés por la Store API puede llegar sin cookies, solo con el Cart-Token
+		if ( function_exists( 'WC' ) && WC() && WC()->session ) {
+			if ( method_exists( WC()->session, 'has_session' ) && ! WC()->session->has_session() && method_exists( WC()->session, 'set_customer_session_cookie' ) ) WC()->session->set_customer_session_cookie( true );
+			WC()->session->set( 'dip_urgente', $codigo );
+		}
 	}
 	wp_safe_redirect( add_query_arg( 'urgente', $vale ? '1' : 'caducado', $ficha ) );
 	exit;
@@ -168,13 +220,21 @@ add_action( 'template_redirect', static function () {
 
 /* ---------- Textos para el cliente ---------- */
 
-/** Texto del enlace activo en el checkout y en la ficha, o ''. */
-function dip_urgente_nota_cliente( $idioma = null ) {
+/**
+ * Texto del enlace activo en el checkout y en la ficha, o ''. Sin la frase del suplemento si el enlace va a 0 €, y nada
+ * si el día del enlace no se puede elegir para este destino (p. ej. festivo de MRW en su población: lo avisa el checkout).
+ * $destino null = el del checkout en curso.
+ */
+function dip_urgente_nota_cliente( $idioma = null, $destino = null ) {
 	$e = dip_urgente_activo();
 	if ( ! $e || ! dip_urgente_hace_falta( $e['entrega'], $e ) ) return '';
+	$destino = null === $destino && function_exists( 'dip_destino_actual' ) ? dip_destino_actual() : $destino;
+	if ( ! dip_fecha_es_valida( $e['entrega'], 'envio', $destino ) ) return '';
 	$idioma = $idioma ?: ( function_exists( 'dip_idioma' ) ? dip_idioma() : 'es' );
 	$t      = dip_textos_tienda( $idioma );
-	return sprintf( $t['urgente_nota'], dip_fecha_larga( $e['entrega'], $idioma ), dip_hora_limite_entrega( $e['entrega'] ), dip_texto_euros( dip_urgente_con_iva( (float) $e['importe'] ) ), wp_date( 'H:i', (int) $e['caduca'], dip_zona_horaria() ) );
+	$hasta  = wp_date( 'H:i', (int) $e['caduca'], dip_zona_horaria() );
+	if ( (float) $e['importe'] <= 0 ) return sprintf( $t['urgente_nota_sin'], dip_fecha_larga( $e['entrega'], $idioma ), dip_hora_limite_entrega( $e['entrega'] ), $hasta );
+	return sprintf( $t['urgente_nota'], dip_fecha_larga( $e['entrega'], $idioma ), dip_hora_limite_entrega( $e['entrega'] ), dip_texto_euros( dip_urgente_con_iva( (float) $e['importe'] ) ), $hasta );
 }
 
 function dip_urgente_con_iva( $neto ) {
@@ -194,7 +254,8 @@ add_action( 'template_redirect', static function () {
 	$t = dip_textos_tienda();
 	if ( '1' === $_GET['urgente'] && ( $e = dip_urgente_activo() ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! dip_urgente_hace_falta( $e['entrega'], $e ) ) return; // antes de las 12:00 se pide como siempre
-		wc_add_notice( dip_urgente_nota_cliente(), 'notice' );
+		$nota = dip_urgente_nota_cliente();
+		if ( '' !== $nota ) wc_add_notice( $nota, 'notice' );
 	} elseif ( 'caducado' === $_GET['urgente'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		wc_add_notice( sprintf( $t['urgente_caducado'], dip_contacto()['telefono'], dip_contacto()['whatsapp'], dip_sagec_hora_limite() ), 'error' );
 	}
@@ -203,7 +264,8 @@ add_action( 'template_redirect', static function () {
 /* ---------- Suplemento en el carrito y en el pedido ---------- */
 add_action( 'woocommerce_cart_calculate_fees', static function ( $carrito ) {
 	if ( is_admin() && ! wp_doing_ajax() ) return;
-	if ( ! is_checkout() && ! wp_doing_ajax() ) return;
+	// Checkout, sus peticiones AJAX y la Store API (Apple Pay / Google Pay: en REST is_checkout() es false)
+	if ( ! is_checkout() && ! wp_doing_ajax() && ! dip_urgente_es_store_api() ) return;
 	$e = dip_urgente_activo();
 	if ( ! $e || (float) $e['importe'] <= 0 || 'envio' !== dip_metodo_elegido() ) return;
 	if ( ! dip_urgente_hace_falta( dip_fecha_elegida( 'envio' ), $e ) ) return;
@@ -219,16 +281,43 @@ add_action( 'woocommerce_checkout_create_order_fee_item', static function ( $ite
 	if ( DIP_FEE_URGENTE === ( $fee->id ?? '' ) ) $item->add_meta_data( '_dip_urgente', 1, true );
 }, 10, 3 );
 
-/** Marca el pedido urgente y gasta el enlace (si el pedido lleva el suplemento o es para el día del enlace después de las 12:00). */
+/** ¿El pedido se recoge en Mataró? (la marca de entrega o, si aún no la tiene, el método de envío) */
+function dip_urgente_es_recogida( WC_Order $pedido ) {
+	if ( 'recogida' === (string) $pedido->get_meta( '_dip_metodo_entrega' ) ) return true;
+	foreach ( $pedido->get_items( 'shipping' ) as $envio ) {
+		if ( function_exists( 'dip_es_recogida' ) && dip_es_recogida( $envio->get_method_id() ) ) return true;
+	}
+	return false;
+}
+
+/**
+ * Marca el pedido urgente y gasta el enlace: solo envío (la recogida no cambia), y si el pedido lleva el suplemento o es
+ * para el día del enlace después de las 12:00. Un pedido retomado tras un pago fallido que ya no cumple (cambió a
+ * recogida o a otro día) pierde la marca y el enlace vuelve a quedar libre.
+ */
 function dip_urgente_marcar_pedido( $pedido ) {
-	if ( ! $pedido instanceof WC_Order || '' !== (string) $pedido->get_meta( '_dip_urgente' ) ) return;
-	$e = dip_urgente_activo();
+	if ( ! $pedido instanceof WC_Order ) return;
+	$marcado = ! empty( $pedido->get_meta( '_dip_urgente' ) ); // es un array: nunca (string)
+	$e       = dip_urgente_activo();
 	if ( ! $e ) return;
 	$con_fee = false;
 	foreach ( $pedido->get_items( 'fee' ) as $item ) {
 		if ( $item->get_meta( '_dip_urgente' ) ) $con_fee = true;
 	}
-	if ( ! $con_fee && ! dip_urgente_hace_falta( (string) $pedido->get_meta( '_dip_fecha_entrega' ), $e ) ) return;
+	$cumple = ! dip_urgente_es_recogida( $pedido ) && ( $con_fee || dip_urgente_hace_falta( (string) $pedido->get_meta( '_dip_fecha_entrega' ), $e ) );
+	if ( $marcado ) {
+		if ( $cumple ) return;
+		$pedido->delete_meta_data( '_dip_urgente' );
+		$pedido->save_meta_data();
+		$l = dip_urgente_lista();
+		if ( isset( $l[ $e['codigo'] ] ) && (int) $l[ $e['codigo'] ]['pedido'] === (int) $pedido->get_id() ) {
+			$l[ $e['codigo'] ]['pedido'] = 0;
+			dip_urgente_guardar_lista( $l );
+		}
+		$pedido->add_order_note( 'Pedido urgente: ya no lo es (al volver a pagar cambió a recogida o a otro día). El enlace urgente queda libre.' );
+		return;
+	}
+	if ( ! $cumple ) return;
 	$pedido->update_meta_data( '_dip_urgente', array( 'codigo' => substr( $e['codigo'], 0, 8 ), 'creado' => (int) $e['creado'], 'quien' => $e['quien'], 'nota' => $e['nota'], 'importe' => (float) $e['importe'] ) );
 	$pedido->save_meta_data();
 	$l = dip_urgente_lista();
@@ -257,7 +346,8 @@ function dip_urgente_mensaje( array $e, $canal = 'whatsapp' ) {
 	$hora  = dip_hora_limite_entrega( $e['entrega'] );
 	$hasta = wp_date( 'H:i', (int) $e['caduca'], dip_zona_horaria() );
 	$sup   = (float) $e['importe'] > 0 ? ' Lleva un suplemento de pedido urgente de ' . dip_euros( dip_urgente_con_iva( (float) $e['importe'] ) ) . ' (IVA incluido).' : '';
-	$sab   = dip_eh_es_sabado( $e['entrega'] ) ? ' La entrega en sábado lleva su suplemento de ' . dip_euros( round( DIP_SATURDAY_SURCHARGE_EXCL_TAX * dip_factor_iva(), 2 ) ) . '.' : '';
+	// Desde el 11/11/2026 el sábado no lleva un suplemento fijo: tiene su propia tarifa por zona y peso (dip_precio_servicio)
+	$sab   = dip_eh_es_sabado( $e['entrega'] ) ? ' La entrega en sábado tiene su propio precio de envío, según zona y peso: lo verás antes de pagar.' : '';
 	return 'Hola. Con este enlace puedes pedir tu hielo seco para el ' . $dia . ', con entrega antes de las ' . $hora . ': ' . dip_urgente_url( $e['codigo'] ) . "\n"
 		. 'Sirve para un pedido y hasta las ' . $hasta . ' de hoy.' . $sup . $sab . "\n"
 		. 'DryIcePack · ' . dip_contacto()['telefono'];
@@ -270,6 +360,7 @@ function dip_urgente_html_panel() {
 	$hoy     = $ahora->format( 'Y-m-d' );
 	$entrega = dip_urgente_entrega_de_hoy( $ahora );
 	$tarde   = dip_sagec_minuto_del_dia( $ahora ) >= dip_sagec_minutos( dip_sagec_hora_limite() );
+	$pronto  = dip_sagec_minuto_del_dia( $ahora ) < DIP_CUTOFF_HOUR * 60 + DIP_CUTOFF_MINUTE;
 	$enlaces = array_filter( dip_urgente_lista(), static fn( $e ) => ( $e['dia'] ?? '' ) === $hoy );
 	$nuevo   = get_transient( 'dip_urgente_nuevo_' . get_current_user_id() );
 	if ( $nuevo ) delete_transient( 'dip_urgente_nuevo_' . get_current_user_id() );
@@ -281,6 +372,8 @@ function dip_urgente_html_panel() {
 			<p>Ya son más de las <?php echo esc_html( dip_sagec_hora_limite() ); ?>: hoy no llega a la última furgoneta de MRW. No se pueden crear enlaces urgentes.</p>
 		<?php elseif ( '' === $entrega ) : ?>
 			<p>Hoy no sale ningún envío (fin de semana, festivo o cierre de MRW Mataró): no se pueden crear enlaces urgentes.</p>
+		<?php elseif ( $pronto ) : ?>
+			<p>Hasta las <?php echo esc_html( sprintf( '%02d:%02d', DIP_CUTOFF_HOUR, DIP_CUTOFF_MINUTE ) ); ?> el cliente puede pedir para el <strong><?php echo esc_html( dip_fecha_larga( $entrega ) ); ?></strong> sin enlace, en la web. Los enlaces urgentes se crean desde esa hora y hasta las <?php echo esc_html( dip_sagec_hora_limite() ); ?>.</p>
 		<?php else : ?>
 			<p>Para un cliente que te pide después de las <?php echo esc_html( sprintf( '%02d:%02d', DIP_CUTOFF_HOUR, DIP_CUTOFF_MINUTE ) ); ?>. Con el enlace puede comprar para el <strong><?php echo esc_html( dip_fecha_larga( $entrega ) ); ?></strong> hasta las <?php echo esc_html( dip_sagec_hora_limite() ); ?>. Sirve para un pedido. Mándaselo tú, por donde te haya contactado.</p>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="dip-eh-urg__form">
@@ -398,7 +491,7 @@ function dip_urgente_adelantar( WC_Order $p, ?DateTimeImmutable $ahora = null ) 
 		$antes ? dip_fecha_larga( $antes ) : 'sin día',
 		dip_fecha_larga( $nueva ),
 		$usuario && $usuario->exists() ? $usuario->display_name : 'Acciones del pedido',
-		dip_eh_es_sabado( $nueva ) ? ' Es sábado: el cliente no ha pagado el suplemento de sábado.' : ''
+		dip_eh_es_sabado( $nueva ) ? ' Es sábado: el cliente pagó el envío de entre semana, no la tarifa del sábado (Ecommerce de MRW).' : ''
 	) );
 	$GLOBALS['dip_sagec_nuevos_mano'] = array();
 	dip_sagec_crear( $p, '«Adelantar a mañana»', true, $ahora );
